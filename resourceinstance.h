@@ -56,6 +56,7 @@ class KDE_EXPORT ResourceInstance: public QObject
 
     Q_PROPERTY(QUrl uri READ uri WRITE setUri)
     Q_PROPERTY(QString mimetype READ mimetype WRITE setMimetype)
+    Q_PROPERTY(QString title READ title WRITE setTitle)
     Q_PROPERTY(WId winId READ winId)
     Q_PROPERTY(AccessReason accessReason READ accessReason)
 
@@ -99,12 +100,13 @@ public:
      * @param wid window id in which the resource is shown
      * @param resourceUri URI of the resource that is shown
      * @param mimetype the mime type of the resource
+     * @param title the title of the resource
      * @param reason reason for opening the resource
      * @param application application's name (the name used for the .desktop file).
      *        If not specified, QCoreApplication::applicationName is used
      * @param parent pointer to the parent object
      */
-    ResourceInstance(WId wid, QUrl resourceUri, const QString &mimetype = QString(), AccessReason reason = User, const QString &application = QString(), QObject *parent = 0);
+    ResourceInstance(WId wid, QUrl resourceUri, const QString &mimetype = QString(), const QString &title = QString(), AccessReason reason = User, const QString &application = QString(), QObject *parent = 0);
 
     /**
      * Destroys the ResourceInstance and notifies the system
@@ -145,6 +147,11 @@ public Q_SLOTS:
      */
     void setMimetype(const QString &mimetype);
 
+    /**
+     * Sets the title for this resource
+     */
+    void setTitle(const QString &title);
+
 Q_SIGNALS:
     /**
      * Emitted when the system wants to show the resource
@@ -170,6 +177,11 @@ public:
      * @returns mimetype of the resource
      */
     QString mimetype() const;
+
+    /**
+     * @returns title of the resource
+     */
+    QString title() const;
 
     /**
      * @returns the window id
