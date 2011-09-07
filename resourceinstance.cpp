@@ -43,6 +43,7 @@ public:
     ResourceInstance::AccessReason reason;
     QUrl uri;
     QString mimetype;
+    QString title;
     QString application;
 
     void closeResource();
@@ -82,13 +83,14 @@ ResourceInstance::ResourceInstance(WId wid, AccessReason reason, const QString &
 
 }
 
-ResourceInstance::ResourceInstance(WId wid, QUrl resourceUri, const QString &mimetype, AccessReason reason, const QString &application, QObject *parent)
+ResourceInstance::ResourceInstance(WId wid, QUrl resourceUri, const QString &mimetype, const QString &title, AccessReason reason, const QString &application, QObject *parent)
     : QObject(parent), d(new ResourceInstancePrivate())
 {
     d->wid = wid;
     d->reason = reason;
     d->uri = resourceUri;
     d->mimetype = mimetype;
+    d->title = title;
     d->application = application.isEmpty() ? QCoreApplication::instance()->applicationName() : application;
 
     d->openResource();
@@ -136,6 +138,13 @@ void ResourceInstance::setMimetype(const QString &mimetype)
     Manager::self()->RegisterResourceMimeType(d->uri.toString(), mimetype);
 }
 
+void ResourceInstance::setTitle(const QString &title)
+{
+    d->title = title;
+    // TODO: update the service info
+    Manager::self()->RegisterResourceTitle(d->uri.toString(), title);
+}
+
 QUrl ResourceInstance::uri() const
 {
     return d->uri;
@@ -144,6 +153,11 @@ QUrl ResourceInstance::uri() const
 QString ResourceInstance::mimetype() const
 {
     return d->mimetype;
+}
+
+QString ResourceInstance::title() const
+{
+    return d->title;
 }
 
 WId ResourceInstance::winId() const

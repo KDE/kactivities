@@ -96,5 +96,9 @@
       <arg name="uri" type="s" direction="in"/>
       <arg name="mimetype" type="s" direction="in"/>
     </method>
+    <method name="RegisterResourceTitle">
+      <arg name="uri" type="s" direction="in"/>
+      <arg name="title" type="s" direction="in"/>
+    </method>
   </interface>
 </node>
