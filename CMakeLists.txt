@@ -1,5 +1,16 @@
 project(kactivities)
 
+cmake_minimum_required(VERSION 2.8)
+
+FIND_PACKAGE(KDE4 REQUIRED)
+INCLUDE(KDE4Defaults)
+INCLUDE(MacroLibrary)
+INCLUDE(MacroOptionalAddSubdirectory)
+INCLUDE(FindPackageHandleStandardArgs)
+
+ADD_DEFINITIONS (${QT_DEFINITIONS} ${QT_QTDBUS_DEFINITIONS} ${KDE4_DEFINITIONS})
+INCLUDE_DIRECTORIES (${QDBUS_INCLUDE_DIRS} ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR} ${KDE4_INCLUDES})
+
 include_directories(
    ${CMAKE_SOURCE_DIR}
    ${CMAKE_BINARY_DIR}
