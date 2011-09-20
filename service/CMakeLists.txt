@@ -34,6 +34,12 @@ if(Nepomuk_FOUND)
         "NIE" "Nepomuk::Vocabulary" "trig"
     )
 
+    soprano_add_ontology(
+        sdo_SRCS
+        ${CMAKE_SOURCE_DIR}/ontologies/kext.trig
+        "KEXT" "Nepomuk::Vocabulary" "trig"
+    )
+
 endif(Nepomuk_FOUND)
 
 # config file

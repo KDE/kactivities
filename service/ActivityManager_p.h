@@ -105,6 +105,7 @@ public Q_SLOTS:
     void reallyStopActivity(const QString & id);
 
     void backstoreAvailable();
+    void syncActivitiesWithNepomuk();
 
 private:
     ActivityManager * const q;

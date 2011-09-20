@@ -36,6 +36,7 @@
     #include <Nepomuk/Resource>
     #include <Nepomuk/Variant>
     #include "nie.h"
+    #include "kext.h"
 #endif
 
 #include "activitymanageradaptor.h"
@@ -45,11 +46,13 @@
 
 #ifdef HAVE_NEPOMUK
     #define NEPOMUK_RUNNING d->nepomukInitialized()
+
+    using namespace Nepomuk::Vocabulary;
 #else
     #define NEPOMUK_RUNNING false
 #endif
 
-#define ACTIVITIES_PROTOCOL "activities://"
+// #define ACTIVITIES_PROTOCOL "activities://"
 
 // copied from kdelibs\kdeui\notifications\kstatusnotifieritemdbus_p.cpp
 // if there is a common place for such definitions please move
@@ -89,17 +92,19 @@ ActivityManagerPrivate::ActivityManagerPrivate(ActivityManager * parent,
     configSyncTimer.setInterval(2 * 60 * 1000);
 
     kDebug() << "reading activities:";
-    foreach(const QString & activity, activitiesConfig().keyList()) {
+    foreach (const QString & activity, activitiesConfig().keyList()) {
         kDebug() << activity;
         activities[activity] = ActivityManager::Stopped;
     }
 
-    foreach(const QString & activity, mainConfig().readEntry("runningActivities", activities.keys())) {
+    foreach (const QString & activity, mainConfig().readEntry("runningActivities", activities.keys())) {
         kDebug() << "setting" << activity << "as" << "running";
         if (activities.contains(activity)) {
             activities[activity] = ActivityManager::Running;
         }
     }
+
+    syncActivitiesWithNepomuk();
 
     currentActivity = mainConfig().readEntry("currentActivity", QString());
     kDebug() << "currentActivity is" << currentActivity;
@@ -230,28 +235,28 @@ bool ActivityManagerPrivate::setCurrentActivity(const QString & id)
             return false;
         }
 
-        if (currentActivity != id) {
-            kDebug() << "registering the events";
-            // Closing the previous activity:
-            if (!currentActivity.isEmpty()) {
-                q->RegisterResourceEvent(
-                        "kactivitymanagerd", 0,
-                        "activities://" + currentActivity,
-                        Event::Closed, Event::User
-                    );
-            }
+        // if (currentActivity != id) {
+        //     kDebug() << "registering the events";
+        //     // Closing the previous activity:
+        //     if (!currentActivity.isEmpty()) {
+        //         q->RegisterResourceEvent(
+        //                 "kactivitymanagerd", 0,
+        //                 "activities://" + currentActivity,
+        //                 Event::Closed, Event::User
+        //             );
+        //     }
 
-            q->RegisterResourceEvent(
-                    "kactivitymanagerd", 0,
-                    "activities://" + id,
-                    Event::Accessed, Event::User
-                );
-            q->RegisterResourceEvent(
-                    "kactivitymanagerd", 0,
-                    "activities://" + id,
-                    Event::Opened, Event::User
-                );
-        }
+        //     q->RegisterResourceEvent(
+        //             "kactivitymanagerd", 0,
+        //             "activities://" + id,
+        //             Event::Accessed, Event::User
+        //         );
+        //     q->RegisterResourceEvent(
+        //             "kactivitymanagerd", 0,
+        //             "activities://" + id,
+        //             Event::Opened, Event::User
+        //         );
+        // }
 
         q->StartActivity(id);
 
@@ -285,6 +290,23 @@ void ActivityManagerPrivate::configSync()
     config.sync();
 }
 
+void ActivityManagerPrivate::syncActivitiesWithNepomuk()
+{
+#ifdef HAVE_NEPOMUK
+    foreach (const QString & activityId, activities.keys()) {
+        Nepomuk::Resource activityResource(activityId, KEXT::Activity());
+
+        QString name = activitiesConfig().readEntry(activityId, QString());
+
+        activityResource.setProperty(KEXT::activityIdentifier(), activityId);
+
+        if (!name.isEmpty()) {
+            activityResource.setLabel(name);
+        }
+    }
+#endif // HAVE_NEPOMUK
+}
+
 #ifdef HAVE_NEPOMUK
 
 Nepomuk::Resource ActivityManagerPrivate::activityResource(const QString & id)
@@ -292,7 +314,8 @@ Nepomuk::Resource ActivityManagerPrivate::activityResource(const QString & id)
     kDebug() << "testing for nepomuk";
 
     if (nepomukInitialized()) {
-        return Nepomuk::Resource(KUrl(ACTIVITIES_PROTOCOL + id));
+        return Nepomuk::Resource(
+                id, KEXT::Activity());
     } else {
         return Nepomuk::Resource();
     }
@@ -350,28 +373,28 @@ ActivityManager::ActivityManager()
 
     EventProcessor::self();
 
-    kDebug() << "RegisterResourceEvent open" << d->currentActivity;
-    RegisterResourceEvent(
-            "kactivitymanagerd", 0,
-            "activities://" + d->currentActivity,
-            Event::Accessed, Event::User
-        );
-    RegisterResourceEvent(
-            "kactivitymanagerd", 0,
-            "activities://" + d->currentActivity,
-            Event::Opened, Event::User
-        );
+    // kDebug() << "RegisterResourceEvent open" << d->currentActivity;
+    // RegisterResourceEvent(
+    //         "kactivitymanagerd", 0,
+    //         "activities://" + d->currentActivity,
+    //         Event::Accessed, Event::User
+    //     );
+    // RegisterResourceEvent(
+    //         "kactivitymanagerd", 0,
+    //         "activities://" + d->currentActivity,
+    //         Event::Opened, Event::User
+    //     );
 
 }
 
 ActivityManager::~ActivityManager()
 {
-    kDebug() << "RegisterResourceEvent close" << d->currentActivity;
-    RegisterResourceEvent(
-            "kactivitymanagerd", 0,
-            "activities://" + d->currentActivity,
-            Event::Closed, Event::User
-        );
+    // kDebug() << "RegisterResourceEvent close" << d->currentActivity;
+    // RegisterResourceEvent(
+    //         "kactivitymanagerd", 0,
+    //         "activities://" + d->currentActivity,
+    //         Event::Closed, Event::User
+    //     );
     delete d;
 }
 
@@ -741,8 +764,8 @@ void ActivityManager::RegisterResourceEvent(const QString & application, uint _w
     if (uri.startsWith("nepomuk:")) {
         Nepomuk::Resource resource(kuri);
 
-        if (resource.hasProperty(Nepomuk::Vocabulary::NIE::url())) {
-            kuri = resource.property(Nepomuk::Vocabulary::NIE::url()).toUrl();
+        if (resource.hasProperty(NIE::url())) {
+            kuri = resource.property(NIE::url()).toUrl();
             kDebug() << "Passing real url" << kuri;
         } else {
             kWarning() << "Passing nepomuk:// url" << kuri;
