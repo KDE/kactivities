@@ -100,5 +100,19 @@
       <arg name="uri" type="s" direction="in"/>
       <arg name="title" type="s" direction="in"/>
     </method>
+    <method name="LinkResourceToActivity">
+      <arg name="uri" type="s" direction="in"/>
+      <arg name="activity" type="s" direction="in"/>
+    </method>
+    <method name="LinkResourceToActivity">
+      <arg name="uri" type="s" direction="in"/>
+    </method>
+    <!-- <method name="UnlinkResourceFromActivity"> -->
+    <!--   <arg name="uri" type="s" direction="in"/> -->
+    <!--   <arg name="activity" type="s" direction="in"/> -->
+    <!-- </method> -->
+    <!-- <method name="UnlinkResourceFromActivity"> -->
+    <!--   <arg name="uri" type="s" direction="in"/> -->
+    <!-- </method> -->
   </interface>
 </node>

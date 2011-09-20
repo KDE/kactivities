@@ -99,6 +99,14 @@ public:
      */
     static ServiceStatus serviceStatus();
 
+    /**
+     * Links a resource to the activity
+     * @param uri URI of the resource
+     * @activityId id of the activity to link to. If empty, the
+     *    resource is linked to the current activity.
+     */
+    void linkResourceToActivity(const QUrl & uri, const QString & activityId = QString());
+
 Q_SIGNALS:
     /**
      * This signal is emitted when the global

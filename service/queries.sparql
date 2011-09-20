@@ -1,0 +1,43 @@
+// Getting the highest scored caches for (application/agent, activity)
+
+select distinct ?resource,
+   (
+       (
+           ?lastScore * bif:exp(-
+               bif:datediff('day', ?lastUpdate, ##CURRENT_DATETIME##)
+           )
+       )
+   as ?score) where {
+     ?cache kext:targettedResource ?resource .
+     ?cache a kext:ResourceScoreCache .
+     ?cache nao:lastModified ?lastUpdate .
+     ?cache kext:cachedScore ?lastScore .
+     ?cache kext:usedActivity ##ACTIVITY## .
+     ?cache kext:initiatingAgent ##AGENT## .
+     OPTIONAL { ?resource nie:url ?uri . } .
+}
+ORDER BY DESC (?score)
+LIMIT 10
+
+// Getting the highest scored caches for (activity)
+
+select distinct ?resource,
+    (
+        (
+            SUM (
+                ?lastScore * bif:exp(
+                    - bif:datediff('day', ?lastUpdate, ##CURRENT_DATETIME##)
+                )
+            )
+        )
+        as ?score
+    ) where {
+        ?cache kext:targettedResource ?resource .
+        ?cache a kext:ResourceScoreCache .
+        ?cache nao:lastModified ?lastUpdate .
+        ?cache kext:cachedScore ?lastScore .
+        ?cache kext:usedActivity ##ACTIVITY## .
+    }
+    GROUP BY (?resource)
+    ORDER BY DESC (?score)
+    LIMIT 10

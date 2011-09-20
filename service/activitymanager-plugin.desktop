@@ -1,0 +1,31 @@
+[Desktop Entry]
+Type=ServiceType
+X-KDE-ServiceType=ActivityManager/Plugin
+
+Comment=Activity manager plugin
+Comment[bg]=Приставка за управление на дейности
+Comment[cs]=Modul Správce aktivit
+Comment[et]=Tegevuste haldamise plugin
+Comment[eu]=Jarduera kudeatzailearen plugina
+Comment[hu]=Aktivitáskezelő bővítmény
+Comment[ia]=Plugin de gerente de activitate
+Comment[lt]=Veiklų tvarkyklė įskiepis
+Comment[nb]=Programtillegg for aktivitetshåndterng
+Comment[nds]=Aktivitetenpleger-Moduul
+Comment[nl]=Plug-in van activiteitenbeheerder
+Comment[pt]='Plugin' do gestor de actividades
+Comment[pt_BR]=Plug-in do gerenciador de atividades
+Comment[ro]=Modul pentru gestionarul de activități
+Comment[ru]=Дополнение диспетчера комнат
+Comment[sv]=Insticksprogram för aktivitetshantering
+Comment[tg]=Плагини мудири фаъолият
+Comment[uk]=Додаток керування просторами дій
+Comment[x-test]=xxActivity manager pluginxx
+Comment[zh_TW]=活動管理員外掛程式
+
+[PropertyDef::X-ActivityManager-PluginType]
+Type=QString
+
+[PropertyDef::X-ActivityManager-PluginOverrides]
+Type=QString
+

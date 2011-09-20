@@ -71,6 +71,12 @@ QStringList Consumer::listActivities() const
         QStringList, Manager::self()->ListActivities(), QStringList() );
 }
 
+void Consumer::linkResourceToActivity(const QUrl & uri, const QString & activityId)
+{
+    Manager::self()->LinkResourceToActivity(uri.toString(), activityId);
+
+}
+
 #undef KACTIVITYCONSUMER_DBUS_RETURN
 
 Consumer::ServiceStatus Consumer::serviceStatus()
