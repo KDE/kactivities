@@ -1,6 +1,24 @@
 [Desktop Entry]
 Name=Dummy plugin
+Name[cs]=Prázdný modul
+Name[es]=Complemento vacío
+Name[eu]=Gezurrezko plugina
+Name[nds]=Platzholl-Moduul
+Name[nl]=Dummy plug-in
+Name[pt]='Plugin' de testes
+Name[sv]=Testinsticksprogram
+Name[uk]=Тестовий додаток
+Name[x-test]=xxDummy pluginxx
 Comment=Just testing
+Comment[cs]=Pouze testovací
+Comment[es]=Solo para pruebas
+Comment[eu]=Soilik probatarako
+Comment[nds]=Bloots an't Utproberen
+Comment[nl]=Gewoon testen
+Comment[pt]=Apenas para testes
+Comment[sv]=Bara testning
+Comment[uk]=Тестування
+Comment[x-test]=xxJust testingxx
 Type=Service
 Icon=
 
