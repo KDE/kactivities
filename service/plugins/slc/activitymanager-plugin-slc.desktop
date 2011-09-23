@@ -1,6 +1,7 @@
 [Desktop Entry]
 Name=Share-Like-Connect Plugin
 Name[eu]=Share-Like-Connect plugina
+Name[hu]=Share-Like-Connect bővítmény
 Name[nds]="Share-Like-Connect"-Moduul
 Name[nl]=Plug-in voor 'Share-Like-Connect'
 Name[pt]='Plugin' do Share-Like-Connect
@@ -10,6 +11,7 @@ Name[x-test]=xxShare-Like-Connect Pluginxx
 Comment=Plugin to provide data to the SLC system
 Comment[es]=Complemento para proporcionar datos al sistema SLC
 Comment[eu]=SLC sistemari datuak hornitzeko plugina
+Comment[hu]=Bővítmény adatok küldésére az SLC rendszerbe
 Comment[nds]=Moduul för't Praatstellen vun SLC-Daten
 Comment[nl]=Plug-in om gegevens te leveren aan het SLC-systeem
 Comment[pt]='Plugin' para fornecer dados ao sistema SLC
