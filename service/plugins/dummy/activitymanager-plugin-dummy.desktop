@@ -12,6 +12,7 @@ Name[pt_BR]=Plug-in de testes
 Name[sv]=Testinsticksprogram
 Name[uk]=Тестовий додаток
 Name[x-test]=xxDummy pluginxx
+Name[zh_TW]=空白外掛程式
 Comment=Just testing
 Comment[cs]=Pouze testovací
 Comment[es]=Solo para pruebas
@@ -25,6 +26,7 @@ Comment[pt_BR]=Apenas testando
 Comment[sv]=Bara testning
 Comment[uk]=Тестування
 Comment[x-test]=xxJust testingxx
+Comment[zh_TW]=測試用
 Type=Service
 Icon=
 

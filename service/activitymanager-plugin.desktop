@@ -15,6 +15,7 @@ Comment[pt_BR]=Plug-in do gerenciador de atividades
 Comment[sv]=Insticksprogram för aktivitetshantering
 Comment[uk]=Додаток керування просторами дій
 Comment[x-test]=xxActivity manager pluginxx
+Comment[zh_TW]=活動管理員外掛程式
 
 [PropertyDef::X-ActivityManager-PluginType]
 Type=QString

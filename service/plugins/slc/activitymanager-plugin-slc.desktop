@@ -11,6 +11,7 @@ Name[pt_BR]=Plug-in do Share-Like-Connect
 Name[sv]=Insticksprogram för Share-Like-Connect
 Name[uk]=Додаток Share-Like-Connect
 Name[x-test]=xxShare-Like-Connect Pluginxx
+Name[zh_TW]=Share-Like-Connect 外掛程式
 Comment=Plugin to provide data to the SLC system
 Comment[es]=Complemento para proporcionar datos al sistema SLC
 Comment[eu]=SLC sistemari datuak hornitzeko plugina
@@ -23,6 +24,7 @@ Comment[pt_BR]=Plug-in para fornecer dados para o sistema SLC
 Comment[sv]=Insticksprogram för att tillhandahålla data till SLC-systemet
 Comment[uk]=Додаток надання даних до системи SLC
 Comment[x-test]=xxPlugin to provide data to the SLC systemxx
+Comment[zh_TW]=提供資料給 SLC 系統的外掛程式
 Type=Service
 Icon=
 
