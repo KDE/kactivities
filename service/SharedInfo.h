@@ -35,7 +35,7 @@
  *
  */
 class SharedInfo: public QObject {
-    Q_OBJECT;
+    Q_OBJECT
 
 public:
     virtual ~SharedInfo();

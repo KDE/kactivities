@@ -32,7 +32,7 @@ class EventProcessorPrivate;
  * Thread to process desktop/usage events
  */
 class EventProcessor: public QObject {
-    Q_OBJECT;
+    Q_OBJECT
 
 public:
     static EventProcessor * self();
