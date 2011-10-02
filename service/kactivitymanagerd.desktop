@@ -19,6 +19,7 @@ Name[pt_BR]=Gerenciador de atividades
 Name[sv]=Aktivitetshanterare
 Name[uk]=Керування просторами дій
 Name[x-test]=xxActivity Managerxx
+Name[zh_CN]=活动管理器
 Name[zh_TW]=活動管理員
 
 Comment=The activity management backend
@@ -34,4 +35,5 @@ Comment[pt_BR]=Infraestrutura de gerenciamento de atividades
 Comment[sv]=Gränssnittet för aktivitetshanteringen
 Comment[uk]=Сервер керування просторами дій
 Comment[x-test]=xxThe activity management backendxx
+Comment[zh_CN]=活动管理器后端
 Comment[zh_TW]=活動管理後端介面
