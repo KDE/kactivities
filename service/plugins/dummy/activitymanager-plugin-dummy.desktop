@@ -1,6 +1,7 @@
 [Desktop Entry]
 Name=Dummy plugin
 Name[cs]=Prázdný modul
+Name[de]=Dummy-Modul
 Name[es]=Complemento vacío
 Name[eu]=Gezurrezko plugina
 Name[hu]=Hamis bővítmény
@@ -15,6 +16,7 @@ Name[x-test]=xxDummy pluginxx
 Name[zh_TW]=空白外掛程式
 Comment=Just testing
 Comment[cs]=Pouze testovací
+Comment[de]=Nur zum Testen
 Comment[es]=Solo para pruebas
 Comment[eu]=Soilik probatarako
 Comment[hu]=Csak tesztelés

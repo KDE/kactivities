@@ -8,6 +8,7 @@ Exec=kactivitymanagerd
 
 Name=Activity Manager
 Name[cs]=Správce aktivit
+Name[de]=Aktivitätenverwaltung
 Name[es]=Gestor de actividades
 Name[eu]=Jarduera kudeatzailea
 Name[hu]=Aktivitáskezelő
@@ -24,6 +25,7 @@ Name[zh_TW]=活動管理員
 
 Comment=The activity management backend
 Comment[cs]=Podpůrná vrstva pro správu aktivit
+Comment[de]=Backend der Aktivitätenverwaltung
 Comment[es]=El motor de la gestión de actividades
 Comment[eu]=Jarduera kudeaketa 'backend'
 Comment[hu]=Aktivitáskezelő modul
