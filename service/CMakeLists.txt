@@ -73,8 +73,7 @@ kde4_add_executable(activity-manager ${activity_manager_SRCS})
 
 target_link_libraries(
     activity-manager
-    ${KDE4_KIO_LIBS}
-    ${KDE4_KDEUI_LIBS}
+    ${KDE4_KDECORE_LIBS}
     ${ADDITIONAL_LINK_LIBS}
     )
 
