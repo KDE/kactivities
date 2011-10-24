@@ -3,7 +3,7 @@ project(activitymanager-plugin-nepomuk)
 # Checking for Nepomuk
 find_package(Nepomuk REQUIRED)
 
-include_directories(${NEPOMUK_INCLUDE_DIR})
+include_directories(${NEPOMUK_INCLUDE_DIR} ${SOPRANO_INCLUDE_DIR})
 
 set(
    nepomuk_SRCS

@@ -21,6 +21,7 @@ set(sdo_SRCS "")
 
 if(Nepomuk_FOUND)
     set(HAVE_NEPOMUK 1)
+    include_directories(${SOPRANO_INCLUDE_DIR})
     set(ADDITIONAL_LINK_LIBS
         ${ADDITIONAL_LINK_LIBS}
         ${NEPOMUK_LIBRARIES}
