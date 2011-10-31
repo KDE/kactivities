@@ -14,6 +14,7 @@ Name[uk]=Додаток передавання даних Nepomuk
 Name[x-test]=xxNepomuk Feeder Pluginxx
 Name[zh_TW]=Nepomuk Feeder 外掛程式
 Comment=Plugin to store and score events in Nepomuk
+Comment[de]=Modul zum Speichern und Bewerten von Ereignissen in Nepomuk
 Comment[es]=Complemento para almacenar y puntuar eventos en Nepomuk
 Comment[eu]=Nepomuk-en gertaerak biltegiratu eta puntuatzeko plugina
 Comment[hu]=Bővítmény események tárolására és pontozására a Nepomukban
