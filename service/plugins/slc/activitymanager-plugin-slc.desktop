@@ -1,5 +1,6 @@
 [Desktop Entry]
 Name=Share-Like-Connect Plugin
+Name[ca]=Connector «Share-Like-Connect»
 Name[es]=Complemento Share-Like-Connect
 Name[eu]=Share-Like-Connect plugina
 Name[hu]=Share-Like-Connect bővítmény
@@ -14,6 +15,7 @@ Name[uk]=Додаток Share-Like-Connect
 Name[x-test]=xxShare-Like-Connect Pluginxx
 Name[zh_TW]=Share-Like-Connect 外掛程式
 Comment=Plugin to provide data to the SLC system
+Comment[ca]=Connector per proporcionar dades al sistema SLC
 Comment[de]=Modul, um dem SLC-System Daten bereitzustellen.
 Comment[es]=Complemento para proporcionar datos al sistema SLC
 Comment[eu]=SLC sistemari datuak hornitzeko plugina

@@ -1,5 +1,6 @@
 [Desktop Entry]
 Name=Dummy plugin
+Name[ca]=Connector fals
 Name[cs]=Prázdný modul
 Name[de]=Dummy-Modul
 Name[es]=Complemento vacío
@@ -16,6 +17,7 @@ Name[uk]=Тестовий додаток
 Name[x-test]=xxDummy pluginxx
 Name[zh_TW]=空白外掛程式
 Comment=Just testing
+Comment[ca]=Per a les proves
 Comment[cs]=Pouze testovací
 Comment[de]=Nur zum Testen
 Comment[es]=Solo para pruebas
