@@ -1,1 +1,1 @@
-#include "../../activities/controller.h"
+#include "../../kactivities/controller.h"
