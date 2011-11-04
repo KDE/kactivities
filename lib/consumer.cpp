@@ -22,7 +22,7 @@
 
 #include <kdebug.h>
 
-namespace Activities {
+namespace KActivities {
 
 Consumer::Consumer(QObject * parent)
     : QObject(parent), d(new ConsumerPrivate())
@@ -92,5 +92,5 @@ Consumer::ServiceStatus Consumer::serviceStatus()
     return FullFunctionality;
 }
 
-} // namespace Activities
+} // namespace KActivities
 

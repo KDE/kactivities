@@ -26,7 +26,7 @@
 
 #include <kdemacros.h>
 
-namespace Activities {
+namespace KActivities {
 
 class ResourceInstancePrivate;
 

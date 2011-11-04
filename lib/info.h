@@ -27,7 +27,7 @@
 #include <kurl.h>
 #include <kdemacros.h>
 
-namespace Activities {
+namespace KActivities {
 
 class InfoPrivate;
 
@@ -171,6 +171,6 @@ private:
     friend class InfoPrivate;
 };
 
-} // namespace Activities
+} // namespace KActivities
 
 #endif // ACTIVITIES_INFO_H_

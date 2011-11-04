@@ -22,7 +22,7 @@
 #include "activitymanager_interface.h"
 #include "info.h"
 
-namespace Activities {
+namespace KActivities {
 
 class InfoPrivate {
 public:
@@ -41,6 +41,6 @@ public:
     QString id;
 };
 
-} // namespace Activities
+} // namespace KActivities
 
 #endif // ACTIVITIES_INFO_P_H_

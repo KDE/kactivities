@@ -22,7 +22,7 @@
 
 #include <QCoreApplication>
 
-namespace Activities {
+namespace KActivities {
 
 #ifdef Q_OS_WIN64
 __inline int toInt(WId wid)
@@ -177,4 +177,4 @@ void ResourceInstance::notifyAccessed(const QUrl &uri, const QString &applicatio
             0, uri, ResourceInstancePrivate::Accessed, User);
 }
 
-} // namespace Activities
+} // namespace KActivities

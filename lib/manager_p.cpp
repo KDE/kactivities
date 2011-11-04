@@ -24,7 +24,7 @@
 #include <ktoolinvocation.h>
 #include <kdebug.h>
 
-namespace Activities {
+namespace KActivities {
 
 Manager * Manager::s_instance = NULL;
 
@@ -85,5 +85,5 @@ void Manager::serviceOwnerChanged(const QString & serviceName, const QString & o
     }
 }
 
-} // namespace Activities
+} // namespace KActivities
 

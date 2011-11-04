@@ -22,7 +22,7 @@
 #include "info_p.h"
 #include "manager_p.h"
 
-namespace Activities {
+namespace KActivities {
 
 // Private
 
@@ -177,7 +177,7 @@ Info::Availability Info::availability() const
     return result;
 }
 
-} // namespace Activities
+} // namespace KActivities
 
 #include "info.moc"
 

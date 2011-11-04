@@ -24,7 +24,7 @@
 
 #include <QDBusServiceWatcher>
 
-namespace Activities {
+namespace KActivities {
 
 class Manager: public org::kde::ActivityManager {
     Q_OBJECT
@@ -47,6 +47,6 @@ private:
     static Manager * s_instance;
 };
 
-} // namespace Activities
+} // namespace KActivities
 
 #endif // ACTIVITIES_MANAGER_P_

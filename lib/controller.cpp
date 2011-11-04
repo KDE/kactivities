@@ -24,7 +24,7 @@
 
 #include <kdebug.h>
 
-namespace Activities {
+namespace KActivities {
 
 class ControllerPrivate: public QObject {
 public:
@@ -88,6 +88,6 @@ void Controller::startActivity(const QString & id)
     Manager::self()->StartActivity(id);
 }
 
-} // namespace Activities
+} // namespace KActivities
 
 #include "controller.moc"

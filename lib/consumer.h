@@ -29,7 +29,7 @@
 #include <kurl.h>
 #include <kdemacros.h>
 
-namespace Activities {
+namespace KActivities {
 
 class ConsumerPrivate;
 
@@ -126,6 +126,6 @@ private:
     ConsumerPrivate * const d;
 };
 
-} // namespace Activities
+} // namespace KActivities
 
 #endif // ACTIVITIES_CONSUMER_H_

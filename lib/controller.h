@@ -29,7 +29,7 @@
 #include <kurl.h>
 #include <kdemacros.h>
 
-namespace Activities {
+namespace KActivities {
 
 class ControllerPrivate;
 
@@ -117,6 +117,6 @@ private:
     ControllerPrivate * const d;
 };
 
-} // namespace Activities
+} // namespace KActivities
 
 #endif // ACTIVITIES_CONTROLLER_H_

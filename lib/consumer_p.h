@@ -21,11 +21,11 @@
 
 #include "activitymanager_interface.h"
 
-namespace Activities {
+namespace KActivities {
 
 class ConsumerPrivate {
 };
 
-} // namespace Activities
+} // namespace KActivities
 
 #endif // ACTIVITIES_CONSUMER_P_H_
