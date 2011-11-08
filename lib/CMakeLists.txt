@@ -112,10 +112,10 @@ set(
 
 set(
    kactivities_LIB_PRETTY_HEADERS
-   includes/Activities/Consumer
-   includes/Activities/Controller
-   includes/Activities/Info
-   includes/Activities/ResourceInstance
+   includes/KActivities/Consumer
+   includes/KActivities/Controller
+   includes/KActivities/Info
+   includes/KActivities/ResourceInstance
    )
 
 install(
@@ -126,7 +126,7 @@ install(
 
 install(
    FILES ${kactivities_LIB_PRETTY_HEADERS}
-   DESTINATION ${INCLUDE_INSTALL_DIR}/KDE/Activities
+   DESTINATION ${INCLUDE_INSTALL_DIR}/KDE/KActivities
    COMPONENT Devel
    )
 
