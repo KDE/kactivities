@@ -60,7 +60,10 @@ public Q_SLOTS:
      */
     void deregisterClient(const QString & client);
 
-public:
+    /**
+     * Don't use this, will be removed
+     */
+    void requestScoreUpdate(const QString & activity, const QString & application, const QString & resource);
 
 private Q_SLOTS:
     void setCurrentActivity(const QString & activityId);

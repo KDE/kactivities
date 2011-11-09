@@ -16,5 +16,10 @@
     <method name="deregisterClient">
       <arg name="client" type="s" direction="in"/>
     </method>
+    <method name="requestScoreUpdate">
+      <arg name="activity" type="s" direction="in"/>
+      <arg name="application" type="s" direction="in"/>
+      <arg name="resource" type="s" direction="in"/>
+    </method>
   </interface>
 </node>

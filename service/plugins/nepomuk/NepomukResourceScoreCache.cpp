@@ -131,9 +131,14 @@ NepomukResourceScoreCache::~NepomukResourceScoreCache()
 void NepomukResourceScoreCache::updateScore()
 {
     // kDebug() << "Updating the score for " << d->resource;
-    // kDebug() << "Last modified as string" << d->self.property(NAO::lastModified());
+    // kDebug() << "Last modified as string" << d->self.property(NIE::lastModified());
 
-    QDateTime lastModified = d->self.property(NAO::lastModified()).toDateTime();
+    QDateTime lastModified;
+
+    if (d->self.hasProperty(NIE::lastModified())) {
+        lastModified = d->self.property(NIE::lastModified()).toDateTime();
+
+    }
 
     qreal score = d->self.property(KExt::cachedScore()).toDouble();
 
@@ -147,6 +152,7 @@ void NepomukResourceScoreCache::updateScore()
 
     } else {
         // If we haven't had previous calculation, set the score to 0
+        // kDebug() << "We just created the score cache...";
         score = 0;
 
     }
@@ -177,12 +183,14 @@ void NepomukResourceScoreCache::updateScore()
     Soprano::QueryResultIterator it
         = Nepomuk::ResourceManager::instance()->mainModel()->executeQuery(query, Soprano::Query::QueryLanguageSparql);
 
-    d->self.setProperty(NAO::lastModified(), QDateTime::currentDateTime());
+    d->self.setProperty(NIE::lastModified(), QDateTime::currentDateTime());
 
     while (it.next()) {
         Nepomuk::Resource result(it[0].uri());
         QDateTime eventStart = result.property(NUAO::start()).toDateTime();
         QDateTime eventEnd = result.property(NUAO::end()).toDateTime();
+
+        // kDebug() << "Processed event: " << result.resourceUri() << eventStart << eventEnd << score;
 
         if (!eventStart.isValid()) continue;
 
@@ -205,7 +213,7 @@ void NepomukResourceScoreCache::updateScore()
             score += d->timeFactor(eventEnd) * intervalLength / 60.0;
         }
 
-        // kDebug() << result.resourceUri() << eventStart << eventEnd << intervalLength;
+        // kDebug() << "Processed event: " << result.resourceUri() << eventStart << eventEnd << intervalLength << score;
 
     }
 

@@ -42,6 +42,7 @@
 #include "kext.h"
 
 #include "NepomukCommon.h"
+#include "NepomukResourceScoreCache.h"
 
 #define RESULT_COUNT_LIMIT 10
 #define COALESCE_ACTIVITY(Activity) ((Activity.isEmpty()) ? \
@@ -322,4 +323,9 @@ void Rankings::notifyResultsUpdated(const QString & _activity, QStringList clien
         QDBusInterface rankingsservice(client, "/RankingsClient", "org.kde.ActivityManager.RankingsClient");
         rankingsservice.call("updated", data);
     }
+}
+
+void Rankings::requestScoreUpdate(const QString & activity, const QString & application, const QString & resource)
+{
+    NepomukResourceScoreCache(activity, application, resource).updateScore();
 }
