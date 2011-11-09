@@ -90,7 +90,7 @@ EventProcessor * EventProcessor::self()
     return EventProcessorPrivate::s_instance;
 }
 
-#define FAKE_EVENTS_FEED
+// #define FAKE_EVENTS_FEED
 #ifdef FAKE_EVENTS_FEED
 
 #include <QTextStream>
