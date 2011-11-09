@@ -41,3 +41,22 @@ select distinct ?resource,
     GROUP BY (?resource)
     ORDER BY DESC (?score)
     LIMIT 10
+
+// get score caches
+
+select ?e, ?agent, ?r, ?score where {
+     ?e a kext:ResourceScoreCache .
+     ?e kext:cachedScore ?score .
+     ?e kext:initiatingAgent ?agentRes . ?agentRes nao:identifier ?agent .
+     ?e kext:targettedResource ?rRes . ?rRes nie:url ?r .
+}
+
+// des
+
+select ?e, ?agent, ?r where {
+     ?e a nuao:DesktopEvent .
+     ?e nuao:initiatingAgent ?agentRes . ?agentRes nao:identifier ?agent .
+     ?e nuao:targettedResource ?rRes . ?rRes nie:url ?r
+}
+
+

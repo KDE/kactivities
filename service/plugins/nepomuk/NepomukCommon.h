@@ -40,7 +40,7 @@ inline Nepomuk::Resource anyResource(const QUrl & uri)
 {
     Nepomuk::Resource result(uri);
 
-    kDebug() << "setting the URI" << result.isFile() << result.isValid();
+    kDebug() << uri << "setting the URI" << result.isFile() << result.isValid();
     result.setProperty(Nepomuk::Vocabulary::NIE::url(), uri);
     kDebug() << "set the URI" << result.isFile() << result.isValid();
 

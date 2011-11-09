@@ -74,7 +74,7 @@ void EventProcessorPrivate::run()
 
         EventProcessorPrivate::events_mutex.unlock();
 
-        kDebug() << "Passing the event to" << lazyBackends.size() << "lazy plugins";
+        kDebug() << "Passing" << currentEvents.size() << "events to" << lazyBackends.size() << "lazy plugins";
         foreach (Plugin * backend, lazyBackends) {
             backend->addEvents(currentEvents);
         }
@@ -89,6 +89,46 @@ EventProcessor * EventProcessor::self()
 
     return EventProcessorPrivate::s_instance;
 }
+
+#define FAKE_EVENTS_FEED
+#ifdef FAKE_EVENTS_FEED
+
+#include <QTextStream>
+#include <QDateTime>
+#include <QFile>
+
+void EventProcessor_FakeEventsFeed(EventProcessor * ep)
+{
+    kDebug() << "Fake data loading";
+    QFile infile("/tmp/fakedata");
+
+    if (!infile.open(QFile::ReadOnly)) return;
+
+    QTextStream in(&infile);
+
+    while(!in.atEnd()) {
+        QStringList args = in.readLine().split(' ');
+
+        if (args.size() > 2) {
+            kDebug() << "processing" << args;
+            kDebug() << QDateTime::fromString(args[0] + ' ' + args[1], "yyyy.MM.dd hh:mm");
+
+            Event newEvent(
+                    args[2],      // application
+                    0,            // window id
+                    args[4],      // document
+                    (args[3][0] == 'o') ? Event::Opened : Event::Closed, // type
+                    Event::User   // reason
+                    );
+            newEvent.timestamp = QDateTime::fromString(args[0] + ' ' + args[1], "yyyy.MM.dd hh:mm");
+
+            ep->addEvent(newEvent);
+
+        }
+    }
+}
+
+#endif // FAKE_EVENTS_FEED
 
 EventProcessor::EventProcessor()
     : d(new EventProcessorPrivate())
@@ -158,6 +198,10 @@ EventProcessor::EventProcessor()
         }
 
     }
+
+#ifdef FAKE_EVENTS_FEED
+    EventProcessor_FakeEventsFeed(this);
+#endif // FAKE_EVENTS_FEED
 }
 
 EventProcessor::~EventProcessor()
@@ -172,19 +216,28 @@ void EventProcessor::addEvent(const QString & application, WId wid, const QStrin
 {
     Event newEvent(application, wid, uri, type, reason);
 
+    addEvent(newEvent);
+}
+
+void EventProcessor::addEvent(const Event & newEvent)
+{
+    // Passing the events to the plugins that want them immediately
     foreach (Plugin * backend, d->syncBackends) {
         backend->addEvents(QList < Event > () << newEvent);
     }
 
+    // And now, for something completely delayed
     d->events_mutex.lock();
 
+    // Deleting the accessed events if we have other types of events
+    // with the same parameters
     if (newEvent.type != Event::Accessed) {
         foreach (const Event & event, d->events) {
-            if (event.type == Event::Accessed && event.uri == uri
-                    && event.application == application) {
+            if (event.type == Event::Accessed && event.uri == newEvent.uri
+                    && event.application == newEvent.application) {
                 // Accessed events are of a lower priority
                 // then the other ones
-                if (type == Event::Accessed) {
+                if (newEvent.type == Event::Accessed) {
                     d->events.removeAll(newEvent);
                 }
             }

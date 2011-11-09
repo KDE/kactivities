@@ -77,7 +77,12 @@ NepomukPlugin * NepomukPlugin::self()
 
 void NepomukPlugin::addEvents(const EventList & events)
 {
-    foreach (const Event& event, events) {
+    kDebug() << "processing events" << events.size();
+
+//    foreach (const Event& event, events) {
+    for (int i = 0; i < events.size(); i++) {
+        const Event & event = events[i];
+
         kDebug() << "We are processing event" << event.type << event.uri;
         kDebug() << "for agent" << event.application << agentResource(event.application).resourceUri();
 
@@ -140,8 +145,10 @@ void NepomukPlugin::addEvents(const EventList & events)
                     Nepomuk::Resource eventRes(it[0].uri());
                     it.close();
 
+                    kDebug() << "Adding NUAO::end";
                     eventRes.addProperty(NUAO::end(), event.timestamp);
 
+                    kDebug() << "Sending to the score maintainer";
                     NepomukResourceScoreMaintainer::self()->processResource(event.uri, event.application);
                 }
 
@@ -157,6 +164,8 @@ void NepomukPlugin::addEvents(const EventList & events)
                 // TODO: Add focus and modification
                 break;
         }
+
+        kDebug() << "processing event finished";
 
 
 //        } else {
@@ -225,6 +234,8 @@ void NepomukPlugin::addEvents(const EventList & events)
 //            }
 //        }
     }
+
+    kDebug() << "processing events finished " << events.size();
 }
 
 Nepomuk::Resource NepomukPlugin::createDesktopEvent(const KUrl& uri, const QDateTime& startTime, const QString& app)

@@ -1,0 +1,50 @@
+kosili.txt
+potpis.dat
+startactivedeps.png
+startactivedeps.svg
+
+2011.11.01 10:00 dolphin o file:///home/ivan/kosili.txt
+2011.11.01 20:00 dolphin c file:///home/ivan/kosili.txt
+2011.11.02 10:00 dolphin o file:///home/ivan/kosili.txt
+2011.11.02 12:00 dolphin c file:///home/ivan/kosili.txt
+2011.11.03 10:00 dolphin o file:///home/ivan/kosili.txt
+2011.11.03 16:00 dolphin c file:///home/ivan/kosili.txt
+2011.11.04 10:00 dolphin o file:///home/ivan/kosili.txt
+2011.11.04 12:00 dolphin c file:///home/ivan/kosili.txt
+2011.11.05 10:00 dolphin o file:///home/ivan/kosili.txt
+2011.11.05 18:00 dolphin c file:///home/ivan/kosili.txt
+2011.11.06 10:00 dolphin o file:///home/ivan/kosili.txt
+2011.11.06 20:00 dolphin c file:///home/ivan/kosili.txt
+2011.11.07 10:00 dolphin o file:///home/ivan/kosili.txt
+2011.11.07 11:00 dolphin c file:///home/ivan/kosili.txt
+2011.11.08 10:00 dolphin o file:///home/ivan/kosili.txt
+2011.11.08 11:00 dolphin c file:///home/ivan/kosili.txt
+2011.11.09 10:00 dolphin o file:///home/ivan/kosili.txt
+2011.11.09 11:00 dolphin c file:///home/ivan/kosili.txt
+
+2011.10.01 10:00 dolphin o file:///home/ivan/potpis.dat
+2011.10.01 20:00 dolphin c file:///home/ivan/potpis.dat
+2011.10.02 10:00 dolphin o file:///home/ivan/potpis.dat
+2011.10.02 12:00 dolphin c file:///home/ivan/potpis.dat
+2011.10.03 10:00 dolphin o file:///home/ivan/potpis.dat
+2011.10.03 16:00 dolphin c file:///home/ivan/potpis.dat
+2011.10.04 10:00 dolphin o file:///home/ivan/potpis.dat
+2011.10.04 12:00 dolphin c file:///home/ivan/potpis.dat
+2011.10.05 10:00 dolphin o file:///home/ivan/potpis.dat
+2011.10.05 18:00 dolphin c file:///home/ivan/potpis.dat
+2011.10.06 10:00 dolphin o file:///home/ivan/potpis.dat
+2011.10.06 20:00 dolphin c file:///home/ivan/potpis.dat
+2011.10.07 10:00 dolphin o file:///home/ivan/potpis.dat
+2011.10.07 11:00 dolphin c file:///home/ivan/potpis.dat
+2011.10.08 10:00 dolphin o file:///home/ivan/potpis.dat
+2011.10.08 11:00 dolphin c file:///home/ivan/potpis.dat
+2011.10.09 10:00 dolphin o file:///home/ivan/potpis.dat
+2011.10.09 11:00 dolphin c file:///home/ivan/potpis.dat
+
+2011.11.05 10:00 dolphin o file:///home/ivan/startactivedeps.svg
+2011.11.09 20:00 dolphin c file:///home/ivan/startactivedeps.svg
+
+2011.11.09 19:00 dolphin o file:///home/ivan/startactivedeps.png
+2011.11.09 20:00 dolphin c file:///home/ivan/startactivedeps.png
+
+

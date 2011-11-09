@@ -120,7 +120,9 @@ NepomukResourceScoreMaintainer::~NepomukResourceScoreMaintainer()
 
 void NepomukResourceScoreMaintainer::processResource(const KUrl & resource, const QString & application)
 {
+    kDebug() << "Can we get the lock";
     d->openResources_mutex.lock();
+    kDebug() << "Yes we can";
 
     // Checking whether the item is already scheduled for
     // processing
@@ -132,10 +134,12 @@ void NepomukResourceScoreMaintainer::processResource(const KUrl & resource, cons
     if (d->openResources.contains(activity) &&
             d->openResources[activity].contains(application) &&
             d->openResources[activity][application].contains(resource)) {
-        return;
-    }
+        // return;
 
-    d->openResources[activity][application] << resource;
+    } else {
+        d->openResources[activity][application] << resource;
+
+    }
 
     d->openResources_mutex.unlock();
 
