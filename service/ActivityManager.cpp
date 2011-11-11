@@ -815,12 +815,22 @@ void ActivityManager::LinkResourceToActivity(const QString & uri, const QString 
 
     kDebug() << "Linking" << uri << "to" << activity << CurrentActivity();
 
-    Nepomuk::Resource(KUrl(uri)).
-        addIsRelated(d->activityResource(
-            activity.isEmpty() ?
-                CurrentActivity() : activity
-            )
-        );
+    // TODO:
+    // I'd like a resource isRelated activity more than vice-versa
+    // but the active models are checking for the other way round.
+    // It is defined in the ontologies as a symmetric relation, but
+    // Nepomuk doesn't care about that.
+
+    // Nepomuk::Resource(KUrl(uri)).
+    //     addIsRelated(d->activityResource(
+    //         activity.isEmpty() ?
+    //             CurrentActivity() : activity
+    //         )
+    //     );
+
+    d->activityResource(activity.isEmpty() ? CurrentActivity() : activity).
+        addIsRelated(Nepomuk::Resource(KUrl(uri))
+    );
 
 #endif
 }
