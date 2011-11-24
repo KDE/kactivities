@@ -82,7 +82,8 @@ ActivityManagerPrivate::ActivityManagerPrivate(ActivityManager * parent,
 #ifdef HAVE_NEPOMUK
     m_nepomukInitCalled(false),
 #endif
-    q(parent)
+    q(parent),
+    ksmserverInterface(0)
 {
     // Initializing config
     connect(&configSyncTimer, SIGNAL(timeout()),
@@ -116,20 +117,25 @@ ActivityManagerPrivate::ActivityManagerPrivate(ActivityManager * parent,
             this, SLOT(activeWindowChanged(WId)));
 
     //listen to ksmserver for starting/stopping
+    QDBusServiceWatcher *watcher = new QDBusServiceWatcher("org.kde.ksmserver",
+                                                           QDBusConnection::sessionBus(),
+                                                           QDBusServiceWatcher::WatchForRegistration);
+    connect(watcher, SIGNAL(serviceRegistered(QString)), this, SLOT(sessionServiceRegistered()));
+    sessionServiceRegistered();
+}
+
+void ActivityManagerPrivate::sessionServiceRegistered()
+{
+    delete ksmserverInterface;
     ksmserverInterface = new QDBusInterface("org.kde.ksmserver", "/KSMServer", "org.kde.KSMServerInterface");
-    if (ksmserverInterface->isValid()) {
+    haveSessions = ksmserverInterface->isValid();
+    if (haveSessions) {
         ksmserverInterface->setParent(this);
         connect(ksmserverInterface, SIGNAL(subSessionOpened()), this, SLOT(startCompleted()));
         connect(ksmserverInterface, SIGNAL(subSessionClosed()), this, SLOT(stopCompleted()));
         connect(ksmserverInterface, SIGNAL(subSessionCloseCanceled()), this, SLOT(stopCancelled())); //spelling fail :)
-        haveSessions = true;
     } else {
         kDebug() << "couldn't connect to ksmserver! session stuff won't work";
-        //note: in theory it's nice to try again later
-        //but in practice, ksmserver is either there or it isn't (killing it logs you out)
-        //so in this case there's no point. :)
-        ksmserverInterface->deleteLater();
-        ksmserverInterface = 0;
     }
 }
 

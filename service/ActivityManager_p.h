@@ -106,6 +106,7 @@ public Q_SLOTS:
 
     void backstoreAvailable();
     void syncActivitiesWithNepomuk();
+    void sessionServiceRegistered();
 
 private:
     ActivityManager * const q;
