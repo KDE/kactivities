@@ -75,15 +75,14 @@ ActivityManagerPrivate::ActivityManagerPrivate(ActivityManager * parent,
             QHash < WId, SharedInfo::WindowData > & _windows,
             QHash < KUrl, SharedInfo::ResourceData > & _resources
         )
-    : haveSessions(false),
-    config("activitymanagerrc"),
-    windows(_windows),
-    resources(_resources),
+    : config("activitymanagerrc"),
+      windows(_windows),
+      resources(_resources),
 #ifdef HAVE_NEPOMUK
-    m_nepomukInitCalled(false),
+      m_nepomukInitCalled(false),
 #endif
-    q(parent),
-    ksmserverInterface(0)
+      q(parent),
+      ksmserverInterface(0)
 {
     // Initializing config
     connect(&configSyncTimer, SIGNAL(timeout()),
@@ -128,13 +127,14 @@ void ActivityManagerPrivate::sessionServiceRegistered()
 {
     delete ksmserverInterface;
     ksmserverInterface = new QDBusInterface("org.kde.ksmserver", "/KSMServer", "org.kde.KSMServerInterface");
-    haveSessions = ksmserverInterface->isValid();
-    if (haveSessions) {
+    if (ksmserverInterface->isValid()) {
         ksmserverInterface->setParent(this);
         connect(ksmserverInterface, SIGNAL(subSessionOpened()), this, SLOT(startCompleted()));
         connect(ksmserverInterface, SIGNAL(subSessionClosed()), this, SLOT(stopCompleted()));
         connect(ksmserverInterface, SIGNAL(subSessionCloseCanceled()), this, SLOT(stopCancelled())); //spelling fail :)
     } else {
+        delete ksmserverInterface;
+        ksmserverInterface = 0;
         kDebug() << "couldn't connect to ksmserver! session stuff won't work";
     }
 }
@@ -525,26 +525,24 @@ void ActivityManagerPrivate::reallyStartActivity(const QString & id)
 {
     bool called = false;
     // start the starting :)
-    if (haveSessions) {
-        QDBusInterface kwin("org.kde.kwin", "/KWin", "org.kde.KWin");
-        if (kwin.isValid()) {
-            QDBusMessage reply = kwin.call("startActivity", id);
-            if (reply.type() == QDBusMessage::ErrorMessage) {
-                kDebug() << "dbus error:" << reply.errorMessage();
-            } else {
-                QList<QVariant> ret = reply.arguments();
-                if (ret.length() == 1 && ret.first().toBool()) {
-                    called = true;
-                } else {
-                    kDebug() << "call returned false; probably ksmserver is busy";
-                    setActivityState(transitioningActivity, ActivityManager::Stopped);
-                    transitioningActivity.clear();
-                    return; //assume we're mid-logout and just don't touch anything
-                }
-            }
+    QDBusInterface kwin("org.kde.kwin", "/KWin", "org.kde.KWin");
+    if (kwin.isValid()) {
+        QDBusMessage reply = kwin.call("startActivity", id);
+        if (reply.type() == QDBusMessage::ErrorMessage) {
+            kDebug() << "dbus error:" << reply.errorMessage();
         } else {
-            kDebug() << "couldn't get kwin interface";
+            QList<QVariant> ret = reply.arguments();
+            if (ret.length() == 1 && ret.first().toBool()) {
+                called = true;
+            } else {
+                kDebug() << "call returned false; probably ksmserver is busy";
+                setActivityState(transitioningActivity, ActivityManager::Stopped);
+                transitioningActivity.clear();
+                return; //assume we're mid-logout and just don't touch anything
+            }
         }
+    } else {
+        kDebug() << "couldn't get kwin interface";
     }
 
     if (!called) {
@@ -591,25 +589,23 @@ void ActivityManagerPrivate::reallyStopActivity(const QString & id)
 {
     bool called = false;
     // start the stopping :)
-    if (haveSessions) {
-        QDBusInterface kwin("org.kde.kwin", "/KWin", "org.kde.KWin");
-        if (kwin.isValid()) {
-            QDBusMessage reply = kwin.call("stopActivity", id);
-            if (reply.type() == QDBusMessage::ErrorMessage) {
-                kDebug() << "dbus error:" << reply.errorMessage();
-            } else {
-                QList<QVariant> ret = reply.arguments();
-                if (ret.length() == 1 && ret.first().toBool()) {
-                    called = true;
-                } else {
-                    kDebug() << "call returned false; probably ksmserver is busy";
-                    stopCancelled();
-                    return; //assume we're mid-logout and just don't touch anything
-                }
-            }
+    QDBusInterface kwin("org.kde.kwin", "/KWin", "org.kde.KWin");
+    if (kwin.isValid()) {
+        QDBusMessage reply = kwin.call("stopActivity", id);
+        if (reply.type() == QDBusMessage::ErrorMessage) {
+            kDebug() << "dbus error:" << reply.errorMessage();
         } else {
-            kDebug() << "couldn't get kwin interface";
+            QList<QVariant> ret = reply.arguments();
+            if (ret.length() == 1 && ret.first().toBool()) {
+                called = true;
+            } else {
+                kDebug() << "call returned false; probably ksmserver is busy";
+                stopCancelled();
+                return; //assume we're mid-logout and just don't touch anything
+            }
         }
+    } else {
+        kDebug() << "couldn't get kwin interface";
     }
 
     if (!called) {
