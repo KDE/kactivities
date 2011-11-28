@@ -68,7 +68,6 @@ public:
 
     //opening/closing activity (ksmserver can only handle one at a time)
     QString transitioningActivity;
-    bool haveSessions; //whether ksmserver's available
 
     // Configuration
     QTimer configSyncTimer;
@@ -106,6 +105,7 @@ public Q_SLOTS:
 
     void backstoreAvailable();
     void syncActivitiesWithNepomuk();
+    void sessionServiceRegistered();
 
 private:
     ActivityManager * const q;
