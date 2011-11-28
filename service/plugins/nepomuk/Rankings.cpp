@@ -137,6 +137,19 @@ void Rankings::initResults(const QString & _activity)
 {
     const QString & activity = COALESCE_ACTIVITY(_activity);
 
+    // Some debugging needed
+
+    // kDebug() << "Initializing the resources for:" << activity;
+
+    // kDebug() << "Is nepomuk initialised?" << Nepomuk::ResourceManager::instance()->initialized();
+
+    // Nepomuk::Resource __activity = activityResource(activity);
+    // kDebug() << __activity.genericLabel();
+    // kDebug() << __activity.hasProperty(NAO::identifier())
+    //          << __activity.property(NAO::identifier());
+
+    // Delete til now
+
     m_results[activity].clear();
     updateScoreTrashold(activity);
 
@@ -162,6 +175,7 @@ void Rankings::initResults(const QString & _activity)
             // "?resource nie:url ?icon . "
             // "?resource nie:url ?description . "
             "?cache kext:usedActivity %2 . "
+            // "FILTER(!bif:exists((select (1) where { %2 nao:isRelated ?resource . }))) "
         "} "
         "GROUP BY (?resource) ORDER BY DESC (?score) LIMIT 10"
     ).arg(
@@ -192,6 +206,7 @@ void Rankings::initResults(const QString & _activity)
     // "        ?resource nie:url ?icon . \n"
     // "        ?resource nie:url ?description . \n"
     "        ?cache kext:usedActivity %2 . \n"
+    "        FILTER(!bif:exists((select (1) where { %2 nao:isRelated ?resource . }))) "
     "    } \n"
     "    GROUP BY (?resource) ORDER BY DESC (?score) LIMIT 10\n"
     ).arg(
