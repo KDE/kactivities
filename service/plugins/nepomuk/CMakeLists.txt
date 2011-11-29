@@ -7,6 +7,7 @@ include_directories(${NEPOMUK_INCLUDE_DIR} ${SOPRANO_INCLUDE_DIR})
 
 set(
    nepomuk_SRCS
+   NepomukCommon.cpp
    NepomukPlugin.cpp
    NepomukResourceScoreCache.cpp
    NepomukResourceScoreMaintainer.cpp

@@ -23,13 +23,21 @@
 #include <nepomuk/nie.h>
 #include "NepomukPlugin.h"
 
+#include <QHash>
+#include <QString>
+
+#include <Soprano/QueryResultIterator>
+#include <Soprano/Node>
+#include <Soprano/Model>
+
 #include <Nepomuk/Variant>
+#include <Nepomuk/ResourceManager>
 
 #define NUAO_targettedResource KUrl(NUAO::nuaoNamespace().toString() + QLatin1String("targettedResource"))
 #define NUAO_initiatingAgent   KUrl(NUAO::nuaoNamespace().toString() + QLatin1String("initiatingAgent"))
 // #define NUAO_involvesActivity  KUrl(NUAO::nuaoNamespace().toString() + QLatin1String("involvesActivity"))
 
-#define activityResource(ID) Nepomuk::Resource(ID, KExt::Activity())
+// #define activityResource(ID) Nepomuk::Resource(ID, KExt::Activity())
 #define agentResource(ID)    Nepomuk::Resource(ID, NAO::Agent())
 #define currentActivityId    NepomukPlugin::self()->sharedInfo()->currentActivity()
 #define currentActivityRes   activityResource(currentActivityId)
@@ -63,5 +71,12 @@ inline QString resN3(const Nepomuk::Resource & resource)
 {
     return Soprano::Node::resourceToN3(resource.resourceUri());
 }
+
+class NepomukPluginCommon {
+public:
+    static QHash < QString, Nepomuk::Resource > activityResources;
+};
+
+Nepomuk::Resource activityResource(const QString & id);
 
 #endif // NEPOMUK_COMMON_H_
