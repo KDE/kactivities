@@ -84,6 +84,10 @@ ActivityManagerPrivate::ActivityManagerPrivate(ActivityManager * parent,
       q(parent),
       ksmserverInterface(0)
 {
+    kDebug() << "\n\n-------------------------------------------------------";
+    kDebug() << "Starting the KDE Activity Manager daemon" << QDateTime::currentDateTime();
+    kDebug() << "-------------------------------------------------------";
+
     // Initializing config
     connect(&configSyncTimer, SIGNAL(timeout()),
              this, SLOT(configSync()));
