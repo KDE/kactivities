@@ -23,6 +23,7 @@
 #include <QString>
 #include <QStringList>
 #include <QUrl>
+#include <QThread>
 
 #include <Nepomuk/Resource>
 
@@ -72,8 +73,6 @@ private:
     Rankings(QObject * parent = 0);
     void updateScoreTrashold(const QString & activity);
 
-    static QUrl urlFor(const Nepomuk::Resource & resource);
-
     static Rankings * s_instance;
 
 public:
@@ -95,13 +94,35 @@ public:
     typedef QString Activity;
     typedef QString Client;
 
-private:
+private Q_SLOTS:
     void initResults(const QString & activity);
     void notifyResultsUpdated(const QString & activity, QStringList clients = QStringList());
 
+private:
     QHash < Activity, QStringList > m_clients;
     QHash < Activity, QList < ResultItem > > m_results;
     QHash < Activity, qreal > m_resultScoreTreshold;
+};
+
+class RankingsUpdateThread: public QThread {
+    Q_OBJECT
+
+public:
+    RankingsUpdateThread(const QString & activity, QList < Rankings::ResultItem > * listptr,
+            QHash < Rankings::Activity, qreal > * scoreTrashold);
+    virtual ~RankingsUpdateThread();
+
+    void run();
+
+Q_SIGNALS:
+    void loaded(const QString & activity);
+
+private:
+    static QUrl urlFor(const Nepomuk::Resource & resource);
+
+    QString m_activity;
+    QList < Rankings::ResultItem > * m_listptr;
+    QHash < Rankings::Activity, qreal > * m_scoreTrashold;
 };
 
 #endif
