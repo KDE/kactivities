@@ -63,7 +63,7 @@ void EventProcessorPrivate::run()
         EventProcessorPrivate::events_mutex.lock();
 
         if (events.count() == 0) {
-            kDebug() << "No more events to process, exiting.";
+            // kDebug() << "No more events to process, exiting.";
 
             EventProcessorPrivate::events_mutex.unlock();
             return;
@@ -74,7 +74,7 @@ void EventProcessorPrivate::run()
 
         EventProcessorPrivate::events_mutex.unlock();
 
-        kDebug() << "Passing" << currentEvents.size() << "events to" << lazyBackends.size() << "lazy plugins";
+        // kDebug() << "Passing" << currentEvents.size() << "events to" << lazyBackends.size() << "lazy plugins";
         foreach (Plugin * backend, lazyBackends) {
             backend->addEvents(currentEvents);
         }
@@ -99,7 +99,7 @@ EventProcessor * EventProcessor::self()
 
 void EventProcessor_FakeEventsFeed(EventProcessor * ep)
 {
-    kDebug() << "Fake data loading";
+    // kDebug() << "Fake data loading";
     QFile infile("/tmp/fakedata");
 
     if (!infile.open(QFile::ReadOnly)) return;
@@ -110,8 +110,8 @@ void EventProcessor_FakeEventsFeed(EventProcessor * ep)
         QStringList args = in.readLine().split(' ');
 
         if (args.size() > 2) {
-            kDebug() << "processing" << args;
-            kDebug() << QDateTime::fromString(args[0] + ' ' + args[1], "yyyy.MM.dd hh:mm");
+            // kDebug() << "processing" << args;
+            // kDebug() << QDateTime::fromString(args[0] + ' ' + args[1], "yyyy.MM.dd hh:mm");
 
             Event newEvent(
                     args[2],      // application
@@ -141,20 +141,18 @@ EventProcessor::EventProcessor()
 
     // Plugin loading
 
-    kDebug() << "Loading plugins...";
-
     KService::List offers = KServiceTypeTrader::self()->query("ActivityManager/Plugin");
 
     QStringList disabledPlugins = shared->pluginConfig("Global").readEntry("disabledPlugins", QStringList());
-    kDebug() << disabledPlugins << "disabled due to the configuration in activitymanager-pluginsrc";
+    // kDebug() << disabledPlugins << "disabled due to the configuration in activitymanager-pluginsrc";
 
     foreach(const KService::Ptr & service, offers) {
         if (!disabledPlugins.contains(service->library())) {
             disabledPlugins.append(
                     service->property("X-ActivityManager-PluginOverrides", QVariant::StringList).toStringList()
                 );
-            kDebug() << service->name() << "disables" <<
-                    service->property("X-ActivityManager-PluginOverrides", QVariant::StringList);
+            // kDebug() << service->name() << "disables" <<
+            //        service->property("X-ActivityManager-PluginOverrides", QVariant::StringList);
 
         }
     }
@@ -164,14 +162,14 @@ EventProcessor::EventProcessor()
             continue;
         }
 
-        kDebug() << "Loading plugin:"
-            << service->name() << service->storageId() << service->library()
-            << service->property("X-ActivityManager-PluginType", QVariant::String);
+        // kDebug() << "Loading plugin:"
+        //     << service->name() << service->storageId() << service->library()
+        //     << service->property("X-ActivityManager-PluginType", QVariant::String);
 
         KPluginFactory * factory = KPluginLoader(service->library()).factory();
 
         if (!factory) {
-            kDebug() << "Failed to load plugin:" << service->name();
+            // kDebug() << "Failed to load plugin:" << service->name();
             continue;
         }
 
@@ -185,16 +183,16 @@ EventProcessor::EventProcessor()
 
             if (type == "lazyeventhandler") {
                 d->lazyBackends << plugin;
-                kDebug() << "Added to lazy plugins";
+                // kDebug() << "Added to lazy plugins";
 
             } else if (type == "synceventhandler"){
                 d->syncBackends << plugin;
-                kDebug() << "Added to sync plugins";
+                // kDebug() << "Added to sync plugins";
 
             }
 
         } else {
-            kDebug() << "Failed to load plugin:" << service->name();
+            // kDebug() << "Failed to load plugin:" << service->name();
         }
 
     }
@@ -258,7 +256,7 @@ void EventProcessor::updateScore(const QString & application, const QString & ur
     EventProcessor::self()->addEvent(application, 0, uri,
             Event::UpdateScore, Event::UserEventReason);
 
-    kDebug() << "Score updating requested for" << application << uri;
+    // kDebug() << "Score updating requested for" << application << uri;
 }
 
 

@@ -59,13 +59,13 @@
 #ifdef Q_OS_WIN64
 __inline int toInt(WId wid)
 {
-	return (int)((__int64)wid);
+    return (int)((__int64)wid);
 }
 
 #else
 __inline int toInt(WId wid)
 {
-	return (int)wid;
+    return (int)wid;
 }
 #endif
 
@@ -91,14 +91,14 @@ ActivityManagerPrivate::ActivityManagerPrivate(ActivityManager * parent,
     configSyncTimer.setSingleShot(true);
     configSyncTimer.setInterval(2 * 60 * 1000);
 
-    kDebug() << "reading activities:";
+    // kDebug() << "reading activities:";
     foreach (const QString & activity, activitiesConfig().keyList()) {
-        kDebug() << activity;
+        // kDebug() << activity;
         activities[activity] = ActivityManager::Stopped;
     }
 
     foreach (const QString & activity, mainConfig().readEntry("runningActivities", activities.keys())) {
-        kDebug() << "setting" << activity << "as" << "running";
+        // kDebug() << "setting" << activity << "as" << "running";
         if (activities.contains(activity)) {
             activities[activity] = ActivityManager::Running;
         }
@@ -107,7 +107,7 @@ ActivityManagerPrivate::ActivityManagerPrivate(ActivityManager * parent,
     syncActivitiesWithNepomuk();
 
     currentActivity = mainConfig().readEntry("currentActivity", QString());
-    kDebug() << "currentActivity is" << currentActivity;
+    // kDebug() << "currentActivity is" << currentActivity;
     SharedInfo::self()->setCurrentActivity(currentActivity);
 
     connect(KWindowSystem::self(), SIGNAL(windowRemoved(WId)),
@@ -171,7 +171,7 @@ void ActivityManagerPrivate::setActivityState(const QString & id, ActivityManage
 {
     if (activities[id] == state) return;
 
-    kDebug() << "Set the state of" << id << "to" << state;
+    // kDebug() << "Set the state of" << id << "to" << state;
 
     /**
      * Treating 'Starting' as 'Running', and 'Stopping' as 'Stopped'
@@ -183,12 +183,12 @@ void ActivityManagerPrivate::setActivityState(const QString & id, ActivityManage
 
     switch (state) {
         case ActivityManager::Running:
-            kDebug() << "sending ActivityStarted signal";
+            // kDebug() << "sending ActivityStarted signal";
             emit q->ActivityStarted(id);
             break;
 
         case ActivityManager::Stopped:
-            kDebug() << "sending ActivityStopped signal";
+            // kDebug() << "sending ActivityStopped signal";
             emit q->ActivityStopped(id);
             break;
 
@@ -196,7 +196,7 @@ void ActivityManagerPrivate::setActivityState(const QString & id, ActivityManage
             break;
     }
 
-    kDebug() << "sending ActivityStateChanged signal";
+    // kDebug() << "sending ActivityStateChanged signal";
     emit q->ActivityStateChanged(id, state);
 
     if (configNeedsUpdating) {
@@ -225,14 +225,14 @@ void ActivityManagerPrivate::ensureCurrentActivityIsRunning()
         if (runningActivities.size() > 0) {
             setCurrentActivity(runningActivities.first());
         } else {
-            kDebug() << "there are no running activities! eek!";
+            // kDebug() << "there are no running activities! eek!";
         }
     }
 }
 
 bool ActivityManagerPrivate::setCurrentActivity(const QString & id)
 {
-    kDebug() << id;
+    kDebug() << "Changing rhe activity to:" << id;
     if (id.isEmpty()) {
         currentActivity.clear();
 
@@ -272,7 +272,7 @@ bool ActivityManagerPrivate::setCurrentActivity(const QString & id)
         scheduleConfigSync();
     }
 
-    kDebug() << (void*) SharedInfo::self() << "Rankings << shared info";
+    // kDebug() << (void*) SharedInfo::self() << "Rankings << shared info";
     SharedInfo::self()->setCurrentActivity(id);
     emit q->CurrentActivityChanged(id);
     return true;
@@ -317,7 +317,7 @@ void ActivityManagerPrivate::syncActivitiesWithNepomuk()
 
 Nepomuk::Resource ActivityManagerPrivate::activityResource(const QString & id)
 {
-    kDebug() << "testing for nepomuk";
+    // kDebug() << "testing for nepomuk";
 
     if (nepomukInitialized()) {
         return Nepomuk::Resource(
@@ -430,7 +430,7 @@ QString ActivityManager::CurrentActivity() const
 
 bool ActivityManager::SetCurrentActivity(const QString & id)
 {
-    kDebug() << id;
+    // kDebug() << id;
 
     if (id.isEmpty()) {
         return false;
@@ -441,7 +441,7 @@ bool ActivityManager::SetCurrentActivity(const QString & id)
 
 QString ActivityManager::AddActivity(const QString & name)
 {
-    kDebug() << name;
+    // kDebug() << name;
 
     QString id;
 
@@ -465,7 +465,7 @@ QString ActivityManager::AddActivity(const QString & name)
 
 void ActivityManager::RemoveActivity(const QString & id)
 {
-    kDebug() << id;
+    // kDebug() << id;
 
     if (d->activities.size() < 2 ||
             !d->activities.contains(id)) {
@@ -492,7 +492,7 @@ void ActivityManager::RemoveActivity(const QString & id)
         //but it being deleted doesn't mean ksmserver is un-busy..
         //in fact, I'm not quite sure what would happen.... FIXME
         //so I'll just add some output to warn that it happened.
-        kDebug() << "deleting activity in transition. watch out!";
+        // kDebug() << "deleting activity in transition. watch out!";
     }
 
     emit ActivityRemoved(id);
@@ -501,7 +501,7 @@ void ActivityManager::RemoveActivity(const QString & id)
 
 void ActivityManager::StartActivity(const QString & id)
 {
-    kDebug() << id;
+    // kDebug() << id;
 
     if (!d->activities.contains(id) ||
             d->activities[id] != Stopped) {
@@ -509,7 +509,7 @@ void ActivityManager::StartActivity(const QString & id)
     }
 
     if (!d->transitioningActivity.isEmpty()) {
-        kDebug() << "busy!!";
+        // kDebug() << "busy!!";
         //TODO: implement a queue instead
         return;
     }
@@ -529,20 +529,21 @@ void ActivityManagerPrivate::reallyStartActivity(const QString & id)
     if (kwin.isValid()) {
         QDBusMessage reply = kwin.call("startActivity", id);
         if (reply.type() == QDBusMessage::ErrorMessage) {
-            kDebug() << "dbus error:" << reply.errorMessage();
+            // kDebug() << "dbus error:" << reply.errorMessage();
+
         } else {
             QList<QVariant> ret = reply.arguments();
             if (ret.length() == 1 && ret.first().toBool()) {
                 called = true;
             } else {
-                kDebug() << "call returned false; probably ksmserver is busy";
+                // kDebug() << "call returned false; probably ksmserver is busy";
                 setActivityState(transitioningActivity, ActivityManager::Stopped);
                 transitioningActivity.clear();
                 return; //assume we're mid-logout and just don't touch anything
             }
         }
     } else {
-        kDebug() << "couldn't get kwin interface";
+        // kDebug() << "couldn't get kwin interface";
     }
 
     if (!called) {
@@ -556,7 +557,7 @@ void ActivityManagerPrivate::reallyStartActivity(const QString & id)
 void ActivityManagerPrivate::startCompleted()
 {
     if (transitioningActivity.isEmpty()) {
-        kDebug() << "huh?";
+        // kDebug() << "huh?";
         return;
     }
     setActivityState(transitioningActivity, ActivityManager::Running);
@@ -565,7 +566,7 @@ void ActivityManagerPrivate::startCompleted()
 
 void ActivityManager::StopActivity(const QString & id)
 {
-    kDebug() << id;
+    // kDebug() << id;
 
     if (!d->activities.contains(id) ||
             d->activities[id] == Stopped) {
@@ -573,7 +574,7 @@ void ActivityManager::StopActivity(const QString & id)
     }
 
     if (!d->transitioningActivity.isEmpty()) {
-        kDebug() << "busy!!";
+        // kDebug() << "busy!!";
         //TODO: implement a queue instead
         return;
     }
@@ -593,19 +594,21 @@ void ActivityManagerPrivate::reallyStopActivity(const QString & id)
     if (kwin.isValid()) {
         QDBusMessage reply = kwin.call("stopActivity", id);
         if (reply.type() == QDBusMessage::ErrorMessage) {
-            kDebug() << "dbus error:" << reply.errorMessage();
+            // kDebug() << "dbus error:" << reply.errorMessage();
+
         } else {
             QList<QVariant> ret = reply.arguments();
             if (ret.length() == 1 && ret.first().toBool()) {
                 called = true;
+
             } else {
-                kDebug() << "call returned false; probably ksmserver is busy";
+                // kDebug() << "call returned false; probably ksmserver is busy";
                 stopCancelled();
                 return; //assume we're mid-logout and just don't touch anything
             }
         }
     } else {
-        kDebug() << "couldn't get kwin interface";
+        // kDebug() << "couldn't get kwin interface";
     }
 
     if (!called) {
@@ -618,7 +621,7 @@ void ActivityManagerPrivate::reallyStopActivity(const QString & id)
 void ActivityManagerPrivate::stopCompleted()
 {
     if (transitioningActivity.isEmpty()) {
-        kDebug() << "huh?";
+        // kDebug() << "huh?";
         return;
     }
     setActivityState(transitioningActivity, ActivityManager::Stopped);
@@ -632,7 +635,7 @@ void ActivityManagerPrivate::stopCompleted()
 void ActivityManagerPrivate::stopCancelled()
 {
     if (transitioningActivity.isEmpty()) {
-        kDebug() << "huh?";
+        // kDebug() << "huh?";
         return;
     }
     setActivityState(transitioningActivity, ActivityManager::Running);
@@ -645,7 +648,7 @@ int ActivityManager::ActivityState(const QString & id) const
     if (!d->activities.contains(id)) {
         return Invalid;
     } else {
-        kDebug() << "state of" << id << "is" << d->activities[id];
+        // kDebug() << "state of" << id << "is" << d->activities[id];
         return d->activities[id];
     }
 }
@@ -667,7 +670,7 @@ QString ActivityManager::ActivityName(const QString & id) const
 
 void ActivityManager::SetActivityName(const QString & id, const QString & name)
 {
-    kDebug() << id << name;
+    // kDebug() << id << name;
 
     if (!d->activities.contains(id)) {
         return;
@@ -683,7 +686,7 @@ void ActivityManager::SetActivityName(const QString & id, const QString & name)
 
     d->scheduleConfigSync();
 
-    kDebug() << "emit ActivityChanged" << id;
+    // kDebug() << "emit ActivityChanged" << id;
     emit ActivityChanged(id);
 }
 
@@ -700,7 +703,7 @@ QString ActivityManager::ActivityDescription(const QString & id) const
 
 void ActivityManager::SetActivityDescription(const QString & id, const QString & description)
 {
-    kDebug() << id << description;
+    // kDebug() << id << description;
 
     if (!NEPOMUK_RUNNING || !d->activities.contains(id)) {
         return;
@@ -710,7 +713,7 @@ void ActivityManager::SetActivityDescription(const QString & id, const QString &
     d->activityResource(id).setDescription(description);
 #endif
 
-    kDebug() << "emit ActivityChanged" << id;
+    // kDebug() << "emit ActivityChanged" << id;
     emit ActivityChanged(id);
 }
 
@@ -735,7 +738,7 @@ QString ActivityManager::ActivityIcon(const QString & id) const
 
 void ActivityManager::SetActivityIcon(const QString & id, const QString & icon)
 {
-    kDebug() << id << icon;
+    // kDebug() << id << icon;
 
     if (!NEPOMUK_RUNNING || !d->activities.contains(id)) {
         return;
@@ -744,7 +747,7 @@ void ActivityManager::SetActivityIcon(const QString & id, const QString & icon)
 #ifdef HAVE_NEPOMUK
     d->activityResource(id).setSymbols(QStringList() << icon);
 
-    kDebug() << "emit ActivityChanged" << id;
+    // kDebug() << "emit ActivityChanged" << id;
     emit ActivityChanged(id);
 #endif
 }
@@ -760,7 +763,7 @@ void ActivityManager::RegisterResourceEvent(const QString & application, uint _w
     KUrl kuri(uri);
     WId windowId = (WId) _windowId;
 
-    kDebug() << "New event on the horizon" << application << _windowId << windowId << event << Event::Opened;
+    kDebug() << "New event on the horizon" << application << windowId << event;
 
 #ifdef HAVE_NEPOMUK
     if (uri.startsWith("nepomuk:")) {
@@ -768,21 +771,21 @@ void ActivityManager::RegisterResourceEvent(const QString & application, uint _w
 
         if (resource.hasProperty(NIE::url())) {
             kuri = resource.property(NIE::url()).toUrl();
-            kDebug() << "Passing real url" << kuri;
+            // kDebug() << "Passing real url" << kuri;
         } else {
-            kWarning() << "Passing nepomuk:// url" << kuri;
+            // kWarning() << "Passing nepomuk:// url" << kuri;
         }
     }
 #endif
 
     if (event == Event::Opened) {
 
-        kDebug() << "Saving the open event for the window" << windowId;
+        // kDebug() << "Saving the open event for the window" << windowId;
 
         d->windows[windowId].resources << kuri;
         d->resources[kuri].activities << CurrentActivity();
 
-        kDebug() << d->windows.keys();
+        // kDebug() << d->windows.keys();
 
     } else if (event == Event::Closed) {
 

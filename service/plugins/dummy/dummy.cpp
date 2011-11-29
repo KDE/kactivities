@@ -24,7 +24,7 @@ DummyPlugin::DummyPlugin(QObject * parent, const QVariantList & args)
     : Plugin(parent)
 {
     Q_UNUSED(args)
-    kDebug() << "We are in the DummyPlugin";
+    // kDebug() << "We are in the DummyPlugin";
 }
 
 DummyPlugin::~DummyPlugin()

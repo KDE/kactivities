@@ -63,7 +63,7 @@ RankingsUpdateThread::RankingsUpdateThread(const QString & activity, QList < Ran
 {
     // TODO: This might not be really safe thing to do ^^^^
 
-    kDebug() << "#####################Updating thread created:" << activity;
+    // kDebug() << "Updating thread created:" << activity;
 }
 
 RankingsUpdateThread::~RankingsUpdateThread()
@@ -73,10 +73,10 @@ RankingsUpdateThread::~RankingsUpdateThread()
 QUrl RankingsUpdateThread::urlFor(const Nepomuk::Resource & resource)
 {
     if (resource.hasProperty(NIE::url())) {
-        kDebug() << "Returning URI" << resource.property(NIE::url()).toUrl();
+        // kDebug() << "Returning URI" << resource.property(NIE::url()).toUrl();
         return resource.property(NIE::url()).toUrl();
     } else {
-        kWarning() << "Returning nepomuk URI" << resource.resourceUri();
+        // kWarning() << "Returning nepomuk URI" << resource.resourceUri();
         return resource.resourceUri();
     }
 }
@@ -84,7 +84,7 @@ QUrl RankingsUpdateThread::urlFor(const Nepomuk::Resource & resource)
 void RankingsUpdateThread::run() {
     kDebug() << "This is the activity we want the results for:" << m_activity;
 
-#define QUERY_DEBUGGING
+//define QUERY_DEBUGGING
 #ifndef QUERY_DEBUGGING
     const QString query = QString::fromLatin1(
         "select distinct ?resource, "
@@ -157,13 +157,11 @@ void RankingsUpdateThread::run() {
 
         kDebug() << "This is one result:\n"
             << " URI:" << result.property(NIE::url()).toString() << "\n"
-            // << it[0].uri() << result << " - " << "\n"
-            << it[1].literal().toDouble() << "\n"
-            // << " - ### uri:" << result.resourceUri() << "\n"
-            << " - label:" << result.label() << "\n"
-            << " - icon:" << result.genericIcon() << "\n"
-            << " IDS:" << result.identifiers() << "\n"
-            << " Type:" << result.types() << "\n"
+            // << it[1].literal().toDouble() << "\n"
+            // << " - label:" << result.label() << "\n"
+            // << " - icon:" << result.genericIcon() << "\n"
+            // << " IDS:" << result.identifiers() << "\n"
+            // << " Type:" << result.types() << "\n"
         ;
 
         qreal score = it[1].literal().toDouble();
@@ -196,7 +194,7 @@ Rankings * Rankings::self()
 Rankings::Rankings(QObject * parent)
     : QObject(parent)
 {
-    kDebug() << "%%%%%%%%%% We are in the Rankings %%%%%%%%%%";
+    // kDebug() << "%%%%%%%%%% We are in the Rankings %%%%%%%%%%";
 
     QDBusConnection dbus = QDBusConnection::sessionBus();
     new RankingsAdaptor(this);
@@ -215,12 +213,12 @@ void Rankings::registerClient(const QString & client,
     kDebug() << client << "wants to get resources for" << activity;
 
     if (!m_clients.contains(activity)) {
-        kDebug() << "Initialising the resources for" << activity;
+        // kDebug() << "Initialising the resources for" << activity;
         initResults(COALESCE_ACTIVITY(activity));
     }
 
     if (!m_clients[activity].contains(client)) {
-        kDebug() << "Adding client";
+        // kDebug() << "Adding client";
         m_clients[activity] << client;
     }
 
@@ -261,11 +259,9 @@ void Rankings::initResults(const QString & _activity)
 
     kDebug() << "Initializing the resources for:" << activity;
 
-    kDebug() << "Is nepomuk initialised?" << Nepomuk::ResourceManager::instance()->initialized();
-
     Nepomuk::Resource __activity = activityResource(activity);
-    kDebug() << __activity.genericLabel();
-    kDebug() << __activity.hasProperty(NAO::identifier())
+    kDebug() << __activity.genericLabel()
+             << __activity.hasProperty(NAO::identifier())
              << __activity.property(NAO::identifier());
 
     // Delete til now
@@ -292,10 +288,10 @@ void Rankings::initResults(const QString & _activity)
 void Rankings::resourceScoreUpdated(const QString & activity,
         const QString & application, const QUrl & uri, qreal score)
 {
-    kDebug() << activity << application << uri << score;
+    // kDebug() << activity << application << uri << score;
 
     if (score <= m_resultScoreTreshold[activity]) {
-        kDebug() << "This one didn't even qualify";
+        // kDebug() << "This one didn't even qualify";
         return;
     }
 
@@ -356,19 +352,19 @@ void Rankings::notifyResultsUpdated(const QString & _activity, QStringList clien
 
     QVariantList data;
     foreach (const ResultItem & item, m_results[activity]) {
-        kDebug() << item.uri << item.score;
+        // kDebug() << item.uri << item.score;
         data << item.uri.toString();
     }
 
-    kDebug() << "These are the clients" << m_clients << "We are gonna update this:" << clients;
+    // kDebug() << "These are the clients" << m_clients << "We are gonna update this:" << clients;
 
     if (clients.isEmpty()) {
         clients = m_clients[activity];
-        kDebug() << "This is the current activity" << activity
-                 << "And the clients for it" << clients;
+        // kDebug() << "This is the current activity" << activity
+        //          << "And the clients for it" << clients;
 
         if (activity == NepomukPlugin::self()->sharedInfo()->currentActivity()) {
-            kDebug() << "This is the current activity, notifying all";
+            // kDebug() << "This is the current activity, notifying all";
             clients.append(m_clients[QString()]);
         }
     }

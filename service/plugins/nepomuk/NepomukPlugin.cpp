@@ -77,14 +77,13 @@ NepomukPlugin * NepomukPlugin::self()
 
 void NepomukPlugin::addEvents(const EventList & events)
 {
-    kDebug() << "processing events" << events.size();
+    // kDebug() << "processing events" << events.size();
 
-//    foreach (const Event& event, events) {
     for (int i = 0; i < events.size(); i++) {
         const Event & event = events[i];
 
-        kDebug() << "We are processing event" << event.type << event.uri;
-        kDebug() << "for agent" << event.application << agentResource(event.application).resourceUri();
+        kDebug() << "We are processing event" << event.type << event.uri
+                 << "for agent" << event.application << agentResource(event.application).resourceUri();
 
         switch (event.type) {
             case Event::Accessed:
@@ -96,7 +95,7 @@ void NepomukPlugin::addEvents(const EventList & events)
                 eventRes.setProperty(NUAO::start(), event.timestamp);
                 eventRes.setProperty(NUAO::end(), event.timestamp);
 
-                kDebug() << "Created one-shot Accessed event" << eventRes;
+                // kDebug() << "Created one-shot Accessed event" << eventRes;
 
                 NepomukResourceScoreMaintainer::self()->processResource(event.uri, event.application);
 
@@ -134,21 +133,21 @@ void NepomukPlugin::addEvents(const EventList & events)
                         /* %5 */ resN3(KExt::usedActivity()),
                         /* %6 */ resN3(currentActivityRes)
                     );
-                kDebug() << query;
+                // kDebug() << query;
 
                 Soprano::QueryResultIterator it
                         = Nepomuk::ResourceManager::instance()->mainModel()->executeQuery(query, Soprano::Query::QueryLanguageSparql);
 
                 if (it.next()) {
-                    kDebug() << "Closing the event";
+                    // kDebug() << "Closing the event";
 
                     Nepomuk::Resource eventRes(it[0].uri());
                     it.close();
 
-                    kDebug() << "Adding NUAO::end";
+                    // kDebug() << "Adding NUAO::end";
                     eventRes.addProperty(NUAO::end(), event.timestamp);
 
-                    kDebug() << "Sending to the score maintainer";
+                    // kDebug() << "Sending to the score maintainer";
                     NepomukResourceScoreMaintainer::self()->processResource(event.uri, event.application);
                 }
 
@@ -165,7 +164,7 @@ void NepomukPlugin::addEvents(const EventList & events)
                 break;
         }
 
-        kDebug() << "processing event finished";
+        // kDebug() << "processing event finished";
 
 
 //        } else {
@@ -235,20 +234,20 @@ void NepomukPlugin::addEvents(const EventList & events)
 //        }
     }
 
-    kDebug() << "processing events finished " << events.size();
+    // kDebug() << "processing events finished " << events.size();
 }
 
 Nepomuk::Resource NepomukPlugin::createDesktopEvent(const KUrl& uri, const QDateTime& startTime, const QString& app)
 {
-    kDebug() << "Creating a new desktop event" << uri << startTime << app;
+    // kDebug() << "Creating a new desktop event" << uri << startTime << app;
 
     // one-shot event
     Nepomuk::Resource eventRes(QUrl(), NUAO::DesktopEvent());
     eventRes.addProperty(NUAO_targettedResource, anyResource(uri));
     eventRes.addProperty(NUAO::start(), startTime);
 
-    kDebug() << "Created event" << eventRes.resourceUri()
-             << "for resource" << ((Nepomuk::Resource(uri)).resourceUri());
+    // kDebug() << "Created event" << eventRes.resourceUri()
+    //          << "for resource" << ((Nepomuk::Resource(uri)).resourceUri());
 
     // the app
     Nepomuk::Resource appRes(app, NAO::Agent());
@@ -260,7 +259,7 @@ Nepomuk::Resource NepomukPlugin::createDesktopEvent(const KUrl& uri, const QDate
             || m_currentActivity.identifiers().first() != sharedInfo()->currentActivity()) {
         // update the current activity resource
 
-        kDebug() << "Assigning the activity to the event";
+        // kDebug() << "Assigning the activity to the event";
 
         const QString query = QString::fromLatin1("select ?r where { "
                 " ?r a %1 . "

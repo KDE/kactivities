@@ -71,14 +71,14 @@ void NepomukResourceScoreMaintainerPrivate::run()
         // activity so that the stats are available quicker
 
         if (resources.contains(activity)) {
-            kDebug() << "Processing current activity events";
+            // kDebug() << "Processing current activity events";
 
             processActivity(activity, resources[activity]);
             resources.remove(activity);
         }
 
         foreach (const ActivityID & activity, resources.keys()) {
-            kDebug() << "Processing activity" << activity;
+            // kDebug() << "Processing activity" << activity;
 
             processActivity(activity, resources[activity]);
         }
@@ -89,10 +89,10 @@ void NepomukResourceScoreMaintainerPrivate::processActivity(const ActivityID & a
 {
     foreach (const ApplicationName & application, applications.keys()) {
         // Processing resources for the pair (activity, application)
-        kDebug() << "  Processing application" << application;
+        // kDebug() << "  Processing application" << application;
 
         foreach (const QUrl & resource, applications[application]) {
-            kDebug() << "    Updating score for" << activity << application << resource;
+            // kDebug() << "    Updating score for" << activity << application << resource;
             NepomukResourceScoreCache(activity, application, resource).updateScore();
 
         }
@@ -120,14 +120,14 @@ NepomukResourceScoreMaintainer::~NepomukResourceScoreMaintainer()
 
 void NepomukResourceScoreMaintainer::processResource(const KUrl & resource, const QString & application)
 {
-    kDebug() << "Can we get the lock";
+    // kDebug() << "Can we get the lock";
     d->openResources_mutex.lock();
-    kDebug() << "Yes we can";
+    // kDebug() << "Yes we can";
 
     // Checking whether the item is already scheduled for
     // processing
 
-    kDebug() << "Adding" << resource << application << "to the queue";
+    // kDebug() << "Adding" << resource << application << "to the queue";
 
     const QString & activity = currentActivityId;
 
