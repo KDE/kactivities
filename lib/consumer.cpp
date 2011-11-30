@@ -27,10 +27,12 @@ namespace KActivities {
 Consumer::Consumer(QObject * parent)
     : QObject(parent), d(new ConsumerPrivate())
 {
-    connect(
-        Manager::self(), SIGNAL(CurrentActivityChanged(const QString &)),
-        this,                     SIGNAL(currentActivityChanged(const QString &))
-    );
+    connect(Manager::self(), SIGNAL(CurrentActivityChanged(const QString &)),
+            this, SIGNAL(currentActivityChanged(const QString &)));
+    connect(Manager::self(), SIGNAL(ActivityAdded(QString)),
+            this, SIGNAL(activityAdded(QString)));
+    connect(Manager::self(), SIGNAL(ActivityRemoved(QString)),
+            this, SIGNAL(activityRemoved(QString)));
 }
 
 Consumer::~Consumer()

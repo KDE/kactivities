@@ -122,6 +122,19 @@ Q_SIGNALS:
      */
     void serviceStatusChanged(Consumer::ServiceStatus status);
 
+    /**
+     * This signal is emitted when a new activity is added
+     * @param id id of the new activity
+     */
+    void activityAdded(const QString & id);
+
+    /**
+     * This signal is emitted when the activity
+     * is removed
+     * @param id id of the removed activity
+     */
+    void activityRemoved(const QString & id);
+
 private:
     ConsumerPrivate * const d;
 };

@@ -40,12 +40,6 @@ private:
 Controller::Controller(QObject * parent)
     : Consumer(parent), d(new ControllerPrivate(this))
 {
-    connect(Manager::self(), SIGNAL(ActivityAdded(QString)),
-            this, SIGNAL(activityAdded(QString)));
-
-    connect(Manager::self(), SIGNAL(ActivityRemoved(QString)),
-            this, SIGNAL(activityRemoved(QString)));
-
 }
 
 Controller::~Controller()

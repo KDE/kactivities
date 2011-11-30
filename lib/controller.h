@@ -98,21 +98,6 @@ public:
      */
     void startActivity(const QString & id);
 
-Q_SIGNALS:
-    /**
-     * This signal is emitted when the global
-     * activity is changed
-     * @param id id of the new current activity
-     */
-    void activityAdded(const QString & id);
-
-    /**
-     * This signal is emitted when the activity
-     * is removed
-     * @param id id of the removed activity
-     */
-    void activityRemoved(const QString & id);
-
 private:
     ControllerPrivate * const d;
 };
