@@ -84,20 +84,12 @@ QUrl RankingsUpdateThread::urlFor(const Nepomuk::Resource & resource)
 void RankingsUpdateThread::run() {
     kDebug() << "This is the activity we want the results for:" << m_activity;
 
-//define QUERY_DEBUGGING
+// #define QUERY_DEBUGGING
 #ifndef QUERY_DEBUGGING
     const QString query = QString::fromLatin1(
         "select distinct ?resource, "
-        "( "
-            "( "
-                "SUM ( "
-                    "?lastScore * bif:exp( "
-                        "- bif:datediff('day', ?lastUpdate, %1) "
-                    ") "
-                ") "
-            ") "
-            "as ?score "
-        ") where { "
+        "((SUM(?lastScore * bif:exp(- bif:datediff('day', ?lastUpdate, %1)))) as ?score) "
+        "where { "
             "?cache kext:targettedResource ?resource . "
             "?cache a kext:ResourceScoreCache . "
             "?cache nao:lastModified ?lastUpdate . "
@@ -107,8 +99,7 @@ void RankingsUpdateThread::run() {
             // "?resource nie:url ?description . "
             "?cache kext:usedActivity %2 . "
             // "FILTER(!bif:exists((select (1) where { %2 nao:isRelated ?resource . }))) "
-        "} "
-        "GROUP BY (?resource) ORDER BY DESC (?score) LIMIT 10"
+        "} GROUP BY (?resource) ORDER BY DESC (?score) LIMIT 10"
     ).arg(
         litN3(QDateTime::currentDateTime()),
         resN3(activityResource(m_activity))

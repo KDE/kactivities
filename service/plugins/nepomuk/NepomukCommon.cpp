@@ -35,8 +35,12 @@ Nepomuk::Resource activityResource(const QString & id)
 
     // Do we already have the resource cached?
     if (NepomukPluginCommon::activityResources.contains(id)) {
-        kDebug() << "We have the resource already cached";
-        return NepomukPluginCommon::activityResources[id];
+        const Nepomuk::Resource & resource = NepomukPluginCommon::activityResources[id];
+        kDebug() << "We have the resource already cached"
+                 << resource.genericLabel()
+                 << resource
+                 << resource.property(NAO::identifier());
+        return resource;
     }
 
     // Otherwise
