@@ -27,52 +27,46 @@
 using namespace Nepomuk::Vocabulary;
 using namespace Soprano::Vocabulary;
 
-QHash < QString, Nepomuk::Resource > NepomukPluginCommon::activityResources;
+QHash < QString, Nepomuk::Resource* > NepomukPluginCommon::activityResources;
 
-Nepomuk::Resource activityResource(const QString & id)
+Nepomuk::Resource & activityResource(const QString & id)
 {
     kDebug() << "Getting the resource of activity:" << id;
 
-    // Do we already have the resource cached?
-    if (NepomukPluginCommon::activityResources.contains(id)) {
-        const Nepomuk::Resource & resource = NepomukPluginCommon::activityResources[id];
-        kDebug() << "We have the resource already cached"
-                 << resource.genericLabel()
-                 << resource
-                 << resource.property(NAO::identifier());
-        return resource;
+    if (!NepomukPluginCommon::activityResources.contains(id)) {
+        kDebug() << "We don't have it in the cache";
+        const QString & query = QString::fromLatin1(
+                "select ?activity where { "
+                "?activity a kext:Activity . "
+                "?activity nao:identifier %1 ."
+                "} LIMIT 1"
+                ).arg(litN3(id));
+
+        Soprano::QueryResultIterator it
+            = Nepomuk::ResourceManager::instance()->mainModel()->executeQuery(query, Soprano::Query::QueryLanguageSparql);
+
+        Nepomuk::Resource * resource = NULL;
+
+        if (it.next()) {
+            resource = new Nepomuk::Resource(it[0].uri());
+            it.close();
+
+        } else {
+            kDebug() << "A very strange thing is happening - seems like" << id <<
+                "activity doesn't exist stored in Nepomuk!";
+
+            resource = new Nepomuk::Resource(id, KExt::Activity());
+        }
+
+        // Adding to cache and returning the value
+        NepomukPluginCommon::activityResources[id] = resource;
+
     }
 
     // Otherwise
-    const QString & query = QString::fromLatin1(
-            "select ?activity where { "
-                "?activity a kext:Activity . "
-                "?activity nao:identifier %1 ."
-            "} LIMIT 1"
-        ).arg(litN3(id));
-
-    Soprano::QueryResultIterator it
-        = Nepomuk::ResourceManager::instance()->mainModel()->executeQuery(query, Soprano::Query::QueryLanguageSparql);
-
-    Nepomuk::Resource resource;
-
-    if (it.next()) {
-        resource = Nepomuk::Resource(it[0].uri());
-        it.close();
-
-    } else {
-        kDebug() << "A very strange thing is happening - seems like" << id <<
-            "activity doesn't exist stored in Nepomuk!";
-
-        resource = Nepomuk::Resource(id, KExt::Activity());
-    }
-
-    // Adding to cache and returning the value
-    NepomukPluginCommon::activityResources[id] = resource;
-
+    Nepomuk::Resource * result = NepomukPluginCommon::activityResources[id];
     kDebug() << "Returning the resource object"
-        << resource.genericLabel()
-        << resource
-        << resource.property(NAO::identifier());
-    return resource;
+        << result->genericLabel()
+        << result->property(NAO::identifier());
+    return *result;
 }

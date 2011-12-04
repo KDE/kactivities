@@ -764,9 +764,19 @@ void ActivityManager::RegisterResourceEvent(const QString & application, uint _w
     if (event > Event::LastEventType || reason > Event::LastEventReason)
         return;
 
+    if (uri.isEmpty())
+        return;
+
     // Dirty way to skip special web browser URIs
     if (uri.startsWith("about:"))
         return;
+
+    // Dirty way to skip invalid URIs (needed for akregator)
+    QChar firstChar = uri[0];
+    if (
+            (firstChar < 'a' || firstChar > 'z') &&
+            (firstChar < 'A' || firstChar > 'Z')
+       ) return;
 
     KUrl kuri(uri);
     WId windowId = (WId) _windowId;

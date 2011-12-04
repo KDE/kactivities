@@ -74,9 +74,9 @@ inline QString resN3(const Nepomuk::Resource & resource)
 
 class NepomukPluginCommon {
 public:
-    static QHash < QString, Nepomuk::Resource > activityResources;
+    static QHash < QString, Nepomuk::Resource * > activityResources;
 };
 
-Nepomuk::Resource activityResource(const QString & id);
+Nepomuk::Resource & activityResource(const QString & id);
 
 #endif // NEPOMUK_COMMON_H_
