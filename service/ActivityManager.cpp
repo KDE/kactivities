@@ -758,7 +758,7 @@ void ActivityManager::SetActivityIcon(const QString & id, const QString & icon)
 
 
 // Resource related mothods
-void ActivityManager::RegisterResourceEvent(const QString & application, uint _windowId,
+void ActivityManager::RegisterResourceEvent(QString application, uint _windowId,
         const QString & uri, uint event, uint reason)
 {
     if (event > Event::LastEventType || reason > Event::LastEventReason)

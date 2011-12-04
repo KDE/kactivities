@@ -84,11 +84,10 @@ QUrl RankingsUpdateThread::urlFor(const Nepomuk::Resource & resource)
 void RankingsUpdateThread::run() {
     kDebug() << "This is the activity we want the results for:" << m_activity;
 
-// #define QUERY_DEBUGGING
 #ifndef QUERY_DEBUGGING
     const QString query = QString::fromLatin1(
         "select distinct ?resource, "
-        "((SUM(?lastScore * bif:exp(- bif:datediff('day', ?lastUpdate, %1)))) as ?score) "
+        "((SUM(xsd:double(?lastScore) * bif:exp(- bif:datediff('day', ?lastUpdate, %1)))) as ?score) "
         "where { "
             "?cache kext:targettedResource ?resource . "
             "?cache a kext:ResourceScoreCache . "
@@ -105,6 +104,8 @@ void RankingsUpdateThread::run() {
         resN3(activityResource(m_activity))
     );
 
+    kDebug() << query;
+
 #else
     kDebug() << "\n\nvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv\n\n";
 
@@ -113,7 +114,7 @@ void RankingsUpdateThread::run() {
     "    ( \n"
     "        ( \n"
     "            SUM ( \n"
-    "                ?lastScore * bif:exp( \n"
+    "                xsd:double(?lastScore) * bif:exp( \n"
     "                    - bif:datediff('day', ?lastUpdate, %1) \n"
     "                ) \n"
     "            ) \n"

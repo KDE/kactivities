@@ -67,7 +67,7 @@ public:
 NepomukResourceScoreCache::NepomukResourceScoreCache(const QString & activity, const QString & application, const QUrl & resource)
     : d(new NepomukResourceScoreCachePrivate())
 {
-    // kDebug() << "Cache for" << activity << application << resource << anyResource(resource).resourceUri();
+    kDebug() << "Cache for" << activity << application << resource << anyResource(resource).resourceUri();
 
     d->activity = activity;
     d->application = application;
@@ -98,8 +98,8 @@ NepomukResourceScoreCache::NepomukResourceScoreCache(const QString & activity, c
 
         d->self = result;
 
-        // kDebug() << "Found an old cache" << d->self.resourceUri() << d->self.resourceType()
-        //          << "With a score of" << d->self.property(KExt::cachedScore()) << d->self.property(NAO::score());
+        kDebug() << "Found an old cache" << d->self.resourceUri() << d->self.resourceType()
+                 << "With a score of" << d->self.property(KExt::cachedScore()) << d->self.property(NAO::score());
 
     } else {
         Nepomuk::Resource result(QUrl(), KExt::ResourceScoreCache());
@@ -118,7 +118,7 @@ NepomukResourceScoreCache::NepomukResourceScoreCache(const QString & activity, c
 
         d->self = result;
 
-        // kDebug() << "Created a new cache resource" << d->self.resourceUri() << d->self.resourceType();
+        kDebug() << "Created a new cache resource" << d->self.resourceUri() << d->self.resourceType();
 
     }
 }
@@ -217,9 +217,14 @@ void NepomukResourceScoreCache::updateScore()
 
     }
 
-    // kDebug() << "New calculated score:" << score << d->self.isValid();
-    d->self.setProperty(KExt::cachedScore(), score);
-    d->self.setProperty(NAO::score(), score);
+    kDebug() << "New calculated score:" << d->resource << score << d->self.isValid();
+
+    // Forcing immediate sync of the score, in case of kamd being terminated improperly
+    {
+        Nepomuk::Resource resource(d->self);
+        resource.setProperty(KExt::cachedScore(), score);
+        resource.setProperty(NAO::score(), score);
+    }
 
     Rankings::self()->resourceScoreUpdated(d->activity, d->application, d->resource, score);
 }

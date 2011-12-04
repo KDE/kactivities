@@ -243,7 +243,7 @@ public Q_SLOTS:
      * @param event type of the event
      * @param reason reason for opening the resource
      */
-    void RegisterResourceEvent(const QString & application, uint windowId, const QString & uri, uint event, uint reason);
+    void RegisterResourceEvent(QString application, uint windowId, const QString & uri, uint event, uint reason);
 
     /**
      * Registers resource's mimetype. If not manually specified, it will
