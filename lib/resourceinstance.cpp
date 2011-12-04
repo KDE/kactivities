@@ -21,6 +21,7 @@
 #include "manager_p.h"
 
 #include <QCoreApplication>
+#include <KDebug>
 
 namespace KActivities {
 
@@ -77,23 +78,28 @@ void ResourceInstancePrivate::openResource()
 ResourceInstance::ResourceInstance(WId wid, AccessReason reason, const QString &application, QObject *parent)
     : QObject(parent), d(new ResourceInstancePrivate())
 {
+    kDebug(1000) << "Creating ResourceInstance: empty for now";
     d->wid = wid;
     d->reason = reason;
     d->application = application.isEmpty() ? QCoreApplication::instance()->applicationName() : application;
 
+    setTitle("title");
 }
 
-ResourceInstance::ResourceInstance(WId wid, QUrl resourceUri, const QString &mimetype, const QString &title, AccessReason reason, const QString &application, QObject *parent)
+ResourceInstance::ResourceInstance(WId wid, QUrl resourceUri, const QString &mimetype,
+        const QString &title, AccessReason reason, const QString &application, QObject *parent)
     : QObject(parent), d(new ResourceInstancePrivate())
 {
+    kDebug(1000) << "Creating ResourceInstance: " << resourceUri;
     d->wid = wid;
     d->reason = reason;
     d->uri = resourceUri;
-    d->mimetype = mimetype;
-    d->title = title;
     d->application = application.isEmpty() ? QCoreApplication::instance()->applicationName() : application;
 
     d->openResource();
+
+    setTitle(title);
+    setMimetype(mimetype);
 }
 
 ResourceInstance::~ResourceInstance()
@@ -133,6 +139,8 @@ void ResourceInstance::setUri(const QUrl &newUri)
 
 void ResourceInstance::setMimetype(const QString &mimetype)
 {
+    if (mimetype.isEmpty()) return;
+
     d->mimetype = mimetype;
     // TODO: update the service info
     Manager::self()->RegisterResourceMimeType(d->uri.toString(), mimetype);
@@ -140,6 +148,9 @@ void ResourceInstance::setMimetype(const QString &mimetype)
 
 void ResourceInstance::setTitle(const QString &title)
 {
+    kDebug() << "Setting the title: " << title;
+    if (title.isEmpty()) return;
+
     d->title = title;
     // TODO: update the service info
     Manager::self()->RegisterResourceTitle(d->uri.toString(), title);

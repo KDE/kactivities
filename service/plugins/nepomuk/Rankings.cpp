@@ -202,6 +202,7 @@ Rankings::~Rankings()
 void Rankings::registerClient(const QString & client,
         const QString & activity, const QString & type)
 {
+    Q_UNUSED(type);
     kDebug() << client << "wants to get resources for" << activity;
 
     if (!m_clients.contains(activity)) {
@@ -285,6 +286,7 @@ void Rankings::initResults(const QString & _activity)
 void Rankings::resourceScoreUpdated(const QString & activity,
         const QString & application, const QUrl & uri, qreal score)
 {
+    Q_UNUSED(application);
     // kDebug() << activity << application << uri << score;
 
     if (score <= m_resultScoreTreshold[activity]) {

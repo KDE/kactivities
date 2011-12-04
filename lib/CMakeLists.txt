@@ -77,7 +77,7 @@ set(
 qt4_add_dbus_interface(
    kactivities_LIB_SRCS
 
-   org.kde.ActivityManager.xml
+   ../service/org.kde.ActivityManager.xml
    activitymanager_interface
 )
 

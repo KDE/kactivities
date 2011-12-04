@@ -36,6 +36,7 @@
     #include <Nepomuk/Resource>
     #include <Nepomuk/Variant>
     #include "nie.h"
+    #include "nfo.h"
     #include "kext.h"
 #endif
 
@@ -819,16 +820,59 @@ void ActivityManager::RegisterResourceEvent(QString application, uint _windowId,
 
 void ActivityManager::RegisterResourceMimeType(const QString & uri, const QString & mimetype)
 {
+    kDebug() << "Setting the mime for" << uri << "to be" << mimetype;
     KUrl kuri(uri);
 
     d->resources[kuri].mimetype = mimetype;
+
+#ifdef HAVE_NEPOMUK
+    Nepomuk::Resource resource(kuri);
+    if (!resource.hasProperty(NIE::mimeType())) {
+        kDebug() << "Setting the mime in nepomuk for" << uri << "to be" << mimetype;
+        resource.setProperty(NIE::mimeType(), mimetype);
+
+        if (mimetype.startsWith("image/")) {
+            resource.addType(NFO::Image());
+
+        } else if (mimetype.startsWith("video/")) {
+            resource.addType(NFO::Video());
+
+        } else if (mimetype.startsWith("audio/")) {
+            resource.addType(NFO::Audio());
+
+        } else if (mimetype.startsWith("image/")) {
+            resource.addType(NFO::Image());
+
+        } else if (mimetype.startsWith("text/")) {
+            resource.addType(NFO::TextDocument());
+
+            if (mimetype == "text/plain") {
+                resource.addType(NFO::PlainTextDocument());
+
+            } else if (mimetype == "text/html") {
+                resource.addType(NFO::HtmlDocument());
+
+            }
+        }
+
+    }
+#endif
 }
 
 void ActivityManager::RegisterResourceTitle(const QString & uri, const QString & title)
 {
+    kDebug() << "Setting the title for" << uri << "to be" << title;
     KUrl kuri(uri);
 
     d->resources[kuri].title = title;
+
+#ifdef HAVE_NEPOMUK
+    kDebug() << "Setting the title for" << uri << "to be" << title;
+    Nepomuk::Resource resource(kuri);
+    if (!resource.hasProperty(NIE::title())) {
+        resource.setProperty(NIE::title(), title);
+    }
+#endif
 }
 
 void ActivityManager::LinkResourceToActivity(const QString & uri, const QString & activity)
