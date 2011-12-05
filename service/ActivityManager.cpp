@@ -89,7 +89,9 @@ ActivityManagerPrivate::ActivityManagerPrivate(ActivityManager * parent,
     kDebug() << "Starting the KDE Activity Manager daemon" << QDateTime::currentDateTime();
     kDebug() << "-------------------------------------------------------";
 
+#ifdef HAVE_NEPOMUK
     Nepomuk::ResourceManager::instance()->init();
+#endif
 
     // Initializing config
     connect(&configSyncTimer, SIGNAL(timeout()),
