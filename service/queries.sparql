@@ -59,4 +59,9 @@ select ?e, ?agent, ?r where {
      ?e nuao:targettedResource ?rRes . ?rRes nie:url ?r
 }
 
+// activities
+select ?activityName, ?activityId, ?activity where { ?activity a kext:Activity . ?activity nao:prefLabel ?activityName . ?activity kext:activityIdentifier ?activityId . }
+
+// score caches
+select ?resourceUri, ?score where { ?cache a kext:ResourceScoreCache . ?cache kext:targettedResource ?resource . ?resource nie:url ?resourceUri . ?cache kext:cachedScore ?score . }
 

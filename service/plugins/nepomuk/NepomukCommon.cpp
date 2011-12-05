@@ -35,6 +35,26 @@ Nepomuk::Resource & activityResource(const QString & id)
 
     if (!NepomukPluginCommon::activityResources.contains(id)) {
         kDebug() << "We don't have it in the cache";
+
+        // Waiting for nepomuk. Not a really clean way, but we are making sure
+        // queries work properly and that kext ontology is loaded
+        // rdfs:subClassOf is reflective, so it needs to return at least one
+        // item for the following query
+        bool passNepomuk = false;
+        while (!passNepomuk) {
+            const QString & query = QString::fromLatin1("select ?r where { ?r rdfs:subClassOf kext:Activity . }");
+            Soprano::QueryResultIterator it
+                = Nepomuk::ResourceManager::instance()->mainModel()->executeQuery(query, Soprano::Query::QueryLanguageSparql);
+
+            if (it.next()) {
+                kDebug() << it[0].uri();
+                passNepomuk = true;
+            } else
+                sleep(5);
+        }
+
+        kDebug() << "Querying Nepomuk for the activity";
+
         const QString & query = QString::fromLatin1(
                 "select ?activity where { "
                 "?activity a kext:Activity . "

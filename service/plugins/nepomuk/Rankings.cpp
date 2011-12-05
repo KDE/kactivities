@@ -252,15 +252,15 @@ void Rankings::initResults(const QString & _activity)
 
     kDebug() << "Initializing the resources for:" << activity;
 
-    Nepomuk::Resource __activity = activityResource(activity);
-    kDebug()
-             << "Label:"
-             << __activity.genericLabel()
-             << "Identifier:"
-             << __activity.hasProperty(NAO::identifier())
-             << __activity.property(NAO::identifier())
-             << "Types:"
-             << __activity.types();
+    // Nepomuk::Resource __activity = activityResource(activity);
+    // kDebug()
+    //          << "Label:"
+    //          << __activity.genericLabel()
+    //          << "Identifier:"
+    //          << __activity.hasProperty(NAO::identifier())
+    //          << __activity.property(NAO::identifier())
+    //          << "Types:"
+    //          << __activity.types();
 
     // Delete til now
 
