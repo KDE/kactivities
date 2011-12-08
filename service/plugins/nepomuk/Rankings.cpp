@@ -98,7 +98,7 @@ void RankingsUpdateThread::run() {
             // "?resource nie:url ?description . "
             "?cache kext:usedActivity %2 . "
             // "FILTER(!bif:exists((select (1) where { %2 nao:isRelated ?resource . }))) "
-        "} GROUP BY (?resource) ORDER BY DESC (?score) LIMIT 10"
+        "} GROUP BY (?resource) ORDER BY DESC (?score) LIMIT 30"
     ).arg(
         litN3(QDateTime::currentDateTime()),
         resN3(activityResource(m_activity))
@@ -131,7 +131,7 @@ void RankingsUpdateThread::run() {
     "        ?cache kext:usedActivity %2 . \n"
     // "        FILTER(!bif:exists((select (1) where { %2 nao:isRelated ?resource . }))) "
     "    } \n"
-    "    GROUP BY (?resource) ORDER BY DESC (?score) LIMIT 10\n"
+    "    GROUP BY (?resource) ORDER BY DESC (?score) LIMIT 30\n"
     ).arg(
         litN3(QDateTime::currentDateTime()),
         resN3(activityResource(m_activity))
