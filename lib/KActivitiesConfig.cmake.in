@@ -1,7 +1,19 @@
-GET_FILENAME_COMPONENT(_IMPORT_PREFIX "${CMAKE_CURRENT_LIST_FILE}" PATH)
-GET_FILENAME_COMPONENT(_IMPORT_PREFIX "${_IMPORT_PREFIX}/../.." ABSOLUTE)
+get_filename_component(myDir ${CMAKE_CURRENT_LIST_FILE} PATH) # get the directory where I myself am
+get_filename_component(rootDir ${myDir}/@relInstallDir@ ABSOLUTE) # get the chosen install prefix
 
-find_library(KACTIVITIES_LIBRARY NAMES kactivities PATHS ${_IMPORT_PREFIX} NO_DEFAULT_PATH)
-SET(KACTIVITIES_LIBRARY "${KACTIVITIES_LIBRARY}" CACHE FILEPATH "KActivities library")
+# set the version of myself
+set(KACTIVITIES_VERSION_MAJOR @KACTIVITIES_LIB_VERSION_MAJOR@)
+set(KACTIVITIES_VERSION_MINOR @KACTIVITIES_LIB_VERSION_MINOR@)
+set(KACTIVITIES_VERSION_PATCH @KACTIVITIES_LIB_VERSION_PATCH@)
+set(KACTIVITIES_VERSION ${KACTIVITIES_VERSION_MAJOR}.${KACTIVITIES_VERSION_MINOR}.${KACTIVITIES_VERSION_PATCH} )
+
+# what is my include directory
+# we have _DIRS for compat with existing usage
 SET(KACTIVITIES_INCLUDE_DIRS "@INCLUDE_INSTALL_DIR@" "@INCLUDE_INSTALL_DIR@/KDE" CACHE PATH "Include path for the KActivities library")
-SET(KACTIVITIES_FOUND TRUE)
+set(KACTIVITIES_INCLUDES "${rootDir}/@INCLUDE_INSTALL_DIR@" "@INCLUDE_INSTALL_DIR@/KDE")
+
+# import the exported targets
+#include(${myDir}/BarTargets.cmake)
+
+# set the expected library variable
+set(KACTIVITIES_LIBRARIES bar )
