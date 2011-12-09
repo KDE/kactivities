@@ -14,7 +14,10 @@ SET(KACTIVITIES_INCLUDE_DIRS "@INCLUDE_INSTALL_DIR@" "@INCLUDE_INSTALL_DIR@/KDE"
 set(KACTIVITIES_INCLUDES "${rootDir}/@INCLUDE_INSTALL_DIR@" "@INCLUDE_INSTALL_DIR@/KDE")
 
 # import the exported targets
-#include(${myDir}/BarTargets.cmake)
+include(${myDir}/KActivitiesLibraryTargets.cmake)
 
 # set the expected library variable
-set(KACTIVITIES_LIBRARIES bar )
+# XXX: only KACTIVITIES_LIBRARIES should be used according to CMake's conventions,
+#      KACTIVITIES_LIBRARY is kept for compatibility with all the places using it.
+set(KACTIVITIES_LIBRARY kactivities)
+set(KACTIVITIES_LIBRARIES kactivities)

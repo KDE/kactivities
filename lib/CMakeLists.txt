@@ -132,8 +132,14 @@ install(
 
 install(
    TARGETS kactivities
-   EXPORT kdelibsLibraryTargets
+   EXPORT kactivitiesLibraryTargets
    ${INSTALL_TARGETS_DEFAULT_ARGS}
+   )
+
+install(
+   EXPORT kactivitiesLibraryTargets
+   DESTINATION ${LIB_INSTALL_DIR}/cmake/KActivities
+   FILE KActivitiesLibraryTargets.cmake
    )
 
 IF(NOT WIN32)
