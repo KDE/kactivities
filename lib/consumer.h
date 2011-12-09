@@ -120,7 +120,7 @@ Q_SIGNALS:
      * goes online or offline
      * @param status new status of the service
      */
-    void serviceStatusChanged(Consumer::ServiceStatus status);
+    void serviceStatusChanged(KActivities::Consumer::ServiceStatus status);
 
     /**
      * This signal is emitted when a new activity is added
