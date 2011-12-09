@@ -141,12 +141,12 @@ IF(NOT WIN32)
   INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/libkactivities.pc DESTINATION ${LIB_INSTALL_DIR}/pkgconfig )
 ENDIF(NOT WIN32)
 
-CONFIGURE_FILE(
-    KActivitiesConfig.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/KActivitiesConfig.cmake @ONLY
-)
+CONFIGURE_FILE(KActivitiesConfig.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/KActivitiesConfig.cmake @ONLY)
+CONFIGURE_FILE(KActivitiesConfigVersion.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/KActivitiesConfigVersion.cmake @ONLY)
 
 INSTALL(
     FILES ${CMAKE_CURRENT_BINARY_DIR}/KActivitiesConfig.cmake
+          ${CMAKE_CURRENT_BINARY_DIR}/KActivitiesConfigVersion.cmake
     DESTINATION ${CMAKE_INSTALL_PREFIX}/lib${LIB_SUFFIX}/cmake/KActivities
 )
 
