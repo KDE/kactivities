@@ -7,9 +7,6 @@ add_subdirectory(kded)
 
 add_subdirectory(plugins)
 
-# finding libkactivities
-find_package(KActivities REQUIRED)
-
 # Checking for Nepomuk
 macro_optional_find_package(Nepomuk)
 macro_log_feature(
