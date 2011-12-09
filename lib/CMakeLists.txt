@@ -147,6 +147,6 @@ CONFIGURE_FILE(KActivitiesConfigVersion.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/KAc
 INSTALL(
     FILES ${CMAKE_CURRENT_BINARY_DIR}/KActivitiesConfig.cmake
           ${CMAKE_CURRENT_BINARY_DIR}/KActivitiesConfigVersion.cmake
-    DESTINATION ${CMAKE_INSTALL_PREFIX}/lib${LIB_SUFFIX}/cmake/KActivities
+    DESTINATION ${LIB_INSTALL_DIR}/cmake/KActivities
 )
 
