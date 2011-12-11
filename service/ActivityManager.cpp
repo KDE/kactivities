@@ -786,7 +786,7 @@ void ActivityManager::RegisterResourceEvent(QString application, uint _windowId,
     KUrl kuri(uri);
     WId windowId = (WId) _windowId;
 
-    kDebug() << "New event on the horizon" << application << windowId << event;
+    kDebug() << "New event on the horizon" << application << windowId << event << uri;
 
 #ifdef HAVE_NEPOMUK
     if (uri.startsWith("nepomuk:")) {
@@ -865,7 +865,11 @@ void ActivityManager::RegisterResourceMimeType(const QString & uri, const QStrin
 
 void ActivityManager::RegisterResourceTitle(const QString & uri, const QString & title)
 {
-    kDebug() << "Setting the title for" << uri << "to be" << title;
+    // A dirty saninty check for the title
+
+    if (title.length() < 3) return;
+
+    kDebug() << "Setting the title for" << uri << "to be" << title << title.length();
     KUrl kuri(uri);
 
     d->resources[kuri].title = title;
