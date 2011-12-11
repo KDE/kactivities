@@ -854,8 +854,9 @@ void ActivityManager::RegisterResourceMimeType(const QString & uri, const QStrin
                 resource.addType(NFO::PlainTextDocument());
 
             } else if (mimetype == "text/html") {
-                resource.addType(NFO::HtmlDocument());
-
+                if (!resource.hasType(NFO::Bookmark())) {
+                    resource.addType(NFO::HtmlDocument());
+                }
             }
         }
 
