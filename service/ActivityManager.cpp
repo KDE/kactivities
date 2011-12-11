@@ -873,7 +873,10 @@ void ActivityManager::RegisterResourceTitle(const QString & uri, const QString &
 #ifdef HAVE_NEPOMUK
     kDebug() << "Setting the title for" << uri << "to be" << title;
     Nepomuk::Resource resource(kuri);
-    if (!resource.hasProperty(NIE::title())) {
+
+    kDebug() << uri << "local?" << kuri.isLocalFile()
+                    << "title"  << resource.hasProperty(NIE::title());
+    if (!kuri.isLocalFile() || !resource.hasProperty(NIE::title())) {
         resource.setProperty(NIE::title(), title);
     }
 #endif
