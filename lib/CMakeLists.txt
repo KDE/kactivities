@@ -1,7 +1,5 @@
 project(kactivities)
 
-cmake_minimum_required(VERSION 2.8)
-
 FIND_PACKAGE(KDE4 REQUIRED)
 INCLUDE(KDE4Defaults)
 INCLUDE(MacroLibrary)
