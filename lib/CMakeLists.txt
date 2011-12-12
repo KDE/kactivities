@@ -148,7 +148,8 @@ IF(NOT WIN32)
 ENDIF(NOT WIN32)
 
 CONFIGURE_FILE(KActivitiesConfig.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/KActivitiesConfig.cmake @ONLY)
-CONFIGURE_FILE(KActivitiesConfigVersion.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/KActivitiesConfigVersion.cmake @ONLY)
+MACRO_WRITE_BASIC_CMAKE_VERSION_FILE(${CMAKE_CURRENT_BINARY_DIR}/KActivitiesConfigVersion.cmake
+                                     ${KACTIVITIES_LIB_MAJOR_VERSION} ${KACTIVITIES_LIB_MINOR_VERSION} ${KACTIVITIES_LIB_PATCH_VERSION})
 
 INSTALL(
     FILES ${CMAKE_CURRENT_BINARY_DIR}/KActivitiesConfig.cmake
