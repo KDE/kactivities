@@ -848,14 +848,14 @@ void ActivityManager::RegisterResourceMimeType(const QString & uri, const QStrin
             resource.addType(NFO::Image());
 
         } else if (mimetype.startsWith("text/")) {
-            resource.addType(NFO::TextDocument());
+            if (!resource.hasType(NFO::Bookmark())) {
+                resource.addType(NFO::TextDocument());
 
-            if (mimetype == "text/plain") {
-                resource.addType(NFO::PlainTextDocument());
+                if (mimetype == "text/plain") {
+                    resource.addType(NFO::PlainTextDocument());
 
-            } else if (mimetype == "text/html") {
-                if (!resource.hasType(NFO::Bookmark())) {
-                    resource.addType(NFO::HtmlDocument());
+                } else if (mimetype == "text/html") {
+                        resource.addType(NFO::HtmlDocument());
                 }
             }
         }
