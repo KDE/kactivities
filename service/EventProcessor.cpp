@@ -23,8 +23,6 @@
 
 #include "config-features.h"
 
-#include "Plugin.h"
-
 #include <KDebug>
 
 #include <QDateTime>
@@ -162,9 +160,9 @@ EventProcessor::EventProcessor()
             continue;
         }
 
-        // kDebug() << "Loading plugin:"
-        //     << service->name() << service->storageId() << service->library()
-        //     << service->property("X-ActivityManager-PluginType", QVariant::String);
+        kDebug() << "Loading plugin:"
+            << service->name() << service->storageId() << service->library()
+            << service->property("X-ActivityManager-PluginType", QVariant::String);
 
         KPluginFactory * factory = KPluginLoader(service->library()).factory();
 
