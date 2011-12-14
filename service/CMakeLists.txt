@@ -60,6 +60,7 @@ include_directories(
 
 set(activity_manager_SRCS
     ActivityManager.cpp
+    NepomukActivityManager.cpp
     EventProcessor.cpp
     Plugin.cpp
     Event.cpp
