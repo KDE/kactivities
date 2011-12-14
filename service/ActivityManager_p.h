@@ -36,10 +36,12 @@
 #ifdef HAVE_NEPOMUK
     #include <Nepomuk/ResourceManager>
     #include <Nepomuk/Resource>
-#endif
 
-#if !defined(HAVE_NEPOMUK) && !defined(Q_CC_MSVC)
-    #warning "No Nepomuk, disabling some activity related features"
+    #define EXEC_NEPOMUK(A) NepomukActivityManager::self()->A
+
+#else
+    #define EXEC_NEPOMUK(A) // nepomuk disabled //
+
 #endif
 
 class QDBusInterface;
@@ -82,12 +84,13 @@ public:
     KConfigGroup activitiesConfig();
     KConfigGroup mainConfig();
     QString activityName(const QString & id);
+    QString activityIcon(const QString & id);
 
-#ifdef HAVE_NEPOMUK
-    Nepomuk::Resource activityResource(const QString & id);
-    bool nepomukInitialized();
-    mutable bool m_nepomukInitCalled;
-#endif // HAVE_NEPOMUK
+// #ifdef HAVE_NEPOMUK
+//     Nepomuk::Resource activityResource(const QString & id);
+//     bool nepomukInitialized();
+//     mutable bool m_nepomukInitCalled;
+// #endif // HAVE_NEPOMUK
 
 public Q_SLOTS:
     void scheduleConfigSync();
@@ -103,8 +106,8 @@ public Q_SLOTS:
     void reallyStartActivity(const QString & id);
     void reallyStopActivity(const QString & id);
 
-    void backstoreAvailable();
-    void syncActivitiesWithNepomuk();
+    // void backstoreAvailable();
+    // void syncActivitiesWithNepomuk();
     void sessionServiceRegistered();
 
 private:

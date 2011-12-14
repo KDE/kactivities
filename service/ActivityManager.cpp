@@ -19,6 +19,7 @@
 
 #include "ActivityManager.h"
 #include "ActivityManager_p.h"
+#include "NepomukActivityManager.h"
 
 #include <QUuid>
 #include <QDBusConnection>
@@ -31,29 +32,10 @@
 
 #include <KWindowSystem>
 
-#ifdef HAVE_NEPOMUK
-    #include <Nepomuk/ResourceManager>
-    #include <Nepomuk/Resource>
-    #include <Nepomuk/Variant>
-    #include "nie.h"
-    #include "nfo.h"
-    #include "kext.h"
-#endif
-
 #include "activitymanageradaptor.h"
 #include "EventProcessor.h"
 
 #include "config-features.h"
-
-#ifdef HAVE_NEPOMUK
-    #define NEPOMUK_RUNNING d->nepomukInitialized()
-
-    using namespace Nepomuk::Vocabulary;
-#else
-    #define NEPOMUK_RUNNING false
-#endif
-
-// #define ACTIVITIES_PROTOCOL "activities://"
 
 // copied from kdelibs\kdeui\notifications\kstatusnotifieritemdbus_p.cpp
 // if there is a common place for such definitions please move
@@ -79,9 +61,6 @@ ActivityManagerPrivate::ActivityManagerPrivate(ActivityManager * parent,
     : config("activitymanagerrc"),
       windows(_windows),
       resources(_resources),
-#ifdef HAVE_NEPOMUK
-      m_nepomukInitCalled(false),
-#endif
       q(parent),
       ksmserverInterface(0)
 {
@@ -89,9 +68,7 @@ ActivityManagerPrivate::ActivityManagerPrivate(ActivityManager * parent,
     kDebug() << "Starting the KDE Activity Manager daemon" << QDateTime::currentDateTime();
     kDebug() << "-------------------------------------------------------";
 
-#ifdef HAVE_NEPOMUK
-    Nepomuk::ResourceManager::instance()->init();
-#endif
+    EXEC_NEPOMUK( init() );
 
     // Initializing config
     connect(&configSyncTimer, SIGNAL(timeout()),
@@ -113,7 +90,7 @@ ActivityManagerPrivate::ActivityManagerPrivate(ActivityManager * parent,
         }
     }
 
-    syncActivitiesWithNepomuk();
+    EXEC_NEPOMUK( syncActivities(activities.keys(), activitiesConfig()) );
 
     currentActivity = mainConfig().readEntry("currentActivity", QString());
     // kDebug() << "currentActivity is" << currentActivity;
@@ -292,6 +269,11 @@ QString ActivityManagerPrivate::activityName(const QString & id)
     return activitiesConfig().readEntry(id, QString());
 }
 
+QString ActivityManagerPrivate::activityIcon(const QString & id)
+{
+    return activitiesConfig().readEntry(id + "_icon", QString());
+}
+
 void ActivityManagerPrivate::scheduleConfigSync()
 {
     if (!configSyncTimer.isActive()) {
@@ -305,67 +287,6 @@ void ActivityManagerPrivate::configSync()
     config.sync();
 }
 
-void ActivityManagerPrivate::syncActivitiesWithNepomuk()
-{
-#ifdef HAVE_NEPOMUK
-    foreach (const QString & activityId, activities.keys()) {
-        Nepomuk::Resource activityResource(activityId, KEXT::Activity());
-
-        QString name = activitiesConfig().readEntry(activityId, QString());
-
-        activityResource.setProperty(KEXT::activityIdentifier(), activityId);
-
-        if (!name.isEmpty()) {
-            activityResource.setLabel(name);
-        }
-    }
-#endif // HAVE_NEPOMUK
-}
-
-#ifdef HAVE_NEPOMUK
-
-Nepomuk::Resource ActivityManagerPrivate::activityResource(const QString & id)
-{
-    // kDebug() << "testing for nepomuk";
-
-    if (nepomukInitialized()) {
-        return Nepomuk::Resource(
-                id, KEXT::Activity());
-    } else {
-        return Nepomuk::Resource();
-    }
-}
-
-/* lazy init of nepomuk */
-bool ActivityManagerPrivate::nepomukInitialized()
-{
-    if (m_nepomukInitCalled) return
-        Nepomuk::ResourceManager::instance()->initialized();
-
-    m_nepomukInitCalled = true;
-
-    connect(Nepomuk::ResourceManager::instance(), SIGNAL(nepomukSystemStarted()), this, SLOT(backstoreAvailable()));
-
-    return (Nepomuk::ResourceManager::instance()->init() == 0);
-}
-
-void ActivityManagerPrivate::backstoreAvailable()
-{
-    //emit q->BackstoreAvailable();
-    //kick the icons, so that clients don't need to know that they depend on nepomuk
-    for (QHash<QString, ActivityManager::State>::const_iterator i = activities.constBegin();
-         i != activities.constEnd(); ++i) {
-        emit q->ActivityChanged(i.key());
-    }
-}
-
-#else // HAVE_NEPOMUK
-
-void ActivityManagerPrivate::backstoreAvailable()
-{
-}
-
-#endif // HAVE_NEPOMUK
 
 // Main
 
@@ -378,9 +299,6 @@ ActivityManager::ActivityManager()
     QDBusConnection dbus = QDBusConnection::sessionBus();
     new ActivityManagerAdaptor(this);
     dbus.registerObject("/ActivityManager", this);
-
-    // TODO: Sync activities in nepomuk with currently existing ones
-    // but later, when we are sure nepomuk is running
 
     // ensureCurrentActivityIsRunning();
 
@@ -426,7 +344,7 @@ void ActivityManager::Stop()
 
 bool ActivityManager::IsBackstoreAvailable() const
 {
-    return NEPOMUK_RUNNING;
+    return true;
 }
 
 
@@ -679,86 +597,45 @@ QString ActivityManager::ActivityName(const QString & id) const
 
 void ActivityManager::SetActivityName(const QString & id, const QString & name)
 {
-    // kDebug() << id << name;
-
-    if (!d->activities.contains(id)) {
-        return;
-    }
+    if (!d->activities.contains(id)) return;
 
     d->activitiesConfig().writeEntry(id, name);
 
-#ifdef HAVE_NEPOMUK
-    if (NEPOMUK_RUNNING) {
-        d->activityResource(id).setLabel(name);
-    }
-#endif
+    EXEC_NEPOMUK( setActivityName(id, name) );
 
     d->scheduleConfigSync();
-
-    // kDebug() << "emit ActivityChanged" << id;
     emit ActivityChanged(id);
 }
 
 QString ActivityManager::ActivityDescription(const QString & id) const
 {
-    if (!NEPOMUK_RUNNING || !d->activities.contains(id)) {
-        return QString();
-    }
-
-#ifdef HAVE_NEPOMUK
-    return d->activityResource(id).description();
-#endif
+    // This is not used anyway
+    Q_UNUSED(id)
+    return QString();
 }
 
 void ActivityManager::SetActivityDescription(const QString & id, const QString & description)
 {
-    // kDebug() << id << description;
-
-    if (!NEPOMUK_RUNNING || !d->activities.contains(id)) {
-        return;
-    }
-
-#ifdef HAVE_NEPOMUK
-    d->activityResource(id).setDescription(description);
-#endif
-
-    // kDebug() << "emit ActivityChanged" << id;
-    emit ActivityChanged(id);
+    // This is not used anyway
+    Q_UNUSED(id)
+    Q_UNUSED(description)
 }
 
 QString ActivityManager::ActivityIcon(const QString & id) const
 {
-    if (!NEPOMUK_RUNNING || !d->activities.contains(id)) {
-        return QString();
-    }
-
-#ifdef HAVE_NEPOMUK
-    QStringList symbols = d->activityResource(id).symbols();
-
-    if (symbols.isEmpty()) {
-        return QString();
-    } else {
-        return symbols.first();
-    }
-#else
-    return QString();
-#endif
+    return d->activityIcon(id);
 }
 
 void ActivityManager::SetActivityIcon(const QString & id, const QString & icon)
 {
-    // kDebug() << id << icon;
+    if (!d->activities.contains(id)) return;
 
-    if (!NEPOMUK_RUNNING || !d->activities.contains(id)) {
-        return;
-    }
+    d->activitiesConfig().writeEntry(id + "_icon", icon);
 
-#ifdef HAVE_NEPOMUK
-    d->activityResource(id).setSymbols(QStringList() << icon);
+    EXEC_NEPOMUK( setActivityIcon(id, icon) );
 
-    // kDebug() << "emit ActivityChanged" << id;
+    d->scheduleConfigSync();
     emit ActivityChanged(id);
-#endif
 }
 
 
@@ -788,27 +665,12 @@ void ActivityManager::RegisterResourceEvent(QString application, uint _windowId,
 
     kDebug() << "New event on the horizon" << application << windowId << event << uri;
 
-#ifdef HAVE_NEPOMUK
-    if (uri.startsWith("nepomuk:")) {
-        Nepomuk::Resource resource(kuri);
-
-        if (resource.hasProperty(NIE::url())) {
-            kuri = resource.property(NIE::url()).toUrl();
-            // kDebug() << "Passing real url" << kuri;
-        } else {
-            // kWarning() << "Passing nepomuk:// url" << kuri;
-        }
-    }
-#endif
+    EXEC_NEPOMUK( toRealUri(kuri) );
 
     if (event == Event::Opened) {
 
-        // kDebug() << "Saving the open event for the window" << windowId;
-
         d->windows[windowId].resources << kuri;
         d->resources[kuri].activities << CurrentActivity();
-
-        // kDebug() << d->windows.keys();
 
     } else if (event == Event::Closed) {
 
@@ -829,45 +691,12 @@ void ActivityManager::RegisterResourceMimeType(const QString & uri, const QStrin
 
     d->resources[kuri].mimetype = mimetype;
 
-#ifdef HAVE_NEPOMUK
-    Nepomuk::Resource resource(kuri);
-    if (!resource.hasProperty(NIE::mimeType())) {
-        kDebug() << "Setting the mime in nepomuk for" << uri << "to be" << mimetype;
-        resource.setProperty(NIE::mimeType(), mimetype);
-
-        if (mimetype.startsWith("image/")) {
-            resource.addType(NFO::Image());
-
-        } else if (mimetype.startsWith("video/")) {
-            resource.addType(NFO::Video());
-
-        } else if (mimetype.startsWith("audio/")) {
-            resource.addType(NFO::Audio());
-
-        } else if (mimetype.startsWith("image/")) {
-            resource.addType(NFO::Image());
-
-        } else if (mimetype.startsWith("text/")) {
-            if (!resource.hasType(NFO::Bookmark())) {
-                resource.addType(NFO::TextDocument());
-
-                if (mimetype == "text/plain") {
-                    resource.addType(NFO::PlainTextDocument());
-
-                } else if (mimetype == "text/html") {
-                        resource.addType(NFO::HtmlDocument());
-                }
-            }
-        }
-
-    }
-#endif
+    EXEC_NEPOMUK( setResourceMimeType(KUrl(uri), mimetype) );
 }
 
 void ActivityManager::RegisterResourceTitle(const QString & uri, const QString & title)
 {
     // A dirty saninty check for the title
-
     if (title.length() < 3) return;
 
     kDebug() << "Setting the title for" << uri << "to be" << title << title.length();
@@ -875,59 +704,13 @@ void ActivityManager::RegisterResourceTitle(const QString & uri, const QString &
 
     d->resources[kuri].title = title;
 
-#ifdef HAVE_NEPOMUK
-    kDebug() << "Setting the title for" << uri << "to be" << title;
-    Nepomuk::Resource resource(kuri);
-
-    kDebug() << uri << "local?" << kuri.isLocalFile()
-                    << "title"  << resource.hasProperty(NIE::title());
-    if (!kuri.isLocalFile() || !resource.hasProperty(NIE::title())) {
-        resource.setProperty(NIE::title(), title);
-    }
-#endif
+    EXEC_NEPOMUK( setResourceTitle(KUrl(uri), title) );
 }
 
 void ActivityManager::LinkResourceToActivity(const QString & uri, const QString & activity)
 {
-#ifdef HAVE_NEPOMUK
-    if (!d->nepomukInitialized()) return;
-
-    kDebug() << "Linking" << uri << "to" << activity << CurrentActivity();
-
-    // TODO:
-    // I'd like a resource isRelated activity more than vice-versa
-    // but the active models are checking for the other way round.
-    // It is defined in the ontologies as a symmetric relation, but
-    // Nepomuk doesn't care about that.
-
-    // Nepomuk::Resource(KUrl(uri)).
-    //     addIsRelated(d->activityResource(
-    //         activity.isEmpty() ?
-    //             CurrentActivity() : activity
-    //         )
-    //     );
-
-    d->activityResource(activity.isEmpty() ? CurrentActivity() : activity).
-        addIsRelated(Nepomuk::Resource(KUrl(uri))
-    );
-
-#endif
+    EXEC_NEPOMUK( linkResourceToActivity(KUrl(uri), activity.isEmpty() ? CurrentActivity() : activity) );
 }
-
-// void ActivityManager::UnlinkResourceFromActivity(const QString & uri, const QString & activity)
-// {
-// #ifdef HAVE_NEPOMUK
-//     if (!d->nepomukInitialized()) return;
-//
-//     Nepomuk::Resource(KUrl(uri)).
-//         addIsRelated(d->activityResource(
-//             activity.isEmpty() ?
-//                 CurrentActivity() : activity
-//             )
-//         );
-//
-// #endif
-// }
 
 // static
 ActivityManager * ActivityManager::self()
