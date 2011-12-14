@@ -51,11 +51,11 @@ void RankingsUpdateThread::run() {
     kDebug() << "This is the activity we want the results for:" << m_activity;
 
     const QString & query = QString::fromLatin1(
-            "SELECT targettedResource, score "
+            "SELECT targettedResource, cachedScore "
             "FROM kext_ResourceScoreCache "
             "WHERE usedActivity = '%1' "
-            "AND score > 0 "
-            "ORDER BY score DESC LIMIT 30"
+            "AND cachedScore > 0 "
+            "ORDER BY cachedScore DESC LIMIT 30"
         ).arg(m_activity);
 
     kDebug() << query;
