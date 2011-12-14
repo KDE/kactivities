@@ -18,13 +18,23 @@
  */
 
 #include "ResourceScoreCache.h"
-
 #include "ActivityManager.h"
-
 #include "StatsPlugin.h"
 #include "DatabaseConnection.h"
 
 #include <KDebug>
+
+#include "config-features.h"
+
+#ifdef HAVE_NEPOMUK
+    #include <Nepomuk/Resource>
+    #include <Nepomuk/Variant>
+
+    #include "kext.h"
+    #include "nao.h"
+
+    using namespace Nepomuk::Vocabulary;
+#endif // HAVE_NEPOMUK
 
 /**
  *
@@ -63,11 +73,11 @@ void ResourceScoreCache::updateScore()
             score, lastUpdate);
 
     // Forcing immediate sync of the score, in case of kamd being terminated improperly
-    // {
-    //     Nepomuk::Resource resource(d->self);
-    //     resource.setProperty(KExt::cachedScore(), score);
-    //     resource.setProperty(NAO::score(), score);
-    // }
+    #ifdef HAVE_NEPOMUK
+        Nepomuk::Resource resource(d->resource);
+        resource.setProperty(KExt::cachedScore(), score);
+        resource.setProperty(NAO::score(), score);
+    #endif
 
     Rankings::self()->resourceScoreUpdated(d->activity, d->application, d->resource, score);
 }
