@@ -646,7 +646,7 @@ void ActivityManager::RegisterResourceEvent(QString application, uint _windowId,
     if (event > Event::LastEventType || reason > Event::LastEventReason)
         return;
 
-    if (uri.isEmpty())
+    if (uri.isEmpty() || application.isEmpty())
         return;
 
     // Dirty way to skip special web browser URIs
