@@ -24,6 +24,8 @@
 #include <Soprano/Vocabulary/NAO>
 #include "kext.h"
 
+#include <unistd.h>
+
 using namespace Nepomuk::Vocabulary;
 using namespace Soprano::Vocabulary;
 
