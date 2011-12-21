@@ -40,7 +40,7 @@ public:
     void init();
     bool initialized() const;
 
-    void syncActivities(const QStringList activityIds, KConfigGroup config);
+    void syncActivities(const QStringList activityIds, KConfigGroup config, KConfigGroup iconsConfig);
     void setActivityName(const QString & activity, const QString & name);
     void setActivityDescription(const QString & activity, const QString & description);
     void setActivityIcon(const QString & activity, const QString & icon);

@@ -82,6 +82,7 @@ public:
     void initConifg();
 
     KConfigGroup activitiesConfig();
+    KConfigGroup activityIconsConfig();
     KConfigGroup mainConfig();
     QString activityName(const QString & id);
     QString activityIcon(const QString & id);
