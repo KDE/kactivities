@@ -2,6 +2,7 @@
 Name=Share-Like-Connect Plugin
 Name[ca]=Connector «Share-Like-Connect»
 Name[es]=Complemento Share-Like-Connect
+Name[et]=Share-Like-Connect plugin
 Name[eu]=Share-Like-Connect plugina
 Name[gl]=Engadido de compartir-como-conectar
 Name[hu]=Share-Like-Connect bővítmény
@@ -25,6 +26,7 @@ Comment=Plugin to provide data to the SLC system
 Comment[ca]=Connector per proporcionar dades al sistema SLC
 Comment[de]=Modul, um dem SLC-System Daten bereitzustellen.
 Comment[es]=Complemento para proporcionar datos al sistema SLC
+Comment[et]=Plugin andmete pakkumiseks SLC süsteemile
 Comment[eu]=SLC sistemari datuak hornitzeko plugina
 Comment[gl]=Un engadido para fornecer datos ao sistema SLC
 Comment[hu]=Bővítmény adatok küldésére az SLC rendszerbe
