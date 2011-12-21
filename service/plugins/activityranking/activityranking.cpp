@@ -32,6 +32,8 @@
 #include <KStandardDirs>
 #include <KDebug>
 
+#define AR_FAKE_EVENTS_FEED
+
 #define PRINT_LAST_ERROR if (query.lastError().isValid()) kDebug() << "DATABASE ERROR" << query.lastError();
 
 class ActivityRankingPlugin::Private {
@@ -53,10 +55,13 @@ public:
     void ensureMonthScoreExists(const QString & activity, int year, int month);
     void ensureWeekScoreExists(const QString & activity, int year, int week);
 
+#ifdef AR_FAKE_EVENTS_FEED
+    void FakeEventsFeed();
+#endif
+
     static QString insertSchemaInfo;
     static QString closeActivityInterval;
     static QString insertActivityInterval;
-//    static QString selectDanglingActivities;
 
     static QString insertWeekScore;
     static QString selectWeekScore;
@@ -82,6 +87,41 @@ QString ActivityRankingPlugin::Private::insertMonthScore =
 QString ActivityRankingPlugin::Private::selectMonthScore =
     "SELECT * FROM MonthScores WHERE activity = '%1' AND year = %2 AND month = %3";
 
+
+#ifdef AR_FAKE_EVENTS_FEED
+
+#include <QTextStream>
+#include <QDateTime>
+#include <QFile>
+
+void ActivityRankingPlugin::Private::FakeEventsFeed()
+{
+    kDebug() << "Fake data loading";
+    QFile infile("/tmp/fakedata");
+
+    if (!infile.open(QFile::ReadOnly)) return;
+
+    QTextStream in(&infile);
+
+    while(!in.atEnd()) {
+        QStringList args = in.readLine().split(' ');
+
+        if (args.size() == 5) {
+            // qint64 currentTime = QDateTime::currentMSecsSinceEpoch();
+            qint64 start     = QDateTime::fromString(args[0] + ' ' + args[1], "yyyy.MM.dd hh:mm").toMSecsSinceEpoch();
+            qint64 end       = QDateTime::fromString(args[2] + ' ' + args[3], "yyyy.MM.dd hh:mm").toMSecsSinceEpoch();
+            QString activity = args[4];
+
+            kDebug() << start << end << activity;
+
+            processActivityInterval(activity, start, end);
+        }
+    }
+}
+
+#endif // AR_FAKE_EVENTS_FEED
+
+
 void ActivityRankingPlugin::Private::ensureWeekScoreExists(const QString & activity, int year, int week)
 {
     // If it fails, it means we already have it, ignore the error
@@ -90,6 +130,8 @@ void ActivityRankingPlugin::Private::ensureWeekScoreExists(const QString & activ
         .arg(activity)
         .arg(year)
         .arg(week)
+    ,
+        database
     );
     PRINT_LAST_ERROR;
 }
@@ -102,6 +144,8 @@ void ActivityRankingPlugin::Private::ensureMonthScoreExists(const QString & acti
         .arg(activity)
         .arg(year)
         .arg(month)
+    ,
+        database
     );
     PRINT_LAST_ERROR;
 }
@@ -145,6 +189,8 @@ void ActivityRankingPlugin::Private::processWeekData(const QString & activity, q
                     .arg(activity)
                     .arg(year)
                     .arg(weekNumber)
+                ,
+                    database
                 );
             PRINT_LAST_ERROR;
 
@@ -197,6 +243,8 @@ void ActivityRankingPlugin::Private::processWeekData(const QString & activity, q
                 QSqlQuery query(database.driver()->
                         sqlStatement(QSqlDriver::UpdateStatement, "WeekScores", record, false)
                         + where.arg(activity).arg(year).arg(weekNumber)
+                    ,
+                        database
                     );
                 PRINT_LAST_ERROR;
             }
@@ -240,6 +288,8 @@ void ActivityRankingPlugin::Private::processMonthData(const QString & activity, 
                     .arg(activity)
                     .arg(year)
                     .arg(month)
+                ,
+                    database
                 );
             PRINT_LAST_ERROR;
 
@@ -266,6 +316,8 @@ void ActivityRankingPlugin::Private::processMonthData(const QString & activity, 
                 QSqlQuery query(database.driver()->
                         sqlStatement(QSqlDriver::UpdateStatement, "MonthScores", record, false)
                         + where.arg(activity).arg(year).arg(month)
+                    ,
+                        database
                     );
                 PRINT_LAST_ERROR;
             }
@@ -343,7 +395,7 @@ bool ActivityRankingPlugin::init()
 
     QString path = KStandardDirs::locateLocal("data", "activitymanager/activityranking/database", true);
 
-    d->database = QSqlDatabase::addDatabase("QSQLITE");
+    d->database = QSqlDatabase::addDatabase("QSQLITE", "plugins_activityranking_db");
     d->database.setDatabaseName(path);
 
     if (!d->database.open()) {
@@ -359,18 +411,9 @@ bool ActivityRankingPlugin::init()
     connect(sharedInfo(), SIGNAL(currentActivityChanged(QString)),
             this, SLOT(activityChanged(QString)));
 
-    // d->processActivityInterval("activity",
-    //         QDateTime::fromString("2011-03-14T20:15:00", Qt::ISODate).toMSecsSinceEpoch(),
-    //         QDateTime::fromString("2011-05-10T11:11:11", Qt::ISODate).toMSecsSinceEpoch()
-    // );
-    // d->processActivityInterval("activity",
-    //         QDateTime::fromString("2011-05-14T20:15:00", Qt::ISODate).toMSecsSinceEpoch(),
-    //         QDateTime::fromString("2011-05-20T11:11:11", Qt::ISODate).toMSecsSinceEpoch()
-    // );
-    // d->processActivityInterval("activity",
-    //         QDateTime::fromString("2011-05-20T20:15:00", Qt::ISODate).toMSecsSinceEpoch(),
-    //         QDateTime::fromString("2011-05-25T11:11:11", Qt::ISODate).toMSecsSinceEpoch()
-    // );
+    #ifdef AR_FAKE_EVENTS_FEED
+    d->FakeEventsFeed();
+    #endif // AR_FAKE_EVENTS_FEED
 
     return true;
 }
@@ -380,7 +423,7 @@ void ActivityRankingPlugin::initDatabaseSchema()
 {
     bool schemaUpToDate = false;
 
-    QSqlQuery query("SELECT value FROM SchemaInfo WHERE key = 'version'");
+    QSqlQuery query("SELECT value FROM SchemaInfo WHERE key = 'version'", d->database);
     if (query.next()) {
         schemaUpToDate = (ACTIVITYRANKING_SCHEMA_VERSION == query.value(0).toString());
     }
@@ -458,6 +501,8 @@ void ActivityRankingPlugin::activityChanged(const QString & activity)
             Private::closeActivityInterval
                 .arg(currentTime)
                 .arg(d->activity)
+            ,
+                d->database
             );
         PRINT_LAST_ERROR;
 
@@ -470,6 +515,8 @@ void ActivityRankingPlugin::activityChanged(const QString & activity)
     QSqlQuery query(Private::insertActivityInterval
             .arg(activity)
             .arg(currentTime)
+            ,
+                d->database
         );
     PRINT_LAST_ERROR;
 }
