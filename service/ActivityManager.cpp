@@ -90,7 +90,7 @@ ActivityManagerPrivate::ActivityManagerPrivate(ActivityManager * parent,
         }
     }
 
-    EXEC_NEPOMUK( syncActivities(activities.keys(), activitiesConfig()) );
+    EXEC_NEPOMUK( syncActivities(activities.keys(), activitiesConfig(), activityIconsConfig()) );
 
     currentActivity = mainConfig().readEntry("currentActivity", QString());
     // kDebug() << "currentActivity is" << currentActivity;
@@ -193,6 +193,11 @@ void ActivityManagerPrivate::setActivityState(const QString & id, ActivityManage
     }
 }
 
+KConfigGroup ActivityManagerPrivate::activityIconsConfig()
+{
+    return KConfigGroup(&config, "activities-icons");
+}
+
 KConfigGroup ActivityManagerPrivate::activitiesConfig()
 {
     return KConfigGroup(&config, "activities");
@@ -271,7 +276,7 @@ QString ActivityManagerPrivate::activityName(const QString & id)
 
 QString ActivityManagerPrivate::activityIcon(const QString & id)
 {
-    return activitiesConfig().readEntry(id + "_icon", QString());
+    return activityIconsConfig().readEntry(id, QString());
 }
 
 void ActivityManagerPrivate::scheduleConfigSync()
@@ -630,7 +635,7 @@ void ActivityManager::SetActivityIcon(const QString & id, const QString & icon)
 {
     if (!d->activities.contains(id)) return;
 
-    d->activitiesConfig().writeEntry(id + "_icon", icon);
+    d->activityIconsConfig().writeEntry(id, icon);
 
     EXEC_NEPOMUK( setActivityIcon(id, icon) );
 

@@ -57,7 +57,7 @@ void NepomukActivityManager::init()
     Nepomuk::ResourceManager::instance()->init();
 }
 
-void NepomukActivityManager::syncActivities(const QStringList activityIds, KConfigGroup config)
+void NepomukActivityManager::syncActivities(const QStringList activityIds, KConfigGroup config, KConfigGroup iconsConfig)
 {
     bool configNeedsSyncing = false;
 
@@ -65,7 +65,7 @@ void NepomukActivityManager::syncActivities(const QStringList activityIds, KConf
         Nepomuk::Resource resource(activityId, KEXT::Activity());
 
         QString name = config.readEntry(activityId, QString());
-        QString icon = config.readEntry(activityId + "_icon", QString());
+        QString icon = iconsConfig.readEntry(activityId, QString());
 
         resource.setProperty(KEXT::activityIdentifier(), activityId);
 
@@ -78,7 +78,7 @@ void NepomukActivityManager::syncActivities(const QStringList activityIds, KConf
         } else {
             QStringList symbols = resource.symbols();
             if (symbols.size() > 0) {
-                config.writeEntry(activityId + "_icon", symbols.at(0));
+                iconsConfig.writeEntry(activityId, symbols.at(0));
                 configNeedsSyncing = true;
             }
         }
