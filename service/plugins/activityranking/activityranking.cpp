@@ -55,7 +55,6 @@ public:
     void ensureMonthScoreExists(const QString & activity, int year, int month);
     void ensureWeekScoreExists(const QString & activity, int year, int week);
 
-    // QStringList topActivitiesFor(const QDateTime & time);
     QMap <QString, qreal> topActivitiesFor(const QDateTime & time);
 
 #ifdef AR_FAKE_EVENTS_FEED
@@ -81,6 +80,7 @@ QString ActivityRankingPlugin::Private::insertActivityInterval   = "INSERT INTO 
 
 // For the average and dispersion
 // select activity, start - (select max(start) from ActivityEvents as ae where ae.start < a.start) as diff from ActivityEvents as a
+// QString ActivityRankingPlugin::Private::selectDanglingActivities = "SELECT * FROM ActivityEvents WHERE end IS NULL ORDER BY start";
 
 QString ActivityRankingPlugin::Private::insertWeekScore  =
     "INSERT INTO WeekScores  (activity, year, week)  VALUES('%1', %2, %3)";
