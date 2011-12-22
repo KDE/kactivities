@@ -55,6 +55,9 @@ public:
     void ensureMonthScoreExists(const QString & activity, int year, int month);
     void ensureWeekScoreExists(const QString & activity, int year, int week);
 
+    // QStringList topActivitiesFor(const QDateTime & time);
+    QMap <QString, qreal> topActivitiesFor(const QDateTime & time);
+
 #ifdef AR_FAKE_EVENTS_FEED
     void FakeEventsFeed();
 #endif
@@ -68,12 +71,16 @@ public:
 
     static QString insertMonthScore;
     static QString selectMonthScore;
+
+    static QString selectScore;
 };
 
 QString ActivityRankingPlugin::Private::insertSchemaInfo         = "INSERT INTO schemaInfo VALUES ('%1', '%2')";
 QString ActivityRankingPlugin::Private::closeActivityInterval    = "UPDATE ActivityEvents SET end = %1 WHERE activity = '%2' AND end IS NULL";
 QString ActivityRankingPlugin::Private::insertActivityInterval   = "INSERT INTO ActivityEvents VALUES('%1', %2, NULL)";
-// QString ActivityRankingPlugin::Private::selectDanglingActivities = "SELECT * FROM ActivityEvents WHERE end IS NULL ORDER BY start";
+
+// For the average and dispersion
+// select activity, start - (select max(start) from ActivityEvents as ae where ae.start < a.start) as diff from ActivityEvents as a
 
 QString ActivityRankingPlugin::Private::insertWeekScore  =
     "INSERT INTO WeekScores  (activity, year, week)  VALUES('%1', %2, %3)";
@@ -81,11 +88,20 @@ QString ActivityRankingPlugin::Private::insertWeekScore  =
 QString ActivityRankingPlugin::Private::selectWeekScore  =
     "SELECT * FROM WeekScores WHERE activity = '%1' AND year = %2 AND week = %3";
 
+
 QString ActivityRankingPlugin::Private::insertMonthScore =
     "INSERT INTO MonthScores (activity, year, month) VALUES('%1', %2, %3)";
 
 QString ActivityRankingPlugin::Private::selectMonthScore =
     "SELECT * FROM MonthScores WHERE activity = '%1' AND year = %2 AND month = %3";
+
+
+QString ActivityRankingPlugin::Private::selectScore =
+    "SELECT week.activity, week.score + month.score as sumscore "
+    "FROM "
+    "(SELECT activity, SUM(s%1%2) as score FROM WeekScores GROUP BY activity) AS week, "
+    "(SELECT activity, SUM(s%3) as score FROM MonthScores GROUP BY activity) AS month "
+    "WHERE week.activity = month.activity ORDER BY sumscore DESC";
 
 
 #ifdef AR_FAKE_EVENTS_FEED
@@ -388,7 +404,6 @@ ActivityRankingPlugin::ActivityRankingPlugin(QObject * parent, const QVariantLis
 
 bool ActivityRankingPlugin::init()
 {
-
     QDBusConnection dbus = QDBusConnection::sessionBus();
     new ActivityRankingAdaptor(this);
     dbus.registerObject("/ActivityRanking", this);
@@ -516,9 +531,73 @@ void ActivityRankingPlugin::activityChanged(const QString & activity)
             .arg(activity)
             .arg(currentTime)
             ,
-                d->database
+            d->database
         );
     PRINT_LAST_ERROR;
 }
 
+QStringList ActivityRankingPlugin::topActivities()
+{
+    //return d->topActivitiesFor(QDateTime::currentDateTime());
+    return QStringList();
+}
+
+QMap <QString, qreal> ActivityRankingPlugin::Private::topActivitiesFor(const QDateTime & time)
+{
+    QMap <QString, qreal> result;
+
+    // We want to get the scores for the current week segment
+    const QDateTime monthStartDateTime(QDate(time.date().year(), time.date().month(), 1));
+    const qint64 monthStart = monthStartDateTime.toMSecsSinceEpoch();
+    const qint64 monthEnd   = monthStartDateTime.addMonths(1).toMSecsSinceEpoch();
+
+    const int coefStart = (time.toMSecsSinceEpoch() - monthStart) / (qreal) (monthEnd - monthStart) * 64;
+
+    QString monthSegment = QString::number(coefStart, 8);
+    if (monthSegment.size() == 1)
+        monthSegment = "0" + monthSegment;
+
+    QSqlQuery query(
+        selectScore
+            .arg(time.date().dayOfWeek() - 1)
+            .arg(time.time().hour() / 3)
+            .arg(monthSegment)
+        ,
+            database
+        );
+    PRINT_LAST_ERROR;
+
+    while (query.next()) {
+        QSqlRecord record = query.record();
+        result[record.value(0).toString()] = record.value(1).toDouble();
+    }
+
+    return result;
+}
+
+QList < ActivityData > ActivityRankingPlugin::activities()
+{
+    QList < ActivityData > result;
+
+    return result;
+}
+
+void ActivityRankingPlugin::test()
+{
+    int year = 2011;
+
+    for (int month = 10; month <= 12; month++) {
+        for (int day = 0; day < 22; day++) {
+            for (int hour = 0; hour < 24; hour += 4) {
+                QDateTime test = QDateTime(QDate(year, month, day), QTime(hour, 10));
+
+                qDebug() << d->topActivitiesFor(test).values();
+
+            }
+        }
+    }
+}
+
 KAMD_EXPORT_PLUGIN(ActivityRankingPlugin, "activitymanger_plugin_activityranking")
+
+#include "activityranking.moc"

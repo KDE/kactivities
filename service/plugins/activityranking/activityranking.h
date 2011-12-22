@@ -19,20 +19,27 @@
 #define ACTIVITYRANKING_H
 
 #include <QObject>
-#include <KUrl>
+#include <QList>
+#include <QString>
 
 #include "../../Plugin.h"
+#include "ActivityData.h"
 
 class ActivityRankingPlugin: public Plugin
 {
     Q_OBJECT
-    Q_CLASSINFO("D-Bus Interface", "org.kde.ActivityManager.ACTIVITYRANKING")
+    Q_CLASSINFO("D-Bus Interface", "org.kde.ActivityManager.ActivityRanking")
 
 public:
     ActivityRankingPlugin(QObject *parent = 0, const QVariantList & args = QVariantList());
     ~ActivityRankingPlugin();
 
     virtual bool init();
+
+public Q_SLOTS:
+    QStringList topActivities();
+    QList<ActivityData> activities();
+    void test();
 
 protected:
     void initDatabaseSchema();

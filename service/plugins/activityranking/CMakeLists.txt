@@ -12,6 +12,7 @@ include_directories(
 set(
    activityranking_SRCS
    activityranking.cpp
+   ActivityData.cpp
    ../../Plugin.cpp
    ../../SharedInfo.cpp
    )
