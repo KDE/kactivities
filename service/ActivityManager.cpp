@@ -303,6 +303,8 @@ ActivityManager::ActivityManager()
 
     QDBusConnection dbus = QDBusConnection::sessionBus();
     new ActivityManagerAdaptor(this);
+
+    dbus.registerService("org.kde.ActivityManager");
     dbus.registerObject("/ActivityManager", this);
 
     // ensureCurrentActivityIsRunning();
