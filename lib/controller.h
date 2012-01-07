@@ -27,7 +27,7 @@
 #include "consumer.h"
 
 #include <kurl.h>
-#include <kdemacros.h>
+#include "kactivities_export.h"
 
 namespace KActivities {
 
@@ -41,7 +41,7 @@ class ControllerPrivate;
  *
  * @since 4.5
  */
-class KDE_EXPORT Controller: public Consumer
+class KACTIVITIES_EXPORT Controller: public Consumer
 {
     Q_OBJECT
 
