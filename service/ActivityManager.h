@@ -191,6 +191,11 @@ public Q_SLOTS:
     bool IsFeatureOperational(const QString & feature) const;
 
 
+
+    // Temporary
+    void _SetActivityEncrypted(const QString & activity, bool encrypted);
+
+
 Q_SIGNALS:
     /**
      * This signal is emitted when the global

@@ -22,8 +22,11 @@
 
 #include <QObject>
 #include <QString>
+#include <QProcess>
 
 class EncryptionManager: public QObject {
+    Q_OBJECT
+
 public:
     virtual ~EncryptionManager();
 
@@ -31,7 +34,11 @@ public:
 
     bool isEnabled() const;
 
+public Q_SLOTS:
     void setActivityEncrypted(const QString & activity, bool encrypted);
+
+protected Q_SLOTS:
+    void processFinished(int exitCode, QProcess::ExitStatus exitStatus);
 
 private:
     EncryptionManager();

@@ -364,6 +364,11 @@ bool ActivityManager::IsFeatureOperational(const QString & feature) const
     return false;
 }
 
+void ActivityManager::_SetActivityEncrypted(const QString & activity, bool encrypted)
+{
+    EncryptionManager::self()->setActivityEncrypted(activity, encrypted);
+}
+
 // workspace activities control
 
 QString ActivityManager::CurrentActivity() const

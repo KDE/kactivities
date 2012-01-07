@@ -169,7 +169,7 @@ Info::Availability Info::availability() const
     if (Manager::self()->ListActivities().value().contains(d->id)) {
         result = BasicInfo;
 
-        if (Manager::self()->IsBackstoreAvailable()) {
+        if (Manager::self()->IsFeatureOperational("activity/resource-linking")) {
             result = Everything;
         }
     }
