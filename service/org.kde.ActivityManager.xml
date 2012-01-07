@@ -71,8 +71,9 @@
       <arg name="icon" type="s" direction="in"/>
     </method>
 
-    <method name="IsBackstoreAvailable">
+    <method name="IsFeatureOperational">
       <arg type="b" direction="out"/>
+      <arg name="id" type="s" direction="in"/>
     </method>
 
     <signal name="CurrentActivityChanged">

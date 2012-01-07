@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2010 Ivan Cukic <ivan.cukic(at)kde.org>
+ *   Copyright (C) 2010, 2011, 2012 Ivan Cukic <ivan.cukic(at)kde.org>
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License version 2,
@@ -38,9 +38,11 @@
     #include <Nepomuk/Resource>
 
     #define EXEC_NEPOMUK(A) NepomukActivityManager::self()->A
+    #define NEPOMUK_PRESENT NepomukActivityManager::self()->initialized()
 
 #else
     #define EXEC_NEPOMUK(A) // nepomuk disabled //
+    #define NEPOMUK_PRESENT false
 
 #endif
 
