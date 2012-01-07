@@ -27,7 +27,7 @@
 #include "info.h"
 
 #include <kurl.h>
-#include <kdemacros.h>
+#include "kactivities_export.h"
 
 namespace KActivities {
 
@@ -58,7 +58,7 @@ class ConsumerPrivate;
  *
  * @since 4.5
  */
-class KDE_EXPORT Consumer: public QObject {
+class KACTIVITIES_EXPORT Consumer: public QObject {
     Q_OBJECT
 
     Q_PROPERTY(QString currentActivity READ currentActivity)

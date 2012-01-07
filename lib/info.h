@@ -27,6 +27,8 @@
 #include <kurl.h>
 #include <kdemacros.h>
 
+#include "kactivities_export.h"
+
 namespace KActivities {
 
 class InfoPrivate;
@@ -39,7 +41,7 @@ class InfoPrivate;
  *
  * @since 4.5
  */
-class KDE_EXPORT Info: public QObject
+class KACTIVITIES_EXPORT Info: public QObject
 {
     Q_OBJECT
 

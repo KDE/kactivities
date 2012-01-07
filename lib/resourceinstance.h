@@ -24,7 +24,7 @@
 #include <QWidget>
 #include <QUrl>
 
-#include <kdemacros.h>
+#include "kactivities_export.h"
 
 namespace KActivities {
 
@@ -50,7 +50,7 @@ class ResourceInstancePrivate;
  * systems - everything is done under-the-hood automatically.
  *
  */
-class KDE_EXPORT ResourceInstance: public QObject
+class KACTIVITIES_EXPORT ResourceInstance: public QObject
 {
     Q_OBJECT
 
