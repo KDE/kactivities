@@ -79,6 +79,10 @@
       <arg name="activity" type="s" direction="in"/>
       <arg name="encrypted" type="b" direction="in"/>
     </method>
+    <method name="_MountActivityEncrypted">
+      <arg name="activity" type="s" direction="in"/>
+      <arg name="encrypted" type="b" direction="in"/>
+    </method>
 
     <signal name="CurrentActivityChanged">
       <arg name="id" type="s" direction="out"/>

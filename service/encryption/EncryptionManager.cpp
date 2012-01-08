@@ -18,6 +18,7 @@
  */
 
 #include "EncryptionManager.h"
+#include "EncfsInterface.h"
 
 #include <unistd.h>
 #include <config-features.h>
@@ -41,7 +42,6 @@ public:
         MountPointFolder = 2
     };
 
-    QString askForPassword() const;
     QString folderName(const QString & activity, Folder folder) const;
     void moveFiles(const QString & from, const QString & to);
 
@@ -51,9 +51,10 @@ public:
     void umountEncryptedFolder(const QString & activity);
 
     EncryptionManager * const q;
-    QHash < QString, QProcess * > encfsProcesses;
     QDir activitiesFolder;
     bool enabled: 1;
+
+    EncfsInterface encfs;
 };
 
 EncryptionManager * EncryptionManager::s_instance = 0;
@@ -79,7 +80,8 @@ EncryptionManager::EncryptionManager()
     }
 
     // TODO: localize
-    d->activitiesFolder = QDir(QDir::home().filePath("Activities"));
+    d->activitiesFolder = QDir(QDir::home().filePath("Activities/.data/"));
+    d->activitiesFolder.mkpath(d->activitiesFolder.path());
     kDebug() << "Main root folder" << d->activitiesFolder;
 }
 
@@ -106,6 +108,17 @@ void EncryptionManager::setActivityEncrypted(const QString & activity, bool encr
     }
 }
 
+void EncryptionManager::mountActivityEncrypted(const QString & activity, bool encrypted)
+{
+    if (encrypted) {
+        d->mountEncryptedFolder(activity);
+
+    } else {
+        d->umountEncryptedFolder(activity);
+
+    }
+}
+
 QString EncryptionManager::Private::folderName(const QString & activity, Folder folder) const
 {
     switch (folder) {
@@ -123,23 +136,6 @@ QString EncryptionManager::Private::folderName(const QString & activity, Folder 
     return QString();
 }
 
-QString EncryptionManager::Private::askForPassword() const
-{
-    QProcess kdialog;
-
-    kdialog.start("kdialog",
-            QStringList()
-            << "--password"
-            << i18n("Enter password to use for encryption")
-        );
-
-    if (kdialog.waitForFinished(-1)) {
-        return kdialog.readAllStandardOutput();
-    }
-
-    return QString();
-}
-
 void EncryptionManager::Private::setupActivityEncryption(const QString & activity)
 {
     // Checking whether the encryption folder is already present
@@ -147,66 +143,21 @@ void EncryptionManager::Private::setupActivityEncryption(const QString & activit
     const QString & encryptedFolderName = folderName(activity, EncryptedFolder);
     const QString & mountFolderName = folderName(activity, MountPointFolder);
 
-    kDebug() << "This is the name that should be" << activitiesFolder << encryptedFolderName;
-
-    if (activitiesFolder.exists(encryptedFolderName)) {
-        QDir encryptedFolder = activitiesFolder;
-        encryptedFolder.cd(encryptedFolderName);
-
-        kDebug() << "encryptedFolder" << encryptedFolder.path();
-
-        const QStringList & files = encryptedFolder.entryList(QDir::Hidden | QDir::Files);
-
-        foreach (const QString & file, files) {
-            if (file.startsWith(".encfs")) {
-                // We already have the encfs directory set up, exiting
-                return;
-            }
-        }
-    }
-
-    kDebug() << "creating encryptedFolder" << activitiesFolder.filePath(encryptedFolderName) <<
-    activitiesFolder.mkdir(encryptedFolderName);
-
-    kDebug() << "creating mountFolder" << activitiesFolder.filePath(mountFolderName) <<
-    activitiesFolder.mkdir(mountFolderName);
-
-    // Asking for the password, twice
-    QString password = askForPassword();
-
-    if (password != askForPassword()) {
-        // wrong password
+    if (encfs.isEncryptionInitialized(activitiesFolder.filePath(encryptedFolderName))) {
         return;
     }
 
     // Setting the encryption
 
-    kDebug() << "Executing" << ENCFS_PATH << "-f -S"
-            << activitiesFolder.filePath(encryptedFolderName)
-            << activitiesFolder.filePath(mountFolderName);
-
-    QProcess * encfs = new QProcess(q);
-    encfs->setProcessChannelMode(QProcess::ForwardedChannels);
-
-    connect(encfs, SIGNAL(finished(int, QProcess::ExitStatus)),
-            q, SLOT(processFinished(int, QProcess::ExitStatus)));
-
-    encfs->start(ENCFS_PATH, QStringList()
-            << "-f" // foreground mode
-            << "-S" // password read from stdin
-            << activitiesFolder.filePath(encryptedFolderName)
-            << activitiesFolder.filePath(mountFolderName)
-        );
-
-    encfs->write("p\n"); // paranoia mode
-    encfs->write(password.toAscii()); // writing the password
-    encfs->write("\n");
-
-    encfsProcesses[activity] = encfs;
+    encfs.mount(
+        activitiesFolder.filePath(encryptedFolderName),
+        activitiesFolder.filePath(mountFolderName)
+    );
 
     // TODO:
     // The above will leave the system mounted. We should probably check
     // whether the activity is current, and if not, unmount it.
+    // Probably not, since we are going to mount only current activity
 }
 
 void EncryptionManager::Private::terminateActivityEncryption(const QString & activity)
@@ -242,22 +193,20 @@ void EncryptionManager::Private::terminateActivityEncryption(const QString & act
 
 void EncryptionManager::Private::mountEncryptedFolder(const QString & activity)
 {
-    // Create mount point
     // Mount the file system
+    encfs.mount(
+            activitiesFolder.filePath(folderName(activity, EncryptedFolder)),
+            activitiesFolder.filePath(folderName(activity, MountPointFolder))
+        );
+
     // Set a symbolic link for current activity
 }
 
 void EncryptionManager::Private::umountEncryptedFolder(const QString & activity)
 {
-    if (!encfsProcesses.contains(activity)) return;
-
-    // terminate encfs process
-    delete encfsProcesses[activity];
-    encfsProcesses.remove(activity);
-
-    activitiesFolder.rmdir(folderName(activity, MountPointFolder));
-
-    // remove the symbolic link if this is the current activity
+    encfs.umount(
+            activitiesFolder.filePath(folderName(activity, MountPointFolder))
+        );
 }
 
 void EncryptionManager::Private::moveFiles(const QString & from, const QString & to)
@@ -265,16 +214,10 @@ void EncryptionManager::Private::moveFiles(const QString & from, const QString &
 
 }
 
-void EncryptionManager::processFinished(int exitCode, QProcess::ExitStatus exitStatus)
+bool EncryptionManager::isEncryptionInitialized(const QString & activity)
 {
-    QProcess * process = static_cast < QProcess * > (sender());
-
-    if (process->exitCode() != 0) {
-        // There is an error calling encfs
-        QString activity = d->encfsProcesses.key(process);
-
-        kDebug() << "ERROR: Mounting failed! Probably a wrong password";
-    }
+    return d->encfs.isEncryptionInitialized(
+            d->activitiesFolder.filePath(d->folderName(activity, Private::EncryptedFolder))
+        );
 }
-
 

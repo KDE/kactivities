@@ -66,6 +66,7 @@ set(activity_manager_SRCS
     Event.cpp
     SharedInfo.cpp
     encryption/EncryptionManager.cpp
+    encryption/EncfsInterface.cpp
     main.cpp
     ${sdo_SRCS}
     )

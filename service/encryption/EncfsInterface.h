@@ -17,36 +17,37 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef ENCRYPTIONMANAGER_H_
-#define ENCRYPTIONMANAGER_H_
+#ifndef ENCFSINTERFACE_H_
+#define ENCFSINTERFACE_H_
 
 #include <QObject>
-#include <QString>
 #include <QProcess>
 
-class EncryptionManager: public QObject {
+/**
+ * EncfsInterface
+ */
+class EncfsInterface: public QObject {
     Q_OBJECT
 
 public:
-    virtual ~EncryptionManager();
+    EncfsInterface();
+    virtual ~EncfsInterface();
 
-    static EncryptionManager * self();
+    void mount(const QString & what, const QString & mountPoint);
+    void umount(const QString & mountPoint);
 
-    bool isEnabled() const;
-    bool isEncryptionInitialized(const QString & activity);
+    bool isEncryptionInitialized(const QString & path);
 
-public Q_SLOTS:
-    void setActivityEncrypted(const QString & activity, bool encrypted);
-    void mountActivityEncrypted(const QString & activity, bool encrypted);
+Q_SIGNALS:
+    void error();
+
+private Q_SLOTS:
+    void processFinished(int exitCode, QProcess::ExitStatus exitStatus);
 
 private:
-    EncryptionManager();
-
-    static EncryptionManager * s_instance;
-
     class Private;
     Private * const d;
 };
 
-#endif // ENCRYPTIONMANAGER_H_
+#endif // ENCFSINTERFACE_H_
 

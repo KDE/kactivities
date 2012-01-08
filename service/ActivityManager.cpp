@@ -369,6 +369,11 @@ void ActivityManager::_SetActivityEncrypted(const QString & activity, bool encry
     EncryptionManager::self()->setActivityEncrypted(activity, encrypted);
 }
 
+void ActivityManager::_MountActivityEncrypted(const QString & activity, bool encrypted)
+{
+    EncryptionManager::self()->mountActivityEncrypted(activity, encrypted);
+}
+
 // workspace activities control
 
 QString ActivityManager::CurrentActivity() const
