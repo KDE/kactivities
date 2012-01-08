@@ -87,7 +87,7 @@ Consumer::ServiceStatus Consumer::serviceStatus()
         return NotRunning;
     }
 
-    if (!Manager::self()->IsBackstoreAvailable()) {
+    if (!Manager::self()->IsFeatureOperational("activity/resource-linking")) {
         return BareFunctionality;
     }
 

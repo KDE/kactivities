@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2010 Ivan Cukic <ivan.cukic(at)kde.org>
+ *   Copyright (C) 2010, 2011, 2012 Ivan Cukic <ivan.cukic(at)kde.org>
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License version 2,
@@ -185,9 +185,17 @@ public Q_SLOTS:
 
 
     /**
-     * @returns whether the backstore (Nepomuk) is available
+     * @returns whether the feature is available
+     * @param feature feature
      */
-    bool IsBackstoreAvailable() const;
+    bool IsFeatureOperational(const QString & feature) const;
+
+
+
+    // Temporary
+    void SetActivityEncrypted(const QString & activity, bool encrypted);
+    void _MountActivityEncrypted(const QString & activity, bool encrypted);
+
 
 Q_SIGNALS:
     /**

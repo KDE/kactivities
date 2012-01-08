@@ -1,0 +1,315 @@
+/*
+ *   Copyright (C) 2012 Ivan Cukic <ivan.cukic(at)kde.org>
+ *
+ *   This program is free software; you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License version 2,
+ *   or (at your option) any later version, as published by the Free
+ *   Software Foundation
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details
+ *
+ *   You should have received a copy of the GNU General Public
+ *   License along with this program; if not, write to the
+ *   Free Software Foundation, Inc.,
+ *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
+
+#include "EncryptionManager.h"
+#include "EncfsInterface.h"
+
+#include <unistd.h>
+#include <config-features.h>
+
+#include <QHash>
+#include <QProcess>
+#include <QDir>
+#include <QString>
+
+#include <KDebug>
+#include <KLocale>
+#include <KConfig>
+#include <KConfigGroup>
+
+class EncryptionManager::Private {
+public:
+    Private(EncryptionManager * parent)
+        : q(parent)
+    {
+    };
+
+    enum Folder {
+        NormalFolder = 0,
+        EncryptedFolder = 1,
+        MountPointFolder = 2
+    };
+
+    QString folderName(const QString & activity, Folder folder) const;
+    void moveFiles(const QString & from, const QString & to);
+
+    void setupActivityEncryption(const QString & activity);
+    void terminateActivityEncryption(const QString & activity);
+    void mountEncryptedFolder(const QString & activity);
+    void umountEncryptedFolder(const QString & activity);
+
+    EncryptionManager * const q;
+    const ActivityManager * manager;
+
+    QDir activitiesFolder;
+    QDir activitiesDataFolder;
+
+    QString currentActivity;
+    bool enabled: 1;
+
+    EncfsInterface encfs;
+};
+
+EncryptionManager * EncryptionManager::s_instance = 0;
+
+EncryptionManager * EncryptionManager::self(const ActivityManager * manager)
+{
+    if (!s_instance) {
+        s_instance = new EncryptionManager(manager);
+    }
+
+    return s_instance;
+}
+
+EncryptionManager::EncryptionManager(const ActivityManager * m)
+    : d(new Private(this))
+{
+    d->manager = m;
+    int permissions = ::access(FUSERMOUNT_PATH, X_OK);
+
+    d->enabled = (permissions == 0);
+
+    if (!d->enabled) {
+        kDebug() << "Encryption is not enabled";
+    }
+
+    // Getting the activities folder
+    // TODO: This needs to be tested by people actually using i18n :)
+
+    QString activityFolderName = i18nc("Name for the activities folder in user's home", "Activities");
+
+    KConfig config("activitymanagerrc");
+    KConfigGroup configGroup(&config, "EncryptionManager");
+
+    QString oldActivityFolderName = configGroup.readEntry("activityFolderName", activityFolderName);
+
+    if (oldActivityFolderName != activityFolderName) {
+        if (!QDir::home().rename(oldActivityFolderName, activityFolderName)) {
+            activityFolderName = oldActivityFolderName;
+        }
+    }
+
+    configGroup.writeEntry("activityFolderName", activityFolderName);
+
+
+    d->activitiesFolder = QDir(QDir::home().filePath(activityFolderName + "/"));
+    d->activitiesDataFolder = QDir(QDir::home().filePath(activityFolderName + "/.data/"));
+    d->activitiesDataFolder.mkpath(d->activitiesDataFolder.path());
+
+    kDebug() << "Main root folder" << d->activitiesDataFolder;
+
+    connect(m, SIGNAL(CurrentActivityChanged(QString)),
+            this, SLOT(currentActivityChanged(QString)));
+
+    connect(m, SIGNAL(ActivityRemoved(QString)),
+            this, SLOT(activityRemoved(QString)));
+
+    connect(m, SIGNAL(ActivityChanged(QString)),
+            this, SLOT(activityRemoved(QString)));
+
+    connect(m, SIGNAL(aboutToQuit()),
+            this, SLOT(unmountAll()));
+
+    currentActivityChanged(m->CurrentActivity());
+}
+
+EncryptionManager::~EncryptionManager()
+{
+    delete d;
+}
+
+bool EncryptionManager::isEnabled() const
+{
+    return d->enabled;
+}
+
+// Folder setup
+
+void EncryptionManager::setActivityEncrypted(const QString & activity, bool encrypted)
+{
+    if (encrypted) {
+        d->setupActivityEncryption(activity);
+
+    } else {
+        d->terminateActivityEncryption(activity);
+
+    }
+}
+
+void EncryptionManager::mountActivityEncrypted(const QString & activity, bool encrypted)
+{
+    if (encrypted) {
+        d->mountEncryptedFolder(activity);
+
+    } else {
+        d->umountEncryptedFolder(activity);
+
+    }
+}
+
+QString EncryptionManager::Private::folderName(const QString & activity, Folder folder) const
+{
+    switch (folder) {
+        case NormalFolder:
+            return activity;
+
+        case EncryptedFolder:
+            return ".crypt-" + activity;
+
+        case MountPointFolder:
+            return "crypt-" + activity;
+
+    }
+
+    return QString();
+}
+
+void EncryptionManager::Private::setupActivityEncryption(const QString & activity)
+{
+    // Checking whether the encryption folder is already present
+
+    const QString & encryptedFolderName = folderName(activity, EncryptedFolder);
+    const QString & mountFolderName = folderName(activity, MountPointFolder);
+
+    if (encfs.isEncryptionInitialized(activitiesDataFolder.filePath(encryptedFolderName))) {
+        return;
+    }
+
+    // Setting the encryption
+
+    encfs.mount(
+        activitiesDataFolder.filePath(encryptedFolderName),
+        activitiesDataFolder.filePath(mountFolderName)
+    );
+
+    // TODO:
+    // The above will leave the system mounted. We should probably check
+    // whether the activity is current, and if not, unmount it.
+    // Probably not, since we are going to mount only current activity
+}
+
+void EncryptionManager::Private::terminateActivityEncryption(const QString & activity)
+{
+    // mount
+    mountEncryptedFolder(activity);
+
+    // move files
+    moveFiles(
+            folderName(activity, MountPointFolder),
+            folderName(activity, NormalFolder)
+        );
+
+    // unmount
+    umountEncryptedFolder(activity);
+
+    // remove dirs
+    QDir dir = activitiesDataFolder;
+    dir.cd(folderName(activity, EncryptedFolder));
+
+    const QStringList & files = dir.entryList(QDir::Hidden);
+
+    foreach (const QString & file, files) {
+        if (file.startsWith(".encfs")) {
+            dir.remove(file);
+            // ::unlink(file.toAscii());
+        }
+    }
+
+    activitiesDataFolder.rmdir(folderName(activity, EncryptedFolder));
+    activitiesDataFolder.rmdir(folderName(activity, MountPointFolder));
+}
+
+void EncryptionManager::Private::mountEncryptedFolder(const QString & activity)
+{
+    // Mount the file system
+    encfs.mount(
+            activitiesDataFolder.filePath(folderName(activity, EncryptedFolder)),
+            activitiesDataFolder.filePath(folderName(activity, MountPointFolder))
+        );
+
+    // Set a symbolic link for current activity
+}
+
+void EncryptionManager::Private::umountEncryptedFolder(const QString & activity)
+{
+    encfs.umount(
+            activitiesDataFolder.filePath(folderName(activity, MountPointFolder))
+        );
+}
+
+void EncryptionManager::unmountAll()
+{
+    d->encfs.umountAll();
+}
+
+void EncryptionManager::Private::moveFiles(const QString & from, const QString & to)
+{
+
+}
+
+bool EncryptionManager::isEncryptionInitialized(const QString & activity)
+{
+    return d->encfs.isEncryptionInitialized(
+            d->activitiesDataFolder.filePath(d->folderName(activity, Private::EncryptedFolder))
+        );
+}
+
+void EncryptionManager::activityChanged(const QString & activity)
+{
+}
+
+void EncryptionManager::activityRemoved(const QString & activity)
+{
+}
+
+void EncryptionManager::currentActivityChanged(const QString & activity)
+{
+    const QString & currentFolderName = i18nc("Directory name for the current activity", "Current");
+    kDebug() << "This is now the current activity" << activity;
+
+    if (!d->currentActivity.isEmpty() && isEncryptionInitialized(d->currentActivity)) {
+        kDebug() << "Unmounting" << d->currentActivity << d->manager->ActivityName(d->currentActivity);
+        d->umountEncryptedFolder(d->currentActivity);
+    }
+
+    d->currentActivity = activity;
+
+    if (isEncryptionInitialized(activity)) {
+        kDebug() << "Mounting" << activity << d->manager->ActivityName(activity);
+
+        kDebug() << "It is initialized, we are creating the link" <<
+                d->activitiesDataFolder.filePath(d->folderName(activity, Private::MountPointFolder)) <<
+                d->activitiesFolder.filePath(currentFolderName);
+
+        QFile::link(
+                d->activitiesDataFolder.filePath(d->folderName(activity, Private::MountPointFolder)),
+                d->activitiesFolder.filePath(currentFolderName)
+            );
+
+        d->mountEncryptedFolder(activity);
+
+    } else {
+        kDebug() << "It is not initialized, removing the link" <<
+                d->activitiesFolder.filePath(currentFolderName);
+
+        QFile::remove(d->activitiesFolder.filePath(currentFolderName));
+
+    }
+}
+

@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2010 Ivan Cukic <ivan.cukic(at)kde.org>
+ *   Copyright (C) 2010, 2011, 2012 Ivan Cukic <ivan.cukic(at)kde.org>
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License version 2,
@@ -20,6 +20,7 @@
 #include "ActivityManager.h"
 #include "ActivityManager_p.h"
 #include "NepomukActivityManager.h"
+#include "encryption/EncryptionManager.h"
 
 #include <QUuid>
 #include <QDBusConnection>
@@ -300,7 +301,6 @@ ActivityManager::ActivityManager()
             SharedInfo::self()->m_windows,
             SharedInfo::self()->m_resources))
 {
-
     QDBusConnection dbus = QDBusConnection::sessionBus();
     new ActivityManagerAdaptor(this);
 
@@ -311,6 +311,7 @@ ActivityManager::ActivityManager()
 
     KCrash::setFlags(KCrash::AutoRestart);
 
+    EncryptionManager::self(this);
     EventProcessor::self();
 
     // kDebug() << "RegisterResourceEvent open" << d->currentActivity;
@@ -349,11 +350,29 @@ void ActivityManager::Stop()
     QCoreApplication::quit();
 }
 
-bool ActivityManager::IsBackstoreAvailable() const
+bool ActivityManager::IsFeatureOperational(const QString & feature) const
 {
-    return true;
+    if (feature == "activity/resource-linking") {
+        return NEPOMUK_PRESENT;
+    }
+
+    if (feature == "activity/encryption") {
+        return EncryptionManager::self()->isEnabled();
+    }
+
+
+    return false;
 }
 
+void ActivityManager::SetActivityEncrypted(const QString & activity, bool encrypted)
+{
+    EncryptionManager::self()->setActivityEncrypted(activity, encrypted);
+}
+
+void ActivityManager::_MountActivityEncrypted(const QString & activity, bool encrypted)
+{
+    EncryptionManager::self()->mountActivityEncrypted(activity, encrypted);
+}
 
 // workspace activities control
 

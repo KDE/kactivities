@@ -1,0 +1,10 @@
+---------- lib:
+The library can be used even if the service is not running nor installed.
+The deps are minimal
+
+---------- service:
+- activity encryption
+For the encryption to work, FUSE needs to be propertly set up and encfs installed.
+If the locations of fusermount and encfs are not standard (/bin/fusermount and /usr/bin/encfs)
+you can set the custom ones via:
+    cmake -DFUSERMOUNT_PATH="/path/to/fusermount" -DENCFS_PATH="/path/to/encfs" ....
