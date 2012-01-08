@@ -198,6 +198,14 @@ void EncfsInterface::processFinished(int exitCode, QProcess::ExitStatus exitStat
     if (process->exitCode() != 0) {
         // There is an error calling encfs
         kDebug() << "ERROR: Mounting failed! Probably a wrong password";
+
+        QProcess::execute("kdialog", QStringList()
+                << "--title"
+                << i18n("Error")
+                << "--msgbox"
+                << i18n("Error setting up the encrypted folder for the activity.")
+            );
+
     }
 
     d->mounts.remove(mountPoint);

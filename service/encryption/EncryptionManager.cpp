@@ -30,6 +30,8 @@
 
 #include <KDebug>
 #include <KLocale>
+#include <KConfig>
+#include <KConfigGroup>
 
 class EncryptionManager::Private {
 public:
@@ -87,9 +89,27 @@ EncryptionManager::EncryptionManager(const ActivityManager * m)
         kDebug() << "Encryption is not enabled";
     }
 
-    // TODO: localize
-    d->activitiesFolder = QDir(QDir::home().filePath("Activities/"));
-    d->activitiesDataFolder = QDir(QDir::home().filePath("Activities/.data/"));
+    // Getting the activities folder
+    // TODO: This needs to be tested by people actually using i18n :)
+
+    QString activityFolderName = i18nc("Name for the activities folder in user's home", "Activities");
+
+    KConfig config("activitymanagerrc");
+    KConfigGroup configGroup(&config, "EncryptionManager");
+
+    QString oldActivityFolderName = configGroup.readEntry("activityFolderName", activityFolderName);
+
+    if (oldActivityFolderName != activityFolderName) {
+        if (!QDir::home().rename(oldActivityFolderName, activityFolderName)) {
+            activityFolderName = oldActivityFolderName;
+        }
+    }
+
+    configGroup.writeEntry("activityFolderName", activityFolderName);
+
+
+    d->activitiesFolder = QDir(QDir::home().filePath(activityFolderName + "/"));
+    d->activitiesDataFolder = QDir(QDir::home().filePath(activityFolderName + "/.data/"));
     d->activitiesDataFolder.mkpath(d->activitiesDataFolder.path());
 
     kDebug() << "Main root folder" << d->activitiesDataFolder;
@@ -260,6 +280,7 @@ void EncryptionManager::activityRemoved(const QString & activity)
 
 void EncryptionManager::currentActivityChanged(const QString & activity)
 {
+    const QString & currentFolderName = i18nc("Directory name for the current activity", "Current");
     kDebug() << "This is now the current activity" << activity;
 
     if (!d->currentActivity.isEmpty() && isEncryptionInitialized(d->currentActivity)) {
@@ -274,20 +295,20 @@ void EncryptionManager::currentActivityChanged(const QString & activity)
 
         kDebug() << "It is initialized, we are creating the link" <<
                 d->activitiesDataFolder.filePath(d->folderName(activity, Private::MountPointFolder)) <<
-                d->activitiesFolder.filePath("Current");
+                d->activitiesFolder.filePath(currentFolderName);
 
         QFile::link(
                 d->activitiesDataFolder.filePath(d->folderName(activity, Private::MountPointFolder)),
-                d->activitiesFolder.filePath("Current")
+                d->activitiesFolder.filePath(currentFolderName)
             );
 
         d->mountEncryptedFolder(activity);
 
     } else {
         kDebug() << "It is not initialized, removing the link" <<
-                d->activitiesFolder.filePath("Current");
+                d->activitiesFolder.filePath(currentFolderName);
 
-        QFile::remove(d->activitiesFolder.filePath("Current"));
+        QFile::remove(d->activitiesFolder.filePath(currentFolderName));
 
     }
 }
