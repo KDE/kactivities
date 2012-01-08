@@ -34,7 +34,9 @@
 class EncryptionManager::Private {
 public:
     Private(EncryptionManager * parent)
-        : q(parent) {};
+        : q(parent)
+    {
+    };
 
     enum Folder {
         NormalFolder = 0,
@@ -51,7 +53,12 @@ public:
     void umountEncryptedFolder(const QString & activity);
 
     EncryptionManager * const q;
+    const ActivityManager * manager;
+
     QDir activitiesFolder;
+    QDir activitiesDataFolder;
+
+    QString currentActivity;
     bool enabled: 1;
 
     EncfsInterface encfs;
@@ -59,18 +66,19 @@ public:
 
 EncryptionManager * EncryptionManager::s_instance = 0;
 
-EncryptionManager * EncryptionManager::self()
+EncryptionManager * EncryptionManager::self(const ActivityManager * manager)
 {
     if (!s_instance) {
-        s_instance = new EncryptionManager();
+        s_instance = new EncryptionManager(manager);
     }
 
     return s_instance;
 }
 
-EncryptionManager::EncryptionManager()
+EncryptionManager::EncryptionManager(const ActivityManager * m)
     : d(new Private(this))
 {
+    d->manager = m;
     int permissions = ::access(FUSERMOUNT_PATH, X_OK);
 
     d->enabled = (permissions == 0);
@@ -80,9 +88,25 @@ EncryptionManager::EncryptionManager()
     }
 
     // TODO: localize
-    d->activitiesFolder = QDir(QDir::home().filePath("Activities/.data/"));
-    d->activitiesFolder.mkpath(d->activitiesFolder.path());
-    kDebug() << "Main root folder" << d->activitiesFolder;
+    d->activitiesFolder = QDir(QDir::home().filePath("Activities/"));
+    d->activitiesDataFolder = QDir(QDir::home().filePath("Activities/.data/"));
+    d->activitiesDataFolder.mkpath(d->activitiesDataFolder.path());
+
+    kDebug() << "Main root folder" << d->activitiesDataFolder;
+
+    connect(m, SIGNAL(CurrentActivityChanged(QString)),
+            this, SLOT(currentActivityChanged(QString)));
+
+    connect(m, SIGNAL(ActivityRemoved(QString)),
+            this, SLOT(activityRemoved(QString)));
+
+    connect(m, SIGNAL(ActivityChanged(QString)),
+            this, SLOT(activityRemoved(QString)));
+
+    connect(m, SIGNAL(aboutToQuit()),
+            this, SLOT(unmountAll()));
+
+    currentActivityChanged(m->CurrentActivity());
 }
 
 EncryptionManager::~EncryptionManager()
@@ -143,15 +167,15 @@ void EncryptionManager::Private::setupActivityEncryption(const QString & activit
     const QString & encryptedFolderName = folderName(activity, EncryptedFolder);
     const QString & mountFolderName = folderName(activity, MountPointFolder);
 
-    if (encfs.isEncryptionInitialized(activitiesFolder.filePath(encryptedFolderName))) {
+    if (encfs.isEncryptionInitialized(activitiesDataFolder.filePath(encryptedFolderName))) {
         return;
     }
 
     // Setting the encryption
 
     encfs.mount(
-        activitiesFolder.filePath(encryptedFolderName),
-        activitiesFolder.filePath(mountFolderName)
+        activitiesDataFolder.filePath(encryptedFolderName),
+        activitiesDataFolder.filePath(mountFolderName)
     );
 
     // TODO:
@@ -175,7 +199,7 @@ void EncryptionManager::Private::terminateActivityEncryption(const QString & act
     umountEncryptedFolder(activity);
 
     // remove dirs
-    QDir dir = activitiesFolder;
+    QDir dir = activitiesDataFolder;
     dir.cd(folderName(activity, EncryptedFolder));
 
     const QStringList & files = dir.entryList(QDir::Hidden);
@@ -187,16 +211,16 @@ void EncryptionManager::Private::terminateActivityEncryption(const QString & act
         }
     }
 
-    activitiesFolder.rmdir(folderName(activity, EncryptedFolder));
-    activitiesFolder.rmdir(folderName(activity, MountPointFolder));
+    activitiesDataFolder.rmdir(folderName(activity, EncryptedFolder));
+    activitiesDataFolder.rmdir(folderName(activity, MountPointFolder));
 }
 
 void EncryptionManager::Private::mountEncryptedFolder(const QString & activity)
 {
     // Mount the file system
     encfs.mount(
-            activitiesFolder.filePath(folderName(activity, EncryptedFolder)),
-            activitiesFolder.filePath(folderName(activity, MountPointFolder))
+            activitiesDataFolder.filePath(folderName(activity, EncryptedFolder)),
+            activitiesDataFolder.filePath(folderName(activity, MountPointFolder))
         );
 
     // Set a symbolic link for current activity
@@ -205,8 +229,13 @@ void EncryptionManager::Private::mountEncryptedFolder(const QString & activity)
 void EncryptionManager::Private::umountEncryptedFolder(const QString & activity)
 {
     encfs.umount(
-            activitiesFolder.filePath(folderName(activity, MountPointFolder))
+            activitiesDataFolder.filePath(folderName(activity, MountPointFolder))
         );
+}
+
+void EncryptionManager::unmountAll()
+{
+    d->encfs.umountAll();
 }
 
 void EncryptionManager::Private::moveFiles(const QString & from, const QString & to)
@@ -217,7 +246,49 @@ void EncryptionManager::Private::moveFiles(const QString & from, const QString &
 bool EncryptionManager::isEncryptionInitialized(const QString & activity)
 {
     return d->encfs.isEncryptionInitialized(
-            d->activitiesFolder.filePath(d->folderName(activity, Private::EncryptedFolder))
+            d->activitiesDataFolder.filePath(d->folderName(activity, Private::EncryptedFolder))
         );
+}
+
+void EncryptionManager::activityChanged(const QString & activity)
+{
+}
+
+void EncryptionManager::activityRemoved(const QString & activity)
+{
+}
+
+void EncryptionManager::currentActivityChanged(const QString & activity)
+{
+    kDebug() << "This is now the current activity" << activity;
+
+    if (!d->currentActivity.isEmpty() && isEncryptionInitialized(d->currentActivity)) {
+        kDebug() << "Unmounting" << d->currentActivity << d->manager->ActivityName(d->currentActivity);
+        d->umountEncryptedFolder(d->currentActivity);
+    }
+
+    d->currentActivity = activity;
+
+    if (isEncryptionInitialized(activity)) {
+        kDebug() << "Mounting" << activity << d->manager->ActivityName(activity);
+
+        kDebug() << "It is initialized, we are creating the link" <<
+                d->activitiesDataFolder.filePath(d->folderName(activity, Private::MountPointFolder)) <<
+                d->activitiesFolder.filePath("Current");
+
+        QFile::link(
+                d->activitiesDataFolder.filePath(d->folderName(activity, Private::MountPointFolder)),
+                d->activitiesFolder.filePath("Current")
+            );
+
+        d->mountEncryptedFolder(activity);
+
+    } else {
+        kDebug() << "It is not initialized, removing the link" <<
+                d->activitiesFolder.filePath("Current");
+
+        QFile::remove(d->activitiesFolder.filePath("Current"));
+
+    }
 }
 

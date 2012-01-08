@@ -301,7 +301,6 @@ ActivityManager::ActivityManager()
             SharedInfo::self()->m_windows,
             SharedInfo::self()->m_resources))
 {
-
     QDBusConnection dbus = QDBusConnection::sessionBus();
     new ActivityManagerAdaptor(this);
 
@@ -312,6 +311,7 @@ ActivityManager::ActivityManager()
 
     KCrash::setFlags(KCrash::AutoRestart);
 
+    EncryptionManager::self(this);
     EventProcessor::self();
 
     // kDebug() << "RegisterResourceEvent open" << d->currentActivity;

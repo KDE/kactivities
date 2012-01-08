@@ -30,11 +30,12 @@ class EncfsInterface: public QObject {
     Q_OBJECT
 
 public:
-    EncfsInterface();
+    EncfsInterface(QObject * parent = 0);
     virtual ~EncfsInterface();
 
     void mount(const QString & what, const QString & mountPoint);
     void umount(const QString & mountPoint);
+    void umountAll();
 
     bool isEncryptionInitialized(const QString & path);
 

@@ -24,13 +24,15 @@
 #include <QString>
 #include <QProcess>
 
+#include "ActivityManager.h"
+
 class EncryptionManager: public QObject {
     Q_OBJECT
 
 public:
     virtual ~EncryptionManager();
 
-    static EncryptionManager * self();
+    static EncryptionManager * self(const ActivityManager * manager = 0);
 
     bool isEnabled() const;
     bool isEncryptionInitialized(const QString & activity);
@@ -39,8 +41,13 @@ public Q_SLOTS:
     void setActivityEncrypted(const QString & activity, bool encrypted);
     void mountActivityEncrypted(const QString & activity, bool encrypted);
 
+    void currentActivityChanged(const QString & activity);
+    void activityRemoved(const QString & activity);
+    void activityChanged(const QString & activity);
+    void unmountAll();
+
 private:
-    EncryptionManager();
+    EncryptionManager(const ActivityManager * m);
 
     static EncryptionManager * s_instance;
 

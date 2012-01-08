@@ -51,6 +51,8 @@ QString EncfsInterface::Private::askForPassword() const
 
     kdialog.start("kdialog",
             QStringList()
+            << "--title"
+            << i18n("Activity password")
             << "--password"
             << i18n("Enter password to use for encryption")
         );
@@ -75,14 +77,15 @@ QString EncfsInterface::Private::askForPassword(bool twice) const
     return result;
 }
 
-EncfsInterface::EncfsInterface()
-    : d(new Private(this))
+EncfsInterface::EncfsInterface(QObject * parent)
+    : QObject(parent), d(new Private(this))
 {
 }
 
 EncfsInterface::~EncfsInterface()
 {
-    qDeleteAll(d->mounts.values());
+    umountAll();
+
     delete d;
 }
 
@@ -99,6 +102,17 @@ bool EncfsInterface::isEncryptionInitialized(const QString & path)
     }
 
     return false;
+}
+
+void EncfsInterface::umountAll()
+{
+    kDebug() << "Unmounting everything";
+
+    foreach (const QString & mount, d->mounts.keys()) {
+        umount(mount);
+    }
+
+    d->mounts.clear();
 }
 
 void EncfsInterface::mount(const QString & what, const QString & mountPoint)
