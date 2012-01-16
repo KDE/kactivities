@@ -120,6 +120,12 @@ public:
     State state() const;
 
     /**
+     * @returns true if encrypted
+     * @since 4.8
+     */
+    bool isEncrypted() const;
+
+    /**
      * This function is provided for convenience.
      * @returns the name of the specified activity
      * @param id id of the activity
