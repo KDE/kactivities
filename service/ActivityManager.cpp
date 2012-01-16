@@ -369,6 +369,11 @@ void ActivityManager::SetActivityEncrypted(const QString & activity, bool encryp
     EncryptionManager::self()->setActivityEncrypted(activity, encrypted);
 }
 
+bool ActivityManager::IsActivityEncrypted(const QString & activity) const
+{
+    return EncryptionManager::self()->isEncryptionInitialized(activity);
+}
+
 void ActivityManager::_MountActivityEncrypted(const QString & activity, bool encrypted)
 {
     EncryptionManager::self()->mountActivityEncrypted(activity, encrypted);
