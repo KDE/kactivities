@@ -1,5 +1,6 @@
 /*
  *   Copyright (C) 2012 Ivan Cukic <ivan.cukic(at)kde.org>
+ *   Copyright (C) 2012 Lamarque V. Souza <lamarque@kde.org>
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License version 2,
@@ -17,64 +18,69 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#include "EncfsInterface.h"
+#include "EncfsInterface_p.h"
 #include <config-features.h>
 
-#include <QHash>
-#include <QProcess>
 #include <QDir>
 #include <QStringList>
 
 #include <KLocale>
 #include <KDebug>
 
-class EncfsInterface::Private {
-public:
-    Private(EncfsInterface * parent)
-        : q(parent)
-    {
-    }
-
-    QString askForPassword() const;
-    QString askForPassword(bool twice) const;
-
-    QHash < QString, QProcess* > mounts;
-
-    QProcess * startEncfs(const QString & what, const QString & mountPoint, const QString & password, bool init = false);
-
-    EncfsInterface * const q;
-};
-
-QString EncfsInterface::Private::askForPassword() const
+void EncfsInterface::Private::askForPassword()
 {
-    QProcess kdialog;
-
-    kdialog.start("kdialog",
-            QStringList()
-            << "--title"
-            << i18n("Activity password")
-            << "--password"
-            << i18n("Enter password to use for encryption")
-        );
-
-    if (kdialog.waitForFinished(-1)) {
-        return kdialog.readAllStandardOutput().trimmed();
+    if (kdialog) {
+        kWarning() << "kdialog already running";
+        return;
     }
 
-    return QString();
+    kdialog = new QProcess(this);
+    connect(kdialog, SIGNAL(finished(int,QProcess::ExitStatus)), SLOT(onKdialogFinished(int,QProcess::ExitStatus)));
+
+    kdialog->start("kdialog",
+               QStringList()
+               << "--title"
+               << i18n("Activity password")
+               << "--password"
+               << i18n("Enter password to use for encryption")
+           );
 }
 
-QString EncfsInterface::Private::askForPassword(bool twice) const
+void EncfsInterface::Private::onKdialogFinished(int exitCode, QProcess::ExitStatus exitStatus)
 {
-    QString result = askForPassword();
-
-    if (twice && !result.isEmpty()) {
-        if (result != askForPassword()) {
-            return QString();
-        }
+    if (exitCode || exitStatus != QProcess::NormalExit) {
+        kDebug() << "kdialog returned error";
+        emit gotPassword(QString());
+        kdialog->deleteLater();
+        kdialog = 0;
+        return;
     }
 
-    return result;
+    QString result = kdialog->readAllStandardOutput().trimmed();
+    kdialog->deleteLater();
+    kdialog = 0;
+
+    if (firstPasswordCandidate.isEmpty()) {
+        if (twice && !result.isEmpty()) {
+            firstPasswordCandidate = result;
+            askForPassword();
+        } else {
+            emit gotPassword(result);
+        }
+    } else {
+        if (firstPasswordCandidate == result) {
+            emit gotPassword(result);
+        } else {
+            emit gotPassword(QString());
+        }
+    }
+}
+
+void EncfsInterface::Private::askForPassword(bool twice)
+{
+    twice = twice;
+    firstPasswordCandidate.clear();
+    askForPassword();
 }
 
 EncfsInterface::EncfsInterface(QObject * parent)
@@ -119,12 +125,19 @@ void EncfsInterface::mount(const QString & what, const QString & mountPoint)
 {
     if (d->mounts.contains(mountPoint)) return;
 
-    bool shouldInitialize = !isEncryptionInitialized(what);
+    d->shouldInitialize = !isEncryptionInitialized(what);
+    d->what = what;
+    d->mountPoint = mountPoint;
 
-    // Getting the password
+    // Asynchronously getting the password
 
-    QString password = d->askForPassword(/* twice = */ shouldInitialize);
+    connect(d, SIGNAL(gotPassword(QString)), SLOT(gotPassword(QString)));
+    QMetaObject::invokeMethod(d, "askForPassword", Qt::QueuedConnection,
+                              Q_ARG(bool, /* twice = */ d->shouldInitialize));
+}
 
+void EncfsInterface::gotPassword(const QString & password)
+{
     if (password.isEmpty()) {
         // TODO: Report error - empty password
         return;
@@ -134,11 +147,11 @@ void EncfsInterface::mount(const QString & what, const QString & mountPoint)
     // we are doing it always just in case
 
     QDir dir;
-    dir.mkpath(what);
-    dir.mkpath(mountPoint);
+    dir.mkpath(d->what);
+    dir.mkpath(d->mountPoint);
 
     // Setting the encryption
-    d->startEncfs(what, mountPoint, password, /* initialize = */ shouldInitialize);
+    d->startEncfs(d->what, d->mountPoint, password, /* initialize = */ d->shouldInitialize);
 }
 
 void EncfsInterface::umount(const QString & mountPoint)
@@ -191,13 +204,17 @@ QProcess * EncfsInterface::Private::startEncfs(const QString & what,
 
 void EncfsInterface::processFinished(int exitCode, QProcess::ExitStatus exitStatus)
 {
-    QProcess * process = static_cast < QProcess * > (sender());
+    QProcess * process = qobject_cast < QProcess * > (sender());
 
     QString mountPoint = d->mounts.key(process);
+    d->mounts.remove(mountPoint);
 
-    if (process->exitCode() != 0) {
+    if (process->exitCode() == 0 && process->exitStatus() == QProcess::NormalExit) {
+        emit mounted(mountPoint);
+    } else {
         // There is an error calling encfs
         kDebug() << "ERROR: Mounting failed! Probably a wrong password";
+        QDir().rmpath(mountPoint);
 
         QProcess::execute("kdialog", QStringList()
                 << "--title"
@@ -205,10 +222,5 @@ void EncfsInterface::processFinished(int exitCode, QProcess::ExitStatus exitStat
                 << "--msgbox"
                 << i18n("Error setting up the encrypted folder for the activity.")
             );
-
     }
-
-    d->mounts.remove(mountPoint);
-    QDir().rmpath(mountPoint);
 }
-

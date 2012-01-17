@@ -41,9 +41,12 @@ public:
 
 Q_SIGNALS:
     void error();
+    void mounted(const QString & mountPoint);
+    void umounted(const QString & mountPoint);
 
 private Q_SLOTS:
     void processFinished(int exitCode, QProcess::ExitStatus exitStatus);
+    void gotPassword(const QString & password);
 
 private:
     class Private;
