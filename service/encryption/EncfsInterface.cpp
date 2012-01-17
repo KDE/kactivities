@@ -207,7 +207,6 @@ void EncfsInterface::processFinished(int exitCode, QProcess::ExitStatus exitStat
     QProcess * process = qobject_cast < QProcess * > (sender());
 
     QString mountPoint = d->mounts.key(process);
-    d->mounts.remove(mountPoint);
 
     if (process->exitCode() == 0 && process->exitStatus() == QProcess::NormalExit) {
         emit mounted(mountPoint);
@@ -215,6 +214,7 @@ void EncfsInterface::processFinished(int exitCode, QProcess::ExitStatus exitStat
         // There is an error calling encfs
         kDebug() << "ERROR: Mounting failed! Probably a wrong password";
         QDir().rmpath(mountPoint);
+        d->mounts.remove(mountPoint);
 
         QProcess::execute("kdialog", QStringList()
                 << "--title"
@@ -223,4 +223,5 @@ void EncfsInterface::processFinished(int exitCode, QProcess::ExitStatus exitStat
                 << i18n("Error setting up the encrypted folder for the activity.")
             );
     }
+    process->deleteLater();
 }
