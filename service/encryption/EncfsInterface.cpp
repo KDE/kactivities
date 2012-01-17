@@ -26,6 +26,7 @@
 
 #include <KLocale>
 #include <KDebug>
+#include <kmountpoint.h>
 
 void EncfsInterface::Private::askForPassword()
 {
@@ -123,7 +124,12 @@ void EncfsInterface::umountAll()
 
 void EncfsInterface::mount(const QString & what, const QString & mountPoint)
 {
-    if (d->mounts.contains(mountPoint)) return;
+    // warning: KMountPoint depends on /etc/mtab according to the documentation.
+    KMountPoint::Ptr ptr = KMountPoint::currentMountPoints().findByPath(mountPoint);
+    if (ptr && ptr.data()->mountPoint() == mountPoint) {
+        d->mounts.insert(mountPoint, 0);
+        return;
+    }
 
     d->shouldInitialize = !isEncryptionInitialized(what);
     d->what = what;
