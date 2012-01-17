@@ -46,7 +46,7 @@ Q_SIGNALS:
 
 private Q_SLOTS:
     void processFinished(int exitCode, QProcess::ExitStatus exitStatus);
-    void gotPassword(const QString & password);
+    void onGotPassword(const QString & password);
 
 private:
     class Private;

@@ -28,6 +28,11 @@
 #include <KDebug>
 #include <kmountpoint.h>
 
+EncfsInterface::Private::Private(EncfsInterface * parent)
+    : QObject(parent), q(parent), twice(false), kdialog(0), shouldInitialize(false)
+{
+}
+
 void EncfsInterface::Private::askForPassword()
 {
     if (kdialog) {
@@ -137,12 +142,20 @@ void EncfsInterface::mount(const QString & what, const QString & mountPoint)
 
     // Asynchronously getting the password
 
-    connect(d, SIGNAL(gotPassword(QString)), SLOT(gotPassword(QString)));
+    // I do not know why but the gotPassword signal is being emmited multiple times,
+    // one for each time you open a private activity. For example, if you open one
+    // private activity once, it works as expected, then you close it, if you open
+    // it a second time the gotPassword signal is emited twice. If you close the
+    // activity and open it a third time then the gotPassword will be emmited three
+    // times. The d pointer is always the same, it is not being allocated more than
+    // once. The command below prevent this problem.
+    QObject::disconnect(d, 0, this, 0);
+    connect(d, SIGNAL(gotPassword(QString)), SLOT(onGotPassword(QString)));
     QMetaObject::invokeMethod(d, "askForPassword", Qt::QueuedConnection,
                               Q_ARG(bool, /* twice = */ d->shouldInitialize));
 }
 
-void EncfsInterface::gotPassword(const QString & password)
+void EncfsInterface::onGotPassword(const QString & password)
 {
     if (password.isEmpty()) {
         // TODO: Report error - empty password
@@ -217,6 +230,16 @@ void EncfsInterface::processFinished(int exitCode, QProcess::ExitStatus exitStat
     if (process->exitCode() == 0 && process->exitStatus() == QProcess::NormalExit) {
         emit mounted(mountPoint);
     } else {
+        KMountPoint::Ptr ptr = KMountPoint::currentMountPoints().findByPath(mountPoint);
+        // probably we tried to mount an already mounted encfs.
+        // This should happen, anyway we do not need to bother the user with a popup.
+        if (ptr && ptr.data()->mountPoint() == mountPoint) {
+            kDebug() << mountPoint << "already mounted";
+            d->mounts.insert(mountPoint, 0);
+            emit mounted(mountPoint);
+            goto out;
+        }
+
         // There is an error calling encfs
         kDebug() << "ERROR: Mounting failed! Probably a wrong password";
         QDir().rmpath(mountPoint);
@@ -229,5 +252,7 @@ void EncfsInterface::processFinished(int exitCode, QProcess::ExitStatus exitStat
                 << i18n("Error setting up the encrypted folder for the activity.")
             );
     }
+
+out:
     process->deleteLater();
 }
