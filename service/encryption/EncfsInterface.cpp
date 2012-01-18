@@ -82,9 +82,9 @@ void EncfsInterface::Private::onKdialogFinished(int exitCode, QProcess::ExitStat
     }
 }
 
-void EncfsInterface::Private::askForPassword(bool twice)
+void EncfsInterface::Private::askForPassword(bool t)
 {
-    twice = twice;
+    twice = t;
     firstPasswordCandidate.clear();
     askForPassword();
 }
