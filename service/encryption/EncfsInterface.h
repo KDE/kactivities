@@ -42,10 +42,11 @@ public:
 Q_SIGNALS:
     void error();
     void mounted(const QString & mountPoint);
-    void umounted(const QString & mountPoint);
+    void unmounted(const QString & mountPoint);
 
 private Q_SLOTS:
-    void processFinished(int exitCode, QProcess::ExitStatus exitStatus);
+    void mountProcessFinished(int exitCode, QProcess::ExitStatus exitStatus);
+    void umountProcessFinished(int exitCode, QProcess::ExitStatus exitStatus);
     void onGotPassword(const QString & password);
 
 private:

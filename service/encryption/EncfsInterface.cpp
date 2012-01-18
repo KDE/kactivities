@@ -132,7 +132,9 @@ void EncfsInterface::mount(const QString & what, const QString & mountPoint)
     // warning: KMountPoint depends on /etc/mtab according to the documentation.
     KMountPoint::Ptr ptr = KMountPoint::currentMountPoints().findByPath(mountPoint);
     if (ptr && ptr.data()->mountPoint() == mountPoint) {
+        kDebug() << mountPoint << "already mounted";
         d->mounts.insert(mountPoint, 0);
+        emit mounted(mountPoint);
         return;
     }
 
@@ -179,9 +181,10 @@ void EncfsInterface::umount(const QString & mountPoint)
 
     QProcess * encfs = new QProcess(this);
     encfs->setProcessChannelMode(QProcess::ForwardedChannels);
+    encfs->setProperty("mountPoint", mountPoint);
 
     connect(encfs, SIGNAL(finished(int, QProcess::ExitStatus)),
-            encfs, SLOT(deleteLater()));
+                   SLOT(umountProcessFinished(int,QProcess::ExitStatus)));
 
     encfs->start(FUSERMOUNT_PATH, QStringList()
             << "-u" // unmount
@@ -189,18 +192,27 @@ void EncfsInterface::umount(const QString & mountPoint)
         );
 }
 
+void EncfsInterface::umountProcessFinished(int exitCode, QProcess::ExitStatus exitStatus)
+{
+    QProcess * process = qobject_cast < QProcess * > (sender());
+    emit unmounted(process->property("mountPoint").toString());
+    process->deleteLater();
+}
+
 QProcess * EncfsInterface::Private::startEncfs(const QString & what,
         const QString & mountPoint, const QString & password, bool init)
 {
+    // TODO: sometimes this command stalls QProcess and the signal finished is never emitted.
     kDebug() << "Executing" << ENCFS_PATH << "-f -S"
             << what
             << mountPoint;
 
     QProcess * encfs = new QProcess(q);
     encfs->setProcessChannelMode(QProcess::ForwardedChannels);
+    encfs->setProperty("mountPoint", mountPoint);
 
-    connect(encfs, SIGNAL(finished(int, QProcess::ExitStatus)),
-            q, SLOT(processFinished(int, QProcess::ExitStatus)));
+    connect(encfs, SIGNAL(finished(int,QProcess::ExitStatus)),
+            q, SLOT(mountProcessFinished(int,QProcess::ExitStatus)));
 
     encfs->start(ENCFS_PATH, QStringList()
             << "-f" // foreground mode
@@ -221,11 +233,10 @@ QProcess * EncfsInterface::Private::startEncfs(const QString & what,
     return encfs;
 }
 
-void EncfsInterface::processFinished(int exitCode, QProcess::ExitStatus exitStatus)
+void EncfsInterface::mountProcessFinished(int exitCode, QProcess::ExitStatus exitStatus)
 {
     QProcess * process = qobject_cast < QProcess * > (sender());
-
-    QString mountPoint = d->mounts.key(process);
+    QString mountPoint = process->property("mountPoint").toString();
 
     if (process->exitCode() == 0 && process->exitStatus() == QProcess::NormalExit) {
         emit mounted(mountPoint);

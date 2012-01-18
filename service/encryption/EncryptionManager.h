@@ -37,6 +37,9 @@ public:
     bool isEnabled() const;
     bool isEncryptionInitialized(const QString & activity);
 
+Q_SIGNALS:
+    void activityEncryptionChanged(const QString & activity, const bool encrypted);
+
 public Q_SLOTS:
     void setActivityEncrypted(const QString & activity, bool encrypted);
     void mountActivityEncrypted(const QString & activity, bool encrypted);

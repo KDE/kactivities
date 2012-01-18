@@ -312,6 +312,9 @@ ActivityManager::ActivityManager()
     KCrash::setFlags(KCrash::AutoRestart);
 
     EncryptionManager::self(this);
+    connect(EncryptionManager::self(), SIGNAL(activityEncryptionChanged(QString,bool)),
+            this, SLOT(onActivityEncryptionChanged(QString,bool)));
+
     EventProcessor::self();
 
     // kDebug() << "RegisterResourceEvent open" << d->currentActivity;
@@ -367,6 +370,11 @@ bool ActivityManager::IsFeatureOperational(const QString & feature) const
 void ActivityManager::SetActivityEncrypted(const QString & activity, bool encrypted)
 {
     EncryptionManager::self()->setActivityEncrypted(activity, encrypted);
+}
+
+void ActivityManager::onActivityEncryptionChanged(const QString id, const bool encrypted)
+{
+    emit ActivityChanged(id);
 }
 
 bool ActivityManager::IsActivityEncrypted(const QString & activity) const
