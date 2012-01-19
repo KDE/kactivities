@@ -13,6 +13,7 @@ set(
    activityranking_SRCS
    activityranking.cpp
    ActivityData.cpp
+   Location.cpp
    ../../Plugin.cpp
    ../../SharedInfo.cpp
    )
@@ -20,6 +21,11 @@ set(
 qt4_add_dbus_adaptor(
    activityranking_SRCS org.kde.ActivityManager.ActivityRanking.xml
    activityranking.h ActivityRankingPlugin
+   )
+
+qt4_add_dbus_interface(
+   activityranking_SRCS org.kde.LocationManager.xml
+   LocationManagerInterface
    )
 
 kde4_add_plugin(

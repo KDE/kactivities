@@ -32,6 +32,8 @@
 #include <KStandardDirs>
 #include <KDebug>
 
+#include "Location.h"
+
 #define AR_FAKE_EVENTS_FEED
 
 #define PRINT_LAST_ERROR if (query.lastError().isValid()) kDebug() << "DATABASE ERROR" << query.lastError();
@@ -45,17 +47,18 @@ public:
 
     QSqlRecord currentActivityRecord;
     QString activity;
+    QString lastLocation;
     qint64 activityStart;
 
-    void processActivityInterval(const QString & activity, qint64 start, qint64 end);
-    void processWeekData(const QString & activity, qint64 start, qint64 end);
-    void processMonthData(const QString & activity, qint64 start, qint64 end);
+    void processActivityInterval(const QString & activity, const QString & location, qint64 start, qint64 end);
+    void processWeekData(const QString & activity, const QString & location, qint64 start, qint64 end);
+    void processMonthData(const QString & activity, const QString & location, qint64 start, qint64 end);
 
     void closeDanglingActivityRecords();
-    void ensureMonthScoreExists(const QString & activity, int year, int month);
-    void ensureWeekScoreExists(const QString & activity, int year, int week);
+    void ensureMonthScoreExists(const QString & activity, int year, int month, const QString & location);
+    void ensureWeekScoreExists(const QString & activity, int year, int week, const QString & location);
 
-    QMap <QString, qreal> topActivitiesFor(const QDateTime & time);
+    QMap <QString, qreal> topActivitiesFor(const QDateTime & time, const QString & location);
 
 #ifdef AR_FAKE_EVENTS_FEED
     void FakeEventsFeed();
@@ -76,24 +79,24 @@ public:
 
 QString ActivityRankingPlugin::Private::insertSchemaInfo         = "INSERT INTO schemaInfo VALUES ('%1', '%2')";
 QString ActivityRankingPlugin::Private::closeActivityInterval    = "UPDATE ActivityEvents SET end = %1 WHERE activity = '%2' AND end IS NULL";
-QString ActivityRankingPlugin::Private::insertActivityInterval   = "INSERT INTO ActivityEvents VALUES('%1', %2, NULL)";
+QString ActivityRankingPlugin::Private::insertActivityInterval   = "INSERT INTO ActivityEvents VALUES('%1', '%2', %3, NULL)";
 
 // For the average and dispersion
 // select activity, start - (select max(start) from ActivityEvents as ae where ae.start < a.start) as diff from ActivityEvents as a
 // QString ActivityRankingPlugin::Private::selectDanglingActivities = "SELECT * FROM ActivityEvents WHERE end IS NULL ORDER BY start";
 
 QString ActivityRankingPlugin::Private::insertWeekScore  =
-    "INSERT INTO WeekScores  (activity, year, week)  VALUES('%1', %2, %3)";
+    "INSERT INTO WeekScores  (activity, year, week, location)  VALUES('%1', %2, %3, '%4')";
 
 QString ActivityRankingPlugin::Private::selectWeekScore  =
-    "SELECT * FROM WeekScores WHERE activity = '%1' AND year = %2 AND week = %3";
+    "SELECT * FROM WeekScores WHERE activity = '%1' AND year = %2 AND week = %3 AND location = '%4'";
 
 
 QString ActivityRankingPlugin::Private::insertMonthScore =
-    "INSERT INTO MonthScores (activity, year, month) VALUES('%1', %2, %3)";
+    "INSERT INTO MonthScores (activity, year, month, location) VALUES('%1', %2, %3, '%4')";
 
 QString ActivityRankingPlugin::Private::selectMonthScore =
-    "SELECT * FROM MonthScores WHERE activity = '%1' AND year = %2 AND month = %3";
+    "SELECT * FROM MonthScores WHERE activity = '%1' AND year = %2 AND month = %3 AND location = '%4'";
 
 
 QString ActivityRankingPlugin::Private::selectScore =
@@ -101,7 +104,7 @@ QString ActivityRankingPlugin::Private::selectScore =
     "FROM "
     "(SELECT activity, SUM(s%1%2) as score FROM WeekScores GROUP BY activity) AS week, "
     "(SELECT activity, SUM(s%3) as score FROM MonthScores GROUP BY activity) AS month "
-    "WHERE week.activity = month.activity ORDER BY sumscore DESC";
+    "WHERE week.activity = month.activity AND week.location = '%4' AND month.location = '%4' ORDER BY sumscore DESC";
 
 
 #ifdef AR_FAKE_EVENTS_FEED
@@ -130,7 +133,7 @@ void ActivityRankingPlugin::Private::FakeEventsFeed()
 
             kDebug() << start << end << activity;
 
-            processActivityInterval(activity, start, end);
+            processActivityInterval(activity, QString(), start, end);
         }
     }
 }
@@ -138,7 +141,7 @@ void ActivityRankingPlugin::Private::FakeEventsFeed()
 #endif // AR_FAKE_EVENTS_FEED
 
 
-void ActivityRankingPlugin::Private::ensureWeekScoreExists(const QString & activity, int year, int week)
+void ActivityRankingPlugin::Private::ensureWeekScoreExists(const QString & activity, int year, int week, const QString & location)
 {
     // If it fails, it means we already have it, ignore the error
     QSqlQuery query(
@@ -146,13 +149,14 @@ void ActivityRankingPlugin::Private::ensureWeekScoreExists(const QString & activ
         .arg(activity)
         .arg(year)
         .arg(week)
+        .arg(location)
     ,
         database
     );
     PRINT_LAST_ERROR;
 }
 
-void ActivityRankingPlugin::Private::ensureMonthScoreExists(const QString & activity, int year, int month)
+void ActivityRankingPlugin::Private::ensureMonthScoreExists(const QString & activity, int year, int month, const QString & location)
 {
     // If it fails, it means we already have it, ignore the error
     QSqlQuery query(
@@ -160,25 +164,26 @@ void ActivityRankingPlugin::Private::ensureMonthScoreExists(const QString & acti
         .arg(activity)
         .arg(year)
         .arg(month)
+        .arg(location)
     ,
         database
     );
     PRINT_LAST_ERROR;
 }
 
-void ActivityRankingPlugin::Private::processActivityInterval(const QString & activity, qint64 start, qint64 end)
+void ActivityRankingPlugin::Private::processActivityInterval(const QString & activity, const QString & location, qint64 start, qint64 end)
 {
-    kDebug() << activity << start << end;
+    kDebug() << activity << location << start << end;
 
     // Processing the per-week data
-    processWeekData(activity, start, end);
+    processWeekData(activity, location, start, end);
 
     // Processing the month data
-    processMonthData(activity, start, end);
+    processMonthData(activity, location, start, end);
 
 }
 
-void ActivityRankingPlugin::Private::processWeekData(const QString & activity, qint64 start, qint64 end)
+void ActivityRankingPlugin::Private::processWeekData(const QString & activity, const QString & location, qint64 start, qint64 end)
 {
     QDateTime startDateTime = QDateTime::fromMSecsSinceEpoch(start);
     QDateTime endDateTime   = QDateTime::fromMSecsSinceEpoch(end);
@@ -191,7 +196,7 @@ void ActivityRankingPlugin::Private::processWeekData(const QString & activity, q
         fordate(weekNumber, startDateTime, endDateTime) {
             kDebug() << activity << year << weekNumber;
 
-            ensureWeekScoreExists(activity, year, weekNumber);
+            ensureWeekScoreExists(activity, year, weekNumber, location);
 
             QDateTime weekStartDateTime(QDate(year, 1, 1).addDays((weekNumber - 1) * 7));
             qint64 weekStart = weekStartDateTime.toMSecsSinceEpoch();
@@ -205,6 +210,7 @@ void ActivityRankingPlugin::Private::processWeekData(const QString & activity, q
                     .arg(activity)
                     .arg(year)
                     .arg(weekNumber)
+                    .arg(location)
                 ,
                     database
                 );
@@ -255,10 +261,10 @@ void ActivityRankingPlugin::Private::processWeekData(const QString & activity, q
                 #undef SEGMENTS
 
 
-                const QString & where = " WHERE activity = '%1' AND year = %2 AND week = %3 ";
+                const QString & where = " WHERE activity = '%1' AND year = %2 AND week = %3 AND location='%4'";
                 QSqlQuery query(database.driver()->
                         sqlStatement(QSqlDriver::UpdateStatement, "WeekScores", record, false)
-                        + where.arg(activity).arg(year).arg(weekNumber)
+                        + where.arg(activity).arg(year).arg(weekNumber).arg(location)
                     ,
                         database
                     );
@@ -271,7 +277,7 @@ void ActivityRankingPlugin::Private::processWeekData(const QString & activity, q
 
 }
 
-void ActivityRankingPlugin::Private::processMonthData(const QString & activity, qint64 start, qint64 end)
+void ActivityRankingPlugin::Private::processMonthData(const QString & activity, const QString & location, qint64 start, qint64 end)
 {
     QDateTime startDateTime = QDateTime::fromMSecsSinceEpoch(start);
     QDateTime endDateTime   = QDateTime::fromMSecsSinceEpoch(end);
@@ -284,7 +290,7 @@ void ActivityRankingPlugin::Private::processMonthData(const QString & activity, 
         fordate(month, startDateTime, endDateTime) {
             kDebug() << activity << year << month;
 
-            ensureMonthScoreExists(activity, year, month);
+            ensureMonthScoreExists(activity, year, month, location);
 
             QDateTime monthStartDateTime(QDate(year, month, 1));
             qint64 monthStart = monthStartDateTime.toMSecsSinceEpoch();
@@ -304,6 +310,7 @@ void ActivityRankingPlugin::Private::processMonthData(const QString & activity, 
                     .arg(activity)
                     .arg(year)
                     .arg(month)
+                    .arg(location)
                 ,
                     database
                 );
@@ -328,10 +335,10 @@ void ActivityRankingPlugin::Private::processMonthData(const QString & activity, 
                     increaseValue(iFirstColumn + iEnd, coefEnd - iEnd);
                 }
 
-                const QString & where = " WHERE activity = '%1' AND year = %2 AND month = %3 ";
+                const QString & where = " WHERE activity = '%1' AND year = %2 AND month = %3 AND location = '%4'";
                 QSqlQuery query(database.driver()->
                         sqlStatement(QSqlDriver::UpdateStatement, "MonthScores", record, false)
-                        + where.arg(activity).arg(year).arg(month)
+                        + where.arg(activity).arg(year).arg(month).arg(location)
                     ,
                         database
                     );
@@ -384,6 +391,7 @@ void ActivityRankingPlugin::Private::closeDanglingActivityRecords()
 
         processActivityInterval(
                 record.value("activity").toString(),
+                record.value("location").toString(),
                 end, // record.value("start").toLongLong(),
                 record.value("end").toLongLong()
             );
@@ -472,7 +480,7 @@ void ActivityRankingPlugin::initDatabaseSchema()
                    "f5 int default 0, "
                    "f6 int default 0, "
                    "location text default NULL, "
-                   "PRIMARY KEY(activity, year, week)"
+                   "PRIMARY KEY(activity, year, week, location)"
                    ")");
 
 
@@ -489,13 +497,10 @@ void ActivityRankingPlugin::initDatabaseSchema()
                    "s70 double default 0, s71 double default 0, s72 double default 0, s73 double default 0, s74 double default 0, s75 double default 0, s76 double default 0, s77 double default 0, "
                    "f00 int default 0, "
                    "location text default NULL, "
-                   "PRIMARY KEY(activity, year, month)"
+                   "PRIMARY KEY(activity, year, month, location)"
                    ")");
 
-        query.exec("CREATE TABLE IF NOT EXISTS ActivityEvents (activity text, start bigint, end bigint DEFAULT NULL)");
-
-        // needs to be in a location tracking plugin or something
-        query.exec("CREATE TABLE IF NOT EXISTS LocationEvents (location text, start bigint, end bigint DEFAULT NULL)");
+        query.exec("CREATE TABLE IF NOT EXISTS ActivityEvents (activity text, location text, start bigint, end bigint DEFAULT NULL)");
     }
 }
 
@@ -521,14 +526,16 @@ void ActivityRankingPlugin::activityChanged(const QString & activity)
             );
         PRINT_LAST_ERROR;
 
-        d->processActivityInterval(d->activity, d->activityStart, currentTime);
+        d->processActivityInterval(d->activity, d->lastLocation, d->activityStart, currentTime);
     }
 
     d->activity = activity;
+    d->lastLocation = Location::self(this)->current();
     d->activityStart = currentTime;
 
     QSqlQuery query(Private::insertActivityInterval
             .arg(activity)
+            .arg(d->lastLocation)
             .arg(currentTime)
             ,
             d->database
@@ -542,7 +549,7 @@ QStringList ActivityRankingPlugin::topActivities()
     return QStringList();
 }
 
-QMap <QString, qreal> ActivityRankingPlugin::Private::topActivitiesFor(const QDateTime & time)
+QMap <QString, qreal> ActivityRankingPlugin::Private::topActivitiesFor(const QDateTime & time, const QString & location)
 {
     QMap <QString, qreal> result;
 
@@ -562,6 +569,7 @@ QMap <QString, qreal> ActivityRankingPlugin::Private::topActivitiesFor(const QDa
             .arg(time.date().dayOfWeek() - 1)
             .arg(time.time().hour() / 3)
             .arg(monthSegment)
+            .arg(location)
         ,
             database
         );
@@ -591,7 +599,7 @@ void ActivityRankingPlugin::test()
             for (int hour = 0; hour < 24; hour += 4) {
                 QDateTime test = QDateTime(QDate(year, month, day), QTime(hour, 10));
 
-                qDebug() << d->topActivitiesFor(test).values();
+                // qDebug() << d->topActivitiesFor(test).values();
 
             }
         }
