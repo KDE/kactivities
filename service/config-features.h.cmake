@@ -16,4 +16,10 @@
     #define ENCFS_PATH "/usr/bin/encfs"
 #endif
 
+#cmakedefine UI_HANDLER "@UI_HANDLER"
+
+#ifndef UI_HANDLER
+    #define UI_HANDLER "activitymanager_uihandler_kdialog"
+#endif
+
 #endif

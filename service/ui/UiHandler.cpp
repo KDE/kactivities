@@ -1,6 +1,5 @@
 /*
  *   Copyright (C) 2012 Ivan Cukic <ivan.cukic(at)kde.org>
- *   Copyright (C) 2012 Lamarque V. Souza <lamarque@kde.org>
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License version 2,
@@ -18,35 +17,25 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef ENCFSINTERFACE_P_H
-#define ENCFSINTERFACE_P_H
+#include "UiHandler.h"
 
-#include "EncfsInterface.h"
-
-#include <QHash>
-#include <QProcess>
-
-class EncfsInterface::Private: public QObject
-{
-Q_OBJECT
+class UiHandler::Private {
 public:
-    Private(EncfsInterface * parent);
-
-    QHash < QString, QProcess* > mounts;
-
-    QProcess * startEncfs(const QString & what, const QString & mountPoint, const QString & password, bool init = false);
-
-    EncfsInterface * const q;
-    bool shouldInitialize;
-    QString what;
-    QString mountPoint;
-
-Q_SIGNALS:
-    void gotPassword(const QString & password);
-
-public Q_SLOTS:
-    void onGotPassword(const QString & password);
-    void askForPassword(bool twice);
 };
 
-#endif // ENCFSINTERFACE_P_H
+UiHandler::UiHandler(QObject * parent)
+    : QObject(parent), d(new Private())
+{
+}
+
+UiHandler::~UiHandler()
+{
+    delete d;
+}
+
+bool UiHandler::init()
+{
+    return true;
+}
+
+

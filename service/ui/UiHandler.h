@@ -17,41 +17,33 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef ENCFSINTERFACE_H_
-#define ENCFSINTERFACE_H_
+#ifndef UIHANDLER_H_
+#define UIHANDLER_H_
 
-#include <QObject>
-#include <QProcess>
+#include <kdemacros.h>
+#include <KPluginFactory>
+#include <KPluginLoader>
 
-/**
- * EncfsInterface
- */
-class EncfsInterface: public QObject {
+#define KAMD_EXPORT_UI_HANDLER(ClassName, AboutData)                   \
+    K_PLUGIN_FACTORY(ClassName##Factory, registerPlugin<ClassName>();) \
+    K_EXPORT_PLUGIN(ClassName##Factory("AboutData"))
+
+class KDE_EXPORT UiHandler: public QObject {
     Q_OBJECT
 
 public:
-    EncfsInterface(QObject * parent = 0);
-    virtual ~EncfsInterface();
+    UiHandler(QObject * parent);
+    virtual ~UiHandler();
 
-    void mount(const QString & what, const QString & mountPoint);
-    void umount(const QString & mountPoint);
-    void umountAll();
+    virtual bool init();
 
-    bool isEncryptionInitialized(const QString & path);
-
-Q_SIGNALS:
-    void error();
-    void mounted(const QString & mountPoint);
-    void unmounted(const QString & mountPoint);
-
-private Q_SLOTS:
-    void mountProcessFinished(int exitCode, QProcess::ExitStatus exitStatus);
-    void umountProcessFinished(int exitCode, QProcess::ExitStatus exitStatus);
+    virtual void message(const QString & title, const QString & message) = 0;
+    virtual QString askPassword(const QString & title, const QString & message, bool newPassword) = 0;
 
 private:
     class Private;
     Private * const d;
 };
 
-#endif // ENCFSINTERFACE_H_
+#endif // UIHANDLER_H_
 

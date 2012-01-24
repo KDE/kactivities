@@ -301,6 +301,8 @@ ActivityManager::ActivityManager()
             SharedInfo::self()->m_windows,
             SharedInfo::self()->m_resources))
 {
+    setQuitOnLastWindowClosed(false);
+
     QDBusConnection dbus = QDBusConnection::sessionBus();
     new ActivityManagerAdaptor(this);
 

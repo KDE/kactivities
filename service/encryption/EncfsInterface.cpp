@@ -28,65 +28,42 @@
 #include <KDebug>
 #include <kmountpoint.h>
 
+#include "ui/Ui.h"
+
 EncfsInterface::Private::Private(EncfsInterface * parent)
-    : QObject(parent), q(parent), twice(false), kdialog(0), shouldInitialize(false)
+    : QObject(parent), q(parent), shouldInitialize(false)
 {
 }
 
-void EncfsInterface::Private::askForPassword()
+void EncfsInterface::Private::askForPassword(bool newPassword)
 {
-    if (kdialog) {
-        kWarning() << "kdialog already running";
+    Ui::askPassword(
+            i18n("Activity password"),
+            i18n("Enter password to use for encryption"),
+            newPassword,
+            this, "onGotPassword"
+       );
+}
+
+void EncfsInterface::Private::onGotPassword(const QString & password)
+{
+    if (password.isEmpty()) {
+        // TODO: Report error - empty password
         return;
     }
 
-    kdialog = new QProcess(this);
-    connect(kdialog, SIGNAL(finished(int,QProcess::ExitStatus)), SLOT(onKdialogFinished(int,QProcess::ExitStatus)));
+    kDebug() << "Got the password ... mounting the encfs"
+        << what << mountPoint << shouldInitialize;
 
-    kdialog->start("kdialog",
-               QStringList()
-               << "--title"
-               << i18n("Activity password")
-               << "--password"
-               << i18n("Enter password to use for encryption")
-           );
-}
+    // This should be necessary only for init mount, but
+    // we are doing it always just in case
 
-void EncfsInterface::Private::onKdialogFinished(int exitCode, QProcess::ExitStatus exitStatus)
-{
-    if (exitCode || exitStatus != QProcess::NormalExit) {
-        kDebug() << "kdialog returned error";
-        emit gotPassword(QString());
-        kdialog->deleteLater();
-        kdialog = 0;
-        return;
-    }
+    QDir dir;
+    dir.mkpath(what);
+    dir.mkpath(mountPoint);
 
-    QString result = kdialog->readAllStandardOutput().trimmed();
-    kdialog->deleteLater();
-    kdialog = 0;
-
-    if (firstPasswordCandidate.isEmpty()) {
-        if (twice && !result.isEmpty()) {
-            firstPasswordCandidate = result;
-            askForPassword();
-        } else {
-            emit gotPassword(result);
-        }
-    } else {
-        if (firstPasswordCandidate == result) {
-            emit gotPassword(result);
-        } else {
-            emit gotPassword(QString());
-        }
-    }
-}
-
-void EncfsInterface::Private::askForPassword(bool t)
-{
-    twice = t;
-    firstPasswordCandidate.clear();
-    askForPassword();
+    // Setting the encryption
+    startEncfs(what, mountPoint, password, /* initialize = */ shouldInitialize);
 }
 
 EncfsInterface::EncfsInterface(QObject * parent)
@@ -143,36 +120,8 @@ void EncfsInterface::mount(const QString & what, const QString & mountPoint)
     d->mountPoint = mountPoint;
 
     // Asynchronously getting the password
-
-    // I do not know why but the gotPassword signal is being emmited multiple times,
-    // one for each time you open a private activity. For example, if you open one
-    // private activity once, it works as expected, then you close it, if you open
-    // it a second time the gotPassword signal is emited twice. If you close the
-    // activity and open it a third time then the gotPassword will be emmited three
-    // times. The d pointer is always the same, it is not being allocated more than
-    // once. The command below prevent this problem.
-    QObject::disconnect(d, 0, this, 0);
-    connect(d, SIGNAL(gotPassword(QString)), SLOT(onGotPassword(QString)));
     QMetaObject::invokeMethod(d, "askForPassword", Qt::QueuedConnection,
                               Q_ARG(bool, /* twice = */ d->shouldInitialize));
-}
-
-void EncfsInterface::onGotPassword(const QString & password)
-{
-    if (password.isEmpty()) {
-        // TODO: Report error - empty password
-        return;
-    }
-
-    // This should be necessary only for init mount, but
-    // we are doing it always just in case
-
-    QDir dir;
-    dir.mkpath(d->what);
-    dir.mkpath(d->mountPoint);
-
-    // Setting the encryption
-    d->startEncfs(d->what, d->mountPoint, password, /* initialize = */ d->shouldInitialize);
 }
 
 void EncfsInterface::umount(const QString & mountPoint)
@@ -194,6 +143,9 @@ void EncfsInterface::umount(const QString & mountPoint)
 
 void EncfsInterface::umountProcessFinished(int exitCode, QProcess::ExitStatus exitStatus)
 {
+    Q_UNUSED(exitCode)
+    Q_UNUSED(exitStatus)
+
     QProcess * process = qobject_cast < QProcess * > (sender());
     emit unmounted(process->property("mountPoint").toString());
     process->deleteLater();
@@ -235,6 +187,9 @@ QProcess * EncfsInterface::Private::startEncfs(const QString & what,
 
 void EncfsInterface::mountProcessFinished(int exitCode, QProcess::ExitStatus exitStatus)
 {
+    Q_UNUSED(exitCode)
+    Q_UNUSED(exitStatus)
+
     QProcess * process = qobject_cast < QProcess * > (sender());
     QString mountPoint = process->property("mountPoint").toString();
 
@@ -256,11 +211,9 @@ void EncfsInterface::mountProcessFinished(int exitCode, QProcess::ExitStatus exi
         QDir().rmpath(mountPoint);
         d->mounts.remove(mountPoint);
 
-        QProcess::execute("kdialog", QStringList()
-                << "--title"
-                << i18n("Error")
-                << "--msgbox"
-                << i18n("Error setting up the encrypted folder for the activity.")
+        Ui::message(
+                i18n("Error"),
+                i18n("Error setting up the encrypted folder for the activity.")
             );
     }
 
