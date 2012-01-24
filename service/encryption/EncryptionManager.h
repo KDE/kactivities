@@ -48,6 +48,10 @@ public Q_SLOTS:
     void setCurrentActivity(const QString & activity);
     void removeActivity(const QString & activity);
     void updateActivity(const QString & activity);
+
+    /**
+     * @note This method waits for all mounts to be unmounted
+     */
     void unmountAll();
 
 private:

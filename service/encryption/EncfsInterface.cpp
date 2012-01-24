@@ -116,8 +116,13 @@ void EncfsInterface::unmountAll()
 {
     kDebug() << "Unmounting everything";
 
+    // TODO: Maybe we should umount all directories, not only
+    // what is in d->mounts
     foreach (const QString & mount, d->mounts) {
-        unmount(mount);
+        QProcess::execute(FUSERMOUNT_PATH, QStringList()
+                << "-u" // unmount
+                << mount
+                );
     }
 
     d->mounts.clear();

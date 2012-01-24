@@ -18,9 +18,14 @@
  */
 
 #include <ActivityManager.h>
+#include <encryption/EncryptionManager.h>
 
 #include <KAboutData>
 #include <KCmdLineArgs>
+
+#include <signal.h>
+
+static void initSignalCatching();
 
 int main(int argc, char ** argv)
 {
@@ -34,5 +39,33 @@ int main(int argc, char ** argv)
 
     ActivityManager application;
 
+    initSignalCatching();
+
     return application.exec();
+}
+
+// Signal handling
+static void signalHandler(int sig)
+{
+    Q_UNUSED(sig);
+
+    // Unmounting everything
+    EncryptionManager::self()->unmountAll();
+
+    ::exit(EXIT_SUCCESS);
+}
+
+static void initSignalCatching() {
+    struct sigaction action;
+
+    ::sigemptyset(&action.sa_mask);
+    action.sa_flags = 0;
+
+    /* Use the sa_sigaction field because the handles has two additional parameters */
+    action.sa_handler = signalHandler;
+
+    ::sigaction(SIGINT,  &action, NULL);
+    ::sigaction(SIGHUP,  &action, NULL);
+    ::sigaction(SIGTERM, &action, NULL);
+    ::sigaction(SIGSEGV, &action, NULL);
 }
