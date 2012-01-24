@@ -45,7 +45,8 @@ public:
     void setupActivityEncryption(const QString & activity);
     void terminateActivityEncryption(const QString & activity);
     void mountEncryptedFolder(const QString & activity);
-    void umountEncryptedFolder(const QString & activity);
+    void unmountEncryptedFolder(const QString & activity);
+    void setCurrentActivityDone(const QString & activity);
 
     EncryptionManager * const q;
     const ActivityManager * manager;

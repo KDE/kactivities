@@ -73,7 +73,7 @@ EncfsInterface::EncfsInterface(QObject * parent)
 
 EncfsInterface::~EncfsInterface()
 {
-    umountAll();
+    unmountAll();
 
     delete d;
 }
@@ -101,12 +101,23 @@ bool EncfsInterface::isMounted(const QString & path) const
     return (ptr && ptr.data()->mountPoint() == path);
 }
 
-void EncfsInterface::umountAll()
+void EncfsInterface::unmountAllExcept(const QString & path)
+{
+    kDebug() << "Unmounting everything except " << path;
+
+    foreach (const QString & mount, d->mounts) {
+        if (path != mount) {
+            unmount(mount);
+        }
+    }
+}
+
+void EncfsInterface::unmountAll()
 {
     kDebug() << "Unmounting everything";
 
     foreach (const QString & mount, d->mounts) {
-        umount(mount);
+        unmount(mount);
     }
 
     d->mounts.clear();
@@ -130,7 +141,7 @@ void EncfsInterface::mount(const QString & what, const QString & mountPoint)
                               Q_ARG(bool, /* twice = */ d->shouldInitialize));
 }
 
-void EncfsInterface::umount(const QString & mountPoint)
+void EncfsInterface::unmount(const QString & mountPoint)
 {
     if (!isMounted(mountPoint)) return;
 
@@ -141,7 +152,7 @@ void EncfsInterface::umount(const QString & mountPoint)
     fusermount->setProperty("mountPoint", mountPoint);
 
     connect(fusermount, SIGNAL(finished(int, QProcess::ExitStatus)),
-            SLOT(umountProcessFinished(int,QProcess::ExitStatus)));
+            SLOT(unmountProcessFinished(int,QProcess::ExitStatus)));
 
     fusermount->start(FUSERMOUNT_PATH, QStringList()
             << "-u" // unmount
@@ -149,7 +160,7 @@ void EncfsInterface::umount(const QString & mountPoint)
         );
 }
 
-void EncfsInterface::umountProcessFinished(int exitCode, QProcess::ExitStatus exitStatus)
+void EncfsInterface::unmountProcessFinished(int exitCode, QProcess::ExitStatus exitStatus)
 {
     Q_UNUSED(exitCode)
     Q_UNUSED(exitStatus)

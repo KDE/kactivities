@@ -300,6 +300,10 @@ ActivityManager::ActivityManager()
 
     EXEC_NEPOMUK( syncActivities(d->activities.keys(), d->activitiesConfig(), d->activityIconsConfig()) );
 
+    // First, lets notify everybody that there is no current activity
+    d->setCurrentActivity(QString());
+
+    // Try to load the last used activity
     d->setCurrentActivity(d->mainConfig().readEntry("currentActivity", QString()));
 
     // Listening to active window changes
