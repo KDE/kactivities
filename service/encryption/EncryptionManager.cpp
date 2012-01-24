@@ -47,7 +47,7 @@ EncryptionManager::EncryptionManager(const ActivityManager * m)
     : d(new Private(this))
 {
     d->manager = m;
-    int permissions = ::access(FUSERMOUNT_PATH, X_OK);
+    int permissions = ::access(FUSERMOUNT_PATH, X_OK) | ::access(ENCFS_PATH, X_OK);
 
     d->enabled = (permissions == 0);
 
@@ -109,6 +109,8 @@ bool EncryptionManager::isEnabled() const
 
 void EncryptionManager::setActivityEncrypted(const QString & activity, bool encrypted)
 {
+    if (!d->enabled) return;
+
     if (encrypted) {
         d->setupActivityEncryption(activity);
 
@@ -120,6 +122,8 @@ void EncryptionManager::setActivityEncrypted(const QString & activity, bool encr
 
 void EncryptionManager::mountActivityEncrypted(const QString & activity, bool encrypted)
 {
+    if (!d->enabled) return;
+
     if (encrypted) {
         d->mountEncryptedFolder(activity);
 
@@ -262,6 +266,8 @@ void EncryptionManager::Private::onEncryptedFolderUnmounted(const QString & moun
 
 void EncryptionManager::unmountAll()
 {
+    if (!d->enabled) return;
+
     d->encfs.umountAll();
 }
 
@@ -272,6 +278,8 @@ void EncryptionManager::Private::moveFiles(const QString & from, const QString &
 
 bool EncryptionManager::isEncryptionInitialized(const QString & activity)
 {
+    if (!d->enabled) return false;
+
     return d->encfs.isEncryptionInitialized(
             d->activitiesDataFolder.filePath(d->folderName(activity, Private::EncryptedFolder))
         );
@@ -287,6 +295,8 @@ void EncryptionManager::activityRemoved(const QString & activity)
 
 void EncryptionManager::currentActivityChanged(const QString & activity)
 {
+    if (!d->enabled) return;
+
     const QString & currentFolderName = i18nc("Directory name for the current activity", "Current");
     kDebug() << "This is now the current activity" << activity;
 
