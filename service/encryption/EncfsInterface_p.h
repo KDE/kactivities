@@ -23,7 +23,7 @@
 
 #include "EncfsInterface.h"
 
-#include <QHash>
+#include <QSet>
 #include <QProcess>
 
 class EncfsInterface::Private: public QObject
@@ -32,7 +32,7 @@ Q_OBJECT
 public:
     Private(EncfsInterface * parent);
 
-    QHash < QString, QProcess* > mounts;
+    QSet < QString > mounts;
 
     QProcess * startEncfs(const QString & what, const QString & mountPoint, const QString & password, bool init = false);
 

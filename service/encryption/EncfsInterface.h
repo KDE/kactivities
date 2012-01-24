@@ -37,7 +37,8 @@ public:
     void umount(const QString & mountPoint);
     void umountAll();
 
-    bool isEncryptionInitialized(const QString & path);
+    bool isEncryptionInitialized(const QString & path) const;
+    bool isMounted(const QString & path) const;
 
 Q_SIGNALS:
     void error();
