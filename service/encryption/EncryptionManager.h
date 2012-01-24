@@ -35,18 +35,19 @@ public:
     static EncryptionManager * self(const ActivityManager * manager = 0);
 
     bool isEnabled() const;
-    bool isEncryptionInitialized(const QString & activity);
+    bool isActivityEncrypted(const QString & activity);
 
 Q_SIGNALS:
     void activityEncryptionChanged(const QString & activity, const bool encrypted);
+    void currentActivityChanged(const QString & activity);
 
 public Q_SLOTS:
     void setActivityEncrypted(const QString & activity, bool encrypted);
     void mountActivityEncrypted(const QString & activity, bool encrypted);
 
-    void currentActivityChanged(const QString & activity);
-    void activityRemoved(const QString & activity);
-    void activityChanged(const QString & activity);
+    void setCurrentActivity(const QString & activity);
+    void removeActivity(const QString & activity);
+    void updateActivity(const QString & activity);
     void unmountAll();
 
 private:

@@ -288,9 +288,6 @@ public Q_SLOTS:
      */
     // void UnlinkResourceFromActivity(const QString & uri, const QString & activity = QString());
 
-private Q_SLOTS:
-    void onActivityEncryptionChanged(const QString id, const bool encrypted);
-
 private:
     friend class ActivityManagerPrivate;
     class ActivityManagerPrivate * const d;

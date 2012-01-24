@@ -80,19 +80,20 @@ EncryptionManager::EncryptionManager(const ActivityManager * m)
 
     kDebug() << "Main root folder" << d->activitiesDataFolder;
 
-    connect(m, SIGNAL(CurrentActivityChanged(QString)),
-            this, SLOT(currentActivityChanged(QString)));
+    // We are going to receive this from ActivityManager directly
+    // connect(m, SIGNAL(CurrentActivityChanged(QString)),
+    //         this, SLOT(setCurrentActivity(QString)));
 
     connect(m, SIGNAL(ActivityRemoved(QString)),
-            this, SLOT(activityRemoved(QString)));
+            this, SLOT(removeActivity(QString)));
 
     connect(m, SIGNAL(ActivityChanged(QString)),
-            this, SLOT(activityRemoved(QString)));
+            this, SLOT(updateActivity(QString)));
 
     connect(m, SIGNAL(aboutToQuit()),
             this, SLOT(unmountAll()));
 
-    currentActivityChanged(m->CurrentActivity());
+    setCurrentActivity(m->CurrentActivity());
 }
 
 EncryptionManager::~EncryptionManager()
@@ -212,7 +213,12 @@ void EncryptionManager::Private::onEncryptedFolderMounted(const QString & mountP
 {
     // Set a symbolic link for current activity
 
-    QString activity = activityName(mountPoint);
+    const QString & activity = activityName(mountPoint);
+
+    if (currentActivity == activity) {
+        emit q->currentActivityChanged(activity);
+    }
+
     if (activitiesToTerminateEncryption.contains(activity)) {
 
         // move files
@@ -223,9 +229,12 @@ void EncryptionManager::Private::onEncryptedFolderMounted(const QString & mountP
 
         // unmount
         umountEncryptedFolder(activity);
+
     } else if (activitiesToSetAsEncrypted.contains(activity)) {
+
         activitiesToSetAsEncrypted.removeAll(activity);
         emit q->activityEncryptionChanged(activity, true);
+
     }
 }
 
@@ -276,7 +285,7 @@ void EncryptionManager::Private::moveFiles(const QString & from, const QString &
 
 }
 
-bool EncryptionManager::isEncryptionInitialized(const QString & activity)
+bool EncryptionManager::isActivityEncrypted(const QString & activity)
 {
     if (!d->enabled) return false;
 
@@ -285,29 +294,28 @@ bool EncryptionManager::isEncryptionInitialized(const QString & activity)
         );
 }
 
-void EncryptionManager::activityChanged(const QString & activity)
+void EncryptionManager::updateActivity(const QString & activity)
 {
 }
 
-void EncryptionManager::activityRemoved(const QString & activity)
+void EncryptionManager::removeActivity(const QString & activity)
 {
 }
 
-void EncryptionManager::currentActivityChanged(const QString & activity)
+void EncryptionManager::setCurrentActivity(const QString & activity)
 {
-    if (!d->enabled) return;
-
     const QString & currentFolderName = i18nc("Directory name for the current activity", "Current");
     kDebug() << "This is now the current activity" << activity;
 
-    if (!d->currentActivity.isEmpty() && isEncryptionInitialized(d->currentActivity)) {
-        kDebug() << "Unmounting" << d->currentActivity << d->manager->ActivityName(d->currentActivity);
-        d->umountEncryptedFolder(d->currentActivity);
-    }
+    // TODO: Unmount previous activity only on successful switch
+    // if (!d->currentActivity.isEmpty() && isActivityEncrypted(d->currentActivity)) {
+    //     kDebug() << "Unmounting" << d->currentActivity << d->manager->ActivityName(d->currentActivity);
+    //     d->umountEncryptedFolder(d->currentActivity);
+    // }
 
     d->currentActivity = activity;
 
-    if (isEncryptionInitialized(activity)) {
+    if (isActivityEncrypted(activity)) {
         kDebug() << "Mounting" << activity << d->manager->ActivityName(activity);
 
         kDebug() << "It is initialized, we are creating the link" <<
@@ -327,6 +335,7 @@ void EncryptionManager::currentActivityChanged(const QString & activity)
 
         QFile::remove(d->activitiesFolder.filePath(currentFolderName));
 
+        emit currentActivityChanged(activity);
     }
 }
 
