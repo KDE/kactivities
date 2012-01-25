@@ -24,7 +24,7 @@
 #include <QDeclarativeContext>
 
 #include <KDebug>
-#include <KWindowSystem>
+// #include <KWindowSystem>
 
 DeclarativeUiHandler::Private::Private()
     : window(NULL), receiver(NULL), slot(NULL)
@@ -41,10 +41,15 @@ void DeclarativeUiHandler::Private::onCurrentActivityChanged(const QString & act
 void DeclarativeUiHandler::Private::showWindow()
 {
     window->show();
-    window->setWindowFlags(window->windowFlags() | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
-    window->setWindowState(Qt::WindowMaximized);
-    KWindowSystem::setState(window->winId(), NET::SkipTaskbar | NET::SkipPager | NET::KeepAbove | NET::Sticky);
-    KWindowSystem::forceActiveWindow(window->winId());
+
+    // TODO: We need some magic here for kwin to know that this needs to be a top-level window
+    // and that it doesn't depend on the current activity
+
+    // window->setWindowFlags(window->windowFlags() | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint | Qt::X11BypassWindowManagerHint);
+    // window->setWindowState(Qt::WindowMaximized);
+    // KWindowSystem::setState(window->winId(), NET::SkipTaskbar | NET::SkipPager | NET::KeepAbove | NET::Sticky);
+    // KWindowSystem::forceActiveWindow(window->winId());
+    // KWindowSystem::setOnAllDesktops(window->winId(), true);
 }
 
 void DeclarativeUiHandler::Private::cancel()
