@@ -22,25 +22,36 @@
 
 #include <QMetaObject>
 #include <QDeclarativeContext>
+#include <QApplication>
+#include <QX11Info>
 
 #include <KDebug>
 #include <KWindowSystem>
 
+#ifdef Q_WS_X11
+#include <X11/Xlib.h>
+#include <X11/Xatom.h>
+#endif
+
 DeclarativeUiHandler::Private::Private()
-    : window(NULL), receiver(NULL), slot(NULL)
+    : window(NULL), receiver(NULL), slot(NULL), showingSomething(false), showingBusy(false)
 {
 }
 
 void DeclarativeUiHandler::Private::onCurrentActivityChanged(const QString & activity)
 {
-    Q_UNUSED(activity)
+    Q_UNUSED(activity);
 
-    cancel();
+    kDebug() << activity;
+    // close();
 }
 
 void DeclarativeUiHandler::Private::showWindow()
 {
+    kDebug();
+
     window->show();
+    showingSomething = true;
 
     // TODO: We need some magic here for kwin to know that this needs to be a top-level window
     // and that it doesn't depend on the current activity
@@ -49,23 +60,51 @@ void DeclarativeUiHandler::Private::showWindow()
     window->setWindowState(Qt::WindowMaximized);
     KWindowSystem::setOnAllDesktops(window->effectiveWinId(), true);
     KWindowSystem::setState(window->effectiveWinId(), NET::SkipTaskbar | NET::SkipPager | NET::KeepAbove | NET::Sticky | NET::StaysOnTop);
-    KWindowSystem::setType(window->effectiveWinId(), NET::Dock);
     KWindowSystem::raiseWindow(window->effectiveWinId());
     KWindowSystem::forceActiveWindow(window->effectiveWinId());
+
+#ifdef Q_WS_X11
+    Atom activitiesAtom = XInternAtom(QX11Info::display(), "_KDE_NET_WM_ACTIVITIES", False);
+
+    XChangeProperty(QX11Info::display(), window->effectiveWinId(),
+            activitiesAtom, XA_STRING, 8,
+            PropModeReplace, (const unsigned char *)"ALL", 3);
+#endif
+}
+
+void DeclarativeUiHandler::Private::hideWindow()
+{
+    showingSomething = false;
+
+    if (!showingBusy) {
+        window->hide();
+    }
 }
 
 void DeclarativeUiHandler::Private::cancel()
 {
-    kDebug() << "Hiding qml ui handler";
-    hideAll();
-    window->hide();
+    kDebug();
 
     returnPassword(QString());
+    close();
+
+    hideWindow();
+}
+
+void DeclarativeUiHandler::Private::close()
+{
+    kDebug();
+
+    hideAll();
 }
 
 void DeclarativeUiHandler::Private::returnPassword(const QString & password)
 {
+    kDebug() << password;
+
     if (receiver && slot) {
+        kDebug() << "receiver" << receiver->metaObject()->className() << slot;
+
         QMetaObject::invokeMethod(receiver, slot, Qt::QueuedConnection,
                     Q_ARG(QString, password));
         emit hideAll();
@@ -73,6 +112,8 @@ void DeclarativeUiHandler::Private::returnPassword(const QString & password)
 
     receiver = NULL;
     slot = NULL;
+
+    hideWindow();
 }
 
 DeclarativeUiHandler::DeclarativeUiHandler(QObject * parent, const QVariantList & args)
@@ -95,29 +136,32 @@ DeclarativeUiHandler::~DeclarativeUiHandler()
 void DeclarativeUiHandler::askPassword(const QString & title, const QString & message,
             bool newPassword, QObject * receiver, const char * slot)
 {
-    d->showWindow();
+    kDebug() << title << message;
+
     d->receiver = receiver;
     d->slot     = slot;
+    d->showWindow();
+
     emit d->askPassword(title, message, newPassword);
 }
 
 void DeclarativeUiHandler::message(const QString & title, const QString & message)
 {
+    kDebug() << title << message;
+
     d->showWindow();
     emit d->message(message);
 }
 
-bool DeclarativeUiHandler::init(SharedInfo * info)
+void DeclarativeUiHandler::setBusy(bool value)
 {
-    UiHandler::init(info);
+    kDebug() << value << d->showingSomething;
+    d->showingBusy = value;
 
-    connect(info, SIGNAL(currentActivityChanged(QString)),
-            d, SLOT(onCurrentActivityChanged(QString)));
-
-    return true;
+    if (!value && !d->showingSomething) {
+        d->window->hide();
+    }
 }
-
-
 
 
 KAMD_EXPORT_UI_HANDLER(DeclarativeUiHandler, "activitymanager_uihandler_declarative")

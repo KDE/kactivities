@@ -32,8 +32,7 @@ public:
     virtual void message(const QString & title, const QString & message);
     virtual void askPassword(const QString & title, const QString & message,
             bool newPassword, QObject * receiver, const char * slot);
-
-    virtual bool init(SharedInfo * info);
+    virtual void setBusy(bool value = true);
 
 private:
     class Private;

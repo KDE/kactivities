@@ -45,6 +45,8 @@ public:
 
     static void message(const QString & title, const QString & message);
 
+    static void setBusy(bool value);
+
 private:
     static Ui * self();
 
@@ -55,6 +57,8 @@ private:
             QObject * receiver, const char * slot);
 
     void _message(const QString & title, const QString & message);
+
+    void _setBusy(bool value);
 
     class Private;
     Private * const d;

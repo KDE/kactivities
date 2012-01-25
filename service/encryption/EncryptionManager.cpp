@@ -138,8 +138,8 @@ void EncryptionManager::mountActivityEncrypted(const QString & activity, bool en
 EncryptionManager::Private::Private(EncryptionManager * parent)
     : QObject(parent), q(parent)
 {
-    connect(&encfs, SIGNAL(mounted(QString)), SLOT(onEncryptedFolderMounted(QString)));
-    connect(&encfs, SIGNAL(unmounted(QString)), SLOT(onEncryptedFolderUnmounted(QString)));
+    connect(&encfs, SIGNAL(mounted(QString)), SLOT(onEncryptedFolderMounted(QString)),     Qt::QueuedConnection);
+    connect(&encfs, SIGNAL(unmounted(QString)), SLOT(onEncryptedFolderUnmounted(QString)), Qt::QueuedConnection);
 }
 
 QString EncryptionManager::Private::folderName(const QString & activity, Folder folder) const

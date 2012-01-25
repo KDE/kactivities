@@ -34,12 +34,6 @@ UiHandler::~UiHandler()
     delete d;
 }
 
-bool UiHandler::init(SharedInfo * info)
-{
-    d->sharedInfo = info;
-    return true;
-}
-
 SharedInfo * UiHandler::sharedInfo() const
 {
     return d->sharedInfo;

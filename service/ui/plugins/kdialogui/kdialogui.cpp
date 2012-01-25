@@ -79,7 +79,7 @@ public:
 KDialogUiHandler::KDialogUiHandler(QObject * parent, const QVariantList & args)
     : UiHandler(parent), d(new Private())
 {
-    Q_UNUSED(args)
+    Q_UNUSED(args);
 }
 
 KDialogUiHandler::~KDialogUiHandler()
@@ -97,5 +97,11 @@ void KDialogUiHandler::message(const QString & title, const QString & message)
 {
     QMessageBox::information(NULL, title, message);
 }
+
+void KDialogUiHandler::setBusy(bool value)
+{
+    Q_UNUSED(value);
+}
+
 
 KAMD_EXPORT_UI_HANDLER(KDialogUiHandler, "activitymanager_uihandler_kdialog")

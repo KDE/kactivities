@@ -37,6 +37,8 @@ EncfsInterface::Private::Private(EncfsInterface * parent)
 
 void EncfsInterface::Private::askForPassword(bool newPassword)
 {
+    Ui::setBusy(true);
+
     Ui::askPassword(
             i18n("Activity password"),
             i18n("Enter password to use for encryption"),
@@ -49,6 +51,7 @@ void EncfsInterface::Private::onGotPassword(const QString & password)
 {
     if (password.isEmpty()) {
         // The user pressed cancel
+        Ui::setBusy(false);
         return;
     }
 
@@ -130,6 +133,8 @@ void EncfsInterface::unmountAll()
 
 void EncfsInterface::mount(const QString & what, const QString & mountPoint)
 {
+    kDebug() << "mounting" << what << mountPoint;
+
     if (isMounted(mountPoint)) {
         kDebug() << mountPoint << "already mounted";
         d->mounts << mountPoint;
@@ -141,9 +146,7 @@ void EncfsInterface::mount(const QString & what, const QString & mountPoint)
     d->what = what;
     d->mountPoint = mountPoint;
 
-    // Asynchronously getting the password
-    QMetaObject::invokeMethod(d, "askForPassword", Qt::QueuedConnection,
-                              Q_ARG(bool, /* twice = */ d->shouldInitialize));
+    d->askForPassword(d->shouldInitialize);
 }
 
 void EncfsInterface::unmount(const QString & mountPoint)
@@ -216,6 +219,8 @@ void EncfsInterface::mountProcessFinished(int exitCode, QProcess::ExitStatus exi
 
         }
     }
+
+    Ui::setBusy(false);
 
     process->deleteLater();
 }

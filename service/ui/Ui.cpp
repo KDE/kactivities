@@ -62,10 +62,6 @@ Ui::Ui(QObject * parent)
 
     if (factory) {
         d->ui = factory->create < UiHandler > (this);
-
-        if (d->ui) {
-            d->ui->init(SharedInfo::self());
-        }
     }
 }
 
@@ -85,6 +81,11 @@ void Ui::_message(const QString & title, const QString & message)
     d->ui->message(title, message);
 }
 
+void Ui::_setBusy(bool value)
+{
+    d->ui->setBusy(value);
+}
+
 void Ui::askPassword(const QString & title, const QString & message,
         bool newPassword,
         QObject * receiver, const char * slot)
@@ -96,4 +97,10 @@ void Ui::message(const QString & title, const QString & message)
 {
     Ui::self()->_message(title, message);
 }
+
+void Ui::setBusy(bool value)
+{
+    Ui::self()->_setBusy(value);
+}
+
 

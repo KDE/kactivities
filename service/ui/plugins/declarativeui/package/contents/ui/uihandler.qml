@@ -65,12 +65,7 @@ Image {
         okText:                 "Ok"
         cancelText:             "Cancel"
 
-        onPasswordChosen: {
-            uihandler.returnPassword(password)
-            // TODO: This is an evil way to close the window
-            // Make a new setBusy method for ui handlers
-            uihandler.cancel()
-        }
+        onPasswordChosen: uihandler.returnPassword(password)
 
         onCanceled: uihandler.cancel()
 

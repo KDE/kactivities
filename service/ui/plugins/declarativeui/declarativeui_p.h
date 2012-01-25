@@ -31,6 +31,8 @@ public:
     KDeclarativeMainWindow * window;
     QObject * receiver;
     const char * slot;
+    bool showingSomething: 1;
+    bool showingBusy: 1;
 
     void showWindow();
 
@@ -38,6 +40,8 @@ public Q_SLOTS:
     void onCurrentActivityChanged(const QString & activity);
     void returnPassword(const QString & password);
     void cancel();
+    void close();
+    void hideWindow();
 
 Q_SIGNALS:
     void message(const QString & message);

@@ -172,6 +172,7 @@ void ActivityManagerPrivate::ensureCurrentActivityIsRunning()
 
     if (!runningActivities.contains(currentActivity)) {
         if (runningActivities.size() > 0) {
+            kDebug() << "Somebody called ensureCurrentActivityIsRunning?";
             setCurrentActivity(runningActivities.first());
         } else {
             // kDebug() << "there are no running activities! eek!";
@@ -181,18 +182,40 @@ void ActivityManagerPrivate::ensureCurrentActivityIsRunning()
 
 bool ActivityManagerPrivate::setCurrentActivity(const QString & id)
 {
-    kDebug() << "Changing rhe activity to:" << id;
+    kDebug() << "Changing the activity to:" << id;
     if (id.isEmpty()) {
         currentActivity.clear();
         emit q->CurrentActivityChanged(currentActivity);
         return true;
     }
 
-    if (!activities.contains(id)) {
+    if (!activities.contains(id)               // the activity doesn't exist
+ //           || !toBeCurrentActivity.isEmpty()  // we are already in the process of switching the activity
+        )
+    {
         return false;
     }
 
+    if (currentActivity == id) {
+        return true;
+    }
+
     q->StartActivity(id);
+
+    // Crash:
+    // if (!currentActivity.isEmpty() && !EncryptionManager::self()->isActivityEncrypted(id)
+    //         && EncryptionManager::self()->isActivityEncrypted(currentActivity)) {
+
+    //     kDebug() << "CRASHING";
+    //     kDebug() << currentActivity << toBeCurrentActivity << id;
+
+    //     kDebug() << (void*)sender();
+    //     kDebug() << (void*)sender()->metaObject();
+    //     kDebug() << sender()->metaObject()->className();
+    //     volatile int x = 1;
+    //     volatile int y = 0;
+    //     volatile int z = x / y;
+    // }
 
     toBeCurrentActivity = id;
 
@@ -208,6 +231,7 @@ void ActivityManagerPrivate::setCurrentActivityDone(const QString & id)
         << "we are expecting it to be" << toBeCurrentActivity;
 
     if (toBeCurrentActivity != id) return;
+    toBeCurrentActivity.clear();
 
     kDebug() << "This is now the current activity" << id;
 
@@ -274,8 +298,12 @@ ActivityManager::ActivityManager()
 
     // Initializing the encryption manager
     EncryptionManager::self(this);
+
+    // Notifying clients that the activity attributes have been changed
     connect(EncryptionManager::self(), SIGNAL(activityEncryptionChanged(QString, bool)),
             this, SIGNAL(ActivityChanged(QString)));
+
+    // When the encryption manager says to change the current activity, obey
     connect(EncryptionManager::self(), SIGNAL(currentActivityChanged(QString)),
             d, SLOT(setCurrentActivityDone(QString)));
 
