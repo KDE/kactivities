@@ -30,6 +30,7 @@ Item {
     property int layoutPadding: 8
 
     property alias title:      labelTitle.text
+    property alias password:   textPassword.text
     property alias okText:     buttonOk.text
     property alias cancelText: buttonCancel.text
 

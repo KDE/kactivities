@@ -29,6 +29,7 @@ Item {
     property int mainIconSize: 64 + 32
     property int layoutPadding: 8
 
+    property alias password:   textPassword1.text
     property alias title: labelTitle.text
     property alias passwordText1: labelPassword1.text
     property alias passwordText2: labelPassword2.text
@@ -288,7 +289,7 @@ Item {
                     bottom: parent.bottom
                 }
 
-                onClicked: main.passwordChosen(textPassword.text)
+                onClicked: main.passwordChosen(textPassword1.text)
             }
 
             PlasmaComponents.Button {

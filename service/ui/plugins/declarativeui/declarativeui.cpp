@@ -24,6 +24,7 @@
 #include <QDeclarativeContext>
 
 #include <KDebug>
+#include <KWindowSystem>
 
 DeclarativeUiHandler::Private::Private()
     : window(NULL), receiver(NULL), slot(NULL)
@@ -37,12 +38,22 @@ void DeclarativeUiHandler::Private::onCurrentActivityChanged(const QString & act
     cancel();
 }
 
+void DeclarativeUiHandler::Private::showWindow()
+{
+    window->show();
+    window->setWindowFlags(window->windowFlags() | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
+    window->setWindowState(Qt::WindowMaximized);
+    KWindowSystem::setState(window->winId(), NET::SkipTaskbar | NET::SkipPager | NET::KeepAbove | NET::Sticky);
+    KWindowSystem::forceActiveWindow(window->winId());
+}
+
 void DeclarativeUiHandler::Private::cancel()
 {
     kDebug() << "Hiding qml ui handler";
     hideAll();
     window->hide();
-    window->setVisible(false);
+
+    returnPassword(QString());
 }
 
 void DeclarativeUiHandler::Private::returnPassword(const QString & password)
@@ -77,7 +88,7 @@ DeclarativeUiHandler::~DeclarativeUiHandler()
 void DeclarativeUiHandler::askPassword(const QString & title, const QString & message,
             bool newPassword, QObject * receiver, const char * slot)
 {
-    d->window->show();
+    d->showWindow();
     d->receiver = receiver;
     d->slot     = slot;
     emit d->askPassword(title, message, newPassword);
@@ -85,7 +96,7 @@ void DeclarativeUiHandler::askPassword(const QString & title, const QString & me
 
 void DeclarativeUiHandler::message(const QString & title, const QString & message)
 {
-    d->window->show();
+    d->showWindow();
     emit d->message(message);
 }
 
@@ -98,6 +109,8 @@ bool DeclarativeUiHandler::init(SharedInfo * info)
 
     return true;
 }
+
+
 
 
 KAMD_EXPORT_UI_HANDLER(DeclarativeUiHandler, "activitymanager_uihandler_declarative")

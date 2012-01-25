@@ -65,7 +65,13 @@ Image {
         okText:                 "Ok"
         cancelText:             "Cancel"
 
-        onPasswordChosen: uihandler.returnPassword(password)
+        onPasswordChosen: {
+            uihandler.returnPassword(password)
+            // TODO: This is an evil way to close the window
+            // Make a new setBusy method for ui handlers
+            uihandler.cancel()
+        }
+
         onCanceled: uihandler.cancel()
     }
 
@@ -104,9 +110,11 @@ Image {
         // void askPassword(const QString & title, const QString & message, bool newPassword);
         onAskPassword: {
             if (newPassword) {
+                dialogNewPassword.password = ""
                 dialogNewPassword.opacity = 1
 
             } else {
+                dialogPassword.password = ""
                 dialogPassword.opacity = 1
 
             }

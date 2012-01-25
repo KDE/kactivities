@@ -32,6 +32,8 @@ public:
     QObject * receiver;
     const char * slot;
 
+    void showWindow();
+
 public Q_SLOTS:
     void onCurrentActivityChanged(const QString & activity);
     void returnPassword(const QString & password);
