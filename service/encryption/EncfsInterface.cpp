@@ -1,5 +1,6 @@
 /*
  *   Copyright (C) 2012 Ivan Cukic <ivan.cukic(at)kde.org>
+ *   Copyright (C) 2012 Lamarque V. Souza <lamarque@kde.org>
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License version 2,
@@ -17,64 +18,55 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#include "EncfsInterface.h"
+#include "EncfsInterface_p.h"
 #include <config-features.h>
 
-#include <QHash>
-#include <QProcess>
 #include <QDir>
 #include <QStringList>
 
 #include <KLocale>
 #include <KDebug>
+#include <kmountpoint.h>
 
-class EncfsInterface::Private {
-public:
-    Private(EncfsInterface * parent)
-        : q(parent)
-    {
-    }
+#include "ui/Ui.h"
 
-    QString askForPassword() const;
-    QString askForPassword(bool twice) const;
-
-    QHash < QString, QProcess* > mounts;
-
-    QProcess * startEncfs(const QString & what, const QString & mountPoint, const QString & password, bool init = false);
-
-    EncfsInterface * const q;
-};
-
-QString EncfsInterface::Private::askForPassword() const
+EncfsInterface::Private::Private(EncfsInterface * parent)
+    : QObject(parent), q(parent), shouldInitialize(false)
 {
-    QProcess kdialog;
-
-    kdialog.start("kdialog",
-            QStringList()
-            << "--title"
-            << i18n("Activity password")
-            << "--password"
-            << i18n("Enter password to use for encryption")
-        );
-
-    if (kdialog.waitForFinished(-1)) {
-        return kdialog.readAllStandardOutput().trimmed();
-    }
-
-    return QString();
 }
 
-QString EncfsInterface::Private::askForPassword(bool twice) const
+void EncfsInterface::Private::askForPassword(bool newPassword)
 {
-    QString result = askForPassword();
+    Ui::setBusy(true);
 
-    if (twice && !result.isEmpty()) {
-        if (result != askForPassword()) {
-            return QString();
-        }
+    Ui::askPassword(
+            i18n("Activity password"),
+            i18n("Enter password to use for encryption"),
+            newPassword,
+            this, "onGotPassword"
+       );
+}
+
+void EncfsInterface::Private::onGotPassword(const QString & password)
+{
+    if (password.isEmpty()) {
+        // The user pressed cancel
+        Ui::setBusy(false);
+        return;
     }
 
-    return result;
+    kDebug() << "Got the password ... mounting the encfs"
+        << what << mountPoint << shouldInitialize;
+
+    // This should be necessary only for init mount, but
+    // we are doing it always just in case
+
+    QDir dir;
+    dir.mkpath(what);
+    dir.mkpath(mountPoint);
+
+    // Setting the encryption
+    startEncfs(what, mountPoint, password, /* initialize = */ shouldInitialize);
 }
 
 EncfsInterface::EncfsInterface(QObject * parent)
@@ -84,12 +76,12 @@ EncfsInterface::EncfsInterface(QObject * parent)
 
 EncfsInterface::~EncfsInterface()
 {
-    umountAll();
+    unmountAll();
 
     delete d;
 }
 
-bool EncfsInterface::isEncryptionInitialized(const QString & path)
+bool EncfsInterface::isEncryptionInitialized(const QString & path) const
 {
     QDir dir(path);
 
@@ -104,12 +96,36 @@ bool EncfsInterface::isEncryptionInitialized(const QString & path)
     return false;
 }
 
-void EncfsInterface::umountAll()
+bool EncfsInterface::isMounted(const QString & path) const
+{
+    // warning: KMountPoint depends on /etc/mtab according to the documentation.
+    KMountPoint::Ptr ptr = KMountPoint::currentMountPoints().findByPath(path);
+
+    return (ptr && ptr.data()->mountPoint() == path);
+}
+
+void EncfsInterface::unmountAllExcept(const QString & path)
+{
+    kDebug() << "Unmounting everything except " << path;
+
+    foreach (const QString & mount, d->mounts) {
+        if (path != mount) {
+            unmount(mount);
+        }
+    }
+}
+
+void EncfsInterface::unmountAll()
 {
     kDebug() << "Unmounting everything";
 
-    foreach (const QString & mount, d->mounts.keys()) {
-        umount(mount);
+    // TODO: Maybe we should umount all directories, not only
+    // what is in d->mounts
+    foreach (const QString & mount, d->mounts) {
+        QProcess::execute(FUSERMOUNT_PATH, QStringList()
+                << "-u" // unmount
+                << mount
+                );
     }
 
     d->mounts.clear();
@@ -117,61 +133,114 @@ void EncfsInterface::umountAll()
 
 void EncfsInterface::mount(const QString & what, const QString & mountPoint)
 {
-    if (d->mounts.contains(mountPoint)) return;
+    kDebug() << "mounting" << what << mountPoint;
 
-    bool shouldInitialize = !isEncryptionInitialized(what);
-
-    // Getting the password
-
-    QString password = d->askForPassword(/* twice = */ shouldInitialize);
-
-    if (password.isEmpty()) {
-        // TODO: Report error - empty password
+    if (isMounted(mountPoint)) {
+        kDebug() << mountPoint << "already mounted";
+        d->mounts << mountPoint;
+        emit mounted(mountPoint);
         return;
     }
 
-    // This should be necessary only for init mount, but
-    // we are doing it always just in case
+    d->shouldInitialize = !isEncryptionInitialized(what);
+    d->what = what;
+    d->mountPoint = mountPoint;
 
-    QDir dir;
-    dir.mkpath(what);
-    dir.mkpath(mountPoint);
-
-    // Setting the encryption
-    d->startEncfs(what, mountPoint, password, /* initialize = */ shouldInitialize);
+    d->askForPassword(d->shouldInitialize);
 }
 
-void EncfsInterface::umount(const QString & mountPoint)
+void EncfsInterface::unmount(const QString & mountPoint)
 {
-    if (!d->mounts.contains(mountPoint)) return;
+    if (!isMounted(mountPoint)) return;
 
-    QProcess * encfs = new QProcess(this);
-    encfs->setProcessChannelMode(QProcess::ForwardedChannels);
+    d->mounts.remove(mountPoint);
 
-    connect(encfs, SIGNAL(finished(int, QProcess::ExitStatus)),
-            encfs, SLOT(deleteLater()));
+    QProcess * fusermount = new QProcess(this);
+    fusermount->setProcessChannelMode(QProcess::ForwardedChannels);
+    fusermount->setProperty("mountPoint", mountPoint);
 
-    encfs->start(FUSERMOUNT_PATH, QStringList()
+    connect(fusermount, SIGNAL(finished(int, QProcess::ExitStatus)),
+            SLOT(unmountProcessFinished(int,QProcess::ExitStatus)));
+
+    fusermount->start(FUSERMOUNT_PATH, QStringList()
             << "-u" // unmount
             << mountPoint
         );
 }
 
+void EncfsInterface::unmountProcessFinished(int exitCode, QProcess::ExitStatus exitStatus)
+{
+    Q_UNUSED(exitCode)
+    Q_UNUSED(exitStatus)
+
+    QProcess * process = qobject_cast < QProcess * > (sender());
+
+    if (!process) return;
+
+    const QString & mountPoint = process->property("mountPoint").toString();
+
+    kDebug() << "Unmounted" << mountPoint;
+    emit unmounted(mountPoint);
+    process->deleteLater();
+}
+
+void EncfsInterface::mountProcessFinished(int exitCode, QProcess::ExitStatus exitStatus)
+{
+    Q_UNUSED(exitCode)
+    Q_UNUSED(exitStatus)
+
+    QProcess * process = qobject_cast < QProcess * > (sender());
+    if (!process) return;
+
+    const QString & mountPoint = process->property("mountPoint").toString();
+
+    if (process->exitCode() == 0 && process->exitStatus() == QProcess::NormalExit) {
+        kDebug() << "Mounted" << mountPoint;
+        emit mounted(mountPoint);
+
+    } else {
+        // probably we tried to mount an already mounted encfs.
+        // This should happen, anyway we do not need to bother the user with a popup.
+        if (isMounted(mountPoint)) {
+            kDebug() << mountPoint << "already mounted";
+            d->mounts << mountPoint;
+            emit mounted(mountPoint);
+
+        } else {
+            // There is an error calling encfs
+            kDebug() << "ERROR: Mounting failed! Probably a wrong password";
+            QDir().rmpath(mountPoint);
+            d->mounts.remove(mountPoint);
+
+            Ui::message(
+                    i18n("Error"),
+                    i18n("Error unlocking the activity.\nYou've probably entered a wrong password.")
+                );
+
+        }
+    }
+
+    Ui::setBusy(false);
+
+    process->deleteLater();
+}
+
 QProcess * EncfsInterface::Private::startEncfs(const QString & what,
         const QString & mountPoint, const QString & password, bool init)
 {
-    kDebug() << "Executing" << ENCFS_PATH << "-f -S"
+    kDebug() << "Executing" << ENCFS_PATH << " -S"
             << what
             << mountPoint;
 
     QProcess * encfs = new QProcess(q);
     encfs->setProcessChannelMode(QProcess::ForwardedChannels);
+    encfs->setProperty("mountPoint", mountPoint);
 
-    connect(encfs, SIGNAL(finished(int, QProcess::ExitStatus)),
-            q, SLOT(processFinished(int, QProcess::ExitStatus)));
+    connect(encfs, SIGNAL(finished(int,QProcess::ExitStatus)),
+            q, SLOT(mountProcessFinished(int,QProcess::ExitStatus)));
 
     encfs->start(ENCFS_PATH, QStringList()
-            << "-f" // foreground mode
+            // << "-f" // foreground mode // we don't use this anymore
             << "-S" // password read from stdin
             << what
             << mountPoint
@@ -184,31 +253,7 @@ QProcess * EncfsInterface::Private::startEncfs(const QString & what,
     encfs->write(password.toAscii()); // writing the password
     encfs->write("\n");
 
-    mounts[mountPoint] = encfs;
+    mounts << mountPoint;
 
     return encfs;
 }
-
-void EncfsInterface::processFinished(int exitCode, QProcess::ExitStatus exitStatus)
-{
-    QProcess * process = static_cast < QProcess * > (sender());
-
-    QString mountPoint = d->mounts.key(process);
-
-    if (process->exitCode() != 0) {
-        // There is an error calling encfs
-        kDebug() << "ERROR: Mounting failed! Probably a wrong password";
-
-        QProcess::execute("kdialog", QStringList()
-                << "--title"
-                << i18n("Error")
-                << "--msgbox"
-                << i18n("Error setting up the encrypted folder for the activity.")
-            );
-
-    }
-
-    d->mounts.remove(mountPoint);
-    QDir().rmpath(mountPoint);
-}
-

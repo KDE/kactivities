@@ -194,6 +194,7 @@ public Q_SLOTS:
 
     // Temporary
     void SetActivityEncrypted(const QString & activity, bool encrypted);
+    bool IsActivityEncrypted(const QString & activity) const;
     void _MountActivityEncrypted(const QString & activity, bool encrypted);
 
 
@@ -286,7 +287,6 @@ public Q_SLOTS:
      *     is linked to the current activity
      */
     // void UnlinkResourceFromActivity(const QString & uri, const QString & activity = QString());
-
 
 private:
     friend class ActivityManagerPrivate;

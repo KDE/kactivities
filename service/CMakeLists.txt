@@ -5,8 +5,6 @@ set(ADDITIONAL_LINK_LIBS)
 add_subdirectory(kded)
 # add_subdirectory(ontologies)
 
-add_subdirectory(plugins)
-
 # Checking for Nepomuk
 macro_optional_find_package(Nepomuk)
 macro_log_feature(
@@ -58,6 +56,9 @@ include_directories(
     ${KDE4_INCLUDES}
     )
 
+add_subdirectory(plugins)
+add_subdirectory(ui/plugins)
+
 set(activity_manager_SRCS
     ActivityManager.cpp
     NepomukActivityManager.cpp
@@ -68,6 +69,8 @@ set(activity_manager_SRCS
     encryption/EncryptionManager.cpp
     encryption/EncfsInterface.cpp
     main.cpp
+    ui/UiHandler.cpp
+    ui/Ui.cpp
     ${sdo_SRCS}
     )
 
@@ -81,7 +84,7 @@ kde4_add_executable(activity-manager ${activity_manager_SRCS})
 target_link_libraries(
     activity-manager
     ${KDE4_KDECORE_LIBS}
-    ${KDE4_KDEUI_LIBS}
+    ${KDE4_KDEUI_LIBS} # TODO: Remove kdeui
     ${ADDITIONAL_LINK_LIBS}
     )
 

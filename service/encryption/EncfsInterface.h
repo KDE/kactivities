@@ -34,16 +34,21 @@ public:
     virtual ~EncfsInterface();
 
     void mount(const QString & what, const QString & mountPoint);
-    void umount(const QString & mountPoint);
-    void umountAll();
+    void unmount(const QString & mountPoint);
+    void unmountAll();
+    void unmountAllExcept(const QString & path);
 
-    bool isEncryptionInitialized(const QString & path);
+    bool isEncryptionInitialized(const QString & path) const;
+    bool isMounted(const QString & path) const;
 
 Q_SIGNALS:
     void error();
+    void mounted(const QString & mountPoint);
+    void unmounted(const QString & mountPoint);
 
 private Q_SLOTS:
-    void processFinished(int exitCode, QProcess::ExitStatus exitStatus);
+    void mountProcessFinished(int exitCode, QProcess::ExitStatus exitStatus);
+    void unmountProcessFinished(int exitCode, QProcess::ExitStatus exitStatus);
 
 private:
     class Private;

@@ -83,6 +83,7 @@ private:
     friend class ActivityManager;
     friend class ActivityManagerPrivate;
     friend class EventProcessor;
+    friend class Ui;
 };
 
 #endif // SHARED_INFO_H_

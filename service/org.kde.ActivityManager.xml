@@ -79,6 +79,10 @@
       <arg name="activity" type="s" direction="in"/>
       <arg name="encrypted" type="b" direction="in"/>
     </method>
+    <method name="IsActivityEncrypted">
+      <arg type="b" direction="out"/>
+      <arg name="activity" type="s" direction="in"/>
+    </method>
     <method name="_MountActivityEncrypted">
       <arg name="activity" type="s" direction="in"/>
       <arg name="encrypted" type="b" direction="in"/>
