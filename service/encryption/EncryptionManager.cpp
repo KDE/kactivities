@@ -93,7 +93,8 @@ EncryptionManager::EncryptionManager(const ActivityManager * m)
     connect(m, SIGNAL(aboutToQuit()),
             this, SLOT(unmountAll()));
 
-    setCurrentActivity(m->CurrentActivity());
+    // No, we don't want this - the activity is most likely QString() at this point
+    // setCurrentActivity(m->CurrentActivity());
 }
 
 EncryptionManager::~EncryptionManager()
@@ -313,7 +314,7 @@ void EncryptionManager::removeActivity(const QString & activity)
 void EncryptionManager::setCurrentActivity(const QString & activity)
 {
     const QString & currentFolderName = i18nc("Directory name for the current activity", "Current");
-    kDebug() << "This is now the current activity" << activity;
+    kDebug() << "This is going to be the current activity" << activity;
 
     d->currentActivity = activity;
 

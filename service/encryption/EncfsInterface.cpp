@@ -48,7 +48,7 @@ void EncfsInterface::Private::askForPassword(bool newPassword)
 void EncfsInterface::Private::onGotPassword(const QString & password)
 {
     if (password.isEmpty()) {
-        // TODO: Report error - empty password
+        // The user pressed cancel
         return;
     }
 
@@ -223,7 +223,6 @@ void EncfsInterface::mountProcessFinished(int exitCode, QProcess::ExitStatus exi
 QProcess * EncfsInterface::Private::startEncfs(const QString & what,
         const QString & mountPoint, const QString & password, bool init)
 {
-    // TODO: sometimes this command stalls QProcess and the signal finished is never emitted.
     kDebug() << "Executing" << ENCFS_PATH << " -S"
             << what
             << mountPoint;

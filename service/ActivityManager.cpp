@@ -213,6 +213,11 @@ void ActivityManagerPrivate::setCurrentActivityDone(const QString & id)
 
     currentActivity = id;
     mainConfig().writeEntry("currentActivity", id);
+
+    if (!EncryptionManager::self()->isActivityEncrypted(id)) {
+        mainConfig().writeEntry("lastUnlockedActivity", id);
+    }
+
     scheduleConfigSync();
 
     SharedInfo::self()->setCurrentActivity(id);
@@ -300,11 +305,43 @@ ActivityManager::ActivityManager()
 
     EXEC_NEPOMUK( syncActivities(d->activities.keys(), d->activitiesConfig(), d->activityIconsConfig()) );
 
-    // First, lets notify everybody that there is no current activity
-    d->setCurrentActivity(QString());
+    // Try to load the last used public (non-private) activity
+    QString lastPublicActivity = d->mainConfig().readEntry("lastUnlockedActivity", QString());
 
-    // Try to load the last used activity
-    d->setCurrentActivity(d->mainConfig().readEntry("currentActivity", QString()));
+    // If the last one turns out to be encrypted, try to load any public activity
+    if (lastPublicActivity.isEmpty() || EncryptionManager::self()->isActivityEncrypted(lastPublicActivity)) {
+        lastPublicActivity.clear();
+
+        foreach (const QString & activity, d->activities.keys()) {
+            if (!EncryptionManager::self()->isActivityEncrypted(activity)) {
+                lastPublicActivity = activity;
+                break;
+            }
+        }
+    }
+
+    if (!lastPublicActivity.isEmpty()) {
+        // Setting the found public activity to be the current one
+        kDebug() << "Setting the activity to be the last public activity" << lastPublicActivity;
+        d->setCurrentActivity(lastPublicActivity);
+
+    } else {
+        // First, lets notify everybody that there is no current activity
+        // Needs to be present so that until the activity gets unlocked,
+        // the environment knows we are in a kind of limbo state
+        d->setCurrentActivity(QString());
+
+        // If there are no public activities, try to load the last used activity
+        QString lastUsedActivity = d->mainConfig().readEntry("currentActivity", QString());
+
+        if (lastUsedActivity.isEmpty() && d->activities.size() > 0) {
+            d->setCurrentActivity(d->activities.keys().at(0));
+
+        } else {
+            d->setCurrentActivity(lastUsedActivity);
+
+        }
+    }
 
     // Listening to active window changes
     connect(KWindowSystem::self(), SIGNAL(windowRemoved(WId)),
