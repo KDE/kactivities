@@ -24,6 +24,7 @@
 #include <KCmdLineArgs>
 
 #include <signal.h>
+#include <stdlib.h>
 
 static void initSignalCatching();
 
