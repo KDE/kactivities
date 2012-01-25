@@ -38,6 +38,9 @@ Item {
     property alias okText:     buttonOk.text
     property alias cancelText: buttonCancel.text
 
+    signal canceled
+    signal passwordChosen (string password)
+
     width: 300
     height: 350
 
@@ -284,6 +287,8 @@ Item {
                     top: parent.top
                     bottom: parent.bottom
                 }
+
+                onClicked: main.passwordChosen(textPassword.text)
             }
 
             PlasmaComponents.Button {
@@ -299,6 +304,8 @@ Item {
                     top: parent.top
                     bottom: parent.bottom
                 }
+
+                onClicked: main.canceled
             }
         }
     }

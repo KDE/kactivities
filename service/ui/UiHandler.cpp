@@ -21,6 +21,7 @@
 
 class UiHandler::Private {
 public:
+    SharedInfo * sharedInfo;
 };
 
 UiHandler::UiHandler(QObject * parent)
@@ -33,9 +34,14 @@ UiHandler::~UiHandler()
     delete d;
 }
 
-bool UiHandler::init()
+bool UiHandler::init(SharedInfo * info)
 {
+    d->sharedInfo = info;
     return true;
 }
 
+SharedInfo * UiHandler::sharedInfo() const
+{
+    return d->sharedInfo;
+}
 

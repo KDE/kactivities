@@ -1,5 +1,6 @@
 /*
  *   Copyright (C) 2012 Ivan Cukic <ivan.cukic(at)kde.org>
+ *   Copyright (C) 2011 Marco Martin <mart@kde.org>
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License version 2,
@@ -20,41 +21,12 @@
 #include "Ui.h"
 #include "UiHandler.h"
 #include <config-features.h>
-
-#include <QThread>
+#include <SharedInfo.h>
 
 #include <KDebug>
 
 class Ui::Private {
 public:
-    class Function: public QThread {
-    public:
-        Function(const QString & _title, const QString & _message, bool _newPassword,
-                 QObject * _receiver, const char * _slot)
-            : title(_title), message(_message), newPassword(_newPassword),
-              receiver(_receiver), slot(_slot)
-        {
-        }
-
-        void run() {
-            const QString & password = ui->askPassword(title, message, newPassword);
-
-            kDebug() << "Got password .... sending it to" << receiver << slot;
-
-            QMetaObject::invokeMethod(receiver, slot, Qt::QueuedConnection,
-                    Q_ARG(QString, password));
-
-            deleteLater();
-        }
-
-    private:
-        QString title;
-        QString message;
-        bool newPassword;
-        QObject * receiver;
-        const char * slot;
-    };
-
     static Ui * s_instance;
     static UiHandler * ui;
 };
@@ -75,13 +47,24 @@ Ui * Ui::self()
 Ui::Ui(QObject * parent)
     : QObject(parent), d(new Private())
 {
-    KPluginFactory * factory = KPluginLoader(UI_HANDLER).factory();
+    QString handlerLibrary = KDIALOG_UI_HANDLER;
+
+    QString platform = getenv("KDE_PLASMA_COMPONENTS_PLATFORM");
+    if (platform.isEmpty()) {
+        KConfigGroup cg(KSharedConfig::openConfig("kdeclarativerc"), "Components-platform");
+        platform = cg.readEntry("name", "desktop");
+    }
+
+    if (platform != "desktop")
+        handlerLibrary = DECLARATIVE_UI_HANDLER;
+
+    KPluginFactory * factory = KPluginLoader(handlerLibrary).factory();
 
     if (factory) {
         d->ui = factory->create < UiHandler > (this);
 
         if (d->ui) {
-            d->ui->init();
+            d->ui->init(SharedInfo::self());
         }
     }
 }
@@ -94,7 +77,7 @@ Ui::~Ui()
 void Ui::_askPassword(const QString & title, const QString & message, bool newPassword,
         QObject * receiver, const char * slot)
 {
-    (new Private::Function(title, message, newPassword, receiver, slot))->run();
+    d->ui->askPassword(title, message, newPassword, receiver, slot);
 }
 
 void Ui::_message(const QString & title, const QString & message)

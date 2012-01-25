@@ -36,11 +36,25 @@ Image {
     property int mainIconSize: 64 + 32
     property int layoutPadding: 8
 
+    MouseArea {
+        onClicked: { dialogMessage.opacity = 0; uihandler.cancel() }
+
+        anchors.fill: parent
+    }
+
+    PlasmaComponents.BusyIndicator {
+        anchors.centerIn: parent
+        running: visible
+        visible: (dialogNewPassword.opacity == 0 && dialogPassword.opacity == 0 && dialogMessage.opacity == 0)
+    }
+
     NewPasswordDialog {
         anchors.centerIn: parent
 
         id: dialogNewPassword
-        visible: false
+
+        opacity: 0
+        Behavior on opacity { NumberAnimation { duration: 300 } }
 
         title:                  "Enter the password"
         passwordText1:          "Password:"
@@ -50,34 +64,58 @@ Image {
         passwordsDontMatchText: "Passwords don't match"
         okText:                 "Ok"
         cancelText:             "Cancel"
+
+        onPasswordChosen: uihandler.returnPassword(password)
+        onCanceled: uihandler.cancel()
     }
 
     PasswordDialog {
         anchors.centerIn: parent
 
         id: dialogPassword
-        visible: true
+
+        opacity: 0
+        Behavior on opacity { NumberAnimation { duration: 300 } }
 
         title:      "Enter the password"
         okText:     "Unlock"
         cancelText: "Dismiss"
+
+        onPasswordChosen: uihandler.returnPassword(password)
+        onCanceled: uihandler.cancel()
     }
 
     MessageDialog {
         id: dialogMessage
-        text: "Failed to unlock the activity.\nProbably due to a wrong password."
-        opacity: 1
 
-        Behavior on opacity {
-            NumberAnimation {
-                duration: 300
-            }
-        }
+        opacity: 0
+        Behavior on opacity { NumberAnimation { duration: 300 } }
     }
 
-    MouseArea {
-        onClicked: dialogMessage.opacity = 0
+    Connections {
+        target: uihandler
 
-        anchors.fill: parent
+        // void message(const QString & message);
+        onMessage: {
+            dialogMessage.text = message
+            dialogMessage.opacity = 1
+        }
+
+        // void askPassword(const QString & title, const QString & message, bool newPassword);
+        onAskPassword: {
+            if (newPassword) {
+                dialogNewPassword.opacity = 1
+
+            } else {
+                dialogPassword.opacity = 1
+
+            }
+        }
+
+        onHideAll: {
+            dialogMessage.opacity = 0
+            dialogNewPassword.opacity = 0
+            dialogPassword.opacity = 0
+        }
     }
 }

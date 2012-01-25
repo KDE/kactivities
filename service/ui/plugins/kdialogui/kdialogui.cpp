@@ -21,36 +21,76 @@
 #include <kpassworddialog.h>
 
 #include <QMessageBox>
+#include <QThread>
+#include <KDebug>
+
+class KDialogUiHandler::Private {
+public:
+    class AskPassword: public QThread {
+    public:
+        AskPassword(const QString & _title, const QString & _message, bool _newPassword,
+                 QObject * _receiver, const char * _slot)
+            : title(_title), message(_message), newPassword(_newPassword),
+              receiver(_receiver), slot(_slot)
+        {
+        }
+
+        QString askPassword(const QString & title, const QString & message, bool newPassword)
+        {
+            #define ShowDialog(Type)                                                      \
+                Type dialog;                                                              \
+                dialog.setPrompt(message);                                                \
+                dialog.setWindowTitle(title);                                             \
+                dialog.setWindowFlags(Qt::WindowStaysOnTopHint | dialog.windowFlags());   \
+                if (dialog.exec()) return dialog.password();                              \
+                return QString();
+
+            if (newPassword) {
+                ShowDialog(KNewPasswordDialog);
+
+            } else {
+                ShowDialog(KPasswordDialog);
+
+            }
+
+            #undef ShowDialog
+        }
+
+        void run() {
+            const QString & password = askPassword(title, message, newPassword);
+
+            kDebug() << "Got password .... sending it to" << receiver << slot;
+
+            QMetaObject::invokeMethod(receiver, slot, Qt::QueuedConnection,
+                    Q_ARG(QString, password));
+
+            deleteLater();
+        }
+
+    private:
+        QString title;
+        QString message;
+        bool newPassword;
+        QObject * receiver;
+        const char * slot;
+    };
+};
 
 KDialogUiHandler::KDialogUiHandler(QObject * parent, const QVariantList & args)
-    : UiHandler(parent)
+    : UiHandler(parent), d(new Private())
 {
     Q_UNUSED(args)
 }
 
 KDialogUiHandler::~KDialogUiHandler()
 {
+    delete d;
 }
 
-QString KDialogUiHandler::askPassword(const QString & title, const QString & message, bool newPassword)
+void KDialogUiHandler::askPassword(const QString & title, const QString & message,
+            bool newPassword, QObject * receiver, const char * slot)
 {
-    #define ShowDialog(Type)                                                      \
-        Type dialog;                                                              \
-        dialog.setPrompt(message);                                                \
-        dialog.setWindowTitle(title);                                             \
-        dialog.setWindowFlags(Qt::WindowStaysOnTopHint | dialog.windowFlags());   \
-        if (dialog.exec()) return dialog.password();                              \
-        return QString();
-
-    if (newPassword) {
-        ShowDialog(KNewPasswordDialog);
-
-    } else {
-        ShowDialog(KPasswordDialog);
-
-    }
-
-    #undef ShowDialog
+    (new Private::AskPassword(title, message, newPassword, receiver, slot))->run();
 }
 
 void KDialogUiHandler::message(const QString & title, const QString & message)

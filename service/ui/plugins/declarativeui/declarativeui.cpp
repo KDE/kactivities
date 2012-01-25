@@ -16,13 +16,46 @@
  */
 
 #include "declarativeui.h"
+#include "declarativeui_p.h"
 #include "kdeclarativemainwindow.h"
 #include "kdeclarativeview.h"
 
-class DeclarativeUiHandler::Private {
-public:
-    KDeclarativeMainWindow * window;
-};
+#include <QMetaObject>
+#include <QDeclarativeContext>
+
+#include <KDebug>
+
+DeclarativeUiHandler::Private::Private()
+    : window(NULL), receiver(NULL), slot(NULL)
+{
+}
+
+void DeclarativeUiHandler::Private::onCurrentActivityChanged(const QString & activity)
+{
+    Q_UNUSED(activity)
+
+    cancel();
+}
+
+void DeclarativeUiHandler::Private::cancel()
+{
+    kDebug() << "Hiding qml ui handler";
+    hideAll();
+    window->hide();
+    window->setVisible(false);
+}
+
+void DeclarativeUiHandler::Private::returnPassword(const QString & password)
+{
+    if (receiver && slot) {
+        QMetaObject::invokeMethod(receiver, slot, Qt::QueuedConnection,
+                    Q_ARG(QString, password));
+        emit hideAll();
+    }
+
+    receiver = NULL;
+    slot = NULL;
+}
 
 DeclarativeUiHandler::DeclarativeUiHandler(QObject * parent, const QVariantList & args)
     : UiHandler(parent), d(new Private())
@@ -31,7 +64,7 @@ DeclarativeUiHandler::DeclarativeUiHandler(QObject * parent, const QVariantList 
 
     d->window = new KDeclarativeMainWindow();
     d->window->resize(800, 600);
-    d->window->show();
+    d->window->declarativeView()->rootContext()->setContextProperty("uihandler", d);
     d->window->declarativeView()->setPackageName("org.kde.ActivityManager.UiHandler");
 }
 
@@ -41,13 +74,30 @@ DeclarativeUiHandler::~DeclarativeUiHandler()
     delete d;
 }
 
-QString DeclarativeUiHandler::askPassword(const QString & title, const QString & message, bool newPassword)
+void DeclarativeUiHandler::askPassword(const QString & title, const QString & message,
+            bool newPassword, QObject * receiver, const char * slot)
 {
-    return QString("ivan");
+    d->window->show();
+    d->receiver = receiver;
+    d->slot     = slot;
+    emit d->askPassword(title, message, newPassword);
 }
 
 void DeclarativeUiHandler::message(const QString & title, const QString & message)
 {
+    d->window->show();
+    emit d->message(message);
 }
+
+bool DeclarativeUiHandler::init(SharedInfo * info)
+{
+    UiHandler::init(info);
+
+    connect(info, SIGNAL(currentActivityChanged(QString)),
+            d, SLOT(onCurrentActivityChanged(QString)));
+
+    return true;
+}
+
 
 KAMD_EXPORT_UI_HANDLER(DeclarativeUiHandler, "activitymanager_uihandler_declarative")

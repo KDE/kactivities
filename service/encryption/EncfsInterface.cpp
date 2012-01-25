@@ -211,7 +211,7 @@ void EncfsInterface::mountProcessFinished(int exitCode, QProcess::ExitStatus exi
 
             Ui::message(
                     i18n("Error"),
-                    i18n("Error setting up the encrypted folder for the activity.")
+                    i18n("Error unlocking the activity.\nYou've probably entered a wrong password.")
                 );
 
         }

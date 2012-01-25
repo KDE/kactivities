@@ -24,6 +24,8 @@
 #include <KPluginFactory>
 #include <KPluginLoader>
 
+#include <SharedInfo.h>
+
 #define KAMD_EXPORT_UI_HANDLER(ClassName, AboutData)                   \
     K_PLUGIN_FACTORY(ClassName##Factory, registerPlugin<ClassName>();) \
     K_EXPORT_PLUGIN(ClassName##Factory("AboutData"))
@@ -35,10 +37,14 @@ public:
     UiHandler(QObject * parent);
     virtual ~UiHandler();
 
-    virtual bool init();
+    virtual bool init(SharedInfo * info);
 
     virtual void message(const QString & title, const QString & message) = 0;
-    virtual QString askPassword(const QString & title, const QString & message, bool newPassword) = 0;
+    virtual void askPassword(const QString & title, const QString & message,
+            bool newPassword, QObject * receiver, const char * slot) = 0;
+
+protected:
+    SharedInfo * sharedInfo() const;
 
 private:
     class Private;

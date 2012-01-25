@@ -30,7 +30,12 @@ public:
     ~KDialogUiHandler();
 
     virtual void message(const QString & title, const QString & message);
-    virtual QString askPassword(const QString & title, const QString & message, bool newPassword);
+    virtual void askPassword(const QString & title, const QString & message,
+            bool newPassword, QObject * receiver, const char * slot);
+
+private:
+    class Private;
+    Private * const d;
 };
 
 #endif
