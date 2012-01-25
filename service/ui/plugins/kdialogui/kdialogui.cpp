@@ -34,31 +34,23 @@ KDialogUiHandler::~KDialogUiHandler()
 
 QString KDialogUiHandler::askPassword(const QString & title, const QString & message, bool newPassword)
 {
-    if (newPassword) {
-        KNewPasswordDialog dialog;
-
-        dialog.setPrompt(message);
-        dialog.setWindowTitle(title);
-
-        if (dialog.exec()) {
-            return dialog.password();
-        }
-
+    #define ShowDialog(Type)                                                      \
+        Type dialog;                                                              \
+        dialog.setPrompt(message);                                                \
+        dialog.setWindowTitle(title);                                             \
+        dialog.setWindowFlags(Qt::WindowStaysOnTopHint | dialog.windowFlags());   \
+        if (dialog.exec()) return dialog.password();                              \
         return QString();
+
+    if (newPassword) {
+        ShowDialog(KNewPasswordDialog);
 
     } else {
-        KPasswordDialog dialog;
-
-        dialog.setPrompt(message);
-        dialog.setWindowTitle(title);
-
-        if (dialog.exec()) {
-            return dialog.password();
-        }
-
-        return QString();
+        ShowDialog(KPasswordDialog);
 
     }
+
+    #undef ShowDialog
 }
 
 void KDialogUiHandler::message(const QString & title, const QString & message)

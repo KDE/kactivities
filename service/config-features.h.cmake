@@ -20,6 +20,7 @@
 
 #ifndef UI_HANDLER
     #define UI_HANDLER "activitymanager_uihandler_kdialog"
+    // #define UI_HANDLER "activitymanager_uihandler_declarative"
 #endif
 
 #endif
