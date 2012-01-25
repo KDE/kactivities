@@ -49,9 +49,9 @@ Image {
     }
 
     NewPasswordDialog {
-        anchors.centerIn: parent
-
         id: dialogNewPassword
+
+        anchors.centerIn: parent
 
         opacity: 0
         Behavior on opacity { NumberAnimation { duration: 300 } }
@@ -73,12 +73,15 @@ Image {
         }
 
         onCanceled: uihandler.cancel()
+
+        // Just so that clicking inside this are doesn't call cancel
+        MouseArea { anchors.fill: parent; z: -1; onClicked: {} }
     }
 
     PasswordDialog {
-        anchors.centerIn: parent
-
         id: dialogPassword
+
+        anchors.centerIn: parent
 
         opacity: 0
         Behavior on opacity { NumberAnimation { duration: 300 } }
@@ -89,6 +92,9 @@ Image {
 
         onPasswordChosen: uihandler.returnPassword(password)
         onCanceled: uihandler.cancel()
+
+        // Just so that clicking inside this are doesn't call cancel
+        MouseArea { anchors.fill: parent; z: -1; onClicked: {} }
     }
 
     MessageDialog {
@@ -96,6 +102,9 @@ Image {
 
         opacity: 0
         Behavior on opacity { NumberAnimation { duration: 300 } }
+
+        // Just so that clicking inside this are doesn't call cancel
+        MouseArea { anchors.fill: parent; z: -1; onClicked: {} }
     }
 
     Connections {
