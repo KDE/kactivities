@@ -1,5 +1,10 @@
 [Desktop Entry]
 Name=Activity manager UI handler
+Name[es]=Manejador de la interfaz de usuario del gestor de actividades
+Name[pt]=Interface de gestão de actividades
+Name[pt_BR]=Interface para gerenciamento de atividades
+Name[uk]=Засіб керування інтерфейсом зміни просторів дій
+Name[x-test]=xxActivity manager UI handlerxx
 Comment=
 Encoding=UTF-8
 Type=Service
