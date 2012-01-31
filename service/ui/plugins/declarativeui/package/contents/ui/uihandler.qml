@@ -115,6 +115,7 @@ Image {
         onAskPassword: {
             if (newPassword) {
                 dialogNewPassword.password = ""
+                dialogNewPassword.passwordConfirmation = ""
                 dialogNewPassword.opacity = 1
 
             } else {
