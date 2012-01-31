@@ -111,7 +111,11 @@ bool EncryptionManager::isEnabled() const
 
 void EncryptionManager::setActivityEncrypted(const QString & activity, bool encrypted)
 {
+    // If the encryption manager is not enabled, ignore the request
     if (!d->enabled) return;
+
+    // Checking whether we need to do anything
+    if (encrypted == isActivityEncrypted(activity)) return;
 
     if (encrypted) {
         d->setupActivityEncryption(activity);
