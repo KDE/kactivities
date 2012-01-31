@@ -118,7 +118,7 @@ Item {
 
         Item {
             id: buttons
-            height: 32
+            height: 48
 
             anchors {
                 left: parent.left
@@ -134,6 +134,7 @@ Item {
                     bottomMargin: 4
                     rightMargin: 4
                     leftMargin: 4
+                    topMargin: 4
 
                     left: parent.left
                     right: parent.horizontalCenter
@@ -151,6 +152,7 @@ Item {
                     bottomMargin: 4
                     rightMargin: 4
                     leftMargin: 4
+                    topMargin: 4
 
                     right: parent.right
                     left: parent.horizontalCenter
@@ -158,7 +160,7 @@ Item {
                     bottom: parent.bottom
                 }
 
-                onClicked: main.canceled
+                onClicked: main.canceled()
             }
         }
     }
