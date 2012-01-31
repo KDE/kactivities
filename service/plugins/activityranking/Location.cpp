@@ -21,6 +21,7 @@
 #include "LocationManagerInterface.h"
 
 #include <QDBusServiceWatcher>
+#include <KDebug>
 
 #define LOCATION_MANAGER_SERVICE "org.kde.LocationManager"
 #define LOCATION_MANAGER_OBJECT "/LocationManager"
@@ -48,6 +49,8 @@ Location * Location::Private::s_instance = NULL;
 Location::Location(QObject * parent)
     : QObject(parent), d(new Private())
 {
+    kDebug() << "Location object initializing";
+
     d->watcher = new QDBusServiceWatcher(
             LOCATION_MANAGER_SERVICE,
             QDBusConnection::sessionBus(),
@@ -97,7 +100,7 @@ void Location::enable()
             LOCATION_MANAGER_OBJECT,
             QDBusConnection::sessionBus()
         );
-    connect(d->manager, SIGNAL(currentLocationChanged(QString)),
+    connect(d->manager, SIGNAL(currentLocationChanged(QString, QString)),
             this, SLOT(setCurrent(QString)));
 
     d->current = d->manager->currentLocationId();
