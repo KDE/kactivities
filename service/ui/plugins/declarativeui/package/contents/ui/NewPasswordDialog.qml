@@ -30,6 +30,7 @@ Item {
     property int layoutPadding: 8
 
     property alias password:   textPassword1.text
+    property alias passwordConfirmation:   textPassword2.text
     property alias title: labelTitle.text
     property alias passwordText1: labelPassword1.text
     property alias passwordText2: labelPassword2.text
@@ -266,7 +267,7 @@ Item {
 
         Item {
             id: buttons
-            height: 32
+            height: 48
 
             anchors {
                 left: parent.left
@@ -282,6 +283,7 @@ Item {
                     bottomMargin: 4
                     rightMargin: 4
                     leftMargin: 4
+                    topMargin: 4
 
                     left: parent.left
                     right: parent.horizontalCenter
@@ -299,6 +301,7 @@ Item {
                     bottomMargin: 4
                     rightMargin: 4
                     leftMargin: 4
+                    topMargin: 4
 
                     right: parent.right
                     left: parent.horizontalCenter
@@ -306,7 +309,7 @@ Item {
                     bottom: parent.bottom
                 }
 
-                onClicked: main.canceled
+                onClicked: main.canceled()
             }
         }
     }
