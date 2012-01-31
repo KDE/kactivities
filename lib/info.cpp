@@ -156,6 +156,12 @@ QString Info::name(const QString & id)
             QString, QString, Manager::self()->ActivityName(id));
 }
 
+bool Info::isEncrypted() const
+{
+    KACTIVITYINFO_DBUS_CAST_RETURN(
+            bool, bool, Manager::self()->IsActivityEncrypted(d->id));
+}
+
 #undef KACTIVITYINFO_DBUS_CAST_RETURN
 
 Info::Availability Info::availability() const
@@ -169,7 +175,7 @@ Info::Availability Info::availability() const
     if (Manager::self()->ListActivities().value().contains(d->id)) {
         result = BasicInfo;
 
-        if (Manager::self()->IsBackstoreAvailable()) {
+        if (Manager::self()->IsFeatureOperational("activity/resource-linking")) {
             result = Everything;
         }
     }

@@ -106,6 +106,7 @@ set(
    controller.h
    info.h
    resourceinstance.h
+   kactivities_export.h
    )
 
 set(

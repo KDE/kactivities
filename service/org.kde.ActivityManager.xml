@@ -71,8 +71,21 @@
       <arg name="icon" type="s" direction="in"/>
     </method>
 
-    <method name="IsBackstoreAvailable">
+    <method name="IsFeatureOperational">
       <arg type="b" direction="out"/>
+      <arg name="id" type="s" direction="in"/>
+    </method>
+    <method name="SetActivityEncrypted">
+      <arg name="activity" type="s" direction="in"/>
+      <arg name="encrypted" type="b" direction="in"/>
+    </method>
+    <method name="IsActivityEncrypted">
+      <arg type="b" direction="out"/>
+      <arg name="activity" type="s" direction="in"/>
+    </method>
+    <method name="_MountActivityEncrypted">
+      <arg name="activity" type="s" direction="in"/>
+      <arg name="encrypted" type="b" direction="in"/>
     </method>
 
     <signal name="CurrentActivityChanged">

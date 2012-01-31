@@ -27,6 +27,8 @@
 #include <kurl.h>
 #include <kdemacros.h>
 
+#include "kactivities_export.h"
+
 namespace KActivities {
 
 class InfoPrivate;
@@ -39,7 +41,7 @@ class InfoPrivate;
  *
  * @since 4.5
  */
-class KDE_EXPORT Info: public QObject
+class KACTIVITIES_EXPORT Info: public QObject
 {
     Q_OBJECT
 
@@ -118,6 +120,12 @@ public:
      * @returns the state of the activity
      */
     State state() const;
+
+    /**
+     * @returns true if encrypted
+     * @since 4.8
+     */
+    bool isEncrypted() const;
 
     /**
      * This function is provided for convenience.

@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2010 Ivan Cukic <ivan.cukic(at)kde.org>
+ *   Copyright (C) 2010, 2011, 2012 Ivan Cukic <ivan.cukic(at)kde.org>
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License version 2,
@@ -38,9 +38,11 @@
     #include <Nepomuk/Resource>
 
     #define EXEC_NEPOMUK(A) NepomukActivityManager::self()->A
+    #define NEPOMUK_PRESENT NepomukActivityManager::self()->initialized()
 
 #else
     #define EXEC_NEPOMUK(A) // nepomuk disabled //
+    #define NEPOMUK_PRESENT false
 
 #endif
 
@@ -59,16 +61,20 @@ public:
     void addRunningActivity(const QString & id);
     void removeRunningActivity(const QString & id);
 
+public Q_SLOTS:
     void ensureCurrentActivityIsRunning();
     bool setCurrentActivity(const QString & id);
+    void setCurrentActivityDone(const QString & id);
 
+public:
     void setActivityState(const QString & id, ActivityManager::State state);
     QHash < QString, ActivityManager::State > activities;
 
     // Current activity
     QString currentActivity;
+    QString toBeCurrentActivity;
 
-    //opening/closing activity (ksmserver can only handle one at a time)
+    // opening/closing activity (ksmserver can only handle one at a time)
     QString transitioningActivity;
 
     // Configuration
@@ -87,11 +93,6 @@ public:
     QString activityName(const QString & id);
     QString activityIcon(const QString & id);
 
-// #ifdef HAVE_NEPOMUK
-//     Nepomuk::Resource activityResource(const QString & id);
-//     bool nepomukInitialized();
-//     mutable bool m_nepomukInitCalled;
-// #endif // HAVE_NEPOMUK
 
 public Q_SLOTS:
     void scheduleConfigSync();
@@ -103,17 +104,16 @@ public Q_SLOTS:
     void stopCompleted();
     void stopCancelled();
 
-    //for avoiding dbus deadlocks
+    // for avoiding dbus deadlocks
     void reallyStartActivity(const QString & id);
     void reallyStopActivity(const QString & id);
+    // void onActivityEncryptionChanged(const QString id, const bool encrypted);
 
-    // void backstoreAvailable();
-    // void syncActivitiesWithNepomuk();
     void sessionServiceRegistered();
 
 private:
     ActivityManager * const q;
-    QDBusInterface *ksmserverInterface; //just keeping it for the signals
+    QDBusInterface * ksmserverInterface; // just keeping it for the signals
 
 };
 

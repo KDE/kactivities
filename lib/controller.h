@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Ivan Cukic <ivan.cukic(at)kde.org>
+ * Copyright (c) 2010, 2011, 2012 Ivan Cukic <ivan.cukic(at)kde.org>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -27,7 +27,7 @@
 #include "consumer.h"
 
 #include <kurl.h>
-#include <kdemacros.h>
+#include "kactivities_export.h"
 
 namespace KActivities {
 
@@ -41,7 +41,7 @@ class ControllerPrivate;
  *
  * @since 4.5
  */
-class KDE_EXPORT Controller: public Consumer
+class KACTIVITIES_EXPORT Controller: public Consumer
 {
     Q_OBJECT
 
@@ -65,6 +65,13 @@ public:
      * @param icon icon to be set - freedesktop.org name or file path
      */
     void setActivityIcon(const QString & id, const QString & icon);
+
+    /**
+     * Sets whether the activity should be encrypted
+     * @param id id of the activity
+     * @param encrypted should the activity be encrypted
+     */
+    void setActivityEncrypted(const QString & id, bool encrypted);
 
     /**
      * Sets the current activity
