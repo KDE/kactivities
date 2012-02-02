@@ -31,11 +31,13 @@
 #include <KDebug>
 
 #include "kext.h"
-#include "nao.h"
 #include <nepomuk/nuao.h>
+#include <Soprano/Vocabulary/NAO>
+
 
 #include "ActivityManager.h"
 
+using namespace Soprano::Vocabulary;
 using namespace Nepomuk::Vocabulary;
 
 #include "NepomukCommon.h"

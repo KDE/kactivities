@@ -27,10 +27,10 @@ soprano_add_ontology(nepomuk_SRCS
     "KExt" "Nepomuk::Vocabulary" "trig"
     )
 
-soprano_add_ontology(nepomuk_SRCS
-    ${SHAREDDESKTOPONTOLOGIES_ROOT_DIR}/nepomuk/nao.trig
-    "NAO" "Nepomuk::Vocabulary" "trig"
-    )
+# soprano_add_ontology(nepomuk_SRCS
+#     ${SHAREDDESKTOPONTOLOGIES_ROOT_DIR}/nepomuk/nao.trig
+#     "NAO" "Nepomuk::Vocabulary" "trig"
+#     )
 
 include_directories(
    ${CMAKE_SOURCE_DIR}

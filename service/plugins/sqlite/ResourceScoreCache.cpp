@@ -31,9 +31,10 @@
     #include <Nepomuk/Variant>
 
     #include "kext.h"
-    #include "nao.h"
+    #include <Soprano/Vocabulary/NAO>
 
     using namespace Nepomuk::Vocabulary;
+    using namespace Soprano::Vocabulary;
 #endif // HAVE_NEPOMUK
 
 /**
