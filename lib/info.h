@@ -134,6 +134,26 @@ public:
      */
     static QString name(const QString & id);
 
+
+    /**
+     * Links the specified resource to the activity
+     * @param resourceUri resource URI
+     */
+    void linkResource(const KUrl & resourceUri);
+
+
+    /**
+     * Unlinks the specified resource from the activity
+     * @param resourceUri resource URI
+     */
+    void unlinkResource(const KUrl & resourceUri);
+
+
+    /**
+     * @returns the list of linked resources
+     */
+    KUrl::List linkedResources() const;
+
 Q_SIGNALS:
     /**
      * Emitted when the activity's name, icon or description is changed

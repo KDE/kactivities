@@ -183,6 +183,31 @@ Info::Availability Info::availability() const
     return result;
 }
 
+KUrl::List Info::linkedResources() const
+{
+    KUrl::List result;
+
+    QDBusReply < QStringList > dbusReply = Manager::self()->ResourcesLinkedToActivity(d->id);
+
+    if (dbusReply.isValid()) {
+        foreach (const QString & uri, dbusReply.value()) {
+            result << KUrl(uri);
+        }
+    }
+
+    return result;
+}
+
+void Info::linkResource(const KUrl & resourceUri)
+{
+    Manager::self()->LinkResourceToActivity(resourceUri.url(), d->id);
+}
+
+void Info::unlinkResource(const KUrl & resourceUri)
+{
+    Manager::self()->UnlinkResourceFromActivity(resourceUri.url(), d->id);
+}
+
 } // namespace KActivities
 
 #include "info.moc"
