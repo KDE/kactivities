@@ -805,6 +805,31 @@ void ActivityManager::LinkResourceToActivity(const QString & uri, const QString 
     EXEC_NEPOMUK( linkResourceToActivity(KUrl(uri), activity.isEmpty() ? CurrentActivity() : activity) );
 }
 
+void ActivityManager::UnlinkResourceFromActivity(const QString & uri, const QString & activity)
+{
+    EXEC_NEPOMUK( unlinkResourceToActivity(KUrl(uri), activity.isEmpty() ? CurrentActivity() : activity) );
+}
+
+QStringList ActivityManager::ResourcesLinkedToActivity(const QString & activity) const
+{
+    QStringList result;
+
+    foreach (const KUrl & uri, resourcesLinkedToActivity(activity.isEmpty() ? CurrentActivity() : activity)) {
+        result << uri.url();
+    }
+
+    return result;
+}
+
+QList <KUrl> ActivityManager::resourcesLinkedToActivity(const QString & activity) const
+{
+    #ifdef HAVE_NEPOMUK
+        return EXEC_NEPOMUK(resourcesLinkedToActivity(activity.isEmpty() ? CurrentActivity() : activity));
+    #else
+        return QList <KUrl>();
+    #endif
+}
+
 // static
 ActivityManager * ActivityManager::self()
 {

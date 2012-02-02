@@ -26,6 +26,7 @@
 #include <QStringList>
 
 #include <KUniqueApplication>
+#include <KUrl>
 
 class ActivityManagerPrivate;
 
@@ -286,7 +287,15 @@ public Q_SLOTS:
      * @param uri activity id of the activity to link to. If empty, the resource
      *     is linked to the current activity
      */
-    // void UnlinkResourceFromActivity(const QString & uri, const QString & activity = QString());
+    void UnlinkResourceFromActivity(const QString & uri, const QString & activity = QString());
+
+    /**
+     * @returns the list of resources linked to the specified activity
+     */
+    QStringList ResourcesLinkedToActivity(const QString & activity = QString()) const;
+
+public:
+    QList <KUrl> resourcesLinkedToActivity(const QString & activity) const;
 
 private:
     friend class ActivityManagerPrivate;

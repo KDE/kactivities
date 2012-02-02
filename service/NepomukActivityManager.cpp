@@ -28,8 +28,10 @@
 #include "NepomukActivityManager.h"
 
 #include <KConfigGroup>
+#include <Soprano/Vocabulary/NAO>
 
 using namespace Nepomuk::Vocabulary;
+using namespace Soprano::Vocabulary;
 
 NepomukActivityManager * NepomukActivityManager::s_instance = NULL;
 
@@ -157,6 +159,26 @@ void NepomukActivityManager::linkResourceToActivity(const KUrl & resource, const
     //     );
 
     activityResource(activity).addIsRelated(Nepomuk::Resource(resource));
+}
+
+void NepomukActivityManager::unlinkResourceToActivity(const KUrl & resource, const QString & activity)
+{
+    activityResource(activity).removeProperty(NAO::isRelated(), Nepomuk::Resource(resource));
+}
+
+QList <KUrl> NepomukActivityManager::resourcesLinkedToActivity(const QString & activity) const
+{
+    QList <KUrl> result;
+
+    foreach (const Nepomuk::Resource & resource, activityResource(activity).isRelateds()) {
+        if (resource.hasProperty(NIE::url())) {
+            result << resource.property(NIE::url()).toUrl();
+        } else {
+            result << resource.resourceUri();
+        }
+    }
+
+    return result;
 }
 
 Nepomuk::Resource NepomukActivityManager::activityResource(const QString & id) const
