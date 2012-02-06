@@ -1,12 +1,14 @@
 [Desktop Entry]
 Name=Activity ranking plugin
 Name[es]=Complemento de puntuación de actividades
+Name[nl]=Plug-in van activiteitenwaardering
 Name[pt]='Plugin' de classificação de actividades
 Name[pt_BR]=Plugin de classificação de atividades
 Name[uk]=Додаток оцінювання просторів дій
 Name[x-test]=xxActivity ranking pluginxx
 Comment=Plugin to rank activities based on usage
 Comment[es]=Complemento para puntuar actividades basándose en su uso
+Comment[nl]=Plug-in om activiteiten te waarderen gebaseerd op gebruik
 Comment[pt]='Plugin' de classificação das actividades com base na utilização
 Comment[pt_BR]=Plugin para classificação das atividades com base na utilização
 Comment[uk]=Додаток для оцінювання просторів дій на основі даних щодо використання
