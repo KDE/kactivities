@@ -51,11 +51,8 @@ KDeclarativeView::KDeclarativeView(QWidget *parent)
     : QDeclarativeView(parent),
       d(new KDeclarativeViewPrivate)
 {
-    // avoid flicker on show
-    setAttribute(Qt::WA_OpaquePaintEvent);
-    setAttribute(Qt::WA_NoSystemBackground);
-    viewport()->setAttribute(Qt::WA_OpaquePaintEvent);
-    viewport()->setAttribute(Qt::WA_NoSystemBackground);
+    setAttribute(Qt::WA_TranslucentBackground);
+    viewport()->setAttribute(Qt::WA_TranslucentBackground);
 
     setResizeMode(QDeclarativeView::SizeRootObjectToView);
 
