@@ -44,7 +44,7 @@ Rectangle {
     PlasmaComponents.BusyIndicator {
         anchors.centerIn: parent
         running: visible
-        visible: (dialogNewPassword.opacity == 0 && dialogPassword.opacity == 0 && dialogMessage.opacity == 0)
+        visible: (!dialogNewPassword.active && !dialogPassword.active && !dialogMessage.active)
     }
 
     NewPasswordDialog {
@@ -52,8 +52,11 @@ Rectangle {
 
         anchors.centerIn: parent
 
-        opacity: 0
-        Behavior on opacity { NumberAnimation { duration: 300 } }
+        property bool active: false
+        transform: Translate {
+            y: dialogNewPassword.active ? 0 : main.height - dialogNewPassword.y
+            Behavior on y { NumberAnimation { duration: 300 } }
+        }
 
         title:                  "Enter the password"
         passwordText1:          "Password:"
@@ -77,8 +80,11 @@ Rectangle {
 
         anchors.centerIn: parent
 
-        opacity: 0
-        Behavior on opacity { NumberAnimation { duration: 300 } }
+        property bool active: false
+        transform: Translate {
+            y: dialogNewPassword.active ? 0 : main.height - dialogNewPassword.y
+            Behavior on y { NumberAnimation { duration: 300 } }
+        }
 
         title:      "Enter the password"
         okText:     "Unlock"
@@ -94,8 +100,11 @@ Rectangle {
     MessageDialog {
         id: dialogMessage
 
-        opacity: 0
-        Behavior on opacity { NumberAnimation { duration: 300 } }
+        property bool active: false
+        transform: Translate {
+            y: dialogNewPassword.active ? 0 : main.height - dialogNewPassword.y
+            Behavior on y { NumberAnimation { duration: 300 } }
+        }
 
         // Just so that clicking inside this are doesn't call cancel
         MouseArea { anchors.fill: parent; z: -1; onClicked: {} }
@@ -107,7 +116,7 @@ Rectangle {
         // void message(const QString & message);
         onMessage: {
             dialogMessage.text = message
-            dialogMessage.opacity = 1
+            dialogMessage.active = true
         }
 
         // void askPassword(const QString & title, const QString & message, bool newPassword);
@@ -115,19 +124,19 @@ Rectangle {
             if (newPassword) {
                 dialogNewPassword.password = ""
                 dialogNewPassword.passwordConfirmation = ""
-                dialogNewPassword.opacity = 1
+                dialogNewPassword.active = true
 
             } else {
                 dialogPassword.password = ""
-                dialogPassword.opacity = 1
+                dialogPassword.active = true
 
             }
         }
 
         onHideAll: {
-            dialogMessage.opacity = 0
-            dialogNewPassword.opacity = 0
-            dialogPassword.opacity = 0
+            dialogMessage.active = false
+            dialogNewPassword.active = false
+            dialogPassword.active = false
         }
     }
 }
