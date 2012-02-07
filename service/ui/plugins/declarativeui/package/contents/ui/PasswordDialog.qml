@@ -37,7 +37,7 @@ Item {
     signal canceled
     signal passwordChosen (string password)
 
-    width: 300
+    width: 350
     height: 180
 
     PlasmaCore.FrameSvgItem {
