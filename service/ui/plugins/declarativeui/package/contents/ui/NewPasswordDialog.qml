@@ -109,7 +109,7 @@ Item {
 
         Item {
             id: panelPasswords
-            height: main.mainIconSize
+            height: childrenRect.height
 
             anchors {
                 top: panelTop.bottom
@@ -183,6 +183,42 @@ Item {
                 }
             }
 
+            Item {
+                id: panelMatching
+                height: 32
+
+                
+                anchors {
+                    left: labelPasswordStrength.right
+                    right: parent.right
+                    verticalCenter: labelPasswordStrength.verticalCenter
+                    leftMargin: main.layoutPadding
+                }
+
+                PlasmaComponents.Label {
+                    id: labelMatching
+                    text: (textPassword1.text == textPassword2.text) ? main.passwordsMatchText : main.passwordsDontMatchText
+
+                    anchors {
+                        left: parent.left
+                        top:  parent.top
+                    }
+                }
+
+                QIconItem {
+                    id: iconMatching
+                    height: 24
+                    width:  24
+                    icon: (textPassword1.text == textPassword2.text) ? "dialog-ok" : "dialog-cancel"
+
+                    anchors {
+                        right: parent.right
+                        verticalCenter: labelMatching.verticalCenter
+                        leftMargin: main.layoutPadding
+                    }
+                }
+            }
+
             PlasmaComponents.ProgressBar {
                 id: progressPasswordStrength
                 maximumValue: 100
@@ -218,45 +254,10 @@ Item {
                 }
 
                 anchors {
-                    left: labelPasswordStrength.right
-                    right: parent.right
-                    verticalCenter: labelPasswordStrength.verticalCenter
-                    leftMargin: main.layoutPadding
-                }
-            }
-        }
-
-        Item {
-            id: panelMatching
-            height: 32
-
-            anchors {
-                top: panelStrength.bottom
-                left: parent.left
-                right: parent.right
-                topMargin: main.layoutPadding
-            }
-
-            PlasmaComponents.Label {
-                id: labelMatching
-                text: (textPassword1.text == textPassword2.text) ? main.passwordsMatchText : main.passwordsDontMatchText
-
-                anchors {
+                    top: panelMatching.bottom
                     left: parent.left
-                    top:  parent.top
-                }
-            }
-
-            QIconItem {
-                id: iconMatching
-                height: 24
-                width:  24
-                icon: (textPassword1.text == textPassword2.text) ? "dialog-ok" : "dialog-cancel"
-
-                anchors {
                     right: parent.right
-                    verticalCenter: labelMatching.verticalCenter
-                    leftMargin: main.layoutPadding
+                    topMargin: main.layoutPadding
                 }
             }
         }

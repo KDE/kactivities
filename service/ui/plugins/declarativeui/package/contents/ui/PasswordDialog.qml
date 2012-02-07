@@ -27,7 +27,7 @@ import org.kde.qtextracomponents 0.1
 Item {
     id: main
     property int mainIconSize: 64 + 32
-    property int layoutPadding: 6
+    property int layoutPadding: 8
 
     property alias title:      labelTitle.text
     property alias password:   textPassword.text
