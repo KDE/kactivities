@@ -27,7 +27,7 @@ import org.kde.qtextracomponents 0.1
 Item {
     id: main
     property int mainIconSize: 64 + 32
-    property int layoutPadding: 8
+    property int layoutPadding: 6
 
     property alias title:      labelTitle.text
     property alias password:   textPassword.text
@@ -40,13 +40,11 @@ Item {
     width: 300
     height: 180
 
-    Rectangle {
+    PlasmaCore.FrameSvgItem {
+        id: backgroundFrame
         anchors.fill: parent
 
-        color: "white"
-        border.color: "gray"
-        border.width: 1
-        radius: 4
+        imagePath: "dialogs/background"
     }
 
     anchors.centerIn: parent
@@ -54,10 +52,10 @@ Item {
     Item {
         anchors {
             fill: parent
-            leftMargin: main.layoutPadding
-            topMargin: main.layoutPadding
-            rightMargin: main.layoutPadding
-            bottomMargin: main.layoutPadding
+            leftMargin: backgroundFrame.margins.left
+            topMargin: backgroundFrame.margins.top
+            rightMargin: backgroundFrame.margins.right
+            bottomMargin: backgroundFrame.margins.bottom
         }
 
         // Top row - icon and the text

@@ -34,13 +34,11 @@ Item {
     width: 400
     height: 64
 
-    Rectangle {
+    PlasmaCore.FrameSvgItem {
+        id: backgroundFrame
         anchors.fill: parent
 
-        color: "white"
-        border.color: "gray"
-        border.width: 1
-        radius: 4
+        imagePath: "dialogs/background"
     }
 
     anchors.centerIn: parent
@@ -55,16 +53,20 @@ Item {
         anchors {
             verticalCenter: parent.verticalCenter
             left: parent.left
+            leftMargin: backgroundFrame.margins.left
         }
     }
 
     PlasmaComponents.Label {
         id: labelTitle
 
+        wrapMode: Text.WordWrap
         anchors {
             verticalCenter: parent.verticalCenter
             left: iconTitle.right
             leftMargin: main.layoutPadding
+            right: parent.right
+            rightMargin: backgroundFrame.margins.right
         }
     }
 }

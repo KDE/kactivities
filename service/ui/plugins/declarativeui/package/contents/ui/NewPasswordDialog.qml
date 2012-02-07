@@ -46,13 +46,11 @@ Item {
     width: 300
     height: 350
 
-    Rectangle {
+    PlasmaCore.FrameSvgItem {
+        id: backgroundFrame
         anchors.fill: parent
 
-        color: "white"
-        border.color: "gray"
-        border.width: 1
-        radius: 4
+        imagePath: "dialogs/background"
     }
 
     anchors.centerIn: parent
@@ -60,10 +58,10 @@ Item {
     Item {
         anchors {
             fill: parent
-            leftMargin: main.layoutPadding
-            topMargin: main.layoutPadding
-            rightMargin: main.layoutPadding
-            bottomMargin: main.layoutPadding
+            leftMargin: backgroundFrame.margins.left
+            topMargin: backgroundFrame.margins.top
+            rightMargin: backgroundFrame.margins.right
+            bottomMargin: backgroundFrame.margins.bottom
         }
 
         // Top row - icon and the text

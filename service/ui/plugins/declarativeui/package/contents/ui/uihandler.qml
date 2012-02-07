@@ -24,11 +24,10 @@ import org.kde.plasma.core 0.1 as PlasmaCore
 import org.kde.plasma.mobilecomponents 0.1 as MobileComponents
 import org.kde.qtextracomponents 0.1
 
-Image {
+Rectangle {
     id: main
 
-    source: "image://appbackgrounds/standard"
-    fillMode: Image.Tile
+    color: Qt.rgba(0, 0, 0, 0.35)
 
     width: 400
     height: 360
