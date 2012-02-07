@@ -82,7 +82,7 @@ Rectangle {
 
         property bool active: false
         transform: Translate {
-            y: dialogNewPassword.active ? 0 : main.height - dialogNewPassword.y
+            y: dialogPassword.active ? 0 : main.height - dialogNewPassword.y
             Behavior on y { NumberAnimation { duration: 300 } }
         }
 
@@ -102,7 +102,7 @@ Rectangle {
 
         property bool active: false
         transform: Translate {
-            y: dialogNewPassword.active ? 0 : main.height - dialogNewPassword.y
+            y: dialogMessage.active ? 0 : main.height - dialogNewPassword.y
             Behavior on y { NumberAnimation { duration: 300 } }
         }
 
