@@ -174,24 +174,14 @@ Item {
                 topMargin: main.layoutPadding
             }
 
-            PlasmaComponents.Label {
-                id: labelPasswordStrength
-
-                anchors {
-                    left: parent.left
-                    top:  parent.top
-                }
-            }
-
             Item {
                 id: panelMatching
                 height: 32
 
                 
                 anchors {
-                    left: labelPasswordStrength.right
+                    left: parent.left
                     right: parent.right
-                    verticalCenter: labelPasswordStrength.verticalCenter
                     leftMargin: main.layoutPadding
                 }
 
@@ -216,6 +206,14 @@ Item {
                         verticalCenter: labelMatching.verticalCenter
                         leftMargin: main.layoutPadding
                     }
+                }
+            }
+
+            PlasmaComponents.Label {
+                id: labelPasswordStrength
+                anchors {
+                    left: parent.left
+                    top: panelMatching.bottom
                 }
             }
 
@@ -254,7 +252,7 @@ Item {
                 }
 
                 anchors {
-                    top: panelMatching.bottom
+                    top: labelPasswordStrength.bottom
                     left: parent.left
                     right: parent.right
                     topMargin: main.layoutPadding
