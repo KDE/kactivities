@@ -44,7 +44,7 @@ Item {
     signal passwordChosen (string password)
 
     width: 350
-    height: 350
+    height: 400
 
     PlasmaCore.FrameSvgItem {
         id: backgroundFrame
@@ -190,7 +190,7 @@ Item {
                     text: (textPassword1.text == textPassword2.text) ? main.passwordsMatchText : main.passwordsDontMatchText
 
                     anchors {
-                        left: parent.left
+                        right: iconMatching.left
                         top:  parent.top
                     }
                 }

@@ -51,8 +51,13 @@ KDeclarativeView::KDeclarativeView(QWidget *parent)
     : QDeclarativeView(parent),
       d(new KDeclarativeViewPrivate)
 {
+    setAutoFillBackground(false);
+    viewport()->setAutoFillBackground(false);
     setAttribute(Qt::WA_TranslucentBackground);
-    viewport()->setAttribute(Qt::WA_TranslucentBackground);
+    setAttribute(Qt::WA_OpaquePaintEvent);
+    setAttribute(Qt::WA_NoSystemBackground);
+    viewport()->setAttribute(Qt::WA_OpaquePaintEvent);
+    viewport()->setAttribute(Qt::WA_NoSystemBackground);
 
     setResizeMode(QDeclarativeView::SizeRootObjectToView);
 
