@@ -50,7 +50,12 @@ Rectangle {
     NewPasswordDialog {
         id: dialogNewPassword
 
-        anchors.centerIn: parent
+        anchors {
+            fill: parent
+            leftMargin: 50
+            topMargin: 32
+            rightMargin: 50
+        }
 
         property bool active: false
         transform: Translate {

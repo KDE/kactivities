@@ -51,6 +51,7 @@ Item {
         anchors.fill: parent
 
         imagePath: "dialogs/background"
+	enabledBorders: "TopBorder|LeftBorder|RightBorder"
     }
 
     anchors.centerIn: parent
@@ -64,6 +65,42 @@ Item {
             bottomMargin: backgroundFrame.margins.bottom
         }
 
+        PlasmaCore.FrameSvgItem {
+            id: titleFrame
+            imagePath: "widgets/extender-dragger"
+            prefix: "root"
+            anchors {
+                left: parent.left
+                right: parent.right
+                top: parent.top
+                leftMargin: parent.margins.left
+                rightMargin: parent.margins.right
+                topMargin: parent.margins.top
+            }
+            height: titleLabel.height + margins.top + margins.bottom
+            PlasmaComponents.Label {
+                id: titleLabel
+                horizontalAlignment: Text.AlignHCenter
+                elide: Text.ElideRight
+                text: i18n("New activity password")
+                font.pointSize: theme.defaultFont.pointSize * 1.1
+                font.weight: Font.Bold
+                style: Text.Raised
+                styleColor: Qt.rgba(1,1,1,0.8)
+                height: paintedHeight
+                anchors {
+                    top: parent.top
+                    left: parent.left
+                    right: parent.right
+                    topMargin: parent.margins.top
+                    leftMargin: height + 2
+                    rightMargin: height + 2
+                }
+            }
+        }
+
+        
+        
         // Top row - icon and the text
 
         Item {
@@ -71,7 +108,7 @@ Item {
             height: main.mainIconSize
 
             anchors {
-                top: parent.top
+                top: titleFrame.bottom
                 left: parent.left
                 right: parent.right
 
@@ -113,10 +150,10 @@ Item {
 
             anchors {
                 top: panelTop.bottom
-                left: parent.left
-                right: parent.right
+                horizontalCenter: parent.horizontalCenter
                 topMargin: main.layoutPadding
             }
+            width: childrenRect.width
 
             PlasmaComponents.TextField {
                 id: textPassword1
@@ -172,6 +209,8 @@ Item {
                 left: parent.left
                 right: parent.right
                 topMargin: main.layoutPadding
+                leftMargin: 100
+                rightMargin:100
             }
 
             Item {
@@ -262,13 +301,13 @@ Item {
 
         // Buttons
 
-        Item {
+        Row {
             id: buttons
             height: 48
+            spacing: 4
 
             anchors {
-                left: parent.left
-                right: parent.right
+                horizontalCenter: parent.horizontalCenter
                 bottom: parent.bottom
             }
 
@@ -276,35 +315,11 @@ Item {
                 id: buttonOk
                 enabled: (textPassword1.text.length != 0) && (textPassword1.text == textPassword2.text)
 
-                anchors {
-                    bottomMargin: 4
-                    rightMargin: 4
-                    leftMargin: 4
-                    topMargin: 4
-
-                    left: parent.left
-                    right: parent.horizontalCenter
-                    top: parent.top
-                    bottom: parent.bottom
-                }
-
                 onClicked: main.passwordChosen(textPassword1.text)
             }
 
             PlasmaComponents.Button {
                 id: buttonCancel
-
-                anchors {
-                    bottomMargin: 4
-                    rightMargin: 4
-                    leftMargin: 4
-                    topMargin: 4
-
-                    right: parent.right
-                    left: parent.horizontalCenter
-                    top: parent.top
-                    bottom: parent.bottom
-                }
 
                 onClicked: main.canceled()
             }
