@@ -1,6 +1,7 @@
 [Desktop Entry]
 Name=Sqlite Feeder Plugin
 Name[es]=Complemento de aprovisionamiento de Sqlite
+Name[ia]=Plugin de Syndacation de Sqlite
 Name[nds]=Sqlite-Ingaavmoduul
 Name[nl]=Plug-in van Sqlite-feeder
 Name[pt]='Plugin' de Fontes do SQLite
@@ -10,6 +11,7 @@ Name[x-test]=xxSqlite Feeder Pluginxx
 Comment=Plugin to store and score events in Sqlite
 Comment[de]=Modul zum Speichern und Bewerten von Ereignissen in SQLite
 Comment[es]=Complemento para almacenar y puntuar eventos en Sqlite
+Comment[ia]=Plugin pro immagazinar e dar punctos a eventos in Sqlite
 Comment[nds]=Sqlite-Moduul för't Sekern un Beweerten vun Begeefnissen
 Comment[nl]=Plug-in om gebeurtenissen in Sqlite op te slaan en van een score te voorzien
 Comment[pt]='Plugin' para guardar e classificar os eventos no SQLite
