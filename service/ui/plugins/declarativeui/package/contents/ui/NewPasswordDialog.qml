@@ -131,22 +131,35 @@ Item {
                 }
             }
 
-            PlasmaComponents.Label {
-                id: labelTitle
-
+            Column {
                 anchors {
                     verticalCenter: parent.verticalCenter
                     left: iconTitle.right
+                    right: parent.right
                     leftMargin: main.layoutPadding
+                }
+                spacing: 8
+                PlasmaComponents.Label {
+                    text: i18n("Protecting an activity will make your private data safe. Private activities require the user to enter a password to be accessed. The content added to the activity will not be shared with other activities and won't appear in search results. Private data will be encrypted.")
+                    wrapMode: Text.WordWrap
+                    anchors {
+                        left: parent.left
+                        right: parent.right
+                    }
+                }
+                PlasmaComponents.Label {
+                    id: labelTitle
+                    anchors.horizontalCenter: parent.horizontalCenter
                 }
             }
         }
 
         // Password fields
 
-        Item {
+        Grid {
             id: panelPasswords
             height: childrenRect.height
+            rows: 3
 
             anchors {
                 top: panelTop.bottom
@@ -155,46 +168,45 @@ Item {
             }
             width: childrenRect.width
 
-            PlasmaComponents.TextField {
-                id: textPassword1
-
-                anchors {
-                    top:  parent.top
-                    right: parent.right
-                }
-
-                echoMode: TextInput.Password
-            }
-
-            PlasmaComponents.TextField {
-                id: textPassword2
-
-                anchors {
-                    top:  labelPassword2.top
-                    right: parent.right
-                }
-
-                echoMode: TextInput.Password
-            }
-
             PlasmaComponents.Label {
                 id: labelPassword1
 
                 anchors {
-                    top:   parent.top
                     right: textPassword1.left
                     rightMargin: main.layoutPadding
                 }
+            }
+
+            PlasmaComponents.TextField {
+                id: textPassword1
+                echoMode: !showPasswordCheckBox.checked ? TextInput.Password : TextInput.Normal
             }
 
             PlasmaComponents.Label {
                 id: labelPassword2
 
                 anchors {
-                    top: labelPassword1.bottom
                     right: textPassword2.left
                     rightMargin: main.layoutPadding
                 }
+            }
+
+            PlasmaComponents.TextField {
+                id: textPassword2
+                echoMode: !showPasswordCheckBox.checked ? TextInput.Password : TextInput.Normal
+            }
+            
+            PlasmaComponents.Label {
+                text: i18n("Show password:")
+
+                anchors {
+                    right: textPassword2.left
+                    rightMargin: main.layoutPadding
+                }
+            }
+
+            PlasmaComponents.CheckBox {
+                id: showPasswordCheckBox
             }
         }
 
