@@ -36,7 +36,7 @@ Rectangle {
     property int layoutPadding: 8
 
     MouseArea {
-        onClicked: { dialogMessage.opacity = 0; uihandler.cancel() }
+        onClicked: { uihandler.cancel() }
 
         anchors.fill: parent
     }

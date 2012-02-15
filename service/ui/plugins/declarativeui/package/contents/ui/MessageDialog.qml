@@ -26,13 +26,13 @@ import org.kde.qtextracomponents 0.1
 
 Item {
     id: main
-    property int mainIconSize: 32
+    property int mainIconSize: 48
     property int layoutPadding: 8
 
     property alias text: labelTitle.text
 
     width: 400
-    height: 64
+    height: mainLayout.height + backgroundFrame.margins.top + backgroundFrame.margins.bottom
 
     PlasmaCore.FrameSvgItem {
         id: backgroundFrame
@@ -43,30 +43,38 @@ Item {
 
     anchors.centerIn: parent
 
-    QIconItem {
-        id: iconTitle
-        icon: "dialog-error"
-
-        width: main.mainIconSize
-        height: main.mainIconSize
-
+    Row {
+        id: mainLayout
+        spacing: main.layoutPadding
         anchors {
-            verticalCenter: parent.verticalCenter
             left: parent.left
-            leftMargin: backgroundFrame.margins.left
-        }
-    }
-
-    PlasmaComponents.Label {
-        id: labelTitle
-
-        wrapMode: Text.WordWrap
-        anchors {
-            verticalCenter: parent.verticalCenter
-            left: iconTitle.right
-            leftMargin: main.layoutPadding
+            top: parent.top
             right: parent.right
+            leftMargin: backgroundFrame.margins.left
             rightMargin: backgroundFrame.margins.right
+            topMargin: backgroundFrame.margins.top
+        }
+        QIconItem {
+            id: iconTitle
+            icon: "dialog-error"
+
+            width: main.mainIconSize
+            height: main.mainIconSize
+
+            anchors {
+                verticalCenter: parent.verticalCenter
+                left: parent.left
+            }
+        }
+
+        PlasmaComponents.Label {
+            id: labelTitle
+
+            wrapMode: Text.WordWrap
+            width: mainLayout.width - iconTitle.width - main.layoutPadding
+            anchors {
+                verticalCenter: parent.verticalCenter
+            }
         }
     }
 }
