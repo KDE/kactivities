@@ -27,6 +27,8 @@
  * Location
  */
 class Location: public QObject {
+    Q_OBJECT
+
 public:
     static Location * self(QObject * parent);
 
