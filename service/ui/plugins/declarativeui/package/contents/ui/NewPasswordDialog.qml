@@ -102,214 +102,192 @@ Item {
         
         
         // Top row - icon and the text
-
-        Item {
-            id: panelTop
-            height: main.mainIconSize
-
+        Column {
             anchors {
-                top: titleFrame.bottom
+                verticalCenter: parent.verticalCenter
                 left: parent.left
                 right: parent.right
-
                 leftMargin: main.layoutPadding
-                topMargin: main.layoutPadding
                 rightMargin: main.layoutPadding
             }
-
-            QIconItem {
-                id: iconTitle
-                icon: "dialog-password"
-
-                width: main.mainIconSize
-                height: main.mainIconSize
-
-                anchors {
-                    top: parent.top
-                    left: parent.left
-                    bottom: parent.bottom
-                }
-            }
-
-            Column {
-                anchors {
-                    verticalCenter: parent.verticalCenter
-                    left: iconTitle.right
-                    right: parent.right
-                    leftMargin: main.layoutPadding
-                }
-                spacing: 8
-                PlasmaComponents.Label {
-                    text: i18n("Protecting an activity will make your private data safe. Private activities require the user to enter a password to be accessed. The content added to the activity will not be shared with other activities and won't appear in search results. Private data will be encrypted.")
-                    wrapMode: Text.WordWrap
-                    anchors {
-                        left: parent.left
-                        right: parent.right
-                    }
-                }
-                PlasmaComponents.Label {
-                    id: labelTitle
-                    anchors.horizontalCenter: parent.horizontalCenter
-                }
-            }
-        }
-
-        // Password fields
-
-        Grid {
-            id: panelPasswords
-            height: childrenRect.height
-            rows: 3
-
-            anchors {
-                top: panelTop.bottom
-                horizontalCenter: parent.horizontalCenter
-                topMargin: main.layoutPadding
-            }
-            width: childrenRect.width
-
-            PlasmaComponents.Label {
-                id: labelPassword1
-
-                anchors {
-                    right: textPassword1.left
-                    rightMargin: main.layoutPadding
-                }
-            }
-
-            PlasmaComponents.TextField {
-                id: textPassword1
-                echoMode: !showPasswordCheckBox.checked ? TextInput.Password : TextInput.Normal
-            }
-
-            PlasmaComponents.Label {
-                id: labelPassword2
-
-                anchors {
-                    right: textPassword2.left
-                    rightMargin: main.layoutPadding
-                }
-            }
-
-            PlasmaComponents.TextField {
-                id: textPassword2
-                echoMode: !showPasswordCheckBox.checked ? TextInput.Password : TextInput.Normal
-            }
-            
-            PlasmaComponents.Label {
-                text: i18n("Show password:")
-
-                anchors {
-                    right: textPassword2.left
-                    rightMargin: main.layoutPadding
-                }
-            }
-
-            PlasmaComponents.CheckBox {
-                id: showPasswordCheckBox
-            }
-        }
-
-        // Status
-
-        Item {
-            id: panelStrength
-            height: 32
-
-            anchors {
-                top: panelPasswords.bottom
-                left: parent.left
-                right: parent.right
-                topMargin: main.layoutPadding
-                leftMargin: 100
-                rightMargin:100
-            }
-
             Item {
-                id: panelMatching
-                height: 32
+                id: panelTop
+                height: Math.max(main.mainIconSize, descriptionColumn.height)
 
-                
                 anchors {
+                    top: titleFrame.bottom
                     left: parent.left
                     right: parent.right
-                    leftMargin: main.layoutPadding
-                }
-
-                PlasmaComponents.Label {
-                    id: labelMatching
-                    text: (textPassword1.text == textPassword2.text) ? main.passwordsMatchText : main.passwordsDontMatchText
-
-                    anchors {
-                        right: iconMatching.left
-                        top:  parent.top
-                    }
                 }
 
                 QIconItem {
-                    id: iconMatching
-                    height: 24
-                    width:  24
-                    icon: (textPassword1.text == textPassword2.text) ? "dialog-ok" : "dialog-cancel"
+                    id: iconTitle
+                    icon: "dialog-password"
+
+                    width: main.mainIconSize
+                    height: main.mainIconSize
 
                     anchors {
+                        top: parent.top
+                        left: parent.left
+                        bottom: parent.bottom
+                    }
+                }
+
+                Column {
+                    id: descriptionColumn
+                    anchors {
+                        verticalCenter: parent.verticalCenter
+                        left: iconTitle.right
                         right: parent.right
-                        verticalCenter: labelMatching.verticalCenter
                         leftMargin: main.layoutPadding
                     }
-                }
-            }
-
-            PlasmaComponents.Label {
-                id: labelPasswordStrength
-                anchors {
-                    left: parent.left
-                    top: panelMatching.bottom
-                }
-            }
-
-            PlasmaComponents.ProgressBar {
-                id: progressPasswordStrength
-                maximumValue: 100
-                minimumValue: 0
-                value: (textPassword1.text.length == 0) ? 0 : passwordStrength(textPassword1.text)
-
-                function passwordStrength(text) {
-                    var value = 50;
-
-                    if (text.length < 8) {
-                        value = (50 * text.length / 8)
-                    }
-
-                    var upper = 0;
-                    var nonletter = 0;
-                    var numeric = 0;
-
-                    for (var i = 0; i < text.length; i++) {
-                        var c = text[i];
-                        if (c >= 'A' && c <= 'Z') {
-                            upper = 1;
-
-                        } else if (c >= '0' && c <= '9') {
-                            numeric = 1;
-
-                        } else if (c < 'a' && c > 'z') {
-                            nonletter = 1;
-
+                    spacing: 8
+                    PlasmaComponents.Label {
+                        text: i18n("Protecting an activity will make your private data safe. Private activities require the user to enter a password to be accessed. The content added to the activity will not be shared with other activities and won't appear in search results. Private data will be encrypted.")
+                        wrapMode: Text.WordWrap
+                        anchors {
+                            left: parent.left
+                            right: parent.right
                         }
                     }
-
-                    return value + 17 * upper + 17 * numeric + 16 * nonletter;
+                    PlasmaComponents.Label {
+                        id: labelTitle
+                        anchors.horizontalCenter: parent.horizontalCenter
+                    }
                 }
+            }
+
+            // Password fields
+
+            Grid {
+                id: panelPasswords
+                height: childrenRect.height
+                rows: 4
 
                 anchors {
-                    top: labelPasswordStrength.bottom
-                    left: parent.left
-                    right: parent.right
+                    top: panelTop.bottom
+                    horizontalCenter: parent.horizontalCenter
                     topMargin: main.layoutPadding
+                }
+                width: childrenRect.width
+
+                PlasmaComponents.Label {
+                    id: labelPassword1
+
+                    anchors {
+                        right: textPassword1.left
+                        rightMargin: main.layoutPadding
+                    }
+                }
+
+                PlasmaComponents.TextField {
+                    id: textPassword1
+                    echoMode: !showPasswordCheckBox.checked ? TextInput.Password : TextInput.Normal
+                }
+
+                PlasmaComponents.Label {
+                    id: labelPassword2
+
+                    anchors {
+                        right: textPassword2.left
+                        rightMargin: main.layoutPadding
+                    }
+                }
+
+                PlasmaComponents.TextField {
+                    id: textPassword2
+                    echoMode: !showPasswordCheckBox.checked ? TextInput.Password : TextInput.Normal
+                    
+                    Row {
+                        id: panelMatching
+                        visible: textPassword1.text || textPassword2.text
+                        
+                        anchors {
+                            left: parent.right
+                            leftMargin: main.layoutPadding
+                        }
+
+                        QIconItem {
+                            id: iconMatching
+                            height: 24
+                            width:  24
+                            icon: (textPassword1.text == textPassword2.text) ? "dialog-ok" : "dialog-cancel"
+
+                            anchors {
+                                verticalCenter: labelMatching.verticalCenter
+                            }
+                        }
+
+                        PlasmaComponents.Label {
+                            id: labelMatching
+                            text: (textPassword1.text == textPassword2.text) ? main.passwordsMatchText : main.passwordsDontMatchText
+                        }
+                    }
+                }
+                
+                PlasmaComponents.Label {
+                    text: i18n("Show password:")
+
+                    anchors {
+                        right: textPassword2.left
+                        rightMargin: main.layoutPadding
+                    }
+                }
+
+                PlasmaComponents.CheckBox {
+                    id: showPasswordCheckBox
+                }
+
+
+
+                PlasmaComponents.Label {
+                    id: labelPasswordStrength
+                    anchors {
+                        right: progressPasswordStrength.left
+                        rightMargin: main.layoutPadding
+                    }
+                }
+
+                PlasmaComponents.ProgressBar {
+                    id: progressPasswordStrength
+                    width: textPassword1.width
+                    anchors.verticalCenter: labelPasswordStrength.verticalCenter
+                    maximumValue: 100
+                    minimumValue: 0
+                    value: (textPassword1.text.length == 0) ? 0 : passwordStrength(textPassword1.text)
+
+                    function passwordStrength(text) {
+                        var value = 50;
+
+                        if (text.length < 8) {
+                            value = (50 * text.length / 8)
+                        }
+
+                        var upper = 0;
+                        var nonletter = 0;
+                        var numeric = 0;
+
+                        for (var i = 0; i < text.length; i++) {
+                            var c = text[i];
+                            if (c >= 'A' && c <= 'Z') {
+                                upper = 1;
+
+                            } else if (c >= '0' && c <= '9') {
+                                numeric = 1;
+
+                            } else if (c < 'a' && c > 'z') {
+                                nonletter = 1;
+
+                            }
+                        }
+
+                        return value + 17 * upper + 17 * numeric + 16 * nonletter;
+                    }
                 }
             }
         }
+
 
         // Buttons
 
