@@ -258,9 +258,23 @@ QString ActivityManagerPrivate::activityIcon(const QString & id)
     return activityIconsConfig().readEntry(id, QString());
 }
 
-void ActivityManagerPrivate::scheduleConfigSync()
+void ActivityManagerPrivate::scheduleConfigSync(const bool shortInterval)
 {
-    if (!configSyncTimer.isActive()) {
+#define SHORT_INTERVAL (5 * 1000)
+#define LONG_INTERVAL (2 * 60 * 1000)
+
+    if (shortInterval) {
+        if (configSyncTimer.interval() != SHORT_INTERVAL) {
+            // always change to SHORT_INTERVAL if the current one is LONG_INTERVAL.
+            configSyncTimer.stop();
+            configSyncTimer.setInterval(SHORT_INTERVAL);
+        }
+
+        if (!configSyncTimer.isActive()) {
+            configSyncTimer.start();
+        }
+    } else if (configSyncTimer.interval() != LONG_INTERVAL && !configSyncTimer.isActive()) {
+        configSyncTimer.setInterval(LONG_INTERVAL);
         configSyncTimer.start();
     }
 }
@@ -479,7 +493,7 @@ QString ActivityManager::AddActivity(const QString & name)
 
     emit ActivityAdded(id);
 
-    d->configSync();
+    d->scheduleConfigSync(true);
     return id;
 }
 

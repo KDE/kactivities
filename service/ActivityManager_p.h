@@ -95,7 +95,7 @@ public:
 
 
 public Q_SLOTS:
-    void scheduleConfigSync();
+    void scheduleConfigSync(const bool shortInterval = false);
     void configSync();
     void windowClosed(WId windowId);
     void activeWindowChanged(WId windowId);
