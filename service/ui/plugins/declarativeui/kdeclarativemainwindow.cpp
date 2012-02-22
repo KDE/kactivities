@@ -28,6 +28,7 @@
 #include <KAction>
 #include <KCmdLineArgs>
 #include <KStandardAction>
+#include <KWindowSystem>
 
 #include <Plasma/Theme>
 
@@ -96,6 +97,8 @@ KDeclarativeMainWindow::KDeclarativeMainWindow()
     // d->view->setUseGL(useGL);
 
     connect(d->view, SIGNAL(titleChanged(QString)), SLOT(setCaption(QString)));
+    unsigned long state = NET::Sticky | NET::StaysOnTop | NET::KeepAbove | NET::SkipTaskbar | NET::SkipPager;
+    KWindowSystem::setState(effectiveWinId(), state);
 }
 
 KDeclarativeMainWindow::~KDeclarativeMainWindow()
