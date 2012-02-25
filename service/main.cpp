@@ -57,6 +57,7 @@ static void signalHandler(int sig)
 }
 
 static void initSignalCatching() {
+#ifndef Q_OS_WIN32
     struct sigaction action;
 
     ::sigemptyset(&action.sa_mask);
@@ -69,4 +70,5 @@ static void initSignalCatching() {
     ::sigaction(SIGHUP,  &action, NULL);
     ::sigaction(SIGTERM, &action, NULL);
     ::sigaction(SIGSEGV, &action, NULL);
+#endif
 }
