@@ -2,6 +2,7 @@
 Name=Activity manager UI handler
 Name[cs]=UI ovladač Správce aktivit
 Name[es]=Manejador de la interfaz de usuario del gestor de actividades
+Name[hu]=Aktivitáskezelő UI bővítmény
 Name[ia]=Gerente de UI de administrator de activitate
 Name[nl]=UI-behandelaar van activiteitenbeheerder
 Name[pt]=Interface de gestão de actividades
@@ -9,6 +10,7 @@ Name[pt_BR]=Interface para gerenciamento de atividades
 Name[sv]=Grafiskt gränssnitt för aktivitetshantering
 Name[uk]=Засіб керування інтерфейсом зміни просторів дій
 Name[x-test]=xxActivity manager UI handlerxx
+Name[zh_TW]=活動管理員使用者介面處理器
 Comment=
 Encoding=UTF-8
 Type=Service

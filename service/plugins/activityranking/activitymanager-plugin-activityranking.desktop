@@ -1,6 +1,7 @@
 [Desktop Entry]
 Name=Activity ranking plugin
 Name[es]=Complemento de puntuación de actividades
+Name[hu]=Aktivitásértékelő bővítmény
 Name[ia]=Plugin de classificar activitate
 Name[nl]=Plug-in van activiteitenwaardering
 Name[pt]='Plugin' de classificação de actividades
@@ -8,8 +9,10 @@ Name[pt_BR]=Plugin de classificação de atividades
 Name[sv]=Insticksprogram för aktivitetsrankning
 Name[uk]=Додаток оцінювання просторів дій
 Name[x-test]=xxActivity ranking pluginxx
+Name[zh_TW]=活動排序外掛程式
 Comment=Plugin to rank activities based on usage
 Comment[es]=Complemento para puntuar actividades basándose en su uso
+Comment[hu]=Bővítmény aktivitások értékeléséhez a használat alapján
 Comment[ia]=Plugin pro classificar activitates per lor usage
 Comment[nl]=Plug-in om activiteiten te waarderen gebaseerd op gebruik
 Comment[pt]='Plugin' de classificação das actividades com base na utilização
@@ -17,6 +20,7 @@ Comment[pt_BR]=Plugin para classificação das atividades com base na utilizaç�
 Comment[sv]=Insticksprogram för rankning av aktiviteter baserat på användning
 Comment[uk]=Додаток для оцінювання просторів дій на основі даних щодо використання
 Comment[x-test]=xxPlugin to rank activities based on usagexx
+Comment[zh_TW]=以用量來排序活動的外掛程式
 Type=Service
 Icon=
 
