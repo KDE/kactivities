@@ -542,15 +542,18 @@ void ActivityRankingPlugin::activityChanged(const QString & activity)
     PRINT_LAST_ERROR;
 }
 
-QStringList ActivityRankingPlugin::topActivities()
+QStringList ActivityRankingPlugin::topActivities(const QString & location)
 {
-    //return d->topActivitiesFor(QDateTime::currentDateTime());
-    return QStringList();
+    return d->topActivitiesFor(QDateTime::currentDateTime(), location).keys();
 }
 
 QMap <QString, qreal> ActivityRankingPlugin::Private::topActivitiesFor(const QDateTime & time, const QString & location)
 {
     QMap <QString, qreal> result;
+
+    if (location.isEmpty()) {
+        kWarning() << "location should not be empty";
+    }
 
     // We want to get the scores for the current week segment
     const QDateTime monthStartDateTime(QDate(time.date().year(), time.date().month(), 1));
@@ -582,9 +585,19 @@ QMap <QString, qreal> ActivityRankingPlugin::Private::topActivitiesFor(const QDa
     return result;
 }
 
-QList < ActivityData > ActivityRankingPlugin::activities()
+QList < ActivityData > ActivityRankingPlugin::activities(const QString & location)
 {
     QList < ActivityData > result;
+
+    QMap <QString, qreal> topActivities = d->topActivitiesFor(QDateTime::currentDateTime(), location);
+    QMap <QString, qreal>::const_iterator it;
+
+    for (it = topActivities.constBegin(); it != topActivities.constEnd(); ++it) {
+        ActivityData data;
+        data.id = it.key();
+        data.score = it.value();
+        result.append(data);
+    }
 
     return result;
 }

@@ -37,8 +37,19 @@ public:
     virtual bool init();
 
 public Q_SLOTS:
-    QStringList topActivities();
-    QList<ActivityData> activities();
+    /**
+     * Lists top activities based on score calculation described in scoring.pdf.
+     *
+     * @param location location from Location Manager in contour.
+     * @return list of activities ids.
+     */
+    QStringList topActivities(const QString & location);
+
+    /**
+     * @param location location from Location Manager in contour.
+     * @return list of activities data.
+     */
+    QList<ActivityData> activities(const QString & location);
     void test();
 
 protected:
