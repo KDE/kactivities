@@ -20,13 +20,14 @@
 #include "ActivityData.h"
 
 #include <QMetaType>
+#include <QDBusMetaType>
 
 class ActivityDataStaticInit {
 public:
     ActivityDataStaticInit()
     {
-        qRegisterMetaType < ActivityData > ("ActivityData");
-        qRegisterMetaType < QList < ActivityData > > ("QList<ActivityData>");
+        qDBusRegisterMetaType < ActivityData > ();
+        qDBusRegisterMetaType < QList < ActivityData > > ();
     }
 
     static ActivityDataStaticInit _instance;
@@ -40,13 +41,8 @@ ActivityData::ActivityData()
 }
 
 ActivityData::ActivityData(const ActivityData & source)
-    : QObject()
 {
     score       = source.score;
-    title       = source.title;
-    description = source.description;
-    icon        = source.icon;
-    engine      = source.engine;
     id          = source.id;
 }
 
@@ -54,10 +50,6 @@ ActivityData & ActivityData::operator = (const ActivityData & source)
 {
     if (&source != this) {
         score       = source.score;
-        title       = source.title;
-        description = source.description;
-        icon        = source.icon;
-        engine      = source.engine;
         id          = source.id;
     }
 
@@ -68,13 +60,8 @@ QDBusArgument & operator << (QDBusArgument & arg, const ActivityData r)
 {
     arg.beginStructure();
 
-    arg << r.engine;
     arg << r.id;
-
     arg << r.score;
-    arg << r.title;
-    arg << r.description;
-    arg << r.icon;
 
     arg.endStructure();
 
@@ -85,13 +72,8 @@ const QDBusArgument & operator >> (const QDBusArgument & arg, ActivityData & r)
 {
     arg.beginStructure();
 
-    arg >> r.engine;
     arg >> r.id;
-
     arg >> r.score;
-    arg >> r.title;
-    arg >> r.description;
-    arg >> r.icon;
 
     arg.endStructure();
 
@@ -100,6 +82,6 @@ const QDBusArgument & operator >> (const QDBusArgument & arg, ActivityData & r)
 
 QDebug operator << (QDebug dbg, const ActivityData & r)
 {
-    dbg << "ActivityData(" << r.score << r.id << r.title << r.description << r.icon << ")";
+    dbg << "ActivityData(" << r.score << r.id << ")";
     return dbg.space();
 }

@@ -25,24 +25,20 @@
 #include <QtDBus/QDBusArgument>
 #include <QDebug>
 
-class ActivityData: public QObject {
+class ActivityData {
 public:
     ActivityData();
     ActivityData(const ActivityData & source);
     ActivityData & operator = (const ActivityData & source);
 
     double score;
-    QString title;
-    QString description;
-    QString icon;
-
-    QString engine;
     QString id;
 
 };
 
+typedef QList<ActivityData> ActivityDataList;
 Q_DECLARE_METATYPE(ActivityData)
-Q_DECLARE_METATYPE(QList<ActivityData>)
+Q_DECLARE_METATYPE(ActivityDataList)
 
 QDBusArgument & operator << (QDBusArgument & arg, const ActivityData);
 const QDBusArgument & operator >> (const QDBusArgument & arg, ActivityData & rec);
