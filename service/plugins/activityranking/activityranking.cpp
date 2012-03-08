@@ -102,8 +102,8 @@ QString ActivityRankingPlugin::Private::selectMonthScore =
 QString ActivityRankingPlugin::Private::selectScore =
     "SELECT week.activity, week.score + month.score as sumscore "
     "FROM "
-    "(SELECT activity, SUM(s%1%2) as score FROM WeekScores GROUP BY activity) AS week, "
-    "(SELECT activity, SUM(s%3) as score FROM MonthScores GROUP BY activity) AS month "
+    "(SELECT activity, location, SUM(s%1%2) as score FROM WeekScores GROUP BY activity) AS week, "
+    "(SELECT activity, location, SUM(s%3) as score FROM MonthScores GROUP BY activity) AS month "
     "WHERE week.activity = month.activity AND week.location = '%4' AND month.location = '%4' ORDER BY sumscore DESC";
 
 
