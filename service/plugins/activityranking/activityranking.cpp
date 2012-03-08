@@ -111,7 +111,6 @@ QString ActivityRankingPlugin::Private::selectScore =
 
 #include <QTextStream>
 #include <QDateTime>
-#include <QFile>
 
 void ActivityRankingPlugin::Private::FakeEventsFeed()
 {
@@ -562,7 +561,7 @@ QMap <QString, qreal> ActivityRankingPlugin::Private::topActivitiesFor(const QDa
 
     QString monthSegment = QString::number(coefStart, 8);
     if (monthSegment.size() == 1)
-        monthSegment = "0" + monthSegment;
+        monthSegment = '0' + monthSegment;
 
     QSqlQuery query(
         selectScore

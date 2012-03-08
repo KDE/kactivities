@@ -31,7 +31,7 @@ class ActivityRankingPlugin: public Plugin
     Q_CLASSINFO("D-Bus Interface", "org.kde.ActivityManager.ActivityRanking")
 
 public:
-    ActivityRankingPlugin(QObject *parent = 0, const QVariantList & args = QVariantList());
+    explicit ActivityRankingPlugin(QObject *parent = 0, const QVariantList & args = QVariantList());
     ~ActivityRankingPlugin();
 
     virtual bool init();
