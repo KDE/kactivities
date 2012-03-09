@@ -24,7 +24,7 @@ import org.kde.plasma.core 0.1 as PlasmaCore
 import org.kde.plasma.mobilecomponents 0.1 as MobileComponents
 import org.kde.qtextracomponents 0.1
 
-Item {
+PlasmaCore.FrameSvgItem {
     id: main
     property int mainIconSize: 64 + 32
     property int layoutPadding: 8
@@ -38,26 +38,21 @@ Item {
     signal canceled
     signal passwordChosen (string password)
 
-    width: 350
-    height: 180
+    width: contents.childrenRect.width + margins.left + margins.right
+    height: contents.childrenRect.height + margins.top + margins.bottom
 
-    PlasmaCore.FrameSvgItem {
-        id: backgroundFrame
-        anchors.fill: parent
-
-        imagePath: "dialogs/background"
-    }
+    imagePath: "dialogs/background"
 
     anchors.centerIn: parent
 
     Item {
+        id: contents
         anchors {
-            fill: parent
-            leftMargin: backgroundFrame.margins.left
-            topMargin: backgroundFrame.margins.top
-            rightMargin: backgroundFrame.margins.right
-            bottomMargin: backgroundFrame.margins.bottom
+            centerIn: parent
         }
+
+        width: childrenRect.width + 8
+        height: childrenRect.height + 8
 
         // Top row - icon and the text
 
@@ -97,10 +92,15 @@ Item {
 
         Column {
             id: panelTop
-            anchors.centerIn: parent
+            anchors {
+                top: titleFrame.bottom
+                topMargin: 2
+                horizontalCenter: parent.horizontalCenter
+            }
 
 
             Row {
+                spacing: 2
                 QIconItem {
                     id: iconTitle
                     icon: "dialog-password"
@@ -116,6 +116,7 @@ Item {
 
             PlasmaComponents.Label {
                 text: i18n("Authentication required to execute this action")
+                anchors.horizontalCenter: parent.horizontalCenter
             }
 
             Row {
@@ -143,6 +144,7 @@ Item {
             anchors {
                 horizontalCenter: parent.horizontalCenter
                 bottom: parent.bottom
+                bottomMargin: 2
             }
 
             PlasmaComponents.Button {
