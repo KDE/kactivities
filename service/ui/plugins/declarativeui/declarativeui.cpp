@@ -100,7 +100,8 @@ void DeclarativeUiHandler::Private::close()
 
 void DeclarativeUiHandler::Private::returnPassword(const QString & password)
 {
-    kDebug() << password;
+    // WARNING: do not commit the line below uncommented.
+    //kDebug() << password;
 
     if (receiver && slot) {
         kDebug() << "receiver" << receiver->metaObject()->className() << slot;
