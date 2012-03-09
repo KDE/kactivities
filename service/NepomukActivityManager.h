@@ -55,6 +55,9 @@ public:
     void toRealUri(KUrl & url);
 
 private:
+    void __updateOntology();
+
+private:
     Nepomuk::Resource activityResource(const QString & id) const;
 
     NepomukActivityManager();

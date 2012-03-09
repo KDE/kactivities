@@ -27,8 +27,17 @@
 
 #include "NepomukActivityManager.h"
 
+#include "kao.h"
 #include <KConfigGroup>
 #include <Soprano/Vocabulary/NAO>
+
+#include <Soprano/QueryResultIterator>
+#include <Soprano/Node>
+#include <Soprano/Model>
+
+#include <Nepomuk/Variant>
+#include <Nepomuk/ResourceManager>
+
 
 using namespace Nepomuk::Vocabulary;
 using namespace Soprano::Vocabulary;
@@ -59,8 +68,79 @@ void NepomukActivityManager::init()
     Nepomuk::ResourceManager::instance()->init();
 }
 
+
+// Before we start syncing, we need to convert KEXT -> KAO ////////////////////////////
+#define rdf_type                QUrl("http://www.w3.org/1999/02/22-rdf-syntax-ns#type")
+#define kext_Activity           QUrl("http://nepomuk.kde.org/ontologies/2010/11/29/kext#Activity")
+#define kext_ResourceScoreCache QUrl("http://nepomuk.kde.org/ontologies/2010/11/29/kext#ResourceScoreCache")
+#define kext_activityIdentifier QUrl("http://nepomuk.kde.org/ontologies/2010/11/29/kext#activityIdentifier")
+#define kext_targettedResource  QUrl("http://nepomuk.kde.org/ontologies/2010/11/29/kext#targettedResource")
+#define kext_initiatingAgent    QUrl("http://nepomuk.kde.org/ontologies/2010/11/29/kext#initiatingAgent")
+#define kext_cachedScore        QUrl("http://nepomuk.kde.org/ontologies/2010/11/29/kext#cachedScore")
+
+
+void NepomukActivityManager::__updateOntology()
+{
+    KConfig config("activitymanagerrc");
+    KConfigGroup configGroup(&config, "main");
+
+    int version = configGroup.readEntry("ontologyVersion", 0);
+
+    if (version < 1) {
+        // First, let us block this function for being invoked again later
+        configGroup.writeEntry("ontologyVersion", 1);
+        configGroup.sync();
+
+        // Convert all the activities
+        const QString query = QString::fromLatin1("select ?resource where { ?resource a %1 . }");
+
+        Soprano::QueryResultIterator it
+            = Nepomuk::ResourceManager::instance()->mainModel()->executeQuery(
+                query.arg(Soprano::Node::resourceToN3(kext_Activity)), Soprano::Query::QueryLanguageSparql);
+
+        while (it.next()) {
+            Nepomuk::Resource result(it[0].uri());
+
+            result.addType(KAO::Activity());
+            result.removeProperty(rdf_type, kext_Activity);
+
+            result.setProperty(KAO::activityIdentifier(), result.property(kext_activityIdentifier));
+            result.removeProperty(kext_activityIdentifier);
+        }
+
+        it.close();
+
+        // Convert all the score caches
+        it = Nepomuk::ResourceManager::instance()->mainModel()->executeQuery(
+                query.arg(Soprano::Node::resourceToN3(kext_ResourceScoreCache)), Soprano::Query::QueryLanguageSparql);
+
+        while (it.next()) {
+            Nepomuk::Resource result(it[0].uri());
+
+            result.addType(KAO::ResourceScoreCache());
+            result.removeProperty(rdf_type, kext_ResourceScoreCache);
+
+            result.setProperty(KAO::targettedResource(), result.property(kext_targettedResource));
+            result.removeProperty(kext_targettedResource);
+
+            result.setProperty(KAO::initiatingAgent(), result.property(kext_initiatingAgent));
+            result.removeProperty(kext_initiatingAgent);
+
+            result.setProperty(KAO::cachedScore(), result.property(kext_cachedScore));
+            result.removeProperty(kext_cachedScore);
+        }
+
+        it.close();
+    }
+}
+///////////////////////////////////////////////////////////////////////////////////////
+
+
 void NepomukActivityManager::syncActivities(const QStringList activityIds, KConfigGroup config, KConfigGroup iconsConfig)
 {
+    // Before we start syncing, we need to convert KEXT -> KAO
+    __updateOntology();
+
     bool configNeedsSyncing = false;
 
     foreach (const QString & activityId, activityIds) {
