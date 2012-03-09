@@ -27,7 +27,7 @@ import org.kde.qtextracomponents 0.1
 PlasmaCore.FrameSvgItem {
     id: main
     property int mainIconSize: 64 + 32
-    property int layoutPadding: 8
+    property int layoutPadding: 16
 
     property alias title:      labelTitle.text
     property alias message:    labelMessage.text
@@ -38,8 +38,8 @@ PlasmaCore.FrameSvgItem {
     signal canceled
     signal passwordChosen (string password)
 
-    width: contents.childrenRect.width + margins.left + margins.right
-    height: contents.childrenRect.height + margins.top + margins.bottom
+    width: contents.width + margins.left + margins.right
+    height: contents.height + margins.top + margins.bottom
 
     imagePath: "dialogs/background"
 
@@ -51,8 +51,8 @@ PlasmaCore.FrameSvgItem {
             centerIn: parent
         }
 
-        width: childrenRect.width + 8
-        height: childrenRect.height + 8
+        width: Math.max(panelTop.width, buttons.width) + main.layoutPadding
+        height: titleFrame.height + panelTop.height + buttons.height + main.layoutPadding
 
         // Top row - icon and the text
 
