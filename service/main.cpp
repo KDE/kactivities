@@ -18,7 +18,6 @@
  */
 
 #include <ActivityManager.h>
-#include <encryption/EncryptionManager.h>
 
 #include <KAboutData>
 #include <KCmdLineArgs>
@@ -26,14 +25,16 @@
 #include <signal.h>
 #include <stdlib.h>
 
+#include "jobs/encryption/Common.h"
+
 static void initSignalCatching();
 
 int main(int argc, char ** argv)
 {
-    KAboutData about("kactivitymanagerd", 0, ki18n("KDE Activity Manager"), "1.0",
+    KAboutData about("kactivitymanagerd", 0, ki18n("KDE Activity Manager"), "2.0",
             ki18n("KDE Activity Management Service"),
             KAboutData::License_GPL,
-            ki18n("(c) 2010 Ivan Cukic, Sebastian Trueg"), KLocalizedString(),
+            ki18n("(c) 2010, 2011, 2012 Ivan Cukic, Sebastian Trueg"), KLocalizedString(),
             "http://www.kde.org/");
 
     KCmdLineArgs::init(argc, argv, &about);
@@ -50,8 +51,7 @@ static void signalHandler(int sig)
 {
     Q_UNUSED(sig);
 
-    // Unmounting everything
-    EncryptionManager::self()->unmountAll();
+    Jobs::Encryption::Common::unmountAll();
 
     ::exit(EXIT_SUCCESS);
 }

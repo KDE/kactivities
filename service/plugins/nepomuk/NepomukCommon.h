@@ -37,7 +37,7 @@
 #define NUAO_initiatingAgent   KUrl(NUAO::nuaoNamespace().toString() + QLatin1String("initiatingAgent"))
 // #define NUAO_involvesActivity  KUrl(NUAO::nuaoNamespace().toString() + QLatin1String("involvesActivity"))
 
-// #define activityResource(ID) Nepomuk::Resource(ID, KExt::Activity())
+// #define activityResource(ID) Nepomuk::Resource(ID, KAO::Activity())
 #define agentResource(ID)    Nepomuk::Resource(ID, NAO::Agent())
 #define currentActivityId    NepomukPlugin::self()->sharedInfo()->currentActivity()
 #define currentActivityRes   activityResource(currentActivityId)

@@ -29,7 +29,7 @@
 #include <Nepomuk/Variant>
 #include "nie.h"
 #include "nfo.h"
-#include "kext.h"
+#include "kao.h"
 
 class NepomukActivityManager {
 public:

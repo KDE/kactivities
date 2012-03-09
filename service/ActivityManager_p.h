@@ -64,7 +64,6 @@ public:
 public Q_SLOTS:
     void ensureCurrentActivityIsRunning();
     bool setCurrentActivity(const QString & id);
-    void setCurrentActivityDone(const QString & id);
 
 public:
     void setActivityState(const QString & id, ActivityManager::State state);
@@ -97,12 +96,16 @@ public:
 public Q_SLOTS:
     void scheduleConfigSync(const bool shortInterval = false);
     void configSync();
+
     void windowClosed(WId windowId);
     void activeWindowChanged(WId windowId);
 
     void startCompleted();
     void stopCompleted();
     void stopCancelled();
+    void removeActivity(const QString & activity);
+
+    void emitCurrentActivityChanged(const QString & activity);
 
     // for avoiding dbus deadlocks
     void reallyStartActivity(const QString & id);

@@ -196,7 +196,6 @@ public Q_SLOTS:
     // Temporary
     void SetActivityEncrypted(const QString & activity, bool encrypted);
     bool IsActivityEncrypted(const QString & activity) const;
-    void _MountActivityEncrypted(const QString & activity, bool encrypted);
 
 
 Q_SIGNALS:

@@ -22,7 +22,7 @@
 #include <KDebug>
 
 #include <Soprano/Vocabulary/NAO>
-#include "kext.h"
+#include "kao.h"
 
 #include <unistd.h>
 
@@ -39,12 +39,12 @@ Nepomuk::Resource & activityResource(const QString & id)
         kDebug() << "We don't have it in the cache";
 
         // Waiting for nepomuk. Not a really clean way, but we are making sure
-        // queries work properly and that kext ontology is loaded
+        // queries work properly and that KAO is loaded
         // rdfs:subClassOf is reflective, so it needs to return at least one
         // item for the following query
         bool passNepomuk = false;
         while (!passNepomuk) {
-            const QString & query = QString::fromLatin1("select ?r where { ?r rdfs:subClassOf kext:Activity . }");
+            const QString & query = QString::fromLatin1("select ?r where { ?r rdfs:subClassOf kao:Activity . }");
             Soprano::QueryResultIterator it
                 = Nepomuk::ResourceManager::instance()->mainModel()->executeQuery(query, Soprano::Query::QueryLanguageSparql);
 
@@ -59,7 +59,7 @@ Nepomuk::Resource & activityResource(const QString & id)
 
         const QString & query = QString::fromLatin1(
                 "select ?activity where { "
-                "?activity a kext:Activity . "
+                "?activity a kao:Activity . "
                 "?activity nao:identifier %1 ."
                 "} LIMIT 1"
                 ).arg(litN3(id));
@@ -77,7 +77,7 @@ Nepomuk::Resource & activityResource(const QString & id)
             kDebug() << "A very strange thing is happening - seems like" << id <<
                 "activity doesn't exist stored in Nepomuk!";
 
-            resource = new Nepomuk::Resource(id, KExt::Activity());
+            resource = new Nepomuk::Resource(id, KAO::Activity());
         }
 
         // Adding to cache and returning the value

@@ -45,11 +45,15 @@ public:
 
     static void message(const QString & title, const QString & message);
 
-    static void setBusy(bool value);
+    static void setBusy(bool value = true);
 
-private:
     static Ui * self();
 
+public Q_SLOTS:
+    void unsetBusy();
+
+
+private:
     Ui(QObject * parent);
 
     void _askPassword(const QString & title, const QString & message,

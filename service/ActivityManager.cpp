@@ -20,7 +20,6 @@
 #include "ActivityManager.h"
 #include "ActivityManager_p.h"
 #include "NepomukActivityManager.h"
-#include "encryption/EncryptionManager.h"
 
 #include <QUuid>
 #include <QDBusConnection>
@@ -36,22 +35,21 @@
 #include "activitymanageradaptor.h"
 #include "EventProcessor.h"
 
-#include "config-features.h"
+#include "jobs/JobScheduler.h"
+#include "jobs/encryption/Common.h"
+#include "jobs/encryption/Mount.h"
+#include "jobs/general/Call.h"
+#include "jobs/ui/Message.h"
+#include "jobs/ui/AskPassword.h"
+#include "jobs/ui/SetBusy.h"
 
-// copied from kdelibs\kdeui\notifications\kstatusnotifieritemdbus_p.cpp
-// if there is a common place for such definitions please move
-#ifdef Q_OS_WIN64
-__inline int toInt(WId wid)
-{
-    return (int)((__int64)wid);
-}
+#include "ui/Ui.h"
 
-#else
-__inline int toInt(WId wid)
-{
-    return (int)wid;
-}
+#ifdef HAVE_NEPOMUK
+#include "jobs/nepomuk/Move.h"
 #endif
+
+#include "config-features.h"
 
 // Private
 
@@ -67,224 +65,10 @@ ActivityManagerPrivate::ActivityManagerPrivate(ActivityManager * parent,
 {
 }
 
-void ActivityManagerPrivate::sessionServiceRegistered()
-{
-    delete ksmserverInterface;
-    ksmserverInterface = new QDBusInterface("org.kde.ksmserver", "/KSMServer", "org.kde.KSMServerInterface");
-    if (ksmserverInterface->isValid()) {
-        ksmserverInterface->setParent(this);
-        connect(ksmserverInterface, SIGNAL(subSessionOpened()), this, SLOT(startCompleted()));
-        connect(ksmserverInterface, SIGNAL(subSessionClosed()), this, SLOT(stopCompleted()));
-        connect(ksmserverInterface, SIGNAL(subSessionCloseCanceled()), this, SLOT(stopCancelled())); //spelling fail :)
-    } else {
-        delete ksmserverInterface;
-        ksmserverInterface = 0;
-        kDebug() << "couldn't connect to ksmserver! session stuff won't work";
-    }
-}
-
 ActivityManagerPrivate::~ActivityManagerPrivate()
 {
     configSync();
 }
-
-void ActivityManagerPrivate::windowClosed(WId windowId)
-{
-    // kDebug() << "Window closed..." << windowId
-    //          << "one of ours?" << windows.contains(windowId);
-
-    if (!windows.contains(windowId)) {
-        return;
-    }
-
-    foreach (const KUrl & uri, windows[windowId].resources) {
-        q->RegisterResourceEvent(windows[windowId].application,
-                toInt(windowId), uri.url(), Event::Closed, resources[uri].reason);
-    }
-}
-
-void ActivityManagerPrivate::activeWindowChanged(WId windowId)
-{
-    Q_UNUSED(windowId)
-    // kDebug() << "Window focussed..." << windowId
-    //          << "one of ours?" << windows.contains(windowId);
-
-}
-
-void ActivityManagerPrivate::setActivityState(const QString & id, ActivityManager::State state)
-{
-    if (activities[id] == state) return;
-
-    // kDebug() << "Set the state of" << id << "to" << state;
-
-    /**
-     * Treating 'Starting' as 'Running', and 'Stopping' as 'Stopped'
-     * as far as the config file is concerned
-     */
-    bool configNeedsUpdating = ((activities[id] & 4) != (state & 4));
-
-    activities[id] = state;
-
-    switch (state) {
-        case ActivityManager::Running:
-            // kDebug() << "sending ActivityStarted signal";
-            emit q->ActivityStarted(id);
-            break;
-
-        case ActivityManager::Stopped:
-            // kDebug() << "sending ActivityStopped signal";
-            emit q->ActivityStopped(id);
-            break;
-
-        default:
-            break;
-    }
-
-    // kDebug() << "sending ActivityStateChanged signal";
-    emit q->ActivityStateChanged(id, state);
-
-    if (configNeedsUpdating) {
-        mainConfig().writeEntry("runningActivities",
-                activities.keys(ActivityManager::Running) +
-                activities.keys(ActivityManager::Starting));
-        scheduleConfigSync();
-    }
-}
-
-KConfigGroup ActivityManagerPrivate::activityIconsConfig()
-{
-    return KConfigGroup(&config, "activities-icons");
-}
-
-KConfigGroup ActivityManagerPrivate::activitiesConfig()
-{
-    return KConfigGroup(&config, "activities");
-}
-
-KConfigGroup ActivityManagerPrivate::mainConfig()
-{
-    return KConfigGroup(&config, "main");
-}
-
-void ActivityManagerPrivate::ensureCurrentActivityIsRunning()
-{
-    QStringList runningActivities = q->ListActivities(ActivityManager::Running);
-
-    if (!runningActivities.contains(currentActivity)) {
-        if (runningActivities.size() > 0) {
-            kDebug() << "Somebody called ensureCurrentActivityIsRunning?";
-            setCurrentActivity(runningActivities.first());
-        } else {
-            // kDebug() << "there are no running activities! eek!";
-        }
-    }
-}
-
-bool ActivityManagerPrivate::setCurrentActivity(const QString & id)
-{
-    kDebug() << "Changing the activity to:" << id;
-    if (id.isEmpty()) {
-        currentActivity.clear();
-        emit q->CurrentActivityChanged(currentActivity);
-        return true;
-    }
-
-    if (!activities.contains(id)               // the activity doesn't exist
- //           || !toBeCurrentActivity.isEmpty()  // we are already in the process of switching the activity
-        )
-    {
-        return false;
-    }
-
-    if (currentActivity == id) {
-        return true;
-    }
-
-    q->StartActivity(id);
-
-    // Crash:
-    // if (!currentActivity.isEmpty() && !EncryptionManager::self()->isActivityEncrypted(id)
-    //         && EncryptionManager::self()->isActivityEncrypted(currentActivity)) {
-
-    //     kDebug() << "CRASHING";
-    //     kDebug() << currentActivity << toBeCurrentActivity << id;
-
-    //     kDebug() << (void*)sender();
-    //     kDebug() << (void*)sender()->metaObject();
-    //     kDebug() << sender()->metaObject()->className();
-    //     volatile int x = 1;
-    //     volatile int y = 0;
-    //     volatile int z = x / y;
-    // }
-
-    toBeCurrentActivity = id;
-
-    kDebug() << "Requesting EncryptionManager to change the activity";
-    EncryptionManager::self()->setCurrentActivity(id);
-
-    return true;
-}
-
-void ActivityManagerPrivate::setCurrentActivityDone(const QString & id)
-{
-    kDebug() << "EncryptionManager says that this activity was unlocked:" << id
-        << "we are expecting it to be" << toBeCurrentActivity;
-
-    if (toBeCurrentActivity != id) return;
-    toBeCurrentActivity.clear();
-
-    kDebug() << "This is now the current activity" << id;
-
-    currentActivity = id;
-    mainConfig().writeEntry("currentActivity", id);
-
-    if (!EncryptionManager::self()->isActivityEncrypted(id)) {
-        mainConfig().writeEntry("lastUnlockedActivity", id);
-    }
-
-    scheduleConfigSync();
-
-    SharedInfo::self()->setCurrentActivity(id);
-    emit q->CurrentActivityChanged(id);
-}
-
-QString ActivityManagerPrivate::activityName(const QString & id)
-{
-    return activitiesConfig().readEntry(id, QString());
-}
-
-QString ActivityManagerPrivate::activityIcon(const QString & id)
-{
-    return activityIconsConfig().readEntry(id, QString());
-}
-
-void ActivityManagerPrivate::scheduleConfigSync(const bool shortInterval)
-{
-#define SHORT_INTERVAL (5 * 1000)
-#define LONG_INTERVAL (2 * 60 * 1000)
-
-    if (shortInterval) {
-        if (configSyncTimer.interval() != SHORT_INTERVAL) {
-            // always change to SHORT_INTERVAL if the current one is LONG_INTERVAL.
-            configSyncTimer.stop();
-            configSyncTimer.setInterval(SHORT_INTERVAL);
-        }
-
-        if (!configSyncTimer.isActive()) {
-            configSyncTimer.start();
-        }
-    } else if (configSyncTimer.interval() != LONG_INTERVAL && !configSyncTimer.isActive()) {
-        configSyncTimer.setInterval(LONG_INTERVAL);
-        configSyncTimer.start();
-    }
-}
-
-void ActivityManagerPrivate::configSync()
-{
-    configSyncTimer.stop();
-    config.sync();
-}
-
 
 // Main
 
@@ -296,6 +80,8 @@ ActivityManager::ActivityManager()
     kDebug() << "\n\n-------------------------------------------------------";
     kDebug() << "Starting the KDE Activity Manager daemon" << QDateTime::currentDateTime();
     kDebug() << "-------------------------------------------------------";
+
+    // Basic initialization //////////////////////////////////////////////////////////////////////////////////
 
     // TODO: We should move away from any gui-related code
     setQuitOnLastWindowClosed(false);
@@ -310,17 +96,6 @@ ActivityManager::ActivityManager()
     // long as it restarts properly
     KCrash::setFlags(KCrash::AutoRestart);
 
-    // Initializing the encryption manager
-    EncryptionManager::self(this);
-
-    // Notifying clients that the activity attributes have been changed
-    connect(EncryptionManager::self(), SIGNAL(activityEncryptionChanged(QString, bool)),
-            this, SIGNAL(ActivityChanged(QString)));
-
-    // When the encryption manager says to change the current activity, obey
-    connect(EncryptionManager::self(), SIGNAL(currentActivityChanged(QString)),
-            d, SLOT(setCurrentActivityDone(QString)));
-
     // Initializing the event processor
     EventProcessor::self();
 
@@ -334,7 +109,23 @@ ActivityManager::ActivityManager()
     d->configSyncTimer.setSingleShot(true);
     d->configSyncTimer.setInterval(2 * 60 * 1000);
 
-    // Initializing activities
+    // Listening to active window changes
+    connect(KWindowSystem::self(), SIGNAL(windowRemoved(WId)),
+            d, SLOT(windowClosed(WId)));
+    connect(KWindowSystem::self(), SIGNAL(activeWindowChanged(WId)),
+            d, SLOT(activeWindowChanged(WId)));
+
+    // Listen to ksmserver for starting/stopping
+    QDBusServiceWatcher *watcher = new QDBusServiceWatcher("org.kde.ksmserver",
+                                                           QDBusConnection::sessionBus(),
+                                                           QDBusServiceWatcher::WatchForRegistration);
+    connect(watcher, SIGNAL(serviceRegistered(QString)), d, SLOT(sessionServiceRegistered()));
+    d->sessionServiceRegistered();
+
+    // Activity initialization ///////////////////////////////////////////////////////////////////////////////
+
+    // Reading activities from the config file
+
     foreach (const QString & activity, d->activitiesConfig().keyList()) {
         d->activities[activity] = ActivityManager::Stopped;
     }
@@ -345,17 +136,20 @@ ActivityManager::ActivityManager()
         }
     }
 
+    // Synchronizing with nepomuk
+
     EXEC_NEPOMUK( syncActivities(d->activities.keys(), d->activitiesConfig(), d->activityIconsConfig()) );
 
     // Try to load the last used public (non-private) activity
+
     QString lastPublicActivity = d->mainConfig().readEntry("lastUnlockedActivity", QString());
 
     // If the last one turns out to be encrypted, try to load any public activity
-    if (lastPublicActivity.isEmpty() || EncryptionManager::self()->isActivityEncrypted(lastPublicActivity)) {
+    if (lastPublicActivity.isEmpty() || Jobs::Encryption::Common::isActivityEncrypted(lastPublicActivity)) {
         lastPublicActivity.clear();
 
         foreach (const QString & activity, d->activities.keys()) {
-            if (!EncryptionManager::self()->isActivityEncrypted(activity)) {
+            if (!Jobs::Encryption::Common::isActivityEncrypted(activity)) {
                 lastPublicActivity = activity;
                 break;
             }
@@ -384,78 +178,100 @@ ActivityManager::ActivityManager()
 
         }
     }
-
-    // Listening to active window changes
-    connect(KWindowSystem::self(), SIGNAL(windowRemoved(WId)),
-            d, SLOT(windowClosed(WId)));
-    connect(KWindowSystem::self(), SIGNAL(activeWindowChanged(WId)),
-            d, SLOT(activeWindowChanged(WId)));
-
-    // Listen to ksmserver for starting/stopping
-    QDBusServiceWatcher *watcher = new QDBusServiceWatcher("org.kde.ksmserver",
-                                                           QDBusConnection::sessionBus(),
-                                                           QDBusServiceWatcher::WatchForRegistration);
-    connect(watcher, SIGNAL(serviceRegistered(QString)), d, SLOT(sessionServiceRegistered()));
-    d->sessionServiceRegistered();
 }
 
 ActivityManager::~ActivityManager()
 {
-    // kDebug() << "RegisterResourceEvent close" << d->currentActivity;
-    // RegisterResourceEvent(
-    //         "kactivitymanagerd", 0,
-    //         "activities://" + d->currentActivity,
-    //         Event::Closed, Event::User
-    //     );
     delete d;
-}
-
-void ActivityManager::Start()
-{
-    // doing absolutely nothing
-}
-
-void ActivityManager::Stop()
-{
-    d->configSync();
-    QCoreApplication::quit();
-}
-
-bool ActivityManager::IsFeatureOperational(const QString & feature) const
-{
-    if (feature == "activity/resource-linking") {
-        return NEPOMUK_PRESENT;
-    }
-
-    if (feature == "activity/encryption") {
-        return EncryptionManager::self()->isEnabled();
-    }
-
-
-    return false;
 }
 
 void ActivityManager::SetActivityEncrypted(const QString & activity, bool encrypted)
 {
-    EncryptionManager::self()->setActivityEncrypted(activity, encrypted);
-}
+    using namespace Jobs;
+    using namespace Jobs::Ui;
+    using namespace Jobs::Encryption;
+    using namespace Jobs::Encryption::Common;
+    using namespace Jobs::General;
 
-// void ActivityManager::onActivityEncryptionChanged(const QString id, const bool encrypted)
-// {
-//     emit ActivityChanged(id);
-// }
+    // Is the encryption enabled?
+    if (!Encryption::Common::isEnabled()) return;
+
+    // check whether the previous state was the same
+    if (encrypted == isActivityEncrypted(activity)) return;
+
+    JOB_SCHEDULER(setActivityEncryptedJob);
+
+    if (encrypted) {
+        //   - ask for password
+        //   - initialize mount
+        //   - move the files, nepomuk stuff (TODO)
+
+        setActivityEncryptedJob
+
+        <<  // Ask for the password
+            askPassword(i18n("Activity password"), i18n("Enter the password to use for encryption"), true)
+
+        <<  // Try to mount, or die trying :)
+            DO_JOB mount(activity, true)
+            OR_DIE (message(i18n("Error"), i18n("Error setting up the activity encryption")))
+
+        #ifdef HAVE_NEPOMUK
+        <<  // Move the files that are linked to the activity to the encrypted folder
+            Jobs::Nepomuk::move(activity, true)
+        #endif
+
+        ;
+
+    } else {
+        //   - unmount
+        //   - ask for password
+        //   - mount
+        //   - move the files, nepomuk stuff (TODO)
+        //   - unmount
+        //   - delete encryption directories
+
+        setActivityEncryptedJob
+
+        <<  // Unmount the activity
+            unmount(activity)
+
+        <<  // Mask the Ui as busy
+            setBusy()
+
+        <<  // Retrying to get the password until it succeeds or the user cancels password entry
+            RETRY_JOB(
+                askPassword(i18n("Activity password"), i18n("Enter the password to unlock the activity")),
+                mount(activity),
+                message(i18n("Error"), i18n("Error unlocking the activity.\nYou've probably entered a wrong password."))
+            )
+
+        #ifdef HAVE_NEPOMUK
+        <<  // Move the files that are linked to the activity to the encrypted folder
+            Jobs::Nepomuk::move(activity, false)
+        #endif
+
+
+        <<  // Unmount the activity yet again, (TODO) deinitialize encryption
+            unmount(activity, true)
+
+        ;
+    }
+
+    setActivityEncryptedJob
+
+    <<  // Signal the change
+        General::call(this, "ActivityChanged", activity);
+
+    connect(&setActivityEncryptedJob, SIGNAL(finished(KJob*)),
+            ::Ui::self(), SLOT(unsetBusy()));
+
+    setActivityEncryptedJob.start();
+}
 
 bool ActivityManager::IsActivityEncrypted(const QString & activity) const
 {
-    return EncryptionManager::self()->isActivityEncrypted(activity);
+    return Jobs::Encryption::Common::isActivityEncrypted(activity);
 }
-
-void ActivityManager::_MountActivityEncrypted(const QString & activity, bool encrypted)
-{
-    EncryptionManager::self()->mountActivityEncrypted(activity, encrypted);
-}
-
-// workspace activities control
 
 QString ActivityManager::CurrentActivity() const
 {
@@ -464,13 +280,105 @@ QString ActivityManager::CurrentActivity() const
 
 bool ActivityManager::SetCurrentActivity(const QString & id)
 {
-    // kDebug() << id;
-
     if (id.isEmpty()) {
         return false;
     }
 
     return d->setCurrentActivity(id);
+}
+
+bool ActivityManagerPrivate::setCurrentActivity(const QString & activity)
+{
+    // If the activity is empty, this means we are entering a limbo state
+    if (activity.isEmpty()) {
+        currentActivity.clear();
+        emit q->CurrentActivityChanged(currentActivity);
+        return true;
+    }
+
+    // Sanity checks
+    if (!activities.contains(activity)) return false;
+    if (currentActivity == activity)    return true;
+
+    // Start activity
+    // TODO: Move this to job-based execution
+    q->StartActivity(activity);
+
+    // If encrypted:
+    //   - ask for password
+    //   - try to unlock, cancel on fail
+    //   continue like it is not encrypted
+    //
+    // If not encrypted
+    //   - unmount private activities
+    //   - change the current activity and signal the change
+
+    using namespace Jobs;
+    using namespace Jobs::Ui;
+    using namespace Jobs::Encryption;
+    using namespace Jobs::Encryption::Common;
+    using namespace Jobs::General;
+
+    JOB_SCHEDULER(setCurrentActivityJob);
+
+    // If the new activity is private
+    if (isActivityEncrypted(activity)) {
+
+        setCurrentActivityJob
+
+        <<  // Mask the Ui as busy
+            setBusy()
+
+        <<  // Retrying to get the password until it succeeds or the user cancels password entry
+            RETRY_JOB(
+                askPassword(i18n("Activity password"), i18n("Enter the password to unlock the activity")),
+                mount(activity),
+                message(i18n("Error"), i18n("Error unlocking the activity.\nYou've probably entered a wrong password."))
+            )
+
+        ;
+    }
+
+    // If the current activity is private, unmount it
+    if (isActivityEncrypted(currentActivity)) {
+        setCurrentActivityJob
+
+        <<  // Unmounting the activity, ignore the potential failure
+            FALLIBLE_JOB(unmount(currentActivity));
+    }
+
+    setCurrentActivityJob
+
+    <<  // JIC, unmount everything apart from the new activity
+        mount(activity, Mount::UnmountExceptAction)
+
+    <<  // Change the activity
+        General::call(this, "emitCurrentActivityChanged", activity);
+
+    setCurrentActivityJob.start();
+
+    connect(&setCurrentActivityJob, SIGNAL(finished(KJob*)),
+            ::Ui::self(), SLOT(unsetBusy()));
+
+    return true;
+}
+
+void ActivityManagerPrivate::emitCurrentActivityChanged(const QString & id)
+{
+    currentActivity = id;
+    mainConfig().writeEntry("currentActivity", id);
+
+    using namespace Jobs::Encryption::Common;
+
+    if (!isActivityEncrypted(id)) {
+        mainConfig().writeEntry("lastUnlockedActivity", id);
+    }
+
+    scheduleConfigSync();
+
+    SharedInfo::self()->setCurrentActivity(id);
+    emit q->CurrentActivityChanged(id);
+
 }
 
 QString ActivityManager::AddActivity(const QString & name)
@@ -497,31 +405,75 @@ QString ActivityManager::AddActivity(const QString & name)
     return id;
 }
 
-void ActivityManager::RemoveActivity(const QString & id)
+void ActivityManager::RemoveActivity(const QString & activity)
 {
-    // kDebug() << id;
+    // Sanity checks
+    if (!d->activities.contains(activity)) return;
 
-    if (d->activities.size() < 2 ||
-            !d->activities.contains(id)) {
-        return;
+    JOB_SCHEDULER(removeActivityJob);
+
+    // If encrypted:
+    //   - unmount if current (hmh, we can't delete the current activity?)
+    //   - ask for the password, and warn the user
+    //   - delete files (TODO)
+    //   - delete encryption directories (TODO)
+
+    using namespace Jobs;
+    using namespace Jobs::Ui;
+    using namespace Jobs::Encryption;
+    using namespace Jobs::Encryption::Common;
+    using namespace Jobs::General;
+
+    if (Jobs::Encryption::Common::isActivityEncrypted(activity)) {
+
+        removeActivityJob
+
+        <<  // unmount the activity
+            unmount(activity)
+
+        <<  // Retrying to get the password until it succeeds or the user cancels password entry
+            RETRY_JOB(
+                askPassword(i18n("Activity password"), i18n("Enter the password to unlock the activity")),
+                mount(activity),
+                message(i18n("Error"), i18n("Error unlocking the activity.\nYou've probably entered a wrong password."))
+            )
+
+        <<  // Unmount the activity yet again, and deinitialize
+            unmount(activity, true);
     }
 
-    // If the activity is running, stash it
-    StopActivity(id);
+    // If not encrypted:
+    //   - stop
+    //   - if it was current, switch to a running activity
+    //   - remove from configs
+    //   - signal the event
 
-    d->setActivityState(id, Invalid);
+    removeActivityJob
+
+    <<  // Remove
+        General::call(d, "removeActivity", activity, true /* waitFinished */);
+
+    removeActivityJob.start();
+}
+
+void ActivityManagerPrivate::removeActivity(const QString & activity)
+{
+    // If the activity is running, stash it
+    q->StopActivity(activity);
+
+    setActivityState(activity, ActivityManager::Invalid);
 
     // Removing the activity
-    d->activities.remove(id);
-    d->activitiesConfig().deleteEntry(id);
+    activities.remove(activity);
+    activitiesConfig().deleteEntry(activity);
 
     // If the removed activity was the current one,
     // set another activity as current
-    if (d->currentActivity == id) {
-        d->ensureCurrentActivityIsRunning();
+    if (currentActivity == activity) {
+        ensureCurrentActivityIsRunning();
     }
 
-    if (d->transitioningActivity == id) {
+    if (transitioningActivity == activity) {
         //very unlikely, but perhaps not impossible
         //but it being deleted doesn't mean ksmserver is un-busy..
         //in fact, I'm not quite sure what would happen.... FIXME
@@ -529,325 +481,7 @@ void ActivityManager::RemoveActivity(const QString & id)
         // kDebug() << "deleting activity in transition. watch out!";
     }
 
-    emit ActivityRemoved(id);
-    d->configSync();
+    emit q->ActivityRemoved(activity);
+    configSync();
 }
-
-void ActivityManager::StartActivity(const QString & id)
-{
-    // kDebug() << id;
-
-    if (!d->activities.contains(id) ||
-            d->activities[id] != Stopped) {
-        return;
-    }
-
-    if (!d->transitioningActivity.isEmpty()) {
-        // kDebug() << "busy!!";
-        //TODO: implement a queue instead
-        return;
-    }
-
-    d->transitioningActivity = id;
-    d->setActivityState(id, Starting);
-
-    //ugly hack to avoid dbus deadlocks
-    QMetaObject::invokeMethod(d, "reallyStartActivity", Qt::QueuedConnection, Q_ARG(QString, id));
-}
-
-void ActivityManagerPrivate::reallyStartActivity(const QString & id)
-{
-    bool called = false;
-    // start the starting :)
-    QDBusInterface kwin("org.kde.kwin", "/KWin", "org.kde.KWin");
-    if (kwin.isValid()) {
-        QDBusMessage reply = kwin.call("startActivity", id);
-        if (reply.type() == QDBusMessage::ErrorMessage) {
-            // kDebug() << "dbus error:" << reply.errorMessage();
-
-        } else {
-            QList<QVariant> ret = reply.arguments();
-            if (ret.length() == 1 && ret.first().toBool()) {
-                called = true;
-            } else {
-                // kDebug() << "call returned false; probably ksmserver is busy";
-                setActivityState(transitioningActivity, ActivityManager::Stopped);
-                transitioningActivity.clear();
-                return; //assume we're mid-logout and just don't touch anything
-            }
-        }
-    } else {
-        // kDebug() << "couldn't get kwin interface";
-    }
-
-    if (!called) {
-        //maybe they use compiz?
-        //go ahead without the session
-        startCompleted();
-    }
-    configSync(); //force immediate sync
-}
-
-void ActivityManagerPrivate::startCompleted()
-{
-    if (transitioningActivity.isEmpty()) {
-        // kDebug() << "huh?";
-        return;
-    }
-    setActivityState(transitioningActivity, ActivityManager::Running);
-    transitioningActivity.clear();
-}
-
-void ActivityManager::StopActivity(const QString & id)
-{
-    // kDebug() << id;
-
-    if (!d->activities.contains(id) ||
-            d->activities[id] == Stopped) {
-        return;
-    }
-
-    if (!d->transitioningActivity.isEmpty()) {
-        // kDebug() << "busy!!";
-        //TODO: implement a queue instead
-        return;
-    }
-
-    d->transitioningActivity = id;
-    d->setActivityState(id, Stopping);
-
-    //ugly hack to avoid dbus deadlocks
-    QMetaObject::invokeMethod(d, "reallyStopActivity", Qt::QueuedConnection, Q_ARG(QString, id));
-}
-
-void ActivityManagerPrivate::reallyStopActivity(const QString & id)
-{
-    bool called = false;
-    // start the stopping :)
-    QDBusInterface kwin("org.kde.kwin", "/KWin", "org.kde.KWin");
-    if (kwin.isValid()) {
-        QDBusMessage reply = kwin.call("stopActivity", id);
-        if (reply.type() == QDBusMessage::ErrorMessage) {
-            // kDebug() << "dbus error:" << reply.errorMessage();
-
-        } else {
-            QList<QVariant> ret = reply.arguments();
-            if (ret.length() == 1 && ret.first().toBool()) {
-                called = true;
-
-            } else {
-                // kDebug() << "call returned false; probably ksmserver is busy";
-                stopCancelled();
-                return; //assume we're mid-logout and just don't touch anything
-            }
-        }
-    } else {
-        // kDebug() << "couldn't get kwin interface";
-    }
-
-    if (!called) {
-        //maybe they use compiz?
-        //go ahead without the session
-        stopCompleted();
-    }
-}
-
-void ActivityManagerPrivate::stopCompleted()
-{
-    if (transitioningActivity.isEmpty()) {
-        // kDebug() << "huh?";
-        return;
-    }
-    setActivityState(transitioningActivity, ActivityManager::Stopped);
-    if (currentActivity == transitioningActivity) {
-        ensureCurrentActivityIsRunning();
-    }
-    transitioningActivity.clear();
-    configSync(); //force immediate sync
-}
-
-void ActivityManagerPrivate::stopCancelled()
-{
-    if (transitioningActivity.isEmpty()) {
-        // kDebug() << "huh?";
-        return;
-    }
-    setActivityState(transitioningActivity, ActivityManager::Running);
-    transitioningActivity.clear();
-}
-
-int ActivityManager::ActivityState(const QString & id) const
-{
-    //kDebug() << id << "- is it in" << d->activities << "?";
-    if (!d->activities.contains(id)) {
-        return Invalid;
-    } else {
-        // kDebug() << "state of" << id << "is" << d->activities[id];
-        return d->activities[id];
-    }
-}
-
-QStringList ActivityManager::ListActivities() const
-{
-    return d->activities.keys();
-}
-
-QStringList ActivityManager::ListActivities(int state) const
-{
-    return d->activities.keys((State)state);
-}
-
-QString ActivityManager::ActivityName(const QString & id) const
-{
-    return d->activityName(id);
-}
-
-void ActivityManager::SetActivityName(const QString & id, const QString & name)
-{
-    if (!d->activities.contains(id)) return;
-
-    d->activitiesConfig().writeEntry(id, name);
-
-    EXEC_NEPOMUK( setActivityName(id, name) );
-
-    d->scheduleConfigSync();
-    emit ActivityChanged(id);
-}
-
-QString ActivityManager::ActivityDescription(const QString & id) const
-{
-    // This is not used anyway
-    Q_UNUSED(id)
-    return QString();
-}
-
-void ActivityManager::SetActivityDescription(const QString & id, const QString & description)
-{
-    // This is not used anyway
-    Q_UNUSED(id)
-    Q_UNUSED(description)
-}
-
-QString ActivityManager::ActivityIcon(const QString & id) const
-{
-    return d->activityIcon(id);
-}
-
-void ActivityManager::SetActivityIcon(const QString & id, const QString & icon)
-{
-    if (!d->activities.contains(id)) return;
-
-    d->activityIconsConfig().writeEntry(id, icon);
-
-    EXEC_NEPOMUK( setActivityIcon(id, icon) );
-
-    d->scheduleConfigSync();
-    emit ActivityChanged(id);
-}
-
-
-// Resource related mothods
-void ActivityManager::RegisterResourceEvent(QString application, uint _windowId,
-        const QString & uri, uint event, uint reason)
-{
-    if (event > Event::LastEventType || reason > Event::LastEventReason)
-        return;
-
-    if (uri.isEmpty() || application.isEmpty())
-        return;
-
-    // Dirty way to skip special web browser URIs
-    if (uri.startsWith("about:"))
-        return;
-
-    // Dirty way to skip invalid URIs (needed for akregator)
-    QChar firstChar = uri[0];
-    if (
-            (firstChar < 'a' || firstChar > 'z') &&
-            (firstChar < 'A' || firstChar > 'Z')
-       ) return;
-
-    KUrl kuri(uri);
-    WId windowId = (WId) _windowId;
-
-    kDebug() << "New event on the horizon" << application << windowId << event << uri;
-
-    EXEC_NEPOMUK( toRealUri(kuri) );
-
-    if (event == Event::Opened) {
-
-        d->windows[windowId].resources << kuri;
-        d->resources[kuri].activities << CurrentActivity();
-
-    } else if (event == Event::Closed) {
-
-        // TODO: Remove from d->resources if needed
-        d->windows.remove(windowId);
-
-    }
-
-    EventProcessor::self()->addEvent(application, windowId,
-            kuri.url(), (Event::Type) event, (Event::Reason) reason);
-
-}
-
-void ActivityManager::RegisterResourceMimeType(const QString & uri, const QString & mimetype)
-{
-    kDebug() << "Setting the mime for" << uri << "to be" << mimetype;
-    KUrl kuri(uri);
-
-    d->resources[kuri].mimetype = mimetype;
-
-    EXEC_NEPOMUK( setResourceMimeType(KUrl(uri), mimetype) );
-}
-
-void ActivityManager::RegisterResourceTitle(const QString & uri, const QString & title)
-{
-    // A dirty saninty check for the title
-    if (title.length() < 3) return;
-
-    kDebug() << "Setting the title for" << uri << "to be" << title << title.length();
-    KUrl kuri(uri);
-
-    d->resources[kuri].title = title;
-
-    EXEC_NEPOMUK( setResourceTitle(KUrl(uri), title) );
-}
-
-void ActivityManager::LinkResourceToActivity(const QString & uri, const QString & activity)
-{
-    EXEC_NEPOMUK( linkResourceToActivity(KUrl(uri), activity.isEmpty() ? CurrentActivity() : activity) );
-}
-
-void ActivityManager::UnlinkResourceFromActivity(const QString & uri, const QString & activity)
-{
-    EXEC_NEPOMUK( unlinkResourceToActivity(KUrl(uri), activity.isEmpty() ? CurrentActivity() : activity) );
-}
-
-QStringList ActivityManager::ResourcesLinkedToActivity(const QString & activity) const
-{
-    QStringList result;
-
-    foreach (const KUrl & uri, resourcesLinkedToActivity(activity.isEmpty() ? CurrentActivity() : activity)) {
-        result << uri.url();
-    }
-
-    return result;
-}
-
-QList <KUrl> ActivityManager::resourcesLinkedToActivity(const QString & activity) const
-{
-    #ifdef HAVE_NEPOMUK
-        return EXEC_NEPOMUK(resourcesLinkedToActivity(activity.isEmpty() ? CurrentActivity() : activity));
-    #else
-        return QList <KUrl>();
-    #endif
-}
-
-// static
-ActivityManager * ActivityManager::self()
-{
-    return static_cast<ActivityManager*>(kapp);
-}
-
 

@@ -1,5 +1,7 @@
 #
+# Copyright (c) 2011-2012 Ivan Cukic <ivan.cukic@kde.org>
 # Copyright (c) 2010-2011 Sebastian Trueg <trueg@kde.org>
+#
 # All rights reserved, licensed under either CC-BY or BSD.
 #
 # You are free:
@@ -33,113 +35,85 @@
 # THIS ONTOLOGY, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
-@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix nao:     <http://www.semanticdesktop.org/ontologies/2007/08/15/nao#> .
-@prefix nrl:     <http://www.semanticdesktop.org/ontologies/2007/08/15/nrl#> .
-@prefix nie:     <http://www.semanticdesktop.org/ontologies/2007/01/19/nie#> .
 @prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
 @prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix kext:    <http://nepomuk.kde.org/ontologies/2010/11/29/kext#> .
-@prefix nfo:     <http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
 
-kext: {
-    kext:unixFileMode
-          a      rdf:Property ;
-          rdfs:label "Unix file mode" ;
-          rdfs:comment "The file mode value as seen on unix file systems." ;
-          rdfs:domain nfo:FileDataObject ;
-          rdfs:range xsd:integer ;
-          nrl:maxCardinality 1 ;
-          nao:userVisible false .
+@prefix nao:     <http://www.semanticdesktop.org/ontologies/2007/08/15/nao#> .
+@prefix nrl:     <http://www.semanticdesktop.org/ontologies/2007/08/15/nrl#> .
 
-    kext:unixFileOwner
-          a      rdf:Property ;
-          rdfs:label "Unix file owner" ;
-          rdfs:comment "The owner of the file as seen on unix file systems. This is intended as the low-level counterpart to nfo:owner." ;
-          rdfs:domain nfo:FileDataObject ;
-          rdfs:range xsd:string ;
-          nrl:maxCardinality 1 ;
-          nao:userVisible false .
+@prefix kao:    <http://nepomuk.kde.org/ontologies/2012/02/29/kao#> .
 
-    kext:unixFileGroup
-          a      rdf:Property ;
-          rdfs:label "Unix file group" ;
-          rdfs:comment "The group of the file as seen on unix file systems." ;
-          rdfs:domain nfo:FileDataObject ;
-          rdfs:range xsd:string ;
-          nrl:maxCardinality 1 ;
-          nao:userVisible false .
-
-    kext:Activity
+kao: {
+    kao:Activity
           a rdfs:Class ;
           rdfs:subClassOf rdfs:Resource ;
           rdfs:label "activity" ;
-          rdfs:comment "A Plasma activity." .
+          rdfs:comment "An abstract concept to handle various user's activities." .
 
-    kext:usedActivity
+    kao:usedActivity
           a rdf:Property ;
           rdfs:label "used activity" ;
-          rdfs:comment "The activity that was active when resource was created. This is mostly used for graphs or desktop events." ;
+          rdfs:comment "The activity that was active when resource was created. This is mostly used for graphs or resource events." ;
           rdfs:domain rdfs:Resource ;
-          rdfs:range kext:Activity ;
+          rdfs:range kao:Activity ;
           nrl:maxCardinality 1 ;
           nao:userVisible false .
 
-    kext:activityIdentifier
+    kao:activityIdentifier
           a rdf:Property ;
           rdfs:subPropertyOf nao:identifier ;
           rdfs:label "activity identifier" ;
-          rdfs:comment "The unique ID of the activity as used outside of Nepomuk. Typically this is a UUID." ;
-          rdfs:domain kext:Activity ;
+          rdfs:comment "The unique ID of the activity as used outside of Nepomuk. This is a UUID. Anything else can be considered invalid." ;
+          rdfs:domain kao:Activity ;
           rdfs:range xsd:string ;
           nrl:cardinality 1 ;
           nao:userVisible false .
 
-    kext:ResourceScoreCache
+    kao:ResourceScoreCache
           a rdfs:Class ;
           rdfs:subClassOf rdfs:Resource ;
           rdfs:label "Resource score cache" ;
           rdfs:comment "For storing the automatically calculated score based on the usage statistics" ;
           nao:userVisible false .
 
-    kext:targettedResource
+    kao:targettedResource
           a rdf:Property ;
           rdfs:comment "Resource for which the score is calculated." ;
-          rdfs:domain kext:ResourceScoreCache ;
+          rdfs:domain kao:ResourceScoreCache ;
           rdfs:label "resource" ;
           rdfs:range rdfs:Resource .
 
-    kext:initiatingAgent
+    kao:initiatingAgent
           a rdf:Property ;
           rdfs:comment "Relates the score to the agent initiating the events." ;
-          rdfs:domain kext:ResourceScoreCache ;
+          rdfs:domain kao:ResourceScoreCache ;
           rdfs:label "involved agent" ;
           rdfs:range nao:Agent .
 
-    kext:cachedScore
+    kao:cachedScore
           a rdf:Property ;
           rdfs:subPropertyOf nao:score ;
           rdfs:comment "The automatically calculated score" ;
-          rdfs:domain kext:ResourceScoreCache ;
+          rdfs:domain kao:ResourceScoreCache ;
           rdfs:label "calculated score" ;
           rdfs:range xsd:float .
 }
 
-<http://nepomuk.kde.org/ontologies/2010/11/29/kext/metadata> {
-    <http://nepomuk.kde.org/ontologies/2010/11/29/kext/metadata>
+<http://nepomuk.kde.org/ontologies/2012/02/29/kao/metadata> {
+    <http://nepomuk.kde.org/ontologies/2012/02/29/kao/metadata>
           a       nrl:GraphMetadata ;
-          nrl:coreGraphMetadataFor kext: .
+          nrl:coreGraphMetadataFor kao: .
 
-
-    kext:
+    kao:
           a       nrl:Ontology , nrl:DocumentGraph ;
-          nao:prefLabel "KDE Extensions Ontology" ;
-          nao:hasDefaultNamespace "http://nepomuk.kde.org/ontologies/2010/11/29/kext#" ;
-          nao:hasDefaultNamespaceAbbreviation "kext" ;
-          nao:lastModified "2011-06-15T18:09:43Z" ;
+          nao:prefLabel "KDE Activities Ontology" ;
+          nao:hasDefaultNamespace "http://nepomuk.kde.org/ontologies/2012/02/29/kao#" ;
+          nao:hasDefaultNamespaceAbbreviation "kao" ;
+          nao:lastModified "2012-02-29T21:19:43Z" ;
           nao:serializationLanguage "TriG" ;
           nao:status "Unstable" ;
           nrl:updatable "0" ;
-          nao:version "2" .
+          nao:version "1" .
 }
 

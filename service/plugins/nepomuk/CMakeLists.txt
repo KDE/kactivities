@@ -23,8 +23,8 @@ qt4_add_dbus_adaptor(
    )
 
 soprano_add_ontology(nepomuk_SRCS
-    ${CMAKE_SOURCE_DIR}/ontologies/kext.trig
-    "KExt" "Nepomuk::Vocabulary" "trig"
+    ${CMAKE_SOURCE_DIR}/ontologies/kao.trig
+    "KAO" "Nepomuk::Vocabulary" "trig"
     )
 
 # soprano_add_ontology(nepomuk_SRCS

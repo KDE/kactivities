@@ -38,8 +38,8 @@ if(Nepomuk_FOUND)
 
     soprano_add_ontology(
         sdo_SRCS
-        ${CMAKE_SOURCE_DIR}/ontologies/kext.trig
-        "KEXT" "Nepomuk::Vocabulary" "trig"
+        ${CMAKE_SOURCE_DIR}/ontologies/kao.trig
+        "KAO" "Nepomuk::Vocabulary" "trig"
     )
 
 endif(Nepomuk_FOUND)
@@ -61,14 +61,30 @@ add_subdirectory(ui/plugins)
 
 set(activity_manager_SRCS
     ActivityManager.cpp
+    ActivityManager_Resources.cpp
+    ActivityManager_StartStop.cpp
+    ActivityManager_Basics.cpp
+    ActivityManager_Windowing.cpp
+
     NepomukActivityManager.cpp
     EventProcessor.cpp
     Plugin.cpp
     Event.cpp
     SharedInfo.cpp
-    encryption/EncryptionManager.cpp
-    encryption/EncfsInterface.cpp
     main.cpp
+
+    jobs/Job.cpp
+    jobs/JobFactory.cpp
+    jobs/JobScheduler.cpp
+    jobs/general/Call.cpp
+    jobs/ui/Message.cpp
+    jobs/ui/AskPassword.cpp
+    jobs/ui/SetBusy.cpp
+    jobs/encryption/private/Encfs.cpp
+    jobs/encryption/Common.cpp
+    jobs/encryption/Mount.cpp
+    jobs/nepomuk/Move.cpp
+
     ui/UiHandler.cpp
     ui/Ui.cpp
     ${sdo_SRCS}

@@ -28,7 +28,7 @@
 #include <Nepomuk/Resource>
 
 #include <time.h>
-#include "kext.h"
+#include "kao.h"
 
 #include "NepomukResourceScoreCache.h"
 #include "NepomukCommon.h"

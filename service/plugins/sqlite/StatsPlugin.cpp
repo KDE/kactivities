@@ -21,7 +21,7 @@
 #include "ResourceScoreMaintainer.h"
 
 #include "../../Event.h"
-#include "kext.h"
+#include "kao.h"
 
 
 #include <kdebug.h>

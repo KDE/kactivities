@@ -64,12 +64,12 @@ void NepomukActivityManager::syncActivities(const QStringList activityIds, KConf
     bool configNeedsSyncing = false;
 
     foreach (const QString & activityId, activityIds) {
-        Nepomuk::Resource resource(activityId, KEXT::Activity());
+        Nepomuk::Resource resource(activityId, KAO::Activity());
 
         QString name = config.readEntry(activityId, QString());
         QString icon = iconsConfig.readEntry(activityId, QString());
 
-        resource.setProperty(KEXT::activityIdentifier(), activityId);
+        resource.setProperty(KAO::activityIdentifier(), activityId);
 
         if (!name.isEmpty()) {
             resource.setLabel(name);
@@ -183,7 +183,7 @@ QList <KUrl> NepomukActivityManager::resourcesLinkedToActivity(const QString & a
 
 Nepomuk::Resource NepomukActivityManager::activityResource(const QString & id) const
 {
-    return Nepomuk::Resource(id, KEXT::Activity());
+    return Nepomuk::Resource(id, KAO::Activity());
 }
 
 bool NepomukActivityManager::initialized() const

@@ -52,7 +52,7 @@ void RankingsUpdateThread::run() {
 
     const QString & query = QString::fromLatin1(
             "SELECT targettedResource, cachedScore "
-            "FROM kext_ResourceScoreCache "
+            "FROM kext_ResourceScoreCache " // this should be kao_ResourceScoreCache, but lets leave it
             "WHERE usedActivity = '%1' "
             "AND cachedScore > 0 "
             "ORDER BY cachedScore DESC LIMIT 30"

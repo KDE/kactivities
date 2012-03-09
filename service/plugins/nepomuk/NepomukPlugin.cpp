@@ -22,7 +22,7 @@
 #include "NepomukResourceScoreMaintainer.h"
 
 #include "../../Event.h"
-#include "kext.h"
+#include "kao.h"
 
 #include <nepomuk/resource.h>
 #include <nepomuk/nuao.h>
@@ -130,7 +130,7 @@ void NepomukPlugin::addEvents(const EventList & events)
                         /* %2 */ resN3(anyResource(KUrl(event.uri))),
                         /* %3 */ resN3(NUAO_initiatingAgent),
                         /* %4 */ resN3(agentResource(event.application)),
-                        /* %5 */ resN3(KExt::usedActivity()),
+                        /* %5 */ resN3(KAO::usedActivity()),
                         /* %6 */ resN3(currentActivityRes)
                     );
                 // kDebug() << query;
@@ -266,8 +266,8 @@ Nepomuk::Resource NepomukPlugin::createDesktopEvent(const KUrl& uri, const QDate
                 " ?r %2 %3 . "
                 "} LIMIT 1"
             ).arg(
-                /* %1 */ resN3(KExt::Activity()),
-                /* %2 */ resN3(KExt::activityIdentifier()),
+                /* %1 */ resN3(KAO::Activity()),
+                /* %2 */ resN3(KAO::activityIdentifier()),
                 /* %3 */ resN3(currentActivityRes)
             );
 
@@ -278,11 +278,11 @@ Nepomuk::Resource NepomukPlugin::createDesktopEvent(const KUrl& uri, const QDate
             m_currentActivity = it[0].uri();
         } else {
             m_currentActivity = currentActivityRes;
-            m_currentActivity.setProperty(KExt::activityIdentifier(), sharedInfo()->currentActivity());
+            m_currentActivity.setProperty(KAO::activityIdentifier(), sharedInfo()->currentActivity());
         }
     }
 
-    eventRes.setProperty(KExt::usedActivity(), m_currentActivity);
+    eventRes.setProperty(KAO::usedActivity(), m_currentActivity);
 
     return eventRes;
 }

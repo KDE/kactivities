@@ -1,0 +1,22 @@
+general:
+ - ui: show message (done)
+ - change activity (done)
+
+encryption:
+ - initialize mount (done)
+ - mount (done)
+ - unmount (done)
+ - move files to activity
+ - move files from activity
+ - nepomuk cleanup of enc files metadata
+ - remove mount directories
+
+password:
+ - new password requesting (done)
+ - password requesting (done)
+
+session:
+ - chani's kwin session stuff
+
+ TODO:
+ - signals when encryption property of an activity changes

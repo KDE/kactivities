@@ -1,6 +1,5 @@
 /*
  *   Copyright (C) 2012 Ivan Cukic <ivan.cukic(at)kde.org>
- *   Copyright (C) 2012 Lamarque V. Souza <lamarque@kde.org>
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License version 2,
@@ -18,35 +17,40 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef ENCFSINTERFACE_P_H
-#define ENCFSINTERFACE_P_H
+#include "Job.h"
 
-#include "EncfsInterface.h"
+#include <QDebug>
 
-#include <QSet>
-#include <QProcess>
-
-class EncfsInterface::Private: public QObject
-{
-Q_OBJECT
+class Job::Private {
 public:
-    Private(EncfsInterface * parent);
-
-    QSet < QString > mounts;
-
-    QProcess * startEncfs(const QString & what, const QString & mountPoint, const QString & password, bool init = false);
-
-    EncfsInterface * const q;
-    bool shouldInitialize;
-    QString what;
-    QString mountPoint;
-
-Q_SIGNALS:
-    void gotPassword(const QString & password);
-
-public Q_SLOTS:
-    void onGotPassword(const QString & password);
-    void askForPassword(bool twice);
+    static QObject * s_global;
 };
 
-#endif // ENCFSINTERFACE_P_H
+QObject * Job::Private::s_global = NULL;
+
+Job::Job(QObject * parent)
+    :KJob(parent), d(new Private())
+{
+    qDebug() << ">>>" << (void*)this << "created Job" << metaObject()->className();
+}
+
+Job::~Job()
+{
+    qDebug() << ">>>" << (void*)this << "deleted Job" << metaObject()->className();
+    delete d;
+}
+
+void Job::init()
+{
+}
+
+QObject * Job::global()
+{
+    if (!Private::s_global) {
+        Private::s_global = new QObject();
+    }
+
+    return Private::s_global;
+}
+
+

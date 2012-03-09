@@ -30,7 +30,7 @@
     #include <Nepomuk/Resource>
     #include <Nepomuk/Variant>
 
-    #include "kext.h"
+    #include "kao.h"
     #include <Soprano/Vocabulary/NAO>
 
     using namespace Nepomuk::Vocabulary;
@@ -76,7 +76,7 @@ void ResourceScoreCache::updateScore()
     // Forcing immediate sync of the score, in case of kamd being terminated improperly
     #ifdef HAVE_NEPOMUK
         Nepomuk::Resource resource(d->resource);
-        resource.setProperty(KExt::cachedScore(), score);
+        resource.setProperty(KAO::cachedScore(), score);
         resource.setProperty(NAO::score(), score);
     #endif
 

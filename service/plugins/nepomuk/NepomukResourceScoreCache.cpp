@@ -30,7 +30,7 @@
 
 #include <KDebug>
 
-#include "kext.h"
+#include "kao.h"
 #include <nepomuk/nuao.h>
 #include <Soprano/Vocabulary/NAO>
 
@@ -78,12 +78,12 @@ NepomukResourceScoreCache::NepomukResourceScoreCache(const QString & activity, c
     const QString query
         = QString::fromLatin1("select ?r where { "
                                   "?r a %1 . "
-                                  "?r kext:usedActivity %2 . "
-                                  "?r kext:initiatingAgent %3 . "
-                                  "?r kext:targettedResource %4 . "
+                                  "?r kao:usedActivity %2 . "
+                                  "?r kao:initiatingAgent %3 . "
+                                  "?r kao:targettedResource %4 . "
                                   "} LIMIT 1"
             ).arg(
-                /* %1 */ resN3(KExt::ResourceScoreCache()),
+                /* %1 */ resN3(KAO::ResourceScoreCache()),
                 /* %2 */ resN3(currentActivityRes),
                 /* %3 */ resN3(agentResource(application)),
                 /* %4 */ resN3(anyResource(resource))
@@ -101,22 +101,22 @@ NepomukResourceScoreCache::NepomukResourceScoreCache(const QString & activity, c
         d->self = result;
 
         kDebug() << "Found an old cache" << d->self.resourceUri() << d->self.resourceType()
-                 << "With a score of" << d->self.property(KExt::cachedScore()) << d->self.property(NAO::score());
+                 << "With a score of" << d->self.property(KAO::cachedScore()) << d->self.property(NAO::score());
 
     } else {
-        Nepomuk::Resource result(QUrl(), KExt::ResourceScoreCache());
+        Nepomuk::Resource result(QUrl(), KAO::ResourceScoreCache());
 
         result.setProperty(
-                KExt::targettedResource(),
+                KAO::targettedResource(),
                 Nepomuk::Resource(resource)
             );
         result.setProperty(
-                KExt::initiatingAgent(), agentResource(application)
+                KAO::initiatingAgent(), agentResource(application)
             );
         result.setProperty(
-                KExt::usedActivity(), activityResource(activity)
+                KAO::usedActivity(), activityResource(activity)
             );
-        result.setProperty(KExt::cachedScore(), 0);
+        result.setProperty(KAO::cachedScore(), 0);
 
         d->self = result;
 
@@ -142,7 +142,7 @@ void NepomukResourceScoreCache::updateScore()
 
     }
 
-    qreal score = d->self.property(KExt::cachedScore()).toDouble();
+    qreal score = d->self.property(KAO::cachedScore()).toDouble();
 
     if (lastModified.isValid()) {
         // Adjusting the score depending on the time that passed since the
@@ -171,7 +171,7 @@ void NepomukResourceScoreCache::updateScore()
                                   "FILTER(?end >= %7) ."
                                   " } "
             ).arg(
-                /* %1 */ resN3(KExt::usedActivity()),
+                /* %1 */ resN3(KAO::usedActivity()),
                 /* %2 */ resN3(activityResource(d->activity)),
                 /* %3 */ resN3(NUAO_targettedResource),
                 /* %4 */ resN3(anyResource(d->resource)),
@@ -224,7 +224,7 @@ void NepomukResourceScoreCache::updateScore()
     // Forcing immediate sync of the score, in case of kamd being terminated improperly
     {
         Nepomuk::Resource resource(d->self);
-        resource.setProperty(KExt::cachedScore(), score);
+        resource.setProperty(KAO::cachedScore(), score);
         resource.setProperty(NAO::score(), score);
     }
 

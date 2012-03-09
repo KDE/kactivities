@@ -17,43 +17,43 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef ENCFSINTERFACE_H_
-#define ENCFSINTERFACE_H_
+#ifndef ENCRYPTION_ENCFS_H_
+#define ENCRYPTION_ENCFS_H_
 
 #include <QObject>
 #include <QProcess>
 
+namespace Jobs {
+namespace Encryption {
+namespace Private {
+
 /**
- * EncfsInterface
+ * Encfs
  */
-class EncfsInterface: public QObject {
+class Encfs: public QObject {
     Q_OBJECT
 
 public:
-    EncfsInterface(QObject * parent = 0);
-    virtual ~EncfsInterface();
+    Encfs(QObject * parent = 0);
+    virtual ~Encfs();
 
-    void mount(const QString & what, const QString & mountPoint);
-    void unmount(const QString & mountPoint);
+    QProcess * mount(const QString & what, const QString & mountPoint, bool initialize, const QString & password);
+    QProcess * unmount(const QString & mountPoint, bool deinitialize);
+
     void unmountAll();
-    void unmountAllExcept(const QString & path);
+    void unmountAllExcept(const QString & path = QString());
 
     bool isEncryptionInitialized(const QString & path) const;
     bool isMounted(const QString & path) const;
-
-Q_SIGNALS:
-    void error();
-    void mounted(const QString & mountPoint);
-    void unmounted(const QString & mountPoint);
-
-private Q_SLOTS:
-    void mountProcessFinished(int exitCode, QProcess::ExitStatus exitStatus);
-    void unmountProcessFinished(int exitCode, QProcess::ExitStatus exitStatus);
 
 private:
     class Private;
     Private * const d;
 };
 
-#endif // ENCFSINTERFACE_H_
+} // namespace Private
+} // namespace Encryption
+} // namespace Jobs
+
+#endif // ENCRYPTION_ENCFS_H_
 

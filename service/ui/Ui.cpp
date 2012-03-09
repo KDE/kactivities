@@ -103,4 +103,8 @@ void Ui::setBusy(bool value)
     Ui::self()->_setBusy(value);
 }
 
+void Ui::unsetBusy()
+{
+    _setBusy(false);
+}
 

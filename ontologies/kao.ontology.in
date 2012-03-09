@@ -1,0 +1,8 @@
+[Ontology]
+Version=1.0
+Name=KDE Activities Ontology
+Comment=KDE Activities Ontology contains classes that are related to the Activity Manager system
+Namespace=http://nepomuk.kde.org/ontologies/2012/02/29/kao#
+Path=${CMAKE_INSTALL_PREFIX}/share/ontology/kde/kao.trig
+MimeType=application/x-trig
+Type=Data
