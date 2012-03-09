@@ -132,6 +132,8 @@ Rectangle {
                 dialogNewPassword.active = true
 
             } else {
+                dialogPassword.title = title
+                dialogNewPassword.message = message
                 dialogPassword.password = ""
                 dialogPassword.active = true
 

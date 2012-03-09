@@ -30,6 +30,7 @@ Item {
     property int layoutPadding: 8
 
     property alias title:      labelTitle.text
+    property alias message:    labelMessage.text
     property alias password:   textPassword.text
     property alias okText:     buttonOk.text
     property alias cancelText: buttonCancel.text
@@ -60,67 +61,87 @@ Item {
 
         // Top row - icon and the text
 
-        Item {
-            id: panelTop
-            height: main.mainIconSize
-
+        PlasmaCore.FrameSvgItem {
+            id: titleFrame
+            imagePath: "widgets/extender-dragger"
+            prefix: "root"
             anchors {
-                top: parent.top
                 left: parent.left
                 right: parent.right
-
-                leftMargin: main.layoutPadding
-                topMargin: main.layoutPadding
-                rightMargin: main.layoutPadding
+                top: parent.top
+                leftMargin: parent.margins.left
+                rightMargin: parent.margins.right
+                topMargin: parent.margins.top
             }
-
-            QIconItem {
-                id: iconTitle
-                icon: "dialog-password"
-
-                width: main.mainIconSize
-                height: main.mainIconSize
-
+            height: labelTitle.height + margins.top + margins.bottom
+            PlasmaComponents.Label {
+                id: labelTitle
+                horizontalAlignment: Text.AlignHCenter
+                elide: Text.ElideRight
+                font.pointSize: theme.defaultFont.pointSize * 1.1
+                font.weight: Font.Bold
+                style: Text.Raised
+                styleColor: Qt.rgba(1,1,1,0.8)
+                height: paintedHeight
                 anchors {
                     top: parent.top
                     left: parent.left
-                    bottom: parent.bottom
+                    right: parent.right
+                    topMargin: parent.margins.top
+                    leftMargin: height + 2
+                    rightMargin: height + 2
+                }
+            }
+        }
+
+
+        Column {
+            id: panelTop
+            anchors.centerIn: parent
+
+
+            Row {
+                QIconItem {
+                    id: iconTitle
+                    icon: "dialog-password"
+
+                    width: main.mainIconSize
+                    height: main.mainIconSize
+                }
+                PlasmaComponents.Label {
+                    id: labelMessage
+                    anchors.verticalCenter: parent.verticalCenter
                 }
             }
 
             PlasmaComponents.Label {
-                id: labelTitle
-
-                anchors {
-                    bottom: parent.verticalCenter
-                    left: iconTitle.right
-                    leftMargin: main.layoutPadding
-                }
+                text: i18n("Authentication required to execute this action")
             }
 
-            PlasmaComponents.TextField {
-                id: textPassword
+            Row {
+                anchors.horizontalCenter: parent.horizontalCenter
+                spacing: 4
 
-                anchors {
-                    top:   parent.verticalCenter
-                    right: parent.right
-                    left:  iconTitle.right
-                    leftMargin: main.layoutPadding
+                PlasmaComponents.Label {
+                    text: i18n("Password:")
                 }
 
-                echoMode: TextInput.Password
+                PlasmaComponents.TextField {
+                    id: textPassword
+
+                    echoMode: TextInput.Password
+                }
             }
         }
 
         // Buttons
 
-        Item {
+        Row {
             id: buttons
-            height: 48
+            spacing: 4
 
             anchors {
-                left: parent.left
-                right: parent.right
+                horizontalCenter: parent.horizontalCenter
                 bottom: parent.bottom
             }
 
@@ -128,35 +149,11 @@ Item {
                 id: buttonOk
                 enabled: (textPassword.text.length != 0)
 
-                anchors {
-                    bottomMargin: 4
-                    rightMargin: 4
-                    leftMargin: 4
-                    topMargin: 4
-
-                    left: parent.left
-                    right: parent.horizontalCenter
-                    top: parent.top
-                    bottom: parent.bottom
-                }
-
                 onClicked: main.passwordChosen(textPassword.text)
             }
 
             PlasmaComponents.Button {
                 id: buttonCancel
-
-                anchors {
-                    bottomMargin: 4
-                    rightMargin: 4
-                    leftMargin: 4
-                    topMargin: 4
-
-                    right: parent.right
-                    left: parent.horizontalCenter
-                    top: parent.top
-                    bottom: parent.bottom
-                }
 
                 onClicked: main.canceled()
             }
