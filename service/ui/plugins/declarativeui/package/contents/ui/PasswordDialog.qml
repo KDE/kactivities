@@ -38,12 +38,52 @@ PlasmaCore.FrameSvgItem {
     signal canceled
     signal passwordChosen (string password)
 
-    width: contents.width + margins.left + margins.right
-    height: contents.height + margins.top + margins.bottom
 
     imagePath: "dialogs/background"
+    enabledBorders: "TopBorder|LeftBorder|RightBorder"
+    
 
-    anchors.centerIn: parent
+    anchors {
+        fill: parent
+        leftMargin: 50
+        rightMargin: 50
+        topMargin: 50
+    }
+
+    // Top row - icon and the text
+
+    PlasmaCore.FrameSvgItem {
+        id: titleFrame
+        imagePath: "widgets/extender-dragger"
+        prefix: "root"
+        anchors {
+            left: parent.left
+            right: parent.right
+            top: parent.top
+            leftMargin: parent.margins.left
+            rightMargin: parent.margins.right
+            topMargin: parent.margins.top
+        }
+        height: labelTitle.height + margins.top + margins.bottom
+        PlasmaComponents.Label {
+            id: labelTitle
+            horizontalAlignment: Text.AlignHCenter
+            elide: Text.ElideRight
+            font.pointSize: theme.defaultFont.pointSize * 1.1
+            font.weight: Font.Bold
+            style: Text.Raised
+            styleColor: Qt.rgba(1,1,1,0.8)
+            height: paintedHeight
+            anchors {
+                top: parent.top
+                left: parent.left
+                right: parent.right
+                topMargin: parent.margins.top
+                leftMargin: height + 2
+                rightMargin: height + 2
+            }
+        }
+    }
 
     Item {
         id: contents
@@ -53,41 +93,6 @@ PlasmaCore.FrameSvgItem {
 
         width: Math.max(panelTop.width, buttons.width) + main.layoutPadding
         height: titleFrame.height + panelTop.height + buttons.height + main.layoutPadding
-
-        // Top row - icon and the text
-
-        PlasmaCore.FrameSvgItem {
-            id: titleFrame
-            imagePath: "widgets/extender-dragger"
-            prefix: "root"
-            anchors {
-                left: parent.left
-                right: parent.right
-                top: parent.top
-                leftMargin: parent.margins.left
-                rightMargin: parent.margins.right
-                topMargin: parent.margins.top
-            }
-            height: labelTitle.height + margins.top + margins.bottom
-            PlasmaComponents.Label {
-                id: labelTitle
-                horizontalAlignment: Text.AlignHCenter
-                elide: Text.ElideRight
-                font.pointSize: theme.defaultFont.pointSize * 1.1
-                font.weight: Font.Bold
-                style: Text.Raised
-                styleColor: Qt.rgba(1,1,1,0.8)
-                height: paintedHeight
-                anchors {
-                    top: parent.top
-                    left: parent.left
-                    right: parent.right
-                    topMargin: parent.margins.top
-                    leftMargin: height + 2
-                    rightMargin: height + 2
-                }
-            }
-        }
 
 
         Column {
@@ -111,6 +116,7 @@ PlasmaCore.FrameSvgItem {
                 PlasmaComponents.Label {
                     id: labelMessage
                     anchors.verticalCenter: parent.verticalCenter
+                    wrapMode: Text.Wrap
                 }
             }
 
@@ -134,31 +140,30 @@ PlasmaCore.FrameSvgItem {
                 }
             }
         }
+    }
+    // Buttons
 
-        // Buttons
+    Row {
+        id: buttons
+        spacing: 4
 
-        Row {
-            id: buttons
-            spacing: 4
+        anchors {
+            horizontalCenter: parent.horizontalCenter
+            bottom: parent.bottom
+            bottomMargin: 8
+        }
 
-            anchors {
-                horizontalCenter: parent.horizontalCenter
-                bottom: parent.bottom
-                bottomMargin: 2
-            }
+        PlasmaComponents.Button {
+            id: buttonOk
+            enabled: (textPassword.text.length != 0)
 
-            PlasmaComponents.Button {
-                id: buttonOk
-                enabled: (textPassword.text.length != 0)
+            onClicked: main.passwordChosen(textPassword.text)
+        }
 
-                onClicked: main.passwordChosen(textPassword.text)
-            }
+        PlasmaComponents.Button {
+            id: buttonCancel
 
-            PlasmaComponents.Button {
-                id: buttonCancel
-
-                onClicked: main.canceled()
-            }
+            onClicked: main.canceled()
         }
     }
 }
