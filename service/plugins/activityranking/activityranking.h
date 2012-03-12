@@ -52,7 +52,7 @@ public Q_SLOTS:
     void test();
 
 Q_SIGNALS:
-    void rankingChanged();
+    void rankingChanged(const QStringList & topActivities, const ActivityDataList & activities);
 
 protected:
     void initDatabaseSchema();

@@ -15,6 +15,9 @@
       </method>
 
       <signal name="rankingChanged">
+          <arg name="topActivities" type="as" direction="out" />
+          <arg name="activities" type="a(sd)" direction="out" />
+          <annotation name="com.trolltech.QtDBus.QtTypeName.In1" value="ActivityDataList" />
       </signal>
 
   </interface>

@@ -541,7 +541,7 @@ void ActivityRankingPlugin::activityChanged(const QString & activity)
             d->database
         );
     PRINT_LAST_ERROR;
-    emit rankingChanged();
+    emit rankingChanged(topActivities(), activities());
 }
 
 void ActivityRankingPlugin::locationChanged(const QString &location)
@@ -573,7 +573,7 @@ void ActivityRankingPlugin::locationChanged(const QString &location)
             d->database
         );
     PRINT_LAST_ERROR;
-    emit rankingChanged();
+    emit rankingChanged(topActivities(), activities());
 }
 
 
