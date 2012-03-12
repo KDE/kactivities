@@ -3,26 +3,19 @@
   <interface name="org.kde.ActivityManager.ActivityRanking">
 
       <method name="topActivities">
-          <arg name="location" type="s" direction="in">
-              <tp:docstring>
-                  The user location from Location Manager plugin.
-              </tp:docstring>
-          </arg>
           <arg type="as" direction="out" />
       </method>
 
       <method name="activities">
-          <arg name="location" type="s" direction="in">
-              <tp:docstring>
-                  The user location from Location Manager plugin.
-              </tp:docstring>
-          </arg>
           <arg type="a(sd)" direction="out" />
           <annotation name="com.trolltech.QtDBus.QtTypeName.Out0" value="ActivityDataList" />
       </method>
 
       <method name="test">
       </method>
+
+      <signal name="rankingChanged">
+      </signal>
 
   </interface>
 </node>

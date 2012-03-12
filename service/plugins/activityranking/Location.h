@@ -34,8 +34,8 @@ public:
 
     virtual ~Location();
 
-// Q_SIGNALS:
-//     void currentChanged();
+ Q_SIGNALS:
+     void currentChanged(const QString &location);
 
 public:
     QString current() const;
