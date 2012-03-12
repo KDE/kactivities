@@ -27,14 +27,7 @@
 #include "config-features.h"
 
 #ifdef HAVE_NEPOMUK
-    #include <Nepomuk/Resource>
-    #include <Nepomuk/Variant>
-
-    #include "kao.h"
-    #include <Soprano/Vocabulary/NAO>
-
-    using namespace Nepomuk::Vocabulary;
-    using namespace Soprano::Vocabulary;
+    #include "NepomukCommon.h"
 #endif // HAVE_NEPOMUK
 
 /**
@@ -75,9 +68,7 @@ void ResourceScoreCache::updateScore()
 
     // Forcing immediate sync of the score, in case of kamd being terminated improperly
     #ifdef HAVE_NEPOMUK
-        Nepomuk::Resource resource(d->resource);
-        resource.setProperty(KAO::cachedScore(), score);
-        resource.setProperty(NAO::score(), score);
+    updateNepomukScore(d->activity, d->application, d->resource, score);
     #endif
 
     Rankings::self()->resourceScoreUpdated(d->activity, d->application, d->resource, score);

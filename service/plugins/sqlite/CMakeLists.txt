@@ -12,6 +12,7 @@ set(
    ResourceScoreCache.cpp
    ResourceScoreMaintainer.cpp
    Rankings.cpp
+   NepomukCommon.cpp
    ../../Plugin.cpp
    ../../SharedInfo.cpp
    )
