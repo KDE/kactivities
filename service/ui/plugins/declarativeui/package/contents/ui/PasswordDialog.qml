@@ -24,10 +24,10 @@ import org.kde.plasma.core 0.1 as PlasmaCore
 import org.kde.plasma.mobilecomponents 0.1 as MobileComponents
 import org.kde.qtextracomponents 0.1
 
-Item {
+PlasmaCore.FrameSvgItem {
     id: main
     property int mainIconSize: 64 + 32
-    property int layoutPadding: 8
+    property int layoutPadding: 16
 
     property alias title:      labelTitle.text
     property alias message:    labelMessage.text
@@ -38,69 +38,74 @@ Item {
     signal canceled
     signal passwordChosen (string password)
 
-    width: 350
-    height: 180
 
-    PlasmaCore.FrameSvgItem {
-        id: backgroundFrame
-        anchors.fill: parent
+    imagePath: "dialogs/background"
+    enabledBorders: "TopBorder|LeftBorder|RightBorder"
+    
 
-        imagePath: "dialogs/background"
+    anchors {
+        fill: parent
+        leftMargin: 50
+        rightMargin: 50
+        topMargin: 50
     }
 
-    anchors.centerIn: parent
+    // Top row - icon and the text
 
-    Item {
+    PlasmaCore.FrameSvgItem {
+        id: titleFrame
+        imagePath: "widgets/extender-dragger"
+        prefix: "root"
         anchors {
-            fill: parent
-            leftMargin: backgroundFrame.margins.left
-            topMargin: backgroundFrame.margins.top
-            rightMargin: backgroundFrame.margins.right
-            bottomMargin: backgroundFrame.margins.bottom
+            left: parent.left
+            right: parent.right
+            top: parent.top
+            leftMargin: parent.margins.left
+            rightMargin: parent.margins.right
+            topMargin: parent.margins.top
         }
-
-        // Top row - icon and the text
-
-        PlasmaCore.FrameSvgItem {
-            id: titleFrame
-            imagePath: "widgets/extender-dragger"
-            prefix: "root"
+        height: labelTitle.height + margins.top + margins.bottom
+        PlasmaComponents.Label {
+            id: labelTitle
+            horizontalAlignment: Text.AlignHCenter
+            elide: Text.ElideRight
+            font.pointSize: theme.defaultFont.pointSize * 1.1
+            font.weight: Font.Bold
+            style: Text.Raised
+            styleColor: Qt.rgba(1,1,1,0.8)
+            height: paintedHeight
             anchors {
+                top: parent.top
                 left: parent.left
                 right: parent.right
-                top: parent.top
-                leftMargin: parent.margins.left
-                rightMargin: parent.margins.right
                 topMargin: parent.margins.top
-            }
-            height: labelTitle.height + margins.top + margins.bottom
-            PlasmaComponents.Label {
-                id: labelTitle
-                horizontalAlignment: Text.AlignHCenter
-                elide: Text.ElideRight
-                font.pointSize: theme.defaultFont.pointSize * 1.1
-                font.weight: Font.Bold
-                style: Text.Raised
-                styleColor: Qt.rgba(1,1,1,0.8)
-                height: paintedHeight
-                anchors {
-                    top: parent.top
-                    left: parent.left
-                    right: parent.right
-                    topMargin: parent.margins.top
-                    leftMargin: height + 2
-                    rightMargin: height + 2
-                }
+                leftMargin: height + 2
+                rightMargin: height + 2
             }
         }
+    }
+
+    Item {
+        id: contents
+        anchors {
+            centerIn: parent
+        }
+
+        width: Math.max(panelTop.width, buttons.width) + main.layoutPadding
+        height: titleFrame.height + panelTop.height + buttons.height + main.layoutPadding
 
 
         Column {
             id: panelTop
-            anchors.centerIn: parent
+            anchors {
+                top: titleFrame.bottom
+                topMargin: 2
+                horizontalCenter: parent.horizontalCenter
+            }
 
 
             Row {
+                spacing: 2
                 QIconItem {
                     id: iconTitle
                     icon: "dialog-password"
@@ -111,11 +116,13 @@ Item {
                 PlasmaComponents.Label {
                     id: labelMessage
                     anchors.verticalCenter: parent.verticalCenter
+                    wrapMode: Text.Wrap
                 }
             }
 
             PlasmaComponents.Label {
                 text: i18n("Authentication required to execute this action")
+                anchors.horizontalCenter: parent.horizontalCenter
             }
 
             Row {
@@ -133,30 +140,30 @@ Item {
                 }
             }
         }
+    }
+    // Buttons
 
-        // Buttons
+    Row {
+        id: buttons
+        spacing: 4
 
-        Row {
-            id: buttons
-            spacing: 4
+        anchors {
+            horizontalCenter: parent.horizontalCenter
+            bottom: parent.bottom
+            bottomMargin: 8
+        }
 
-            anchors {
-                horizontalCenter: parent.horizontalCenter
-                bottom: parent.bottom
-            }
+        PlasmaComponents.Button {
+            id: buttonOk
+            enabled: (textPassword.text.length != 0)
 
-            PlasmaComponents.Button {
-                id: buttonOk
-                enabled: (textPassword.text.length != 0)
+            onClicked: main.passwordChosen(textPassword.text)
+        }
 
-                onClicked: main.passwordChosen(textPassword.text)
-            }
+        PlasmaComponents.Button {
+            id: buttonCancel
 
-            PlasmaComponents.Button {
-                id: buttonCancel
-
-                onClicked: main.canceled()
-            }
+            onClicked: main.canceled()
         }
     }
 }

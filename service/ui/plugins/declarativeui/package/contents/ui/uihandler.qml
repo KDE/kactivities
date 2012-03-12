@@ -120,7 +120,7 @@ Rectangle {
 
         // void message(const QString & message);
         onMessage: {
-            dialogMessage.text = message
+            dialogPassword.text = message
             dialogMessage.active = true
         }
 
@@ -133,7 +133,7 @@ Rectangle {
 
             } else {
                 dialogPassword.title = title
-                dialogNewPassword.message = message
+                dialogPassword.message = message
                 dialogPassword.password = ""
                 dialogPassword.active = true
 

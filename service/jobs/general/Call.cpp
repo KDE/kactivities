@@ -76,7 +76,7 @@ void Call::start()
 {
     if (m_receiver) {
         kDebug() << ">>> Calling the method" << m_slot << "with" << m_argument;
-        kDebug() <<
+
         QMetaObject::invokeMethod(m_receiver, m_slot.toAscii(),
                 (m_waitFinished ? Qt::QueuedConnection : Qt::DirectConnection),
                 Q_ARG(QString, m_argument));

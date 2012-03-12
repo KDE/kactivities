@@ -59,12 +59,11 @@ void ActivityManagerPrivate::scheduleConfigSync(const bool shortInterval)
             configSyncTimer.stop();
             configSyncTimer.setInterval(SHORT_INTERVAL);
         }
-
-        if (!configSyncTimer.isActive()) {
-            configSyncTimer.start();
-        }
     } else if (configSyncTimer.interval() != LONG_INTERVAL && !configSyncTimer.isActive()) {
         configSyncTimer.setInterval(LONG_INTERVAL);
+    }
+
+    if (!configSyncTimer.isActive()) {
         configSyncTimer.start();
     }
 #undef SHORT_INTERVAL
