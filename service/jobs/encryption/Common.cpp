@@ -113,9 +113,43 @@ QString Private::folderName(const QString & activity, FolderType type)
         case MountPointFolder:
             return "crypt-" + activity;
 
+        default:
+            return QString();
     }
 
-    return QString();
+    // return QString();
+}
+
+QString path(const QString & activity, FolderType type)
+{
+    if (type < ActivityFolder) {
+        return d->activitiesDataFolder.filePath(
+                d->folderName(activity, type)
+            );
+    }
+
+    bool activityEncrypted = isActivityEncrypted(activity);
+    QString activityPath = d->activitiesDataFolder.filePath(
+            d->folderName(activity,
+                activityEncrypted ? MountPointFolder : NormalFolder));
+    if (!activityPath.endsWith('/'))
+        activityPath.append('/');
+
+
+    switch (type) {
+        case UserDataFolder:
+            return activityPath.append("user/");
+
+        case ConfigFolder:
+            return activityPath.append("config/");
+
+        case DataFolder:
+            return activityPath.append("apps/");
+
+        default:
+            return activityPath;
+
+    }
 }
 
 QProcess * execMount(const QString & activity, bool initialize, const QString & password)
@@ -153,6 +187,16 @@ void unmountExcept(const QString & activity)
 void unmountAll()
 {
     d->encfs.unmountAllExcept();
+}
+
+void initializeStructure(const QString & activity)
+{
+    const QString & mountFolderName = d->folderName(activity, MountPointFolder);
+    QDir dir(d->activitiesDataFolder.filePath(mountFolderName));
+
+    dir.mkdir("user");
+    dir.mkdir("config");
+    dir.mkdir("apps");
 }
 
 } // namespace Common

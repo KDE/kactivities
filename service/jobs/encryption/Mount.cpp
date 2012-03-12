@@ -104,6 +104,22 @@ void Mount::processFinished(int exitCode, QProcess::ExitStatus exitStatus)
     if (m_process->exitCode() != 0 || m_process->exitStatus() != QProcess::NormalExit) {
         setError(1);
         setErrorText("Mounting failed");
+
+    } else {
+
+        switch (m_action) {
+            case Mount::InitializeAction:
+            case Mount::MountAction:
+                Common::initializeStructure(m_activity);
+                break;
+
+            case Mount::DeinitializeAction:
+                // TODO: Deinitialize
+                break;
+
+            default:
+                break;
+        }
     }
 
     emit emitResult();

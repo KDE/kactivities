@@ -20,8 +20,20 @@
 #ifndef NEPOMUK_MOVE_H_
 #define NEPOMUK_MOVE_H_
 
+#include "config-features.h"
+#ifdef HAVE_NEPOMUK
+
 #include "../Job.h"
 #include "../JobFactory.h"
+
+#include <KUrl>
+#include <QThread>
+#include <QSet>
+
+namespace Nepomuk {
+    class Resource;
+    class File;
+} // namespace Nepomuk
 
 namespace Jobs {
 namespace Nepomuk {
@@ -45,13 +57,36 @@ public:
 
     virtual void start();
 
-private Q_SLOTS:
-    // void passwordReturned(const QString & password);
+public Q_SLOTS:
+    void moveFiles(const KUrl::List & results);
+    void emitResult();
 
 private:
     QString m_activity;
     bool    m_toEncrypted;
 
+};
+
+class CollectFilesToMove: public QThread {
+    Q_OBJECT
+
+public:
+    CollectFilesToMove(const QString & activity);
+
+    void unlinkOtherActivities(::Nepomuk::Resource & resource);
+    void removeSensitiveData(::Nepomuk::Resource & resource);
+    void scheduleMoveDir(::Nepomuk::File & dir);
+    void scheduleMoveFile(::Nepomuk::File & file);
+    void scheduleMove(::Nepomuk::File & item);
+    void run();
+
+Q_SIGNALS:
+    void result(const KUrl::List & list);
+
+private:
+    QString m_activity;
+    KUrl::List m_scheduledForMoving;
+    QSet < QString > m_movedDirs;
 };
 
 inline Move::Factory * move(const QString & activity, bool toEncrypted) {
@@ -61,5 +96,6 @@ inline Move::Factory * move(const QString & activity, bool toEncrypted) {
 } // namespace Nepomuk
 } // namespace Jobs
 
+#endif // HAVE_NEPOMUK
 #endif // NEPOMUK_MOVE_H_
 

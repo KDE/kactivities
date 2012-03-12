@@ -1,0 +1,124 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+CachedLazyEvaluation	qfpolicies.h	/^        CachedLazyEvaluation = 3$/;"	e	enum:Qf::Policies::EvaluationMethod
+CompileTimeChecker	macros.h	/^template <> struct CompileTimeChecker <false> {};$/;"	s	namespace:Qf::Constructs
+CompileTimeChecker	macros.h	/^template <bool> struct CompileTimeChecker {$/;"	s	namespace:Qf::Constructs
+Constructs	macros.h	/^namespace Constructs {$/;"	n	namespace:Qf
+Core	list/core.h	/^    Core (const QList <MainType> & data = QList <MainType> ())$/;"	f	class:Qf::List::Core
+Core	list/core.h	/^class Core {$/;"	c	namespace:Qf::List
+Core	value/core.h	/^    Core (const QList <MainType> & data = QList <MainType> ())$/;"	f	class:Qf::List::Core
+Core	value/core.h	/^class Core {$/;"	c	namespace:Qf::List
+EvaluationMethod	qfpolicies.h	/^    enum EvaluationMethod {$/;"	g	namespace:Qf::Policies
+EvaluationMethodHandler	list/greedyevaluation.h	/^    EvaluationMethodHandler(Core <MainType> * core)$/;"	f	class:Qf::List::EvaluationMethodHandler
+EvaluationMethodHandler	list/greedyevaluation.h	/^class EvaluationMethodHandler {$/;"	c	namespace:Qf::List
+EvaluationMethodHandler	list/lazyevaluation.h	/^    EvaluationMethodHandler(Core <MainType> * core)$/;"	f	class:Qf::List::EvaluationMethodHandler
+EvaluationMethodHandler	list/lazyevaluation.h	/^class EvaluationMethodHandler <MainType, QF_TYPE_FOR(Policies::LazyEvaluation)> {$/;"	c	namespace:Qf::List
+EvaluationMethodHandler	value/cachedlazyevaluation.h	/^    EvaluationMethodHandler(Type (*fn) ())$/;"	f	class:Qf::Value::EvaluationMethodHandler
+EvaluationMethodHandler	value/cachedlazyevaluation.h	/^    EvaluationMethodHandler(const Type & value)$/;"	f	class:Qf::Value::EvaluationMethodHandler
+EvaluationMethodHandler	value/cachedlazyevaluation.h	/^class EvaluationMethodHandler <Type, QF_TYPE_FOR(Policies::CachedLazyEvaluation)> {$/;"	c	namespace:Qf::Value
+EvaluationMethodHandler	value/greedyevaluation.h	/^    EvaluationMethodHandler(Type (*fn) ())$/;"	f	class:Qf::Value::EvaluationMethodHandler
+EvaluationMethodHandler	value/greedyevaluation.h	/^    EvaluationMethodHandler(const Type & value = Type())$/;"	f	class:Qf::Value::EvaluationMethodHandler
+EvaluationMethodHandler	value/greedyevaluation.h	/^class EvaluationMethodHandler {$/;"	c	namespace:Qf::Value
+EvaluationMethodHandler	value/lazyevaluation.h	/^    EvaluationMethodHandler(Type (*fn) ())$/;"	f	class:Qf::Value::EvaluationMethodHandler
+EvaluationMethodHandler	value/lazyevaluation.h	/^class EvaluationMethodHandler <Type, QF_TYPE_FOR(Policies::LazyEvaluation)> {$/;"	c	namespace:Qf::Value
+Functions	qffunctions.h	/^namespace Functions {$/;"	n	namespace:Qf
+GreedyEvaluation	qfpolicies.h	/^        GreedyEvaluation     = 1,$/;"	e	enum:Qf::Policies::EvaluationMethod
+Int2Type	macros.h	/^struct Int2Type {$/;"	s	namespace:Qf::Constructs
+LazyEvaluation	qfpolicies.h	/^        LazyEvaluation       = 2,$/;"	e	enum:Qf::Policies::EvaluationMethod
+List	list/core.h	/^namespace List {$/;"	n	namespace:Qf
+List	list/greedyevaluation.h	/^namespace List {$/;"	n	namespace:Qf
+List	list/lazyevaluation.h	/^namespace List {$/;"	n	namespace:Qf
+List	value/core.h	/^namespace List {$/;"	n	namespace:Qf
+Policies	qfpolicies.h	/^namespace Policies {$/;"	n	namespace:Qf
+QF_CAST_DEFINE	macros.h	68;"	d
+QF_FN	list/core.h	25;"	d
+QF_FN	value/core.h	25;"	d
+QF_FN_ARG	list/core.h	26;"	d
+QF_FN_ARG	list/lazyevaluation.h	/^    MainType QF_FN_ARG;$/;"	m	class:Qf::List::EvaluationMethodHandler
+QF_FN_ARG	value/core.h	26;"	d
+QF_FN_ARG_FOLD	list/core.h	27;"	d
+QF_FN_ARG_FOLD	value/core.h	27;"	d
+QF_FN_ARG_FOLD_SAME	list/core.h	28;"	d
+QF_FN_ARG_FOLD_SAME	value/core.h	28;"	d
+QF_FUNCTION	qffunctions.h	33;"	d
+QF_FUNCTIONS_H_	qffunctions.h	21;"	d
+QF_GLOBAL_H_	qfglobal.h	21;"	d
+QF_LIST_CORE_H_	list/core.h	21;"	d
+QF_LIST_CORE_H_	value/core.h	21;"	d
+QF_LIST_GREEDYEVALUATION_H_	list/greedyevaluation.h	21;"	d
+QF_LIST_H_	qflist.h	21;"	d
+QF_LIST_LAZYEVALUATION_H_	list/lazyevaluation.h	21;"	d
+QF_MACROS_H_	macros.h	21;"	d
+QF_OPERATOR	qffunctions.h	42;"	d
+QF_POLICIES_H_	qfpolicies.h	21;"	d
+QF_TRACE	macros.h	26;"	d
+QF_TYPE_FOR	macros.h	58;"	d
+QF_VALUE_CACHEDLAZYEVALUATION_H_	value/cachedlazyevaluation.h	21;"	d
+QF_VALUE_GREEDYEVALUATION_H_	value/greedyevaluation.h	21;"	d
+QF_VALUE_LAZYEVALUATION_H_	value/lazyevaluation.h	21;"	d
+Qf	QfVariant.cpp	/^namespace Qf {$/;"	n	file:
+Qf	QfVariant.h	/^namespace Qf {$/;"	n
+Qf	list/core.h	/^namespace Qf {$/;"	n
+Qf	list/greedyevaluation.h	/^namespace Qf {$/;"	n
+Qf	list/lazyevaluation.h	/^namespace Qf {$/;"	n
+Qf	macros.h	/^namespace Qf {$/;"	n
+Qf	qffunctions.h	/^namespace Qf {$/;"	n
+Qf	qflist.cpp	/^namespace Qf {$/;"	n	file:
+Qf	qflist.h	/^namespace Qf {$/;"	n
+Qf	qfpolicies.h	/^namespace Qf {$/;"	n
+Qf	qfvalue.cpp	/^namespace Qf {$/;"	n	file:
+Qf	qfvalue.h	/^namespace Qf {$/;"	n
+Qf	value/cachedlazyevaluation.h	/^namespace Qf {$/;"	n
+Qf	value/core.h	/^namespace Qf {$/;"	n
+Qf	value/greedyevaluation.h	/^namespace Qf {$/;"	n
+Qf	value/lazyevaluation.h	/^namespace Qf {$/;"	n
+QfList	qflist.h	/^    QfList()$/;"	f	class:Qf::QfList
+QfList	qflist.h	/^    QfList(const QList <MainType> & list)$/;"	f	class:Qf::QfList
+QfList	qflist.h	/^class QfList:$/;"	c	namespace:Qf
+QfValue	qfvalue.h	/^    QfValue(Type (*fn) ())$/;"	f	class:Qf::QfValue
+QfValue	qfvalue.h	/^    QfValue(const Type & value = Type())$/;"	f	class:Qf::QfValue
+QfValue	qfvalue.h	/^class QfValue:$/;"	c	namespace:Qf
+STATIC_ASSERT	macros.h	41;"	d
+Value	macros.h	/^    enum { Value = v };$/;"	e	enum:Qf::Constructs::Int2Type::__anon1
+Value	value/cachedlazyevaluation.h	/^namespace Value {$/;"	n	namespace:Qf
+Value	value/greedyevaluation.h	/^namespace Value {$/;"	n	namespace:Qf
+Value	value/lazyevaluation.h	/^namespace Value {$/;"	n	namespace:Qf
+_printData	qflist.h	/^    QfList <MainType, evaluationMethod> _printData()$/;"	f	class:Qf::QfList
+_printInsideData	qflist.h	/^    QfList <MainType, evaluationMethod> & _printInsideData()$/;"	f	class:Qf::QfList
+applyFunction	list/greedyevaluation.h	/^    void applyFunction(MainType QF_FN_ARG)$/;"	f	class:Qf::List::EvaluationMethodHandler
+applyFunction	list/lazyevaluation.h	/^    void applyFunction(MainType QF_FN_ARG)$/;"	f	class:Qf::List::EvaluationMethodHandler
+foldLeft	qflist.h	/^    MainType foldLeft(MainType QF_FN_ARG_FOLD_SAME)$/;"	f	class:Qf::QfList
+foldLeft	qflist.h	/^    MainType foldLeft(const MainType & seed, MainType QF_FN_ARG_FOLD_SAME)$/;"	f	class:Qf::QfList
+foldLeft	qflist.h	/^    SecondType foldLeft(const SecondType & seed, SecondType QF_FN_ARG_FOLD)$/;"	f	class:Qf::QfList
+for_each	qflist.h	/^    void for_each(void QF_FN_ARG)$/;"	f	class:Qf::QfList
+init	main.cpp	/^void init()$/;"	f
+listData	list/core.h	/^    QList <MainType> listData;$/;"	m	class:Qf::List::Core
+listData	value/core.h	/^    QList <MainType> listData;$/;"	m	class:Qf::List::Core
+m_value	value/cachedlazyevaluation.h	/^    mutable Type m_value;$/;"	m	class:Qf::Value::EvaluationMethodHandler
+m_value	value/greedyevaluation.h	/^    Type m_value;$/;"	m	class:Qf::Value::EvaluationMethodHandler
+m_valueFunction	value/cachedlazyevaluation.h	/^    mutable Type (*m_valueFunction) ();$/;"	m	class:Qf::Value::EvaluationMethodHandler
+main	main.cpp	/^int main(int argc, char ** argv)$/;"	f
+map	qflist.h	/^    QfList <MainType, inEvaluationMethod> map(MainType QF_FN_ARG)$/;"	f	class:Qf::QfList
+map	qflist.h	/^    QfList <SecondType, inEvaluationMethod> map(SecondType QF_FN_ARG)$/;"	f	class:Qf::QfList
+q	list/greedyevaluation.h	/^    class Core <MainType> * const q;$/;"	m	class:Qf::List::EvaluationMethodHandler
+q	list/lazyevaluation.h	/^    class Core <MainType> * const q;$/;"	m	class:Qf::List::EvaluationMethodHandler
+setValue	value/greedyevaluation.h	/^    void setValue(const Type & value)$/;"	f	class:Qf::Value::EvaluationMethodHandler
+sum	qffunctions.h	/^Type sum(const Type & item1, const Type & item2) {$/;"	f	namespace:Qf::Functions
+testGreedyList	main.cpp	/^void testGreedyList()$/;"	f
+testLazyList	main.cpp	/^void testLazyList()$/;"	f
+testValue	main.cpp	/^void testValue()$/;"	f
+value	list/greedyevaluation.h	/^    const MainType & value(int index) const {$/;"	f	class:Qf::List::EvaluationMethodHandler
+value	list/lazyevaluation.h	/^    MainType value(int index) const {$/;"	f	class:Qf::List::EvaluationMethodHandler
+value	value/cachedlazyevaluation.h	/^    Type value() const {$/;"	f	class:Qf::Value::EvaluationMethodHandler
+value	value/greedyevaluation.h	/^    const Type & value() const {$/;"	f	class:Qf::Value::EvaluationMethodHandler
+value	value/lazyevaluation.h	/^    Type value() const {$/;"	f	class:Qf::Value::EvaluationMethodHandler
+valueFunction	value/lazyevaluation.h	/^    Type (*valueFunction) ();$/;"	m	class:Qf::Value::EvaluationMethodHandler
+~EvaluationMethodHandler	list/greedyevaluation.h	/^    ~EvaluationMethodHandler() {};$/;"	f	class:Qf::List::EvaluationMethodHandler
+~EvaluationMethodHandler	list/lazyevaluation.h	/^    ~EvaluationMethodHandler() {};$/;"	f	class:Qf::List::EvaluationMethodHandler
+~EvaluationMethodHandler	value/cachedlazyevaluation.h	/^    ~EvaluationMethodHandler() {};$/;"	f	class:Qf::Value::EvaluationMethodHandler
+~EvaluationMethodHandler	value/greedyevaluation.h	/^    ~EvaluationMethodHandler() {};$/;"	f	class:Qf::Value::EvaluationMethodHandler
+~EvaluationMethodHandler	value/lazyevaluation.h	/^    ~EvaluationMethodHandler() {};$/;"	f	class:Qf::Value::EvaluationMethodHandler

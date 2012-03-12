@@ -101,6 +101,7 @@ target_link_libraries(
     activity-manager
     ${KDE4_KDECORE_LIBS}
     ${KDE4_KDEUI_LIBS} # TODO: Remove kdeui
+    ${KDE4_KIO_LIBS}   # TODO: Remove kio
     ${ADDITIONAL_LINK_LIBS}
     )
 

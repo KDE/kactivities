@@ -39,7 +39,12 @@ namespace Common {
     enum FolderType {
         NormalFolder = 0,
         EncryptedFolder = 1,
-        MountPointFolder = 2
+        MountPointFolder = 2,
+
+        ActivityFolder = 8,
+        UserDataFolder = 9,
+        ConfigFolder = 10,
+        DataFolder = 11
     };
 
     QProcess * execMount(const QString & activity, bool initialize, const QString & password);
@@ -47,6 +52,10 @@ namespace Common {
 
     void unmountExcept(const QString & activity);
     void unmountAll();
+
+    void initializeStructure(const QString & activity);
+
+    QString path(const QString & activity, FolderType type);
 
 } // namespace Common
 } // namespace Encryption
