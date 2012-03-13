@@ -39,6 +39,20 @@ void ActivityManagerPrivate::sessionServiceRegistered()
     }
 }
 
+void ActivityManagerPrivate::screensaverServiceRegistered()
+{
+    delete screensaverInterface;
+    screensaverInterface = new QDBusInterface("org.freedesktop.ScreenSaver", "/ScreenSaver", "org.freedesktop.ScreenSaver");
+    if (screensaverInterface->isValid()) {
+        screensaverInterface->setParent(this);
+        connect(screensaverInterface, SIGNAL(ActiveChanged(bool)), this, SLOT(screenLockStateChanged(bool)));
+    } else {
+        delete screensaverInterface;
+        screensaverInterface = 0;
+        //kDebug() << "couldn't connect to screensaver!";
+    }
+}
+
 void ActivityManagerPrivate::setActivityState(const QString & id, ActivityManager::State state)
 {
     if (activities[id] == state) return;
@@ -249,3 +263,16 @@ int ActivityManager::ActivityState(const QString & id) const
     }
 }
 
+void ActivityManagerPrivate::screenLockStateChanged(const bool locked)
+{
+    if (locked) {
+        // already in limbo state.
+        if (currentActivity.isEmpty()) {
+            return;
+        }
+        oldCurrentActivity = currentActivity;
+        setCurrentActivity(QString());
+    } else {
+        setCurrentActivity(oldCurrentActivity);
+    }
+}

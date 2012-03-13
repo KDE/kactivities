@@ -47,6 +47,7 @@
 #endif
 
 class QDBusInterface;
+class KJob;
 
 class ActivityManagerPrivate: public QObject {
     Q_OBJECT
@@ -60,6 +61,7 @@ public:
 
     void addRunningActivity(const QString & id);
     void removeRunningActivity(const QString & id);
+    void loadLastPublicActivity();
 
 public Q_SLOTS:
     void ensureCurrentActivityIsRunning();
@@ -113,11 +115,17 @@ public Q_SLOTS:
     // void onActivityEncryptionChanged(const QString id, const bool encrypted);
 
     void sessionServiceRegistered();
+    void screensaverServiceRegistered();
+
+public Q_SLOTS:
+    void screenLockStateChanged(const bool locked);
+    void checkForSetCurrentActivityError(KJob * job);
 
 private:
     ActivityManager * const q;
     QDBusInterface * ksmserverInterface; // just keeping it for the signals
-
+    QDBusInterface * screensaverInterface; // just keeping it for the signals
+    QString oldCurrentActivity;
 };
 
 #endif // ACTIVITY_MANAGER_P_H_
