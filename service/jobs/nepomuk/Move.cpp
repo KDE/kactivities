@@ -43,6 +43,7 @@
 
 #include <kao.h>
 #include <Nepomuk/Vocabulary/NFO>
+#include <Nepomuk/Vocabulary/NIE>
 #include <Soprano/Vocabulary/NAO>
 
 #include <KIO/CopyJob>
@@ -57,11 +58,22 @@ using namespace Nepomuk;
 namespace Jobs {
 namespace Nepomuk {
 
-CollectFilesToMove::CollectFilesToMove(const QString & activity)
-    : m_activity(activity)
+CollectFilesToMove::CollectFilesToMove(const QString & activity, const QString & destination)
+    : m_activity(activity), m_destination(destination)
 {
     kDebug();
 
+}
+
+void CollectFilesToMove::replaceUrl(File & file, const QString & destination)
+{
+    kDebug();
+    // Remove some properties
+
+    QString path = destination + '/' + file.url().fileName();
+    kDebug() << "Future location: " << path;
+
+    Resource(file).setProperty(NIE::url(), KUrl(path));
 }
 
 void CollectFilesToMove::unlinkOtherActivities(Resource & resource)
@@ -70,6 +82,24 @@ void CollectFilesToMove::unlinkOtherActivities(Resource & resource)
     // Find all activities that this resource are linked to
     // and remove the links for all except for the current
 
+    const QString query = QString::fromLatin1(
+            "select ?activity where { ?activity a kao:Activity . ?activity nao:isRelated %1");
+
+    // First we are moving the directories linked to the activity
+    Soprano::QueryResultIterator it
+        = ResourceManager::instance()->mainModel()->executeQuery(
+            query.arg(
+                Soprano::Node::resourceToN3(resource.resourceUri())
+            ),
+            Soprano::Query::QueryLanguageSparql);
+
+    while (it.next()) {
+        Resource activity(it[0].uri());
+
+        if (activity.identifiers().contains(m_activity)) continue;
+
+        activity.removeProperty(NAO::isRelated(), resource);
+    }
 }
 
 void CollectFilesToMove::removeSensitiveData(Resource & resource)
@@ -77,6 +107,16 @@ void CollectFilesToMove::removeSensitiveData(Resource & resource)
     kDebug();
     // Remove some properties
 
+    Resource r(resource);
+
+    r.removeProperty(NAO::hasSubResource());
+    r.removeProperty(NFO::hasHash());
+
+    r.removeProperty(NFO::wordCount());
+    r.removeProperty(NFO::characterCount());
+    r.removeProperty(NFO::lineCount());
+    r.removeProperty(NIE::plainTextContent());
+    r.removeProperty(NIE::contentSize());
 }
 
 void CollectFilesToMove::scheduleMoveDir(File & dir)
@@ -110,28 +150,6 @@ void CollectFilesToMove::scheduleMove(File & item)
 
 }
 
-// void move()
-// {
-//     kDebug() << m_scheduledForMoving << m_destination;
-
-//     foreach (const KUrl & url, m_scheduledForMoving) {
-//         const QString & path = url.toLocalFile();
-
-//         kDebug() << QFile::exists(path) << path;
-
-//     }
-
-//     kDebug() << QFile::exists(m_destination) << m_destination;
-
-//     KIO::CopyJob * job = KIO::move(m_scheduledForMoving, KUrl(m_destination), KIO::HideProgressInfo);
-
-//     connect(job, SIGNAL(result(KJob *)),
-//             m_target, SLOT(errorReturned(KJob *)));
-//     connect(job, SIGNAL(result(KJob *)),
-//             m_target, m_method,
-//             Qt::QueuedConnection);
-// }
-
 void CollectFilesToMove::run()
 {
     kDebug();
@@ -152,6 +170,7 @@ void CollectFilesToMove::run()
         unlinkOtherActivities(result);
         removeSensitiveData(result);
         scheduleMoveDir(result);
+        replaceUrl(result, m_destination);
     }
 
     it.close();
@@ -171,6 +190,7 @@ void CollectFilesToMove::run()
         unlinkOtherActivities(result);
         removeSensitiveData(result);
         scheduleMoveFile(result);
+        replaceUrl(result, m_destination);
     }
 
     it.close();
@@ -210,7 +230,7 @@ void Move::start()
     kDebug() << ">>> Move" << m_activity;
     KIO::move(KUrl("/tmp/ASD"), KUrl("/tmp/asd"), KIO::HideProgressInfo);
 
-    CollectFilesToMove * job = new CollectFilesToMove(m_activity);
+    CollectFilesToMove * job = new CollectFilesToMove(m_activity, destination());
 
     connect(job, SIGNAL(result(KUrl::List)),
             this, SLOT(moveFiles(KUrl::List)),
@@ -221,19 +241,27 @@ void Move::start()
 
 void Move::moveFiles(const KUrl::List & list)
 {
-    using namespace Jobs::Encryption::Common;
-    QString destination;
-    if (m_toEncrypted) {
-        destination = path(m_activity, MountPointFolder);
-    } else {
-        destination = path(m_activity, NormalFolder);
-    }
-    destination.append("/user");
-
-    KIO::CopyJob * job = KIO::move(list, KUrl(destination), KIO::HideProgressInfo);
+    KIO::CopyJob * job = KIO::move(list, KUrl(destination()), KIO::HideProgressInfo);
 
     connect(job, SIGNAL(result(KJob *)),
             this, SLOT(emitResult()));
+}
+
+QString Move::destination() const
+{
+    QString result;
+
+    using namespace Jobs::Encryption::Common;
+
+    if (m_toEncrypted) {
+        result = path(m_activity, MountPointFolder);
+    } else {
+        result = path(m_activity, NormalFolder);
+    }
+
+    result.append("/user");
+
+    return result;
 }
 
 void Move::emitResult()

@@ -62,6 +62,8 @@ public Q_SLOTS:
     void emitResult();
 
 private:
+    QString destination() const;
+
     QString m_activity;
     bool    m_toEncrypted;
 
@@ -71,10 +73,12 @@ class CollectFilesToMove: public QThread {
     Q_OBJECT
 
 public:
-    CollectFilesToMove(const QString & activity);
+    CollectFilesToMove(const QString & activity, const QString & destination);
 
+    void replaceUrl(::Nepomuk::File & file, const QString & destination);
     void unlinkOtherActivities(::Nepomuk::Resource & resource);
     void removeSensitiveData(::Nepomuk::Resource & resource);
+
     void scheduleMoveDir(::Nepomuk::File & dir);
     void scheduleMoveFile(::Nepomuk::File & file);
     void scheduleMove(::Nepomuk::File & item);
@@ -85,6 +89,7 @@ Q_SIGNALS:
 
 private:
     QString m_activity;
+    QString m_destination;
     KUrl::List m_scheduledForMoving;
     QSet < QString > m_movedDirs;
 };
