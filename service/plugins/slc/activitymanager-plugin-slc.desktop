@@ -37,6 +37,7 @@ Comment=Plugin to provide data to the SLC system
 Comment[ca]=Connector per proporcionar dades al sistema SLC
 Comment[da]=Plugin til at levere data til SLC-systemet
 Comment[de]=Modul, um dem SLC-System Daten bereitzustellen.
+Comment[el]=Πρόσθετο παροχής δεδομένων στο σύστημα SLC
 Comment[es]=Complemento para proporcionar datos al sistema SLC
 Comment[et]=Plugin andmete pakkumiseks SLC süsteemile
 Comment[eu]=SLC sistemari datuak hornitzeko plugina
