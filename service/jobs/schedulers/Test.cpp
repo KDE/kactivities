@@ -17,52 +17,28 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#include "Ordered.h"
+#include "Test.h"
 
 #include <KDebug>
 
 namespace Jobs {
 namespace Schedulers {
 
-Ordered::Ordered(QObject * parent)
-    : Abstract(parent)
-{
-}
-
-Ordered::~Ordered()
-{
-}
-
-Ordered & Ordered::operator << (JobFactory * job)
+Test::Test(JobFactory * job, int expectedResult, QObject * parent)
+    : Abstract(parent), m_expectedResult(expectedResult)
 {
     addJob(job);
-
-    return *this;
 }
 
-Ordered & Ordered::operator << (Job * job)
+Test::~Test()
 {
-    addJob(job);
-
-    return *this;
 }
 
-void Ordered::jobFinished(int result)
+void Test::jobFinished(int result)
 {
-    if (result != 0) {
-        kDebug() << "So... we got an error" << result;
-        setError(result);
-        emitResult();
+    kDebug() << "Returned" << result << "expected" << m_expectedResult;
 
-    } else if (lastJobStarted() == jobCount() - 1) {
-        kDebug() << "no error, no jobs";
-        emitResult();
-
-    } else {
-        kDebug() << "next job please";
-        startJob(lastJobStarted() + 1);
-
-    }
+    returnResult(m_expectedResult == result ? 0 : 1);
 }
 
 

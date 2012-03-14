@@ -174,15 +174,6 @@ ActivityManager::ActivityManager()
         }
     }
 
-
-/////////////////
-    Jobs::Ui::ask("Are you sure", "If you delete a private activity, all the documents "
-            "and files that belong to it will also be deleted.", QStringList()
-            << "Delete the activity"
-            << "Cancel"
-        )->create(this)->start();
-
-
 }
 
 ActivityManager::~ActivityManager()
@@ -433,6 +424,18 @@ void ActivityManager::RemoveActivity(const QString & activity)
     if (Jobs::Encryption::Common::isActivityEncrypted(activity)) {
 
         removeActivityJob
+
+        <<  // We need to ask the user whether he really wants to delete the
+            // activity once more since it implies removing the data as well
+            // in the case of private activities
+            TEST_JOB(
+                ask(i18n("Confirmation"),
+                    i18n("If you delete a private activity, all the documents and files that belong to it will also be deleted."),
+                    QStringList()
+                        << "Delete the activity"
+                        << "Cancel"
+                ), -1 /* Expecting the first choice */
+            )
 
         <<  // unmount the activity
             unmount(activity)

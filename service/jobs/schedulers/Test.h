@@ -17,56 +17,40 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#include "Ordered.h"
+#ifndef JOBS_SCHEDULER_TEST_H_
+#define JOBS_SCHEDULER_TEST_H_
 
-#include <KDebug>
+#include <jobs/Job.h>
+#include <jobs/JobFactory.h>
+#include <jobs/schedulers/Abstract.h>
+
+#define TEST_JOB(TestJob, Expect) new Jobs::Schedulers::Test(TestJob, Expect)
 
 namespace Jobs {
 namespace Schedulers {
 
-Ordered::Ordered(QObject * parent)
-    : Abstract(parent)
-{
-}
+/**
+ * Test
+ */
+class Test: public Abstract {
+    Q_OBJECT
 
-Ordered::~Ordered()
-{
-}
+public:
+    Test(JobFactory * job, int expectedResult, QObject * parent = 0);
+    virtual ~Test();
 
-Ordered & Ordered::operator << (JobFactory * job)
-{
-    addJob(job);
+protected:
+    virtual void jobFinished(int result);
 
-    return *this;
-}
+private:
+    Test(const Test & original);
+    Test & operator = (const Test & original);
 
-Ordered & Ordered::operator << (Job * job)
-{
-    addJob(job);
-
-    return *this;
-}
-
-void Ordered::jobFinished(int result)
-{
-    if (result != 0) {
-        kDebug() << "So... we got an error" << result;
-        setError(result);
-        emitResult();
-
-    } else if (lastJobStarted() == jobCount() - 1) {
-        kDebug() << "no error, no jobs";
-        emitResult();
-
-    } else {
-        kDebug() << "next job please";
-        startJob(lastJobStarted() + 1);
-
-    }
-}
-
-
+    int m_expectedResult;
+};
 
 } // namespace Schedulers
 } // namespace Jobs
+
+#endif // JOBS_SCHEDULER_TEST_H_
 

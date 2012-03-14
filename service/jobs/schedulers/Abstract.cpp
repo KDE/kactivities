@@ -20,6 +20,8 @@
 #include "Abstract.h"
 #include "Abstract_p.h"
 
+#include <KDebug>
+
 namespace Jobs {
 namespace Schedulers {
 
@@ -30,6 +32,7 @@ Abstract::Private::Private(Abstract * parent)
 
 void Abstract::Private::jobFinished(KJob * job)
 {
+    kDebug() << "Job has finished with this result" << job->error();
     q->jobFinished(job->error());
 }
 
@@ -119,10 +122,8 @@ bool Abstract::hasJob(int index) const
 
 void Abstract::returnResult(int result)
 {
-    if (result) {
-        setError(result);
-    }
-
+    kDebug() << "Returning" << result;
+    setError(result);
     emitResult();
 }
 

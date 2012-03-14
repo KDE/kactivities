@@ -82,6 +82,7 @@ set(activity_manager_SRCS
     jobs/schedulers/Given.cpp
     jobs/schedulers/Retry.cpp
     jobs/schedulers/Switch.cpp
+    jobs/schedulers/Test.cpp
 
     jobs/general/Call.cpp
     jobs/ui/Message.cpp

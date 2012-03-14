@@ -62,14 +62,19 @@ void Ask::setChoices(const QStringList & choices)
     m_choices = choices;
 }
 
-
 void Ask::start()
 {
     kDebug() << ">>> Ask" << m_message << m_choices;
 
     // Needed due to namespace collision with Jobs::Ui
     ::Ui::ask(m_title, m_message, m_choices,
-            this, "passwordReturned");
+            this, "choiceChosen");
+}
+
+void Ask::choiceChosen(int choice)
+{
+    setError(choice);
+    emitResult();
 }
 
 } // namespace Ui

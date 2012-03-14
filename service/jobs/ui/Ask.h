@@ -51,6 +51,9 @@ public:
 
     virtual void start();
 
+private Q_SLOTS:
+    void choiceChosen(int choice);
+
 private:
     QString m_message;
     QString m_title;

@@ -23,3 +23,4 @@
 #include "Given.h"
 #include "Retry.h"
 #include "Switch.h"
+#include "Test.h"
