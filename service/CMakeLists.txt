@@ -75,7 +75,14 @@ set(activity_manager_SRCS
 
     jobs/Job.cpp
     jobs/JobFactory.cpp
-    jobs/JobScheduler.cpp
+
+    jobs/schedulers/Abstract.cpp
+    jobs/schedulers/Ordered.cpp
+    jobs/schedulers/Fallible.cpp
+    jobs/schedulers/Given.cpp
+    jobs/schedulers/Retry.cpp
+    jobs/schedulers/Switch.cpp
+
     jobs/general/Call.cpp
     jobs/ui/Message.cpp
     jobs/ui/AskPassword.cpp

@@ -35,20 +35,14 @@
 #include "activitymanageradaptor.h"
 #include "EventProcessor.h"
 
-#include "jobs/JobScheduler.h"
-#include "jobs/encryption/Common.h"
-#include "jobs/encryption/Mount.h"
-#include "jobs/general/Call.h"
-#include "jobs/ui/Message.h"
-#include "jobs/ui/AskPassword.h"
-#include "jobs/ui/Ask.h"
-#include "jobs/ui/SetBusy.h"
+#include "jobs/schedulers/all.h"
+#include "jobs/activity/all.h"
+#include "jobs/encryption/all.h"
+#include "jobs/general/all.h"
+#include "jobs/nepomuk/all.h"
+#include "jobs/ui/all.h"
 
 #include "ui/Ui.h"
-
-#ifdef HAVE_NEPOMUK
-#include "jobs/nepomuk/Move.h"
-#endif
 
 #include "config-features.h"
 
@@ -202,7 +196,7 @@ void ActivityManager::SetActivityEncrypted(const QString & activity, bool encryp
     using namespace Jobs::Ui;
     using namespace Jobs::Encryption;
     using namespace Jobs::Encryption::Common;
-    using namespace Jobs::General;
+    // using namespace Jobs::General;
 
     // Is the encryption enabled?
     if (!Encryption::Common::isEnabled()) return;
@@ -210,7 +204,7 @@ void ActivityManager::SetActivityEncrypted(const QString & activity, bool encryp
     // check whether the previous state was the same
     if (encrypted == isActivityEncrypted(activity)) return;
 
-    JOB_SCHEDULER(setActivityEncryptedJob);
+    DEFINE_ORDERED_SCHEDULER(setActivityEncryptedJob);
 
     if (encrypted) {
         //   - ask for password
@@ -223,8 +217,9 @@ void ActivityManager::SetActivityEncrypted(const QString & activity, bool encryp
             askPassword(i18n("Activity password"), i18n("Enter the password to use for encryption"), true)
 
         <<  // Try to mount, or die trying :)
-            DO_JOB mount(activity, true)
-            OR_DIE (message(i18n("Error"), i18n("Error setting up the activity encryption")))
+            DO_OR_DIE(
+                mount(activity, true),
+                message(i18n("Error"), i18n("Error setting up the activity encryption")))
 
         #ifdef HAVE_NEPOMUK
         <<  // Move the files that are linked to the activity to the encrypted folder
@@ -330,7 +325,7 @@ bool ActivityManagerPrivate::setCurrentActivity(const QString & activity)
     using namespace Jobs::Encryption::Common;
     using namespace Jobs::General;
 
-    JOB_SCHEDULER(setCurrentActivityJob);
+    DEFINE_ORDERED_SCHEDULER(setCurrentActivityJob);
 
     // If the new activity is private
     if (isActivityEncrypted(activity)) {
@@ -421,7 +416,7 @@ void ActivityManager::RemoveActivity(const QString & activity)
     // Sanity checks
     if (!d->activities.contains(activity)) return;
 
-    JOB_SCHEDULER(removeActivityJob);
+    DEFINE_ORDERED_SCHEDULER(removeActivityJob);
 
     // If encrypted:
     //   - unmount if current (hmh, we can't delete the current activity?)

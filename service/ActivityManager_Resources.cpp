@@ -114,7 +114,7 @@ void ActivityManager::LinkResourceToActivity(const QString & uri, const QString 
 }
 
 
-void ActivityManager::UnlinkResourceFromActivity(const QString & uri, const QString & activity)
+void ActivityManager::UnlinkResourceFromActivity(const QString & uri, const QString & _activity)
 {
     #ifdef HAVE_NEPOMUK
     const QString & activity = _activity.isEmpty() ? CurrentActivity() : _activity;

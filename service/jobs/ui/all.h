@@ -17,34 +17,7 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#include "JobScheduler.h"
-
-#include <QList>
-
-class JobScheduler::Private: public QObject {
-    Q_OBJECT
-public:
-    Private(JobScheduler * parent);
-
-    QList < JobFactory * > jobs;
-
-    enum Type {
-        OrderedJob,
-        FallibleJob,
-        IfElseJob,
-        RetryJob,
-        SwitchCaseJob
-    };
-
-    Type type;
-    int lastJobStarted;
-
-public Q_SLOTS:
-    void jobFinished(KJob * job);
-    void startNextJob(int skip = 0);
-    void returnResult(KJob * job);
-
-public:
-    JobScheduler * const q;
-};
-
+#include "Ask.h"
+#include "AskPassword.h"
+#include "Message.h"
+#include "SetBusy.h"
