@@ -29,6 +29,7 @@
 #include <KUrl>
 #include <QThread>
 #include <QSet>
+#include <QStringList>
 
 namespace Nepomuk {
     class Resource;
@@ -45,15 +46,19 @@ class Move: public Job {
     Q_OBJECT
     Q_PROPERTY(QString activity READ activity WRITE setActivity)
     Q_PROPERTY(bool    toEncrypted READ toEncrypted WRITE setToEncrypted)
+    Q_PROPERTY(QStringList files READ files WRITE setFiles)
 
 public:
-    DECLARE_JOB_FACTORY(Move, (const QString & activity, bool toEncrypted));
+    DECLARE_JOB_FACTORY(Move, (const QString & activity, bool toEncrypted, const QStringList & file = QStringList()));
 
     QString activity() const;
     void setActivity(const QString & activity);
 
     bool toEncrypted() const;
     void setToEncrypted(bool value);
+
+    QStringList files() const;
+    void setFiles(const QStringList & files);
 
     virtual void start();
 
@@ -66,6 +71,7 @@ private:
 
     QString m_activity;
     bool    m_toEncrypted;
+    QStringList m_files;
 
 };
 
@@ -74,10 +80,6 @@ class CollectFilesToMove: public QThread {
 
 public:
     CollectFilesToMove(const QString & activity, const QString & destination);
-
-    void replaceUrl(::Nepomuk::File & file, const QString & destination);
-    void unlinkOtherActivities(::Nepomuk::Resource & resource);
-    void removeSensitiveData(::Nepomuk::Resource & resource);
 
     void scheduleMoveDir(::Nepomuk::File & dir);
     void scheduleMoveFile(::Nepomuk::File & file);
@@ -94,9 +96,17 @@ private:
     QSet < QString > m_movedDirs;
 };
 
-inline Move::Factory * move(const QString & activity, bool toEncrypted) {
-    return new Move::Factory(activity, toEncrypted);
+inline Move::Factory * move(const QString & activity, bool toEncrypted, const QStringList & files = QStringList()) {
+    return new Move::Factory(activity, toEncrypted, files);
 }
+
+namespace Private {
+
+    void replaceUrl(::Nepomuk::File & file, const QString & destination);
+    void unlinkOtherActivities(::Nepomuk::Resource & resource, const QString & activity);
+    void removeSensitiveData(::Nepomuk::Resource & resource);
+
+} // namespace Private
 
 } // namespace Nepomuk
 } // namespace Jobs

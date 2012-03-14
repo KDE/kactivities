@@ -24,6 +24,10 @@
 #include <KDebug>
 #include "EventProcessor.h"
 
+#ifdef HAVE_NEPOMUK
+#include "jobs/encryption/Common.h"
+#include "jobs/nepomuk/Move.h"
+#endif
 
 void ActivityManager::RegisterResourceEvent(QString application, uint _windowId,
         const QString & uri, uint event, uint reason)
@@ -95,9 +99,19 @@ void ActivityManager::RegisterResourceTitle(const QString & uri, const QString &
 }
 
 
-void ActivityManager::LinkResourceToActivity(const QString & uri, const QString & activity)
+void ActivityManager::LinkResourceToActivity(const QString & uri, const QString & _activity)
 {
-    EXEC_NEPOMUK( linkResourceToActivity(KUrl(uri), activity.isEmpty() ? CurrentActivity() : activity) );
+    const QString & activity = _activity.isEmpty() ? CurrentActivity() : _activity;
+    kDebug() << "linking " << uri << "to" << activity;
+
+    EXEC_NEPOMUK( linkResourceToActivity(KUrl(uri), activity) );
+
+    #ifdef HAVE_NEPOMUK
+    if (Jobs::Encryption::Common::isActivityEncrypted(activity)) {
+        Jobs::Nepomuk::move(activity, true, QStringList() << uri)
+            ->create(this)->start();
+    }
+    #endif
 }
 
 

@@ -58,6 +58,64 @@ using namespace Nepomuk;
 namespace Jobs {
 namespace Nepomuk {
 
+namespace Private {
+
+    void replaceUrl(File & file, const QString & destination)
+    {
+        kDebug();
+        // Remove some properties
+
+        QString path = destination + '/' + file.url().fileName();
+        kDebug() << "Future location: " << path;
+
+        Resource(file).setProperty(NIE::url(), KUrl(path));
+    }
+
+    void unlinkOtherActivities(Resource & resource, const QString & activity)
+    {
+        kDebug();
+        // Find all activities that this resource are linked to
+        // and remove the links for all except for the current
+
+        const QString query = QString::fromLatin1(
+                "select ?activity where { ?activity a kao:Activity . ?activity nao:isRelated %1");
+
+        // First we are moving the directories linked to the activity
+        Soprano::QueryResultIterator it
+            = ResourceManager::instance()->mainModel()->executeQuery(
+                query.arg(
+                    Soprano::Node::resourceToN3(resource.resourceUri())
+                ),
+                Soprano::Query::QueryLanguageSparql);
+
+        while (it.next()) {
+            Resource activityRes(it[0].uri());
+
+            if (activityRes.identifiers().contains(activity)) continue;
+
+            activityRes.removeProperty(NAO::isRelated(), resource);
+        }
+    }
+
+    void removeSensitiveData(Resource & resource)
+    {
+        kDebug();
+        // Remove some properties
+
+        Resource r(resource);
+
+        r.removeProperty(NAO::hasSubResource());
+        r.removeProperty(NFO::hasHash());
+
+        r.removeProperty(NFO::wordCount());
+        r.removeProperty(NFO::characterCount());
+        r.removeProperty(NFO::lineCount());
+        r.removeProperty(NIE::plainTextContent());
+        r.removeProperty(NIE::contentSize());
+    }
+
+} // namespace Private
+
 CollectFilesToMove::CollectFilesToMove(const QString & activity, const QString & destination)
     : m_activity(activity), m_destination(destination)
 {
@@ -65,59 +123,6 @@ CollectFilesToMove::CollectFilesToMove(const QString & activity, const QString &
 
 }
 
-void CollectFilesToMove::replaceUrl(File & file, const QString & destination)
-{
-    kDebug();
-    // Remove some properties
-
-    QString path = destination + '/' + file.url().fileName();
-    kDebug() << "Future location: " << path;
-
-    Resource(file).setProperty(NIE::url(), KUrl(path));
-}
-
-void CollectFilesToMove::unlinkOtherActivities(Resource & resource)
-{
-    kDebug();
-    // Find all activities that this resource are linked to
-    // and remove the links for all except for the current
-
-    const QString query = QString::fromLatin1(
-            "select ?activity where { ?activity a kao:Activity . ?activity nao:isRelated %1");
-
-    // First we are moving the directories linked to the activity
-    Soprano::QueryResultIterator it
-        = ResourceManager::instance()->mainModel()->executeQuery(
-            query.arg(
-                Soprano::Node::resourceToN3(resource.resourceUri())
-            ),
-            Soprano::Query::QueryLanguageSparql);
-
-    while (it.next()) {
-        Resource activity(it[0].uri());
-
-        if (activity.identifiers().contains(m_activity)) continue;
-
-        activity.removeProperty(NAO::isRelated(), resource);
-    }
-}
-
-void CollectFilesToMove::removeSensitiveData(Resource & resource)
-{
-    kDebug();
-    // Remove some properties
-
-    Resource r(resource);
-
-    r.removeProperty(NAO::hasSubResource());
-    r.removeProperty(NFO::hasHash());
-
-    r.removeProperty(NFO::wordCount());
-    r.removeProperty(NFO::characterCount());
-    r.removeProperty(NFO::lineCount());
-    r.removeProperty(NIE::plainTextContent());
-    r.removeProperty(NIE::contentSize());
-}
 
 void CollectFilesToMove::scheduleMoveDir(File & dir)
 {
@@ -167,10 +172,12 @@ void CollectFilesToMove::run()
     while (it.next()) {
         File result(Resource(it[0].uri()));
 
-        unlinkOtherActivities(result);
-        removeSensitiveData(result);
+        Private::unlinkOtherActivities(result, m_activity);
+        Private::removeSensitiveData(result);
+
         scheduleMoveDir(result);
-        replaceUrl(result, m_destination);
+
+        Private::replaceUrl(result, m_destination);
     }
 
     it.close();
@@ -187,10 +194,12 @@ void CollectFilesToMove::run()
     while (it.next()) {
         File result(Resource(it[0].uri()));
 
-        unlinkOtherActivities(result);
-        removeSensitiveData(result);
+        Private::unlinkOtherActivities(result, m_activity);
+        Private::removeSensitiveData(result);
+
         scheduleMoveFile(result);
-        replaceUrl(result, m_destination);
+
+        Private::replaceUrl(result, m_destination);
     }
 
     it.close();
@@ -199,10 +208,11 @@ void CollectFilesToMove::run()
 }
 
 
-Move::JOB_FACTORY(const QString & activity, bool toEncrypted)
+Move::JOB_FACTORY(const QString & activity, bool toEncrypted, const QStringList & files)
 {
     JOB_FACTORY_PROPERTY(activity);
     JOB_FACTORY_PROPERTY(toEncrypted);
+    JOB_FACTORY_PROPERTY(files);
 }
 
 QString Move::activity() const
@@ -225,18 +235,48 @@ void Move::setToEncrypted(bool value)
     m_toEncrypted = value;
 }
 
+QStringList Move::files() const
+{
+    return m_files;
+}
+
+void Move::setFiles(const QStringList & files)
+{
+    m_files = files;
+}
+
 void Move::start()
 {
     kDebug() << ">>> Move" << m_activity;
-    KIO::move(KUrl("/tmp/ASD"), KUrl("/tmp/asd"), KIO::HideProgressInfo);
 
-    CollectFilesToMove * job = new CollectFilesToMove(m_activity, destination());
+    if (m_files.isEmpty()) {
+        CollectFilesToMove * job = new CollectFilesToMove(m_activity, destination());
 
-    connect(job, SIGNAL(result(KUrl::List)),
-            this, SLOT(moveFiles(KUrl::List)),
-            Qt::QueuedConnection);
+        connect(job, SIGNAL(result(KUrl::List)),
+                this, SLOT(moveFiles(KUrl::List)),
+                Qt::QueuedConnection);
 
-    job->start();
+        job->start();
+
+    } else {
+        KUrl::List files;
+        const QString & m_destination = destination();
+
+        foreach (const QString & file, m_files) {
+            KUrl url(file);
+
+            files << file;
+
+            ::Nepomuk::File result(url);
+
+            Jobs::Nepomuk::Private::unlinkOtherActivities(result, m_activity);
+            Jobs::Nepomuk::Private::removeSensitiveData(result);
+            Jobs::Nepomuk::Private::replaceUrl(result, m_destination);
+
+        }
+
+        moveFiles(files);
+    }
 }
 
 void Move::moveFiles(const KUrl::List & list)
