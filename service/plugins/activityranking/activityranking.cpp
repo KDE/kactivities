@@ -432,6 +432,7 @@ bool ActivityRankingPlugin::init()
     activityChanged(sharedInfo()->currentActivity());
     connect(sharedInfo(), SIGNAL(currentActivityChanged(QString)),
             this, SLOT(activityChanged(QString)));
+    connect(Location::self(this), SIGNAL(currentChanged(QString)), this, SLOT(locationChanged(QString)));
 
     #ifdef AR_FAKE_EVENTS_FEED
     d->FakeEventsFeed();
@@ -540,11 +541,45 @@ void ActivityRankingPlugin::activityChanged(const QString & activity)
             d->database
         );
     PRINT_LAST_ERROR;
+    emit rankingChanged(topActivities(), activities());
 }
 
-QStringList ActivityRankingPlugin::topActivities(const QString & location)
+void ActivityRankingPlugin::locationChanged(const QString &location)
 {
-    return d->topActivitiesFor(QDateTime::currentDateTime(), location).keys();
+    qint64 currentTime = QDateTime::currentMSecsSinceEpoch();
+
+    kDebug() << ">>>> we have the new location" << location;
+
+    if (!d->activity.isEmpty()) {
+        QSqlQuery query(
+            Private::closeActivityInterval
+                .arg(currentTime)
+                .arg(d->activity)
+            ,
+                d->database
+            );
+        PRINT_LAST_ERROR;
+
+        d->processActivityInterval(d->activity, d->lastLocation, d->activityStart, currentTime);
+    }
+
+    d->lastLocation = location;
+
+    QSqlQuery query(Private::insertActivityInterval
+            .arg(d->activity)
+            .arg(d->lastLocation)
+            .arg(currentTime)
+            ,
+            d->database
+        );
+    PRINT_LAST_ERROR;
+    emit rankingChanged(topActivities(), activities());
+}
+
+
+QStringList ActivityRankingPlugin::topActivities()
+{
+    return d->topActivitiesFor(QDateTime::currentDateTime(), d->lastLocation).keys();
 }
 
 QMap <QString, qreal> ActivityRankingPlugin::Private::topActivitiesFor(const QDateTime & time, const QString & location)
@@ -585,11 +620,11 @@ QMap <QString, qreal> ActivityRankingPlugin::Private::topActivitiesFor(const QDa
     return result;
 }
 
-QList < ActivityData > ActivityRankingPlugin::activities(const QString & location)
+QList < ActivityData > ActivityRankingPlugin::activities()
 {
     QList < ActivityData > result;
 
-    QMap <QString, qreal> topActivities = d->topActivitiesFor(QDateTime::currentDateTime(), location);
+    QMap <QString, qreal> topActivities = d->topActivitiesFor(QDateTime::currentDateTime(), d->lastLocation);
     QMap <QString, qreal>::const_iterator it;
 
     for (it = topActivities.constBegin(); it != topActivities.constEnd(); ++it) {

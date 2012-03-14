@@ -110,7 +110,7 @@ void Location::enable()
 void Location::setCurrent(const QString & location)
 {
     d->current = location;
-    // emit currentChanged();
+    emit currentChanged(location);
 }
 
 

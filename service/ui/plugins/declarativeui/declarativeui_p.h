@@ -25,6 +25,7 @@
 
 class DeclarativeUiHandler::Private: public QObject {
     Q_OBJECT
+    Q_PROPERTY(bool windowVisible READ isWindowVisible NOTIFY windowVisibleChanged())
 
 public:
     Private();
@@ -35,6 +36,7 @@ public:
     bool showingBusy: 1;
 
     void showWindow();
+    bool isWindowVisible() const;
 
 public Q_SLOTS:
     void onCurrentActivityChanged(const QString & activity);
@@ -47,6 +49,7 @@ Q_SIGNALS:
     void message(const QString & message);
     void askPassword(const QString & title, const QString & message, bool newPassword);
     void hideAll();
+    void windowVisibleChanged();
 
     friend class DeclarativeUiHandler;
 };

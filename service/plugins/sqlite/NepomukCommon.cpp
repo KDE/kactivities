@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2012 Ivan Cukic <ivan.cukic(at)kde.org>
+ *   Copyright (C) 2010 Ivan Cukic <ivan.cukic(at)kde.org>
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License version 2,
@@ -17,41 +17,8 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef LOCATION_H_
-#define LOCATION_H_
+#include "NepomukCommon.h"
 
-#include <QObject>
-#include <QString>
+#ifdef HAVE_NEPOMUK
 
-/**
- * Location
- */
-class Location: public QObject {
-    Q_OBJECT
-
-public:
-    static Location * self(QObject * parent);
-
-    virtual ~Location();
-
- Q_SIGNALS:
-     void currentChanged(const QString &location);
-
-public:
-    QString current() const;
-
-protected Q_SLOTS:
-    void enable();
-    void disable();
-    void setCurrent(const QString & location);
-
-private:
-    Location(QObject * parent);
-
-    class Private;
-    Private * const d;
-};
-
-
-#endif // LOCATION_H_
-
+#endif // HAVE_NEPOMUK

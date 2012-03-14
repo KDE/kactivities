@@ -44,7 +44,7 @@ Rectangle {
     PlasmaComponents.BusyIndicator {
         anchors.centerIn: parent
         running: visible
-        visible: (!dialogNewPassword.active && !dialogPassword.active && !dialogMessage.active)
+        visible: (uihandler.windowVisible && !dialogNewPassword.active && !dialogPassword.active && !dialogMessage.active)
     }
 
     NewPasswordDialog {
@@ -120,8 +120,10 @@ Rectangle {
 
         // void message(const QString & message);
         onMessage: {
-            dialogMessage.text = message
+            dialogPassword.text = message
             dialogMessage.active = true
+            dialogNewPassword.active = false
+            dialogPassword.active = false
         }
 
         // void askPassword(const QString & title, const QString & message, bool newPassword);
@@ -130,12 +132,16 @@ Rectangle {
                 dialogNewPassword.password = ""
                 dialogNewPassword.passwordConfirmation = ""
                 dialogNewPassword.active = true
+                dialogMessage.active = false
+                dialogPassword.active = false
 
             } else {
                 dialogPassword.title = title
-                dialogNewPassword.message = message
+                dialogPassword.message = message
                 dialogPassword.password = ""
                 dialogPassword.active = true
+                dialogMessage.active = false
+                dialogNewPassword.active = false
 
             }
         }

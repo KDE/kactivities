@@ -56,7 +56,8 @@ ActivityManagerPrivate::ActivityManagerPrivate(ActivityManager * parent,
       windows(_windows),
       resources(_resources),
       q(parent),
-      ksmserverInterface(0)
+      ksmserverInterface(0),
+      screensaverInterface(0)
 {
 }
 
@@ -117,6 +118,13 @@ ActivityManager::ActivityManager()
     connect(watcher, SIGNAL(serviceRegistered(QString)), d, SLOT(sessionServiceRegistered()));
     d->sessionServiceRegistered();
 
+    // Listen to screensaver for starting/stopping
+    QDBusServiceWatcher *watcher2 = new QDBusServiceWatcher("org.kde.screensaver",
+                                                            QDBusConnection::sessionBus(),
+                                                            QDBusServiceWatcher::WatchForRegistration);
+    connect(watcher2, SIGNAL(serviceRegistered(QString)), d, SLOT(screensaverServiceRegistered()));
+    d->screensaverServiceRegistered();
+
     // Activity initialization ///////////////////////////////////////////////////////////////////////////////
 
     // Reading activities from the config file
@@ -135,45 +143,7 @@ ActivityManager::ActivityManager()
 
     EXEC_NEPOMUK( syncActivities(d->activities.keys(), d->activitiesConfig(), d->activityIconsConfig()) );
 
-    // Try to load the last used public (non-private) activity
-
-    QString lastPublicActivity = d->mainConfig().readEntry("lastUnlockedActivity", QString());
-
-    // If the last one turns out to be encrypted, try to load any public activity
-    if (lastPublicActivity.isEmpty() || Jobs::Encryption::Common::isActivityEncrypted(lastPublicActivity)) {
-        lastPublicActivity.clear();
-
-        foreach (const QString & activity, d->activities.keys()) {
-            if (!Jobs::Encryption::Common::isActivityEncrypted(activity)) {
-                lastPublicActivity = activity;
-                break;
-            }
-        }
-    }
-
-    if (!lastPublicActivity.isEmpty()) {
-        // Setting the found public activity to be the current one
-        kDebug() << "Setting the activity to be the last public activity" << lastPublicActivity;
-        d->setCurrentActivity(lastPublicActivity);
-
-    } else {
-        // First, lets notify everybody that there is no current activity
-        // Needs to be present so that until the activity gets unlocked,
-        // the environment knows we are in a kind of limbo state
-        d->setCurrentActivity(QString());
-
-        // If there are no public activities, try to load the last used activity
-        QString lastUsedActivity = d->mainConfig().readEntry("currentActivity", QString());
-
-        if (lastUsedActivity.isEmpty() && d->activities.size() > 0) {
-            d->setCurrentActivity(d->activities.keys().at(0));
-
-        } else {
-            d->setCurrentActivity(lastUsedActivity);
-
-        }
-    }
-
+    d->loadLastPublicActivity();
 }
 
 ActivityManager::~ActivityManager()
@@ -286,8 +256,26 @@ bool ActivityManager::SetCurrentActivity(const QString & id)
 
 bool ActivityManagerPrivate::setCurrentActivity(const QString & activity)
 {
+    using namespace Jobs;
+    using namespace Jobs::Ui;
+    using namespace Jobs::Encryption;
+    using namespace Jobs::Encryption::Common;
+    using namespace Jobs::General;
+
+    DEFINE_ORDERED_SCHEDULER(setCurrentActivityJob);
+
     // If the activity is empty, this means we are entering a limbo state
     if (activity.isEmpty()) {
+        // If the current activity is private, unmount it
+        if (isActivityEncrypted(currentActivity)) {
+            setCurrentActivityJob
+
+            <<  // Unmounting the activity, ignore the potential failure
+                FALLIBLE_JOB(unmount(currentActivity));
+
+            setCurrentActivityJob.start();
+        }
+
         currentActivity.clear();
         emit q->CurrentActivityChanged(currentActivity);
         return true;
@@ -310,14 +298,6 @@ bool ActivityManagerPrivate::setCurrentActivity(const QString & activity)
     //   - unmount private activities
     //   - change the current activity and signal the change
 
-    using namespace Jobs;
-    using namespace Jobs::Ui;
-    using namespace Jobs::Encryption;
-    using namespace Jobs::Encryption::Common;
-    using namespace Jobs::General;
-
-    DEFINE_ORDERED_SCHEDULER(setCurrentActivityJob);
-
     // If the new activity is private
     if (isActivityEncrypted(activity)) {
 
@@ -334,6 +314,9 @@ bool ActivityManagerPrivate::setCurrentActivity(const QString & activity)
             )
 
         ;
+
+        connect(&setCurrentActivityJob, SIGNAL(finished(KJob*)),
+                                  this, SLOT(checkForSetCurrentActivityError(KJob*)));
     }
 
     // If the current activity is private, unmount it
@@ -358,6 +341,55 @@ bool ActivityManagerPrivate::setCurrentActivity(const QString & activity)
             ::Ui::self(), SLOT(unsetBusy()));
 
     return true;
+}
+
+void ActivityManagerPrivate::loadLastPublicActivity()
+{
+    // Try to load the last used public (non-private) activity
+
+    QString lastPublicActivity = mainConfig().readEntry("lastUnlockedActivity", QString());
+
+    // If the last one turns out to be encrypted, try to load any public activity
+    if (lastPublicActivity.isEmpty() || Jobs::Encryption::Common::isActivityEncrypted(lastPublicActivity)) {
+        lastPublicActivity.clear();
+
+        foreach (const QString & activity, activities.keys()) {
+            if (!Jobs::Encryption::Common::isActivityEncrypted(activity)) {
+                lastPublicActivity = activity;
+                break;
+            }
+        }
+    }
+
+    if (!lastPublicActivity.isEmpty()) {
+        // Setting the found public activity to be the current one
+        kDebug() << "Setting the activity to be the last public activity" << lastPublicActivity;
+        setCurrentActivity(lastPublicActivity);
+
+    } else {
+        // First, lets notify everybody that there is no current activity
+        // Needs to be present so that until the activity gets unlocked,
+        // the environment knows we are in a kind of limbo state
+        setCurrentActivity(QString());
+
+        // If there are no public activities, try to load the last used activity
+        QString lastUsedActivity = mainConfig().readEntry("currentActivity", QString());
+
+        if (lastUsedActivity.isEmpty() && activities.size() > 0) {
+            setCurrentActivity(activities.keys().at(0));
+
+        } else {
+            setCurrentActivity(lastUsedActivity);
+
+        }
+    }
+}
+
+void ActivityManagerPrivate::checkForSetCurrentActivityError(KJob * job)
+{
+    if (job->error()) {
+        loadLastPublicActivity();
+    }
 }
 
 void ActivityManagerPrivate::emitCurrentActivityChanged(const QString & id)

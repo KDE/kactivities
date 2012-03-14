@@ -74,6 +74,7 @@ KDeclarativeMainWindow::KDeclarativeMainWindow()
     setAttribute(Qt::WA_TranslucentBackground);
     setAttribute(Qt::WA_OpaquePaintEvent);
     setAttribute(Qt::WA_NoSystemBackground);
+    setAttribute(Qt::WA_DeleteOnClose, false);
 
     d->view = new KDeclarativeView(this);
     connect(d->view, SIGNAL(statusChanged(QDeclarativeView::Status)), this, SLOT(statusChanged(QDeclarativeView::Status)));

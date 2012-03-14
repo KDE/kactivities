@@ -39,24 +39,27 @@ public:
 public Q_SLOTS:
     /**
      * Lists top activities based on score calculation described in scoring.pdf.
+     * All scores are related to the current location
      *
-     * @param location location from Location Manager in contour.
      * @return list of activities ids.
      */
-    QStringList topActivities(const QString & location);
+    QStringList topActivities();
 
     /**
-     * @param location location from Location Manager in contour.
-     * @return list of activities data.
+     * @return list of activities data with their rank in the context of the current location.
      */
-    QList<ActivityData> activities(const QString & location);
+    QList<ActivityData> activities();
     void test();
+
+Q_SIGNALS:
+    void rankingChanged(const QStringList & topActivities, const ActivityDataList & activities);
 
 protected:
     void initDatabaseSchema();
 
 private Q_SLOTS:
     void activityChanged(const QString & activity);
+    void locationChanged(const QString & location);
 
 private:
     class Private;
