@@ -48,7 +48,7 @@ void DeclarativeUiHandler::Private::onCurrentActivityChanged(const QString & act
 
 void DeclarativeUiHandler::Private::showWindow()
 {
-    kDebug();
+    kDebug() << "showing input window";
 
     window->show();
     showingSomething = true;
@@ -70,6 +70,7 @@ void DeclarativeUiHandler::Private::showWindow()
             activitiesAtom, XA_STRING, 8,
             PropModeReplace, (const unsigned char *)"ALL", 3);
 #endif
+    emit windowVisibleChanged();
 }
 
 void DeclarativeUiHandler::Private::hideWindow()
@@ -79,6 +80,12 @@ void DeclarativeUiHandler::Private::hideWindow()
     if (!showingBusy) {
         window->hide();
     }
+    emit windowVisibleChanged();
+}
+
+bool DeclarativeUiHandler::Private::isWindowVisible() const
+{
+    return showingSomething;
 }
 
 void DeclarativeUiHandler::Private::cancel()
