@@ -49,7 +49,7 @@ public:
     void setResourceTitle(const KUrl & resource, const QString & title);
 
     void linkResourceToActivity(const KUrl & resource, const QString & activity);
-    void unlinkResourceToActivity(const KUrl & resource, const QString & activity);
+    void unlinkResourceFromActivity(const KUrl & resource, const QString & activity);
     QList < KUrl > resourcesLinkedToActivity(const QString & activity) const;
 
     void toRealUri(KUrl & url);

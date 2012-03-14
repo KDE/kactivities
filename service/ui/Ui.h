@@ -43,6 +43,10 @@ public:
             bool newPassword,
             QObject * receiver, const char * slot);
 
+    static void ask(const QString & title, const QString & message,
+            const QStringList & choices,
+            QObject * receiver, const char * slot);
+
     static void message(const QString & title, const QString & message);
 
     static void setBusy(bool value = true);
@@ -58,6 +62,10 @@ private:
 
     void _askPassword(const QString & title, const QString & message,
             bool newPassword,
+            QObject * receiver, const char * slot);
+
+    void _ask(const QString & title, const QString & message,
+            const QStringList & choices,
             QObject * receiver, const char * slot);
 
     void _message(const QString & title, const QString & message);

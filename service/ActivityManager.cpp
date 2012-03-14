@@ -41,6 +41,7 @@
 #include "jobs/general/Call.h"
 #include "jobs/ui/Message.h"
 #include "jobs/ui/AskPassword.h"
+#include "jobs/ui/Ask.h"
 #include "jobs/ui/SetBusy.h"
 
 #include "ui/Ui.h"
@@ -178,6 +179,16 @@ ActivityManager::ActivityManager()
 
         }
     }
+
+
+/////////////////
+    Jobs::Ui::ask("Are you sure", "If you delete a private activity, all the documents "
+            "and files that belong to it will also be deleted.", QStringList()
+            << "Delete the activity"
+            << "Cancel"
+        )->create(this)->start();
+
+
 }
 
 ActivityManager::~ActivityManager()

@@ -241,7 +241,7 @@ void NepomukActivityManager::linkResourceToActivity(const KUrl & resource, const
     activityResource(activity).addIsRelated(Nepomuk::Resource(resource));
 }
 
-void NepomukActivityManager::unlinkResourceToActivity(const KUrl & resource, const QString & activity)
+void NepomukActivityManager::unlinkResourceFromActivity(const KUrl & resource, const QString & activity)
 {
     activityResource(activity).removeProperty(NAO::isRelated(), Nepomuk::Resource(resource));
 }

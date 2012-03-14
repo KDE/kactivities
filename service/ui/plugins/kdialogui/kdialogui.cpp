@@ -22,6 +22,11 @@
 
 #include <QMessageBox>
 #include <QThread>
+#include <QVBoxLayout>
+#include <QPushButton>
+#include <QLabel>
+#include <QSignalMapper>
+
 #include <KDebug>
 
 class KDialogUiHandler::Private {
@@ -74,6 +79,77 @@ public:
         QObject * receiver;
         const char * slot;
     };
+
+    /**
+     *
+     */
+    class Ask {
+    public:
+        Ask(const QString & _title, const QString & _message, const QStringList & _choices,
+                 QObject * _receiver, const char * _slot)
+            : title(_title), message(_message), choices(_choices),
+              receiver(_receiver), slot(_slot)
+        {
+        }
+
+        void run() {
+            kDebug();
+
+            KDialog dialog;
+            dialog.setWindowFlags(Qt::WindowStaysOnTopHint | dialog.windowFlags());
+            dialog.setButtons(KDialog::None);
+            dialog.setCaption(title);
+
+            QVBoxLayout * layout = new QVBoxLayout();
+
+            QLabel * labelMessage = new QLabel(message);
+            labelMessage->setWordWrap(true);
+            layout->addWidget(labelMessage);
+
+            QSignalMapper * signalMapper = new QSignalMapper(&dialog);
+
+            int i = 0;
+
+            foreach (const QString & choice, choices) {
+                QPushButton * button = new QPushButton(choice);
+                button->setMinimumSize(200, 32);
+                layout->addWidget(button);
+
+                connect(
+                        button, SIGNAL(clicked()),
+                        signalMapper, SLOT(map()),
+                        Qt::QueuedConnection
+                    );
+
+                // Mapping to a negative i so that it is not mixed up with
+                // QDialog::Accepted and QDialog::Rejected
+                ++i;
+                signalMapper->setMapping(button, -i);
+            }
+
+            connect(
+                    signalMapper, SIGNAL(mapped(int)),
+                    &dialog, SLOT(done(int)),
+                    Qt::QueuedConnection
+                );
+
+            dialog.mainWidget()->setLayout(layout);
+
+            dialog.setMinimumSize(300, 32 * (choices.size() + 1));
+            dialog.exec();
+
+            QMetaObject::invokeMethod(receiver, slot, Qt::QueuedConnection,
+                    Q_ARG(int, dialog.result()));
+        }
+
+
+    private:
+        QString title;
+        QString message;
+        QStringList choices;
+        QObject * receiver;
+        const char * slot;
+    };
 };
 
 KDialogUiHandler::KDialogUiHandler(QObject * parent, const QVariantList & args)
@@ -91,6 +167,12 @@ void KDialogUiHandler::askPassword(const QString & title, const QString & messag
             bool newPassword, QObject * receiver, const char * slot)
 {
     (new Private::AskPassword(title, message, newPassword, receiver, slot))->run();
+}
+
+void KDialogUiHandler::ask(const QString & title, const QString & message,
+        const QStringList & choices, QObject * receiver, const char * slot)
+{
+    (new Private::Ask(title, message, choices, receiver, slot))->run();
 }
 
 void KDialogUiHandler::message(const QString & title, const QString & message)

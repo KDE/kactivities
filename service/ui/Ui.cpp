@@ -76,6 +76,12 @@ void Ui::_askPassword(const QString & title, const QString & message, bool newPa
     d->ui->askPassword(title, message, newPassword, receiver, slot);
 }
 
+void Ui::_ask(const QString & title, const QString & message, const QStringList & choices,
+        QObject * receiver, const char * slot)
+{
+    d->ui->ask(title, message, choices, receiver, slot);
+}
+
 void Ui::_message(const QString & title, const QString & message)
 {
     d->ui->message(title, message);
@@ -91,6 +97,13 @@ void Ui::askPassword(const QString & title, const QString & message,
         QObject * receiver, const char * slot)
 {
     Ui::self()->_askPassword(title, message, newPassword, receiver, slot);
+}
+
+void Ui::ask(const QString & title, const QString & message,
+        const QStringList & choices,
+        QObject * receiver, const char * slot)
+{
+    Ui::self()->_ask(title, message, choices, receiver, slot);
 }
 
 void Ui::message(const QString & title, const QString & message)

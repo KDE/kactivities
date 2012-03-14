@@ -32,7 +32,8 @@ public:
         OrderedJob,
         FallibleJob,
         IfElseJob,
-        RetryJob
+        RetryJob,
+        SwitchCaseJob
     };
 
     Type type;
