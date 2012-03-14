@@ -68,7 +68,8 @@ namespace Private {
         QString path = destination + '/' + file.url().fileName();
         kDebug() << "Future location: " << path;
 
-        Resource(file).setProperty(NIE::url(), KUrl(path));
+        file.setProperty(KAO::originalUrlBeforeEncryption(), file.url());
+        file.setProperty(NIE::url(), KUrl(path));
     }
 
     void unlinkOtherActivities(Resource & resource, const QString & activity)
@@ -102,16 +103,14 @@ namespace Private {
         kDebug();
         // Remove some properties
 
-        Resource r(resource);
+        resource.removeProperty(NAO::hasSubResource());
+        resource.removeProperty(NFO::hasHash());
 
-        r.removeProperty(NAO::hasSubResource());
-        r.removeProperty(NFO::hasHash());
-
-        r.removeProperty(NFO::wordCount());
-        r.removeProperty(NFO::characterCount());
-        r.removeProperty(NFO::lineCount());
-        r.removeProperty(NIE::plainTextContent());
-        r.removeProperty(NIE::contentSize());
+        resource.removeProperty(NFO::wordCount());
+        resource.removeProperty(NFO::characterCount());
+        resource.removeProperty(NFO::lineCount());
+        resource.removeProperty(NIE::plainTextContent());
+        resource.removeProperty(NIE::contentSize());
     }
 
 } // namespace Private

@@ -28,6 +28,7 @@
 #include <KConfig>
 #include <KConfigGroup>
 #include <KDebug>
+#include <KStandardDirs>
 
 #include "private/Encfs.h"
 
@@ -42,7 +43,7 @@ public:
     QString folderName(const QString & activity, FolderType type);
 
     bool enabled;
-    QDir activitiesFolder;
+    // QDir activitiesFolder;
     QDir activitiesDataFolder;
     Jobs::Encryption::Private::Encfs encfs;
 
@@ -62,26 +63,7 @@ Private::Private()
         return;
     }
 
-    // Getting the activities folder
-    // TODO: This needs to be tested by people actually using i18n :)
-
-    QString activityFolderName = i18nc("Name for the activities folder in user's home", "Activities");
-
-    KConfig config("activitymanagerrc");
-    KConfigGroup configGroup(&config, "EncryptionManager");
-
-    QString oldActivityFolderName = configGroup.readEntry("activityFolderName", activityFolderName);
-
-    if (oldActivityFolderName != activityFolderName) {
-        if (!QDir::home().rename(oldActivityFolderName, activityFolderName)) {
-            activityFolderName = oldActivityFolderName;
-        }
-    }
-
-    configGroup.writeEntry("activityFolderName", activityFolderName);
-
-    d->activitiesFolder = QDir(QDir::home().filePath(activityFolderName + '/'));
-    d->activitiesDataFolder = QDir(QDir::home().filePath(activityFolderName + "/.data/"));
+    d->activitiesDataFolder = QDir(KStandardDirs::locateLocal("data", "activitymanager/activities"));
     d->activitiesDataFolder.mkpath(d->activitiesDataFolder.path());
 }
 

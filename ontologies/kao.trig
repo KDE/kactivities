@@ -41,6 +41,7 @@
 
 @prefix nao:     <http://www.semanticdesktop.org/ontologies/2007/08/15/nao#> .
 @prefix nrl:     <http://www.semanticdesktop.org/ontologies/2007/08/15/nrl#> .
+@prefix nfo:     <http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#> .
 
 @prefix kao:    <http://nepomuk.kde.org/ontologies/2012/02/29/kao#> .
 
@@ -98,6 +99,14 @@ kao: {
           rdfs:domain kao:ResourceScoreCache ;
           rdfs:label "calculated score" ;
           rdfs:range xsd:float .
+
+    kao:originalUrlBeforeEncryption
+          a rdf:Property ;
+          rdfs:comment "URL of a FileDataObject before it was moved into the encrypted activity folder" ;
+          rdfs:domain nfo:FileDataObject ;
+          rdfs:label "Original URL" ;
+          rdfs:range rdfs:Resource ;
+          nrl:maxCardinality "1" .
 }
 
 <http://nepomuk.kde.org/ontologies/2012/02/29/kao/metadata> {
@@ -110,10 +119,10 @@ kao: {
           nao:prefLabel "KDE Activities Ontology" ;
           nao:hasDefaultNamespace "http://nepomuk.kde.org/ontologies/2012/02/29/kao#" ;
           nao:hasDefaultNamespaceAbbreviation "kao" ;
-          nao:lastModified "2012-02-29T21:19:43Z" ;
+          nao:lastModified "2012-03-14T11:05:00Z" ;
           nao:serializationLanguage "TriG" ;
           nao:status "Unstable" ;
           nrl:updatable "0" ;
-          nao:version "1" .
+          nao:version "2" .
 }
 
