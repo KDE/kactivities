@@ -81,33 +81,42 @@ void InitializeStructure::start()
             break;
 
         case InitializeStructure::DeinitializeEncrypted:
-            startJob(
-                KIO::del(
-                    KUrl::List()
-                        << Common::folderPath(m_activity, Common::MountPointFolder)
-                        << Common::folderPath(m_activity, Common::EncryptedFolder),
-                    KIO::HideProgressInfo
-                ));
+            del(QStringList()
+                    << Common::folderPath(m_activity, Common::MountPointFolder)
+                    << Common::folderPath(m_activity, Common::EncryptedFolder)
+                );
             break;
 
         case InitializeStructure::DeinitializeNormal:
-            startJob(
-                KIO::del(
-                    Common::folderPath(m_activity, Common::NormalFolder),
-                    KIO::HideProgressInfo
-                ));
+            del(QStringList()
+                    << Common::folderPath(m_activity, Common::NormalFolder)
+                );
             break;
 
         case InitializeStructure::DeinitializeBoth:
-            startJob(
-                KIO::del(
-                    KUrl::List()
-                        << Common::folderPath(m_activity, Common::MountPointFolder)
-                        << Common::folderPath(m_activity, Common::NormalFolder),
-                    KIO::HideProgressInfo
-                ));
-
+            del(QStringList()
+                    << Common::folderPath(m_activity, Common::MountPointFolder)
+                    << Common::folderPath(m_activity, Common::EncryptedFolder)
+                    << Common::folderPath(m_activity, Common::NormalFolder)
+                );
             break;
+    }
+}
+
+void InitializeStructure::del(const QStringList & items)
+{
+    KUrl::List toDelete;
+    QDir dir;
+
+    foreach (const QString & item, items) {
+        if (dir.exists(item)) {
+            kDebug() << item;
+            toDelete << item;
+        }
+    }
+
+    if (toDelete.size()) {
+        startJob(KIO::del(toDelete, KIO::HideProgressInfo));
     }
 }
 

@@ -65,6 +65,7 @@ private:
     int        m_action;
 
     void move(const QString & source, const QString & destination);
+    void del(const QStringList & items);
     void startJob(KJob * job);
 };
 
