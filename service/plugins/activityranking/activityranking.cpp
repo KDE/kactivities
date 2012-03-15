@@ -512,6 +512,11 @@ ActivityRankingPlugin::~ActivityRankingPlugin()
 
 void ActivityRankingPlugin::activityChanged(const QString & activity)
 {
+    // activity in limbo state, ignore it.
+    if (activity.isEmpty()) {
+        return;
+    }
+
     qint64 currentTime = QDateTime::currentMSecsSinceEpoch();
 
     kDebug() << ">>>> we have the new activity" << activity;
