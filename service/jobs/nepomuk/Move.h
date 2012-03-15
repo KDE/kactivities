@@ -20,8 +20,21 @@
 #ifndef NEPOMUK_MOVE_H_
 #define NEPOMUK_MOVE_H_
 
+#include "config-features.h"
+#ifdef HAVE_NEPOMUK
+
 #include "../Job.h"
 #include "../JobFactory.h"
+
+#include <KUrl>
+#include <QThread>
+#include <QSet>
+#include <QStringList>
+
+namespace Nepomuk {
+    class Resource;
+    class File;
+} // namespace Nepomuk
 
 namespace Jobs {
 namespace Nepomuk {
@@ -33,9 +46,10 @@ class Move: public Job {
     Q_OBJECT
     Q_PROPERTY(QString activity READ activity WRITE setActivity)
     Q_PROPERTY(bool    toEncrypted READ toEncrypted WRITE setToEncrypted)
+    Q_PROPERTY(QStringList files READ files WRITE setFiles)
 
 public:
-    DECLARE_JOB_FACTORY(Move, (const QString & activity, bool toEncrypted));
+    DECLARE_JOB_FACTORY(Move, (const QString & activity, bool toEncrypted, const QStringList & file = QStringList()));
 
     QString activity() const;
     void setActivity(const QString & activity);
@@ -43,23 +57,60 @@ public:
     bool toEncrypted() const;
     void setToEncrypted(bool value);
 
+    QStringList files() const;
+    void setFiles(const QStringList & files);
+
     virtual void start();
 
-private Q_SLOTS:
-    // void passwordReturned(const QString & password);
+public Q_SLOTS:
+    void moveFiles(const KUrl::List & results);
+    void emitResult();
 
 private:
+    QString destination() const;
+
     QString m_activity;
     bool    m_toEncrypted;
+    QStringList m_files;
 
 };
 
-inline Move::Factory * move(const QString & activity, bool toEncrypted) {
-    return new Move::Factory(activity, toEncrypted);
+class CollectFilesToMove: public QThread {
+    Q_OBJECT
+
+public:
+    CollectFilesToMove(const QString & activity, const QString & destination);
+
+    void scheduleMoveDir(::Nepomuk::File & dir);
+    void scheduleMoveFile(::Nepomuk::File & file);
+    void scheduleMove(::Nepomuk::File & item);
+    void run();
+
+Q_SIGNALS:
+    void result(const KUrl::List & list);
+
+private:
+    QString m_activity;
+    QString m_destination;
+    KUrl::List m_scheduledForMoving;
+    QSet < QString > m_movedDirs;
+};
+
+inline Move::Factory * move(const QString & activity, bool toEncrypted, const QStringList & files = QStringList()) {
+    return new Move::Factory(activity, toEncrypted, files);
 }
+
+namespace Private {
+
+    void replaceUrl(::Nepomuk::File & file, const QString & destination);
+    void unlinkOtherActivities(::Nepomuk::Resource & resource, const QString & activity);
+    void removeSensitiveData(::Nepomuk::Resource & resource);
+
+} // namespace Private
 
 } // namespace Nepomuk
 } // namespace Jobs
 
+#endif // HAVE_NEPOMUK
 #endif // NEPOMUK_MOVE_H_
 

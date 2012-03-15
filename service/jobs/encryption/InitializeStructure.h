@@ -17,33 +17,37 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef ENCRYPTION_MOUNT_H_
-#define ENCRYPTION_MOUNT_H_
+#ifndef ENCRYPTION_INITSTRUT_H_
+#define ENCRYPTION_INITSTRUT_H_
 
 #include "../Job.h"
 #include "../JobFactory.h"
 
 #include <QProcess>
 
+class KJob;
+
 namespace Jobs {
 namespace Encryption {
 
 /**
- * Mount
+ * InitializeStructure
  */
-class Mount: public Job {
+class InitializeStructure: public Job {
     Q_OBJECT
     Q_PROPERTY(QString activity READ activity WRITE setActivity)
     Q_PROPERTY(int     action   READ action   WRITE setAction)
 
 public:
     enum Action {
-        MountAction,
-        UnmountAction,
-        UnmountExceptAction
+        InitializeInEncrypted,
+        InitializeInNormal,
+        DeinitializeEncrypted,
+        DeinitializeNormal,
+        DeinitializeBoth
     };
 
-    DECLARE_JOB_FACTORY(Mount, (const QString & activity, int action));
+    DECLARE_JOB_FACTORY(InitializeStructure, (const QString & activity, int action));
 
     QString activity() const;
     void setActivity(const QString & activity);
@@ -54,37 +58,23 @@ public:
     virtual void start();
 
 private Q_SLOTS:
-    void processFinished(int exitCode, QProcess::ExitStatus exitStatus);
+    void jobFinished(KJob * job);
 
 private:
     QString    m_activity;
     int        m_action;
-    QProcess * m_process;
 
+    void move(const QString & source, const QString & destination);
+    void startJob(KJob * job);
 };
 
-// inline Mount::Factory * mount(const QString & activity, Mount::Action action)
-// {
-//     return new Mount::Factory(activity, action);
-// }
-
-inline Mount::Factory * mount(const QString & activity)
+inline InitializeStructure::Factory * initializeStructure(const QString & activity, InitializeStructure::Action action)
 {
-    return new Mount::Factory(activity, Mount::MountAction);
-}
-
-inline Mount::Factory * unmount(const QString & activity)
-{
-    return new Mount::Factory(activity, Mount::UnmountAction);
-}
-
-inline Mount::Factory * unmountExcept(const QString & activity)
-{
-    return new Mount::Factory(activity, Mount::UnmountExceptAction);
+    return new InitializeStructure::Factory(activity, action);
 }
 
 } // namespace Jobs
 } // namespace Encryption
 
-#endif // ENCRYPTION_MOUNT_H_
+#endif // ENCRYPTION_INITSTRUT_H_
 

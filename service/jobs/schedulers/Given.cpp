@@ -17,43 +17,48 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef ENCRYPTION_ENCFS_H_
-#define ENCRYPTION_ENCFS_H_
-
-#include <QObject>
-#include <QProcess>
+#include "Given.h"
 
 namespace Jobs {
-namespace Encryption {
-namespace Private {
+namespace Schedulers {
 
-/**
- * Encfs
- */
-class Encfs: public QObject {
-    Q_OBJECT
+Given::Given(JobFactory * _condition, JobFactory * _then, JobFactory * _else, bool failOnElse, QObject * parent)
+    : Abstract(parent), m_failOnElse(failOnElse)
+{
+    addJob(_condition);
+    addJob(_then);
+    addJob(_else);
+}
 
-public:
-    Encfs(QObject * parent = 0);
-    virtual ~Encfs();
+Given::~Given()
+{
+}
 
-    QProcess * mount(const QString & what, const QString & mountPoint, const QString & password);
-    QProcess * unmount(const QString & mountPoint);
+void Given::jobFinished(int result)
+{
+    if (lastJobStarted() == 0) {
+        int next = (result == 0) ? 1 : 2;
 
-    void unmountAll();
-    void unmountAllExcept(const QString & path = QString());
+        if (hasJob(next)) {
+            startJob(next);
+            return;
+        }
 
-    bool isEncryptionInitialized(const QString & path) const;
-    bool isMounted(const QString & path) const;
+    }
 
-private:
-    class Private;
-    Private * const d;
-};
+    if (lastJobStarted() == 2 && m_failOnElse) {
+        setError(1);
 
-} // namespace Private
-} // namespace Encryption
+    } else {
+        setError(result);
+
+    }
+
+    emitResult();
+}
+
+
+
+} // namespace Schedulers
 } // namespace Jobs
-
-#endif // ENCRYPTION_ENCFS_H_
 

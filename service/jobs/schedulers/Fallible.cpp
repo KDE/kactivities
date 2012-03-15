@@ -17,43 +17,47 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef ENCRYPTION_ENCFS_H_
-#define ENCRYPTION_ENCFS_H_
-
-#include <QObject>
-#include <QProcess>
+#include "Fallible.h"
 
 namespace Jobs {
-namespace Encryption {
-namespace Private {
+namespace Schedulers {
 
-/**
- * Encfs
- */
-class Encfs: public QObject {
-    Q_OBJECT
+Fallible::Fallible(QObject * parent)
+    : Abstract(parent)
+{
+}
 
-public:
-    Encfs(QObject * parent = 0);
-    virtual ~Encfs();
+Fallible::~Fallible()
+{
+}
 
-    QProcess * mount(const QString & what, const QString & mountPoint, const QString & password);
-    QProcess * unmount(const QString & mountPoint);
+Fallible & Fallible::operator << (JobFactory * job)
+{
+    addJob(job);
 
-    void unmountAll();
-    void unmountAllExcept(const QString & path = QString());
+    return *this;
+}
 
-    bool isEncryptionInitialized(const QString & path) const;
-    bool isMounted(const QString & path) const;
+Fallible & Fallible::operator << (Job * job)
+{
+    addJob(job);
 
-private:
-    class Private;
-    Private * const d;
-};
+    return *this;
+}
 
-} // namespace Private
-} // namespace Encryption
+void Fallible::jobFinished(int result)
+{
+    if (result != 0 || lastJobStarted() == jobCount() - 1) {
+        emitResult();
+
+    } else {
+        startJob(lastJobStarted() + 1);
+
+    }
+}
+
+
+
+} // namespace Schedulers
 } // namespace Jobs
-
-#endif // ENCRYPTION_ENCFS_H_
 

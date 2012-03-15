@@ -17,43 +17,53 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef ENCRYPTION_ENCFS_H_
-#define ENCRYPTION_ENCFS_H_
+#ifndef JOBS_SCHEDULER_ABSTRACT_H_
+#define JOBS_SCHEDULER_ABSTRACT_H_
 
-#include <QObject>
-#include <QProcess>
+#include <jobs/Job.h>
+#include <jobs/JobFactory.h>
 
 namespace Jobs {
-namespace Encryption {
-namespace Private {
+namespace Schedulers {
 
 /**
- * Encfs
+ * Abstract
  */
-class Encfs: public QObject {
+class Abstract: public Job {
     Q_OBJECT
 
 public:
-    Encfs(QObject * parent = 0);
-    virtual ~Encfs();
+    Abstract(QObject * parent = 0);
+    virtual ~Abstract();
 
-    QProcess * mount(const QString & what, const QString & mountPoint, const QString & password);
-    QProcess * unmount(const QString & mountPoint);
+    virtual void start();
 
-    void unmountAll();
-    void unmountAllExcept(const QString & path = QString());
+protected:
+    bool startJob(int index);
+    virtual void jobFinished(int result) = 0;
 
-    bool isEncryptionInitialized(const QString & path) const;
-    bool isMounted(const QString & path) const;
+    int lastJobStarted() const;
+    int jobCount() const;
+    bool hasJob(int index) const;
+
+    void addJob(JobFactory * job);
+    void addJob(Job * job);
+
+    void returnResult(int result);
 
 private:
+    Abstract(const Abstract & original);
+    Abstract & operator = (const Abstract & original);
+
     class Private;
     Private * const d;
+    friend class Private;
 };
 
-} // namespace Private
-} // namespace Encryption
+// class Abstract
+
+} // namespace Schedulers
 } // namespace Jobs
 
-#endif // ENCRYPTION_ENCFS_H_
+#endif // JOBS_SCHEDULER_ABSTRACT_H_
 

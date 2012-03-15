@@ -75,14 +75,27 @@ set(activity_manager_SRCS
 
     jobs/Job.cpp
     jobs/JobFactory.cpp
-    jobs/JobScheduler.cpp
+
+    jobs/schedulers/Abstract.cpp
+    jobs/schedulers/Ordered.cpp
+    jobs/schedulers/Fallible.cpp
+    jobs/schedulers/Given.cpp
+    jobs/schedulers/Retry.cpp
+    jobs/schedulers/Switch.cpp
+    jobs/schedulers/Test.cpp
+
     jobs/general/Call.cpp
+
     jobs/ui/Message.cpp
     jobs/ui/AskPassword.cpp
+    jobs/ui/Ask.cpp
     jobs/ui/SetBusy.cpp
+
     jobs/encryption/private/Encfs.cpp
     jobs/encryption/Common.cpp
     jobs/encryption/Mount.cpp
+    jobs/encryption/InitializeStructure.cpp
+
     jobs/nepomuk/Move.cpp
 
     ui/UiHandler.cpp
@@ -101,6 +114,7 @@ target_link_libraries(
     activity-manager
     ${KDE4_KDECORE_LIBS}
     ${KDE4_KDEUI_LIBS} # TODO: Remove kdeui
+    ${KDE4_KIO_LIBS}   # TODO: Remove kio
     ${ADDITIONAL_LINK_LIBS}
     )
 

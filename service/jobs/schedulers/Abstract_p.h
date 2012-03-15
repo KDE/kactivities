@@ -17,43 +17,27 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef ENCRYPTION_ENCFS_H_
-#define ENCRYPTION_ENCFS_H_
+#include "Abstract.h"
 
-#include <QObject>
-#include <QProcess>
+#include <QList>
 
 namespace Jobs {
-namespace Encryption {
-namespace Private {
+namespace Schedulers {
 
-/**
- * Encfs
- */
-class Encfs: public QObject {
+class Abstract::Private: public QObject {
     Q_OBJECT
+public:
+    Private(Abstract * parent);
+
+    QList < JobFactory * > jobs;
+    int lastJobStarted;
+
+public Q_SLOTS:
+    void jobFinished(KJob * job);
 
 public:
-    Encfs(QObject * parent = 0);
-    virtual ~Encfs();
-
-    QProcess * mount(const QString & what, const QString & mountPoint, const QString & password);
-    QProcess * unmount(const QString & mountPoint);
-
-    void unmountAll();
-    void unmountAllExcept(const QString & path = QString());
-
-    bool isEncryptionInitialized(const QString & path) const;
-    bool isMounted(const QString & path) const;
-
-private:
-    class Private;
-    Private * const d;
+    Abstract * const q;
 };
 
-} // namespace Private
-} // namespace Encryption
+} // namespace Schedulers
 } // namespace Jobs
-
-#endif // ENCRYPTION_ENCFS_H_
-

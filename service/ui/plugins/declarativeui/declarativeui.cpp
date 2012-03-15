@@ -153,6 +153,11 @@ void DeclarativeUiHandler::askPassword(const QString & title, const QString & me
     emit d->askPassword(title, message, newPassword);
 }
 
+void DeclarativeUiHandler::ask(const QString & title, const QString & message,
+        const QStringList & choices, QObject * receiver, const char * slot)
+{
+}
+
 void DeclarativeUiHandler::message(const QString & title, const QString & message)
 {
     kDebug() << title << message;

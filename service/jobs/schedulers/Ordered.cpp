@@ -17,43 +17,56 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef ENCRYPTION_ENCFS_H_
-#define ENCRYPTION_ENCFS_H_
+#include "Ordered.h"
 
-#include <QObject>
-#include <QProcess>
+#include <KDebug>
 
 namespace Jobs {
-namespace Encryption {
-namespace Private {
+namespace Schedulers {
 
-/**
- * Encfs
- */
-class Encfs: public QObject {
-    Q_OBJECT
+Ordered::Ordered(QObject * parent)
+    : Abstract(parent)
+{
+}
 
-public:
-    Encfs(QObject * parent = 0);
-    virtual ~Encfs();
+Ordered::~Ordered()
+{
+}
 
-    QProcess * mount(const QString & what, const QString & mountPoint, const QString & password);
-    QProcess * unmount(const QString & mountPoint);
+Ordered & Ordered::operator << (JobFactory * job)
+{
+    addJob(job);
 
-    void unmountAll();
-    void unmountAllExcept(const QString & path = QString());
+    return *this;
+}
 
-    bool isEncryptionInitialized(const QString & path) const;
-    bool isMounted(const QString & path) const;
+Ordered & Ordered::operator << (Job * job)
+{
+    addJob(job);
 
-private:
-    class Private;
-    Private * const d;
-};
+    return *this;
+}
 
-} // namespace Private
-} // namespace Encryption
+void Ordered::jobFinished(int result)
+{
+    if (result != 0) {
+        kDebug() << "So... we got an error" << result;
+        setError(result);
+        emitResult();
+
+    } else if (lastJobStarted() == jobCount() - 1) {
+        kDebug() << "no error, no jobs";
+        emitResult();
+
+    } else {
+        kDebug() << "next job please";
+        startJob(lastJobStarted() + 1);
+
+    }
+}
+
+
+
+} // namespace Schedulers
 } // namespace Jobs
-
-#endif // ENCRYPTION_ENCFS_H_
 

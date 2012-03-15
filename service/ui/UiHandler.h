@@ -40,6 +40,8 @@ public:
     virtual void message(const QString & title, const QString & message) = 0;
     virtual void askPassword(const QString & title, const QString & message,
             bool newPassword, QObject * receiver, const char * slot) = 0;
+    virtual void ask(const QString & title, const QString & message,
+            const QStringList & choices, QObject * receiver, const char * slot) = 0;
     virtual void setBusy(bool value) = 0;
 
 protected:

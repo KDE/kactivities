@@ -81,7 +81,7 @@ void Encfs::unmountAllExcept(const QString & path)
 
     foreach (const QString & mount, d->mounts) {
         if (path != mount) {
-            unmount(mount, false);
+            unmount(mount);
         }
     }
 }
@@ -102,7 +102,7 @@ void Encfs::unmountAll()
     d->mounts.clear();
 }
 
-QProcess * Encfs::mount(const QString & what, const QString & mountPoint, bool initialize, const QString & password)
+QProcess * Encfs::mount(const QString & what, const QString & mountPoint, const QString & password)
 {
     kDebug() << "mounting" << what << mountPoint;
 
@@ -114,10 +114,6 @@ QProcess * Encfs::mount(const QString & what, const QString & mountPoint, bool i
     }
 
     bool init = !isEncryptionInitialized(what);
-
-    if (init != initialize) {
-        kWarning() << "Requested to initialize" << initialize << "but it is" << init << "already initialized";
-    }
 
     kDebug() << "Executing" << ENCFS_PATH << " -S"
             << what
@@ -150,10 +146,8 @@ QProcess * Encfs::mount(const QString & what, const QString & mountPoint, bool i
     return encfs;
 }
 
-QProcess * Encfs::unmount(const QString & mountPoint, bool deinitialize)
+QProcess * Encfs::unmount(const QString & mountPoint)
 {
-    // TODO: deinitialize
-
     kDebug() << mountPoint;
 
     if (!isMounted(mountPoint)) return 0;

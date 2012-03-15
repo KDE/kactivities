@@ -17,43 +17,42 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef ENCRYPTION_ENCFS_H_
-#define ENCRYPTION_ENCFS_H_
+#ifndef JOBS_SCHEDULER_ORDERED_H_
+#define JOBS_SCHEDULER_ORDERED_H_
 
-#include <QObject>
-#include <QProcess>
+#include <jobs/Job.h>
+#include <jobs/JobFactory.h>
+#include <jobs/schedulers/Abstract.h>
+
+#define DEFINE_ORDERED_SCHEDULER(Name) Jobs::Schedulers::Ordered & Name \
+    = * (new Jobs::Schedulers::Ordered())
 
 namespace Jobs {
-namespace Encryption {
-namespace Private {
+namespace Schedulers {
 
 /**
- * Encfs
+ * Ordered
  */
-class Encfs: public QObject {
+class Ordered: public Abstract {
     Q_OBJECT
 
 public:
-    Encfs(QObject * parent = 0);
-    virtual ~Encfs();
+    Ordered(QObject * parent = 0);
+    virtual ~Ordered();
 
-    QProcess * mount(const QString & what, const QString & mountPoint, const QString & password);
-    QProcess * unmount(const QString & mountPoint);
+    Ordered & operator << (JobFactory * other);
+    Ordered & operator << (Job * other);
 
-    void unmountAll();
-    void unmountAllExcept(const QString & path = QString());
-
-    bool isEncryptionInitialized(const QString & path) const;
-    bool isMounted(const QString & path) const;
+protected:
+    virtual void jobFinished(int result);
 
 private:
-    class Private;
-    Private * const d;
+    Ordered(const Ordered & original);
+    Ordered & operator = (const Ordered & original);
 };
 
-} // namespace Private
-} // namespace Encryption
+} // namespace Schedulers
 } // namespace Jobs
 
-#endif // ENCRYPTION_ENCFS_H_
+#endif // JOBS_SCHEDULER_ORDERED_H_
 

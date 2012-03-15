@@ -17,43 +17,55 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef ENCRYPTION_ENCFS_H_
-#define ENCRYPTION_ENCFS_H_
-
-#include <QObject>
-#include <QProcess>
+#include "Switch.h"
 
 namespace Jobs {
-namespace Encryption {
-namespace Private {
+namespace Schedulers {
 
-/**
- * Encfs
- */
-class Encfs: public QObject {
-    Q_OBJECT
+Switch::Switch(QObject * parent)
+    : Abstract(parent)
+{
+}
 
-public:
-    Encfs(QObject * parent = 0);
-    virtual ~Encfs();
+Switch::~Switch()
+{
+}
 
-    QProcess * mount(const QString & what, const QString & mountPoint, const QString & password);
-    QProcess * unmount(const QString & mountPoint);
+Switch & Switch::operator << (JobFactory * job)
+{
+    addJob(job);
 
-    void unmountAll();
-    void unmountAllExcept(const QString & path = QString());
+    return *this;
+}
 
-    bool isEncryptionInitialized(const QString & path) const;
-    bool isMounted(const QString & path) const;
+Switch & Switch::operator << (Job * job)
+{
+    addJob(job);
 
-private:
-    class Private;
-    Private * const d;
-};
+    return *this;
+}
 
-} // namespace Private
-} // namespace Encryption
+void Switch::jobFinished(int result)
+{
+    if (lastJobStarted() != 0) {
+        // We have executed the switch command
+        returnResult(result);
+        return;
+    }
+
+    if (result >= 0) {
+        // The test job returned a positive value, this means it failed
+        returnResult(1);
+        return;
+
+    } else {
+        startJob(-result);
+
+    }
+}
+
+
+
+} // namespace Schedulers
 } // namespace Jobs
-
-#endif // ENCRYPTION_ENCFS_H_
 

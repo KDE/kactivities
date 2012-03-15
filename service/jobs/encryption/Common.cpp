@@ -28,6 +28,7 @@
 #include <KConfig>
 #include <KConfigGroup>
 #include <KDebug>
+#include <KStandardDirs>
 
 #include "private/Encfs.h"
 
@@ -42,7 +43,7 @@ public:
     QString folderName(const QString & activity, FolderType type);
 
     bool enabled;
-    QDir activitiesFolder;
+    // QDir activitiesFolder;
     QDir activitiesDataFolder;
     Jobs::Encryption::Private::Encfs encfs;
 
@@ -62,26 +63,7 @@ Private::Private()
         return;
     }
 
-    // Getting the activities folder
-    // TODO: This needs to be tested by people actually using i18n :)
-
-    QString activityFolderName = i18nc("Name for the activities folder in user's home", "Activities");
-
-    KConfig config("activitymanagerrc");
-    KConfigGroup configGroup(&config, "EncryptionManager");
-
-    QString oldActivityFolderName = configGroup.readEntry("activityFolderName", activityFolderName);
-
-    if (oldActivityFolderName != activityFolderName) {
-        if (!QDir::home().rename(oldActivityFolderName, activityFolderName)) {
-            activityFolderName = oldActivityFolderName;
-        }
-    }
-
-    configGroup.writeEntry("activityFolderName", activityFolderName);
-
-    d->activitiesFolder = QDir(QDir::home().filePath(activityFolderName + '/'));
-    d->activitiesDataFolder = QDir(QDir::home().filePath(activityFolderName + "/.data/"));
+    d->activitiesDataFolder = QDir(KStandardDirs::locateLocal("data", "activitymanager/activities"));
     d->activitiesDataFolder.mkpath(d->activitiesDataFolder.path());
 }
 
@@ -113,12 +95,43 @@ QString Private::folderName(const QString & activity, FolderType type)
         case MountPointFolder:
             return "crypt-" + activity;
 
+        default:
+            return QString();
     }
 
-    return QString();
+    // return QString();
 }
 
-QProcess * execMount(const QString & activity, bool initialize, const QString & password)
+QString folderPath(const QString & activity, FolderType type)
+{
+    if (type < ActivityFolder) {
+        return d->activitiesDataFolder.filePath(
+                d->folderName(activity, type)
+            );
+    }
+
+    bool activityEncrypted = isActivityEncrypted(activity);
+    QString activityPath = d->activitiesDataFolder.filePath(
+            d->folderName(activity,
+                activityEncrypted ? MountPointFolder : NormalFolder));
+    if (!activityPath.endsWith('/'))
+        activityPath.append('/');
+
+    return activityPath.append(folderName(type)).append('/');
+}
+
+QString folderName(FolderType type)
+{
+    switch (type) {
+        case UserDataFolder:  return QString::fromLatin1("user");
+        case ConfigFolder:    return QString::fromLatin1("config");
+        case DataFolder:      return QString::fromLatin1("apps");
+
+        default:              return QString();
+    }
+}
+
+QProcess * execMount(const QString & activity, const QString & password)
 {
     if (password.isEmpty()) {
         return NULL;
@@ -130,20 +143,18 @@ QProcess * execMount(const QString & activity, bool initialize, const QString & 
     return d->encfs.mount(
         d->activitiesDataFolder.filePath(encryptedFolderName),
         d->activitiesDataFolder.filePath(mountFolderName),
-        initialize,
         password
     );
 }
 
-QProcess * execUnmount(const QString & activity, bool deinitialize)
+QProcess * execUnmount(const QString & activity)
 {
     return d->encfs.unmount(
-        d->activitiesDataFolder.filePath(d->folderName(activity, MountPointFolder)),
-        deinitialize
+        d->activitiesDataFolder.filePath(d->folderName(activity, MountPointFolder))
     );
 }
 
-void unmountExcept(const QString & activity)
+void unmountAllExcept(const QString & activity)
 {
     d->encfs.unmountAllExcept(
         d->activitiesDataFolder.filePath(d->folderName(activity, MountPointFolder))

@@ -17,43 +17,40 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef ENCRYPTION_ENCFS_H_
-#define ENCRYPTION_ENCFS_H_
+#ifndef JOBS_SCHEDULER_RETRY_H_
+#define JOBS_SCHEDULER_RETRY_H_
 
-#include <QObject>
-#include <QProcess>
+#include <jobs/Job.h>
+#include <jobs/JobFactory.h>
+#include <jobs/schedulers/Abstract.h>
+
+#define RETRY_JOB(Input, Test, Error) new Jobs::Schedulers::Retry(Input, Test, Error)
 
 namespace Jobs {
-namespace Encryption {
-namespace Private {
+namespace Schedulers {
 
 /**
- * Encfs
+ * Retry
  */
-class Encfs: public QObject {
+class Retry: public Abstract {
     Q_OBJECT
 
 public:
-    Encfs(QObject * parent = 0);
-    virtual ~Encfs();
+    Retry(JobFactory * _input, JobFactory * _test, JobFactory * _error, QObject * parent = 0);
+    virtual ~Retry();
 
-    QProcess * mount(const QString & what, const QString & mountPoint, const QString & password);
-    QProcess * unmount(const QString & mountPoint);
-
-    void unmountAll();
-    void unmountAllExcept(const QString & path = QString());
-
-    bool isEncryptionInitialized(const QString & path) const;
-    bool isMounted(const QString & path) const;
+protected:
+    virtual void jobFinished(int result);
 
 private:
-    class Private;
-    Private * const d;
+    Retry(const Retry & original);
+    Retry & operator = (const Retry & original);
+
+    bool m_failOnElse;
 };
 
-} // namespace Private
-} // namespace Encryption
+} // namespace Schedulers
 } // namespace Jobs
 
-#endif // ENCRYPTION_ENCFS_H_
+#endif // JOBS_SCHEDULER_RETRY_H_
 

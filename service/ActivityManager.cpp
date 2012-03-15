@@ -35,19 +35,14 @@
 #include "activitymanageradaptor.h"
 #include "EventProcessor.h"
 
-#include "jobs/JobScheduler.h"
-#include "jobs/encryption/Common.h"
-#include "jobs/encryption/Mount.h"
-#include "jobs/general/Call.h"
-#include "jobs/ui/Message.h"
-#include "jobs/ui/AskPassword.h"
-#include "jobs/ui/SetBusy.h"
+#include "jobs/schedulers/all.h"
+#include "jobs/activity/all.h"
+#include "jobs/encryption/all.h"
+#include "jobs/general/all.h"
+#include "jobs/nepomuk/all.h"
+#include "jobs/ui/all.h"
 
 #include "ui/Ui.h"
-
-#ifdef HAVE_NEPOMUK
-#include "jobs/nepomuk/Move.h"
-#endif
 
 #include "config-features.h"
 
@@ -162,7 +157,7 @@ void ActivityManager::SetActivityEncrypted(const QString & activity, bool encryp
     using namespace Jobs::Ui;
     using namespace Jobs::Encryption;
     using namespace Jobs::Encryption::Common;
-    using namespace Jobs::General;
+    // using namespace Jobs::General;
 
     // Is the encryption enabled?
     if (!Encryption::Common::isEnabled()) return;
@@ -170,7 +165,7 @@ void ActivityManager::SetActivityEncrypted(const QString & activity, bool encryp
     // check whether the previous state was the same
     if (encrypted == isActivityEncrypted(activity)) return;
 
-    JOB_SCHEDULER(setActivityEncryptedJob);
+    DEFINE_ORDERED_SCHEDULER(setActivityEncryptedJob);
 
     if (encrypted) {
         //   - ask for password
@@ -183,13 +178,20 @@ void ActivityManager::SetActivityEncrypted(const QString & activity, bool encryp
             askPassword(i18n("Activity password"), i18n("Enter the password to use for encryption"), true)
 
         <<  // Try to mount, or die trying :)
-            DO_JOB mount(activity, true)
-            OR_DIE (message(i18n("Error"), i18n("Error setting up the activity encryption")))
+            DO_OR_DIE(
+                mount(activity),
+                message(i18n("Error"), i18n("Error setting up the activity encryption")))
+
+        <<  // Initialize the directories, move previous activity data from non-private folders
+            initializeStructure(activity, InitializeStructure::InitializeInEncrypted)
 
         #ifdef HAVE_NEPOMUK
         <<  // Move the files that are linked to the activity to the encrypted folder
             Jobs::Nepomuk::move(activity, true)
         #endif
+
+        <<  // Delete the old activity folder
+            initializeStructure(activity, InitializeStructure::DeinitializeNormal)
 
         ;
 
@@ -221,9 +223,14 @@ void ActivityManager::SetActivityEncrypted(const QString & activity, bool encryp
             Jobs::Nepomuk::move(activity, false)
         #endif
 
+        <<  // Initialize the directories for the normal
+            initializeStructure(activity, InitializeStructure::InitializeInNormal)
 
-        <<  // Unmount the activity yet again, (TODO) deinitialize encryption
-            unmount(activity, true)
+        <<  // Unmount the activity yet again
+            FALLIBLE_JOB(unmount(activity))
+
+        <<  // This will remove encrypted folder
+            initializeStructure(activity, InitializeStructure::DeinitializeEncrypted)
 
         ;
     }
@@ -266,7 +273,7 @@ bool ActivityManagerPrivate::setCurrentActivity(const QString & activity)
     using namespace Jobs::Encryption::Common;
     using namespace Jobs::General;
 
-    JOB_SCHEDULER(setCurrentActivityJob);
+    DEFINE_ORDERED_SCHEDULER(setCurrentActivityJob);
 
     // If the activity is empty, this means we are entering a limbo state
     if (activity.isEmpty()) {
@@ -276,6 +283,7 @@ bool ActivityManagerPrivate::setCurrentActivity(const QString & activity)
 
             <<  // Unmounting the activity, ignore the potential failure
                 FALLIBLE_JOB(unmount(currentActivity));
+
             setCurrentActivityJob.start();
         }
 
@@ -333,7 +341,7 @@ bool ActivityManagerPrivate::setCurrentActivity(const QString & activity)
     setCurrentActivityJob
 
     <<  // JIC, unmount everything apart from the new activity
-        mount(activity, Mount::UnmountExceptAction)
+        unmountExcept(activity)
 
     <<  // Change the activity
         General::call(this, "emitCurrentActivityChanged", activity);
@@ -442,7 +450,7 @@ void ActivityManager::RemoveActivity(const QString & activity)
     // Sanity checks
     if (!d->activities.contains(activity)) return;
 
-    JOB_SCHEDULER(removeActivityJob);
+    DEFINE_ORDERED_SCHEDULER(removeActivityJob);
 
     // If encrypted:
     //   - unmount if current (hmh, we can't delete the current activity?)
@@ -460,6 +468,18 @@ void ActivityManager::RemoveActivity(const QString & activity)
 
         removeActivityJob
 
+        <<  // We need to ask the user whether he really wants to delete the
+            // activity once more since it implies removing the data as well
+            // in the case of private activities
+            TEST_JOB(
+                ask(i18n("Confirmation"),
+                    i18n("If you delete a private activity, all the documents and files that belong to it will also be deleted."),
+                    QStringList()
+                        << "Delete the activity"
+                        << "Cancel"
+                ), -1 /* Expecting the first choice */
+            )
+
         <<  // unmount the activity
             unmount(activity)
 
@@ -471,7 +491,7 @@ void ActivityManager::RemoveActivity(const QString & activity)
             )
 
         <<  // Unmount the activity yet again, and deinitialize
-            unmount(activity, true);
+            unmount(activity);
     }
 
     // If not encrypted:
@@ -481,6 +501,9 @@ void ActivityManager::RemoveActivity(const QString & activity)
     //   - signal the event
 
     removeActivityJob
+
+    <<  // Delete the activity data
+        initializeStructure(activity, InitializeStructure::DeinitializeBoth)
 
     <<  // Remove
         General::call(d, "removeActivity", activity, true /* waitFinished */);
