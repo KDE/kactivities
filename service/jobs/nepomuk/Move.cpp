@@ -293,9 +293,9 @@ QString Move::destination() const
     using namespace Jobs::Encryption::Common;
 
     if (m_toEncrypted) {
-        result = path(m_activity, MountPointFolder);
+        result = folderPath(m_activity, MountPointFolder);
     } else {
-        result = path(m_activity, NormalFolder);
+        result = folderPath(m_activity, NormalFolder);
     }
 
     result.append("/user");

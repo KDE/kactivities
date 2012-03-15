@@ -37,8 +37,8 @@ public:
     Encfs(QObject * parent = 0);
     virtual ~Encfs();
 
-    QProcess * mount(const QString & what, const QString & mountPoint, bool initialize, const QString & password);
-    QProcess * unmount(const QString & mountPoint, bool deinitialize);
+    QProcess * mount(const QString & what, const QString & mountPoint, const QString & password);
+    QProcess * unmount(const QString & mountPoint);
 
     void unmountAll();
     void unmountAllExcept(const QString & path = QString());

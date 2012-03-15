@@ -85,13 +85,17 @@ set(activity_manager_SRCS
     jobs/schedulers/Test.cpp
 
     jobs/general/Call.cpp
+
     jobs/ui/Message.cpp
     jobs/ui/AskPassword.cpp
     jobs/ui/Ask.cpp
     jobs/ui/SetBusy.cpp
+
     jobs/encryption/private/Encfs.cpp
     jobs/encryption/Common.cpp
     jobs/encryption/Mount.cpp
+    jobs/encryption/InitializeStructure.cpp
+
     jobs/nepomuk/Move.cpp
 
     ui/UiHandler.cpp

@@ -38,8 +38,6 @@ class Mount: public Job {
 
 public:
     enum Action {
-        InitializeAction,
-        DeinitializeAction,
         MountAction,
         UnmountAction,
         UnmountExceptAction
@@ -65,22 +63,24 @@ private:
 
 };
 
-inline Mount::Factory * mount(const QString & activity, Mount::Action action)
+// inline Mount::Factory * mount(const QString & activity, Mount::Action action)
+// {
+//     return new Mount::Factory(activity, action);
+// }
+
+inline Mount::Factory * mount(const QString & activity)
 {
-    return new Mount::Factory(activity, action);
+    return new Mount::Factory(activity, Mount::MountAction);
 }
 
-inline Mount::Factory * mount(const QString & activity, bool initialize = false)
+inline Mount::Factory * unmount(const QString & activity)
 {
-    return new Mount::Factory(activity,
-            initialize ? Mount::InitializeAction : Mount::MountAction
-            );
+    return new Mount::Factory(activity, Mount::UnmountAction);
 }
 
-inline Mount::Factory * unmount(const QString & activity, bool deinitialize = false)
+inline Mount::Factory * unmountExcept(const QString & activity)
 {
-    return new Mount::Factory(activity,
-            deinitialize ? Mount::DeinitializeAction : Mount::UnmountAction);
+    return new Mount::Factory(activity, Mount::UnmountExceptAction);
 }
 
 } // namespace Jobs

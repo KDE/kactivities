@@ -179,13 +179,19 @@ void ActivityManager::SetActivityEncrypted(const QString & activity, bool encryp
 
         <<  // Try to mount, or die trying :)
             DO_OR_DIE(
-                mount(activity, true),
+                mount(activity),
                 message(i18n("Error"), i18n("Error setting up the activity encryption")))
+
+        <<  // Initialize the directories, move previous activity data from non-private folders
+            initializeStructure(activity, InitializeStructure::InitializeInEncrypted)
 
         #ifdef HAVE_NEPOMUK
         <<  // Move the files that are linked to the activity to the encrypted folder
             Jobs::Nepomuk::move(activity, true)
         #endif
+
+        <<  // Delete the old activity folder
+            initializeStructure(activity, InitializeStructure::DeinitializeNormal)
 
         ;
 
@@ -217,9 +223,14 @@ void ActivityManager::SetActivityEncrypted(const QString & activity, bool encryp
             Jobs::Nepomuk::move(activity, false)
         #endif
 
+        <<  // Initialize the directories for the normal
+            initializeStructure(activity, InitializeStructure::InitializeInNormal)
 
-        <<  // Unmount the activity yet again, (TODO) deinitialize encryption
-            unmount(activity, true)
+        <<  // Unmount the activity yet again
+            FALLIBLE_JOB(unmount(activity))
+
+        <<  // This will remove encrypted folder
+            initializeStructure(activity, InitializeStructure::DeinitializeEncrypted)
 
         ;
     }
@@ -330,7 +341,7 @@ bool ActivityManagerPrivate::setCurrentActivity(const QString & activity)
     setCurrentActivityJob
 
     <<  // JIC, unmount everything apart from the new activity
-        mount(activity, Mount::UnmountExceptAction)
+        unmountExcept(activity)
 
     <<  // Change the activity
         General::call(this, "emitCurrentActivityChanged", activity);
@@ -480,7 +491,7 @@ void ActivityManager::RemoveActivity(const QString & activity)
             )
 
         <<  // Unmount the activity yet again, and deinitialize
-            unmount(activity, true);
+            unmount(activity);
     }
 
     // If not encrypted:
@@ -490,6 +501,9 @@ void ActivityManager::RemoveActivity(const QString & activity)
     //   - signal the event
 
     removeActivityJob
+
+    <<  // Delete the activity data
+        initializeStructure(activity, InitializeStructure::DeinitializeBoth)
 
     <<  // Remove
         General::call(d, "removeActivity", activity, true /* waitFinished */);

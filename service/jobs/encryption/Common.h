@@ -36,26 +36,29 @@ namespace Common {
     bool isEnabled();
     bool isActivityEncrypted(const QString & activity);
 
+    QProcess * execMount(const QString & activity, const QString & password);
+    QProcess * execUnmount(const QString & activity);
+
+    void unmountAllExcept(const QString & activity);
+    void unmountAll();
+
     enum FolderType {
         NormalFolder = 0,
         EncryptedFolder = 1,
         MountPointFolder = 2,
 
+        FirstFolderType = 8,
         ActivityFolder = 8,
         UserDataFolder = 9,
         ConfigFolder = 10,
-        DataFolder = 11
+        DataFolder = 11,
+        AutostartFolder = 12,
+        AutostopFolder = 13,
+        LastFolderType = 13
     };
 
-    QProcess * execMount(const QString & activity, bool initialize, const QString & password);
-    QProcess * execUnmount(const QString & activity, bool deinitialize);
-
-    void unmountExcept(const QString & activity);
-    void unmountAll();
-
-    void initializeStructure(const QString & activity);
-
-    QString path(const QString & activity, FolderType type);
+    QString folderPath(const QString & activity, FolderType type);
+    QString folderName(FolderType type);
 
 } // namespace Common
 } // namespace Encryption

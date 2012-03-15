@@ -60,25 +60,23 @@ void Mount::start()
     m_process = 0;
 
     switch (m_action) {
-        case Mount::InitializeAction:
         case Mount::MountAction:
             m_process = Common::execMount(
-                    m_activity, (m_action == Mount::InitializeAction),
+                    m_activity,
                     global()->property(Jobs::Ui::AskPassword::passwordField()).toString()
                 );
 
             break;
 
-        case Mount::DeinitializeAction:
         case Mount::UnmountAction:
             m_process = Common::execUnmount(
-                    m_activity, (m_action == Mount::DeinitializeAction)
+                    m_activity
                 );
 
             break;
 
         case Mount::UnmountExceptAction:
-            Common::unmountExcept(m_activity);
+            Common::unmountAllExcept(m_activity);
 
             break;
 
@@ -105,21 +103,6 @@ void Mount::processFinished(int exitCode, QProcess::ExitStatus exitStatus)
         setError(1);
         setErrorText("Mounting failed");
 
-    } else {
-
-        switch (m_action) {
-            case Mount::InitializeAction:
-            case Mount::MountAction:
-                Common::initializeStructure(m_activity);
-                break;
-
-            case Mount::DeinitializeAction:
-                // TODO: Deinitialize
-                break;
-
-            default:
-                break;
-        }
     }
 
     emit emitResult();

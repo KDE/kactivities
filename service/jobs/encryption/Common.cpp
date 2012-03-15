@@ -102,7 +102,7 @@ QString Private::folderName(const QString & activity, FolderType type)
     // return QString();
 }
 
-QString path(const QString & activity, FolderType type)
+QString folderPath(const QString & activity, FolderType type)
 {
     if (type < ActivityFolder) {
         return d->activitiesDataFolder.filePath(
@@ -117,24 +117,21 @@ QString path(const QString & activity, FolderType type)
     if (!activityPath.endsWith('/'))
         activityPath.append('/');
 
+    return activityPath.append(folderName(type)).append('/');
+}
 
+QString folderName(FolderType type)
+{
     switch (type) {
-        case UserDataFolder:
-            return activityPath.append("user/");
+        case UserDataFolder:  return QString::fromLatin1("user");
+        case ConfigFolder:    return QString::fromLatin1("config");
+        case DataFolder:      return QString::fromLatin1("apps");
 
-        case ConfigFolder:
-            return activityPath.append("config/");
-
-        case DataFolder:
-            return activityPath.append("apps/");
-
-        default:
-            return activityPath;
-
+        default:              return QString();
     }
 }
 
-QProcess * execMount(const QString & activity, bool initialize, const QString & password)
+QProcess * execMount(const QString & activity, const QString & password)
 {
     if (password.isEmpty()) {
         return NULL;
@@ -146,20 +143,18 @@ QProcess * execMount(const QString & activity, bool initialize, const QString & 
     return d->encfs.mount(
         d->activitiesDataFolder.filePath(encryptedFolderName),
         d->activitiesDataFolder.filePath(mountFolderName),
-        initialize,
         password
     );
 }
 
-QProcess * execUnmount(const QString & activity, bool deinitialize)
+QProcess * execUnmount(const QString & activity)
 {
     return d->encfs.unmount(
-        d->activitiesDataFolder.filePath(d->folderName(activity, MountPointFolder)),
-        deinitialize
+        d->activitiesDataFolder.filePath(d->folderName(activity, MountPointFolder))
     );
 }
 
-void unmountExcept(const QString & activity)
+void unmountAllExcept(const QString & activity)
 {
     d->encfs.unmountAllExcept(
         d->activitiesDataFolder.filePath(d->folderName(activity, MountPointFolder))
@@ -169,16 +164,6 @@ void unmountExcept(const QString & activity)
 void unmountAll()
 {
     d->encfs.unmountAllExcept();
-}
-
-void initializeStructure(const QString & activity)
-{
-    const QString & mountFolderName = d->folderName(activity, MountPointFolder);
-    QDir dir(d->activitiesDataFolder.filePath(mountFolderName));
-
-    dir.mkdir("user");
-    dir.mkdir("config");
-    dir.mkdir("apps");
 }
 
 } // namespace Common
