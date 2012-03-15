@@ -117,6 +117,9 @@ void InitializeStructure::del(const QStringList & items)
 
     if (toDelete.size()) {
         startJob(KIO::del(toDelete, KIO::HideProgressInfo));
+    } else {
+        setError(KJob::NoError);
+        emitResult();
     }
 }
 
