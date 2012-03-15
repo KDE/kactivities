@@ -93,6 +93,7 @@ void DeclarativeUiHandler::Private::cancel()
     kDebug();
 
     returnPassword(QString());
+    returnChoice(0);
     close();
 
     hideWindow();
@@ -107,8 +108,7 @@ void DeclarativeUiHandler::Private::close()
 
 void DeclarativeUiHandler::Private::returnPassword(const QString & password)
 {
-    // WARNING: do not commit the line below uncommented.
-    //kDebug() << password;
+    if (currentAction != PasswordAction) return;
 
     if (receiver && slot) {
         kDebug() << "receiver" << receiver->metaObject()->className() << slot;
@@ -120,6 +120,25 @@ void DeclarativeUiHandler::Private::returnPassword(const QString & password)
 
     receiver = NULL;
     slot = NULL;
+
+    hideWindow();
+}
+
+void DeclarativeUiHandler::Private::returnChoice(int index)
+{
+    if (currentAction != ChoiceAction) return;
+
+    if (receiver && slot) {
+        kDebug() << "receiver" << receiver->metaObject()->className() << slot;
+
+        QMetaObject::invokeMethod(receiver, slot, Qt::QueuedConnection,
+                    Q_ARG(int, index));
+        emit hideAll();
+    }
+
+    receiver = NULL;
+    slot = NULL;
+    currentAction = NoAction;
 
     hideWindow();
 }
@@ -146,6 +165,7 @@ void DeclarativeUiHandler::askPassword(const QString & title, const QString & me
 {
     kDebug() << title << message;
 
+    d->currentAction = Private::PasswordAction;
     d->receiver = receiver;
     d->slot     = slot;
     d->showWindow();
@@ -156,6 +176,14 @@ void DeclarativeUiHandler::askPassword(const QString & title, const QString & me
 void DeclarativeUiHandler::ask(const QString & title, const QString & message,
         const QStringList & choices, QObject * receiver, const char * slot)
 {
+    kDebug() << title << message;
+
+    d->currentAction = Private::ChoiceAction;
+    d->receiver = receiver;
+    d->slot     = slot;
+    d->showWindow();
+
+    emit d->ask(title, message, choices);
 }
 
 void DeclarativeUiHandler::message(const QString & title, const QString & message)

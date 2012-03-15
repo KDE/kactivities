@@ -44,7 +44,7 @@ Rectangle {
     PlasmaComponents.BusyIndicator {
         anchors.centerIn: parent
         running: visible
-        visible: (uihandler.windowVisible && !dialogNewPassword.active && !dialogPassword.active && !dialogMessage.active)
+        visible: (uihandler.windowVisible && !dialogNewPassword.active && !dialogPassword.active && !dialogMessage.active && !dialogChoice.active)
     }
 
     NewPasswordDialog {
@@ -102,6 +102,27 @@ Rectangle {
         MouseArea { anchors.fill: parent; z: -1; onClicked: {} }
     }
 
+    ChoiceDialog {
+        id: dialogChoice
+
+        anchors.centerIn: parent
+
+        property bool active: false
+
+        transform: Translate {
+            y: dialogChoice.active ? 0 : main.height - dialogChoice.y
+            Behavior on y { NumberAnimation { duration: 300 } }
+        }
+
+        title:      "Choice"
+
+        onChoiceChosen: uihandler.returnChoice(-1 - index)
+        onCanceled: uihandler.cancel()
+
+        // Just so that clicking inside this are doesn't call cancel
+        MouseArea { anchors.fill: parent; z: -1; onClicked: {} }
+    }
+
     MessageDialog {
         id: dialogMessage
 
@@ -122,17 +143,33 @@ Rectangle {
         onMessage: {
             dialogPassword.text = message
             dialogMessage.active = true
+            dialogChoice.active = false
+            dialogNewPassword.active = false
+            dialogPassword.active = false
+        }
+
+        // void ask(const QString & title, const QString & message, const QStringList & choices);
+        onAsk: {
+            print("Asking....")
+            dialogChoice.title = title
+            dialogChoice.message = message
+            dialogChoice.choices = choices
+            dialogChoice.active = true
+
+            dialogMessage.active = false
             dialogNewPassword.active = false
             dialogPassword.active = false
         }
 
         // void askPassword(const QString & title, const QString & message, bool newPassword);
         onAskPassword: {
+            print("Asking for password....")
             if (newPassword) {
                 dialogNewPassword.password = ""
                 dialogNewPassword.passwordConfirmation = ""
                 dialogNewPassword.active = true
                 dialogMessage.active = false
+                dialogChoice.active = false
                 dialogPassword.active = false
 
             } else {
@@ -141,6 +178,7 @@ Rectangle {
                 dialogPassword.password = ""
                 dialogPassword.active = true
                 dialogMessage.active = false
+                dialogChoice.active = false
                 dialogNewPassword.active = false
 
             }
@@ -148,6 +186,7 @@ Rectangle {
 
         onHideAll: {
             dialogMessage.active = false
+            dialogChoice.active = false
             dialogNewPassword.active = false
             dialogPassword.active = false
         }

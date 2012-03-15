@@ -35,12 +35,19 @@ public:
     bool showingSomething: 1;
     bool showingBusy: 1;
 
+    enum Action {
+        NoAction,
+        PasswordAction,
+        ChoiceAction
+    } currentAction;
+
     void showWindow();
     bool isWindowVisible() const;
 
 public Q_SLOTS:
     void onCurrentActivityChanged(const QString & activity);
     void returnPassword(const QString & password);
+    void returnChoice(int index);
     void cancel();
     void close();
     void hideWindow();
@@ -48,6 +55,7 @@ public Q_SLOTS:
 Q_SIGNALS:
     void message(const QString & message);
     void askPassword(const QString & title, const QString & message, bool newPassword);
+    void ask(const QString & title, const QString & message, const QStringList & choices);
     void hideAll();
     void windowVisibleChanged();
 
