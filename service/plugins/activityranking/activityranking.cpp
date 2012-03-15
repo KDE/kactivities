@@ -99,12 +99,14 @@ QString ActivityRankingPlugin::Private::selectMonthScore =
     "SELECT * FROM MonthScores WHERE activity = '%1' AND year = %2 AND month = %3 AND location = '%4'";
 
 
+// Not using "ORDER BY sumscore DESC" because in topActivitiesFor we return the result of this query in a QMap, which reorders
+// the entries by its key (activity id).
 QString ActivityRankingPlugin::Private::selectScore =
     "SELECT week.activity, week.score + month.score as sumscore "
     "FROM "
     "(SELECT activity, location, SUM(s%1%2) as score FROM WeekScores GROUP BY activity) AS week, "
     "(SELECT activity, location, SUM(s%3) as score FROM MonthScores GROUP BY activity) AS month "
-    "WHERE week.activity = month.activity AND week.location = '%4' AND month.location = '%4' ORDER BY sumscore DESC";
+    "WHERE week.activity = month.activity AND week.location = '%4' AND month.location = '%4'";
 
 
 #ifdef AR_FAKE_EVENTS_FEED
