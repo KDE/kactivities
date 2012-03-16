@@ -19,7 +19,7 @@
 
 #include <ActivityManager.h>
 
-//#include <QTextStream>
+//#include <QDebug>
 
 #include <KAboutData>
 #include <KCmdLineArgs>
@@ -57,9 +57,7 @@ static void signalHandler(int sig)
     // If it is really ksmserver then the user is probably logging out, so we
     // had better gently stop now than be killed.
     if (sig == SIGTERM) {
-        // qDebug does not work here.
-        //QTextStream qerr(stderr, QIODevice::WriteOnly);
-        //qerr << "signalHandler(SIGTERM): stopping ActivityManager\n";
+        //qDebug() << "signalHandler(SIGTERM): stopping ActivityManager\n";
 
         ActivityManager::self()->Stop();
     }
