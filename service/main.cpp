@@ -51,8 +51,6 @@ int main(int argc, char ** argv)
 // Signal handling
 static void signalHandler(int sig)
 {
-    Q_UNUSED(sig);
-
     Jobs::Encryption::Common::unmountAll();
 
     // something (probably ksmserver) has asked us to terminate.
