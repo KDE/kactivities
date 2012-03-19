@@ -27,6 +27,7 @@
 #include <KConfig>
 #include <KConfigGroup>
 #include <KCrash>
+#include <KLocale>
 #include <KUrl>
 #include <KDebug>
 
