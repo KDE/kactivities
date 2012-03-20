@@ -604,7 +604,7 @@ QMap <QString, qreal> ActivityRankingPlugin::Private::topActivitiesFor(const QDa
 
     if (location.isEmpty()) {
         kDebug() << "location must not be empty";
-        return;
+        return result;
     }
 
     // We want to get the scores for the current week segment
