@@ -19,7 +19,8 @@
 
 #include <ActivityManager.h>
 
-//#include <QDebug>
+#include <QDebug>
+#include <KCrash>
 
 #include <KAboutData>
 #include <KCmdLineArgs>
@@ -60,6 +61,12 @@ static void signalHandler(int sig)
         //qDebug() << "signalHandler(SIGTERM): stopping ActivityManager\n";
 
         ActivityManager::self()->Stop();
+    }
+
+    // If we have crashed, then restart
+    if (sig == SIGSEGV) {
+        qDebug() << "Calling the crash handler...";
+        KCrash::defaultCrashHandler(SIGSEGV);
     }
 
     ::exit(EXIT_SUCCESS);

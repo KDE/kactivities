@@ -91,6 +91,7 @@ ActivityManager::ActivityManager()
 
     // KAMD is a daemon, if it crashes it is not a problem as
     // long as it restarts properly
+    // NOTE: We have a custom crash handler
     KCrash::setFlags(KCrash::AutoRestart);
 
     // Initializing the event processor
