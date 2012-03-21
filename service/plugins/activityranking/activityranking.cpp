@@ -175,8 +175,8 @@ void ActivityRankingPlugin::Private::ensureMonthScoreExists(const QString & acti
 void ActivityRankingPlugin::Private::processActivityInterval(const QString & activity, const QString & location, qint64 start, qint64 end)
 {
     kDebug() << activity << location << start << end;
-    if (activity.isEmpty() || location.isEmpty()) {
-        kDebug() << "empty activity id or location. Not processing.";
+    if (activity.isEmpty()) {
+        kDebug() << "empty activity id. Not processing.";
         return;
     }
 
@@ -557,11 +557,6 @@ void ActivityRankingPlugin::activityChanged(const QString & activity)
 
 void ActivityRankingPlugin::locationChanged(const QString &location)
 {
-    if (location.isEmpty()) {
-        kDebug() << ">>>> not processing empty location";
-        return;
-    }
-
     qint64 currentTime = QDateTime::currentMSecsSinceEpoch();
 
     kDebug() << ">>>> we have the new location" << location;
@@ -601,11 +596,6 @@ QStringList ActivityRankingPlugin::topActivities()
 QMap <QString, qreal> ActivityRankingPlugin::Private::topActivitiesFor(const QDateTime & time, const QString & location)
 {
     QMap <QString, qreal> result;
-
-    if (location.isEmpty()) {
-        kDebug() << "location must not be empty";
-        return result;
-    }
 
     // We want to get the scores for the current week segment
     const QDateTime monthStartDateTime(QDate(time.date().year(), time.date().month(), 1));
