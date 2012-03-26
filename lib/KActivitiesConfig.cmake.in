@@ -12,6 +12,7 @@ set(KACTIVITIES_VERSION_STRING "@KACTIVITIES_LIB_MAJOR_VERSION@.@KACTIVITIES_LIB
 # we have _DIRS for compat with existing usage
 SET(KACTIVITIES_INCLUDE_DIRS "@INCLUDE_INSTALL_DIR@" "@INCLUDE_INSTALL_DIR@/KDE" CACHE PATH "Include path for the KActivities library")
 set(KACTIVITIES_INCLUDES "${rootDir}/@INCLUDE_INSTALL_DIR@" "@INCLUDE_INSTALL_DIR@/KDE")
+set(KACTIVITIES_ONTOLOGIES_DIR "@KACTIVITIES_ONTOLOGIES_DIR@")
 
 # import the exported targets
 include(${myDir}/KActivitiesLibraryTargets.cmake)

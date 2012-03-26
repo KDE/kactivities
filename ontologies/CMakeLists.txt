@@ -5,5 +5,5 @@ install (
     kao.trig
     ${CMAKE_CURRENT_BINARY_DIR}/kao.ontology
   DESTINATION
-    ${CMAKE_INSTALL_PREFIX}/share/ontology/kde
+    ${KACTIVITIES_ONTOLOGIES_DIR}
 )
