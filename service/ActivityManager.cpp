@@ -80,7 +80,8 @@ ActivityManagerPrivate::ActivityManagerPrivate(ActivityManager * parent,
       windows(_windows),
       resources(_resources),
 #ifdef HAVE_NEPOMUK
-      m_nepomukInitCalled(false),
+      m_nepomukInitialized(false),
+      m_nepomukWatcher(0),
 #endif
       q(parent),
       ksmserverInterface(0)
@@ -90,7 +91,17 @@ ActivityManagerPrivate::ActivityManagerPrivate(ActivityManager * parent,
     kDebug() << "-------------------------------------------------------";
 
 #ifdef HAVE_NEPOMUK
-    Nepomuk::ResourceManager::instance()->init();
+    if (QDBusConnection::sessionBus().interface()->isServiceRegistered(QLatin1String("org.kde.nepomuk.services.nepomukstorage"))) {
+        QTimer::singleShot(500, this, SLOT(nepomukOnline()));
+
+    } else {
+        m_nepomukWatcher = new QDBusServiceWatcher(QLatin1String("org.kde.nepomuk.services.nepomukstorage"),
+                            QDBusConnection::sessionBus(),
+                            QDBusServiceWatcher::WatchForRegistration | QDBusServiceWatcher::WatchForUnregistration,
+                            this);
+        connect(m_nepomukWatcher, SIGNAL(serviceRegistered(QString)), this, SLOT(nepomukOnline()));
+        connect(m_nepomukWatcher, SIGNAL(serviceUnregistered(QString)), this, SLOT(nepomukOffline()));
+    }
 #endif
 
     // Initializing config
@@ -308,6 +319,8 @@ void ActivityManagerPrivate::configSync()
 void ActivityManagerPrivate::syncActivitiesWithNepomuk()
 {
 #ifdef HAVE_NEPOMUK
+    if (!nepomukInitialized()) return;
+
     foreach (const QString & activityId, activities.keys()) {
         Nepomuk::Resource activityResource(activityId, KEXT::Activity());
 
@@ -337,32 +350,9 @@ Nepomuk::Resource ActivityManagerPrivate::activityResource(const QString & id)
 }
 
 /* lazy init of nepomuk */
-bool ActivityManagerPrivate::nepomukInitialized()
+bool ActivityManagerPrivate::nepomukInitialized() const
 {
-    if (m_nepomukInitCalled) return
-        Nepomuk::ResourceManager::instance()->initialized();
-
-    m_nepomukInitCalled = true;
-
-    connect(Nepomuk::ResourceManager::instance(), SIGNAL(nepomukSystemStarted()), this, SLOT(backstoreAvailable()));
-
-    return (Nepomuk::ResourceManager::instance()->init() == 0);
-}
-
-void ActivityManagerPrivate::backstoreAvailable()
-{
-    //emit q->BackstoreAvailable();
-    //kick the icons, so that clients don't need to know that they depend on nepomuk
-    for (QHash<QString, ActivityManager::State>::const_iterator i = activities.constBegin();
-         i != activities.constEnd(); ++i) {
-        emit q->ActivityChanged(i.key());
-    }
-}
-
-#else // HAVE_NEPOMUK
-
-void ActivityManagerPrivate::backstoreAvailable()
-{
+    return m_nepomukInitialized;
 }
 
 #endif // HAVE_NEPOMUK
@@ -651,6 +641,27 @@ void ActivityManagerPrivate::stopCancelled()
     transitioningActivity.clear();
 }
 
+void ActivityManagerPrivate::nepomukOnline()
+{
+#ifdef HAVE_NEPOMUK
+    Nepomuk::ResourceManager::instance()->init();
+
+    for (QHash<QString, ActivityManager::State>::const_iterator i = activities.constBegin();
+         i != activities.constEnd(); ++i) {
+        emit q->ActivityChanged(i.key());
+    }
+
+    m_nepomukInitialized = true;
+#endif
+}
+
+void ActivityManagerPrivate::nepomukOffline()
+{
+#ifdef HAVE_NEPOMUK
+    m_nepomukInitialized = false;
+#endif
+}
+
 int ActivityManager::ActivityState(const QString & id) const
 {
     //kDebug() << id << "- is it in" << d->activities << "?";
@@ -789,7 +800,7 @@ void ActivityManager::RegisterResourceEvent(QString application, uint _windowId,
     kDebug() << "New event on the horizon" << application << windowId << event << uri;
 
 #ifdef HAVE_NEPOMUK
-    if (uri.startsWith("nepomuk:")) {
+    if (NEPOMUK_RUNNING && uri.startsWith("nepomuk:")) {
         Nepomuk::Resource resource(kuri);
 
         if (resource.hasProperty(NIE::url())) {
@@ -830,36 +841,37 @@ void ActivityManager::RegisterResourceMimeType(const QString & uri, const QStrin
     d->resources[kuri].mimetype = mimetype;
 
 #ifdef HAVE_NEPOMUK
-    Nepomuk::Resource resource(kuri);
-    if (!resource.hasProperty(NIE::mimeType())) {
-        kDebug() << "Setting the mime in nepomuk for" << uri << "to be" << mimetype;
-        resource.setProperty(NIE::mimeType(), mimetype);
+    if (NEPOMUK_RUNNING) {
+        Nepomuk::Resource resource(kuri);
+        if (!resource.hasProperty(NIE::mimeType())) {
+            kDebug() << "Setting the mime in nepomuk for" << uri << "to be" << mimetype;
+            resource.setProperty(NIE::mimeType(), mimetype);
 
-        if (mimetype.startsWith("image/")) {
-            resource.addType(NFO::Image());
+            if (mimetype.startsWith("image/")) {
+                resource.addType(NFO::Image());
 
-        } else if (mimetype.startsWith("video/")) {
-            resource.addType(NFO::Video());
+            } else if (mimetype.startsWith("video/")) {
+                resource.addType(NFO::Video());
 
-        } else if (mimetype.startsWith("audio/")) {
-            resource.addType(NFO::Audio());
+            } else if (mimetype.startsWith("audio/")) {
+                resource.addType(NFO::Audio());
 
-        } else if (mimetype.startsWith("image/")) {
-            resource.addType(NFO::Image());
+            } else if (mimetype.startsWith("image/")) {
+                resource.addType(NFO::Image());
 
-        } else if (mimetype.startsWith("text/")) {
-            if (!resource.hasType(NFO::Bookmark())) {
-                resource.addType(NFO::TextDocument());
+            } else if (mimetype.startsWith("text/")) {
+                if (!resource.hasType(NFO::Bookmark())) {
+                    resource.addType(NFO::TextDocument());
 
-                if (mimetype == "text/plain") {
-                    resource.addType(NFO::PlainTextDocument());
+                    if (mimetype == "text/plain") {
+                        resource.addType(NFO::PlainTextDocument());
 
-                } else if (mimetype == "text/html") {
-                        resource.addType(NFO::HtmlDocument());
+                    } else if (mimetype == "text/html") {
+                            resource.addType(NFO::HtmlDocument());
+                    }
                 }
             }
         }
-
     }
 #endif
 }
@@ -876,13 +888,15 @@ void ActivityManager::RegisterResourceTitle(const QString & uri, const QString &
     d->resources[kuri].title = title;
 
 #ifdef HAVE_NEPOMUK
-    kDebug() << "Setting the title for" << uri << "to be" << title;
-    Nepomuk::Resource resource(kuri);
+    if (NEPOMUK_RUNNING) {
+        kDebug() << "Setting the title for" << uri << "to be" << title;
+        Nepomuk::Resource resource(kuri);
 
-    kDebug() << uri << "local?" << kuri.isLocalFile()
-                    << "title"  << resource.hasProperty(NIE::title());
-    if (!kuri.isLocalFile() || !resource.hasProperty(NIE::title())) {
-        resource.setProperty(NIE::title(), title);
+        kDebug() << uri << "local?" << kuri.isLocalFile()
+                        << "title"  << resource.hasProperty(NIE::title());
+        if (!kuri.isLocalFile() || !resource.hasProperty(NIE::title())) {
+            resource.setProperty(NIE::title(), title);
+        }
     }
 #endif
 }
@@ -890,7 +904,7 @@ void ActivityManager::RegisterResourceTitle(const QString & uri, const QString &
 void ActivityManager::LinkResourceToActivity(const QString & uri, const QString & activity)
 {
 #ifdef HAVE_NEPOMUK
-    if (!d->nepomukInitialized()) return;
+    if (!NEPOMUK_RUNNING || !d->nepomukInitialized()) return;
 
     kDebug() << "Linking" << uri << "to" << activity << CurrentActivity();
 

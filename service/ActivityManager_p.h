@@ -23,6 +23,7 @@
 #include <QSet>
 #include <QString>
 #include <QTimer>
+#include <QDBusServiceWatcher>
 
 #include <KConfig>
 #include <KConfigGroup>
@@ -83,12 +84,6 @@ public:
     KConfigGroup mainConfig();
     QString activityName(const QString & id);
 
-#ifdef HAVE_NEPOMUK
-    Nepomuk::Resource activityResource(const QString & id);
-    bool nepomukInitialized();
-    mutable bool m_nepomukInitCalled;
-#endif // HAVE_NEPOMUK
-
 public Q_SLOTS:
     void scheduleConfigSync();
     void configSync();
@@ -103,9 +98,21 @@ public Q_SLOTS:
     void reallyStartActivity(const QString & id);
     void reallyStopActivity(const QString & id);
 
-    void backstoreAvailable();
     void syncActivitiesWithNepomuk();
     void sessionServiceRegistered();
+
+public Q_SLOTS:
+    void nepomukOnline();
+    void nepomukOffline();
+
+#ifdef HAVE_NEPOMUK
+public:
+    Nepomuk::Resource activityResource(const QString & id);
+    bool nepomukInitialized() const;
+
+    mutable bool m_nepomukInitialized : 1;
+    QDBusServiceWatcher * m_nepomukWatcher;
+#endif // HAVE_NEPOMUK
 
 private:
     ActivityManager * const q;
