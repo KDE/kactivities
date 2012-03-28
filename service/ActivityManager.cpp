@@ -904,7 +904,7 @@ void ActivityManager::RegisterResourceTitle(const QString & uri, const QString &
 void ActivityManager::LinkResourceToActivity(const QString & uri, const QString & activity)
 {
 #ifdef HAVE_NEPOMUK
-    if (!NEPOMUK_RUNNING || !d->nepomukInitialized()) return;
+    if (!NEPOMUK_RUNNING) return;
 
     kDebug() << "Linking" << uri << "to" << activity << CurrentActivity();
 
