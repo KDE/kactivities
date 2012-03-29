@@ -1,6 +1,7 @@
 [Desktop Entry]
 Name=Activity ranking plugin
 Name[es]=Complemento de puntuación de actividades
+Name[gl]=Engadido de clasificación das actividades
 Name[he]=תוסף דירוג פעילות
 Name[hu]=Aktivitásértékelő bővítmény
 Name[ia]=Plugin de classificar activitate
@@ -15,6 +16,7 @@ Name[x-test]=xxActivity ranking pluginxx
 Name[zh_TW]=活動排序外掛程式
 Comment=Plugin to rank activities based on usage
 Comment[es]=Complemento para puntuar actividades basándose en su uso
+Comment[gl]=Un engadido para clasificar as actividades segundo o uso
 Comment[he]=תוסיף לדירוג פעילויות בהתאם לשימוש
 Comment[hu]=Bővítmény aktivitások értékeléséhez a használat alapján
 Comment[ia]=Plugin pro classificar activitates per lor usage
