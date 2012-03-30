@@ -45,8 +45,6 @@ class KACTIVITIES_EXPORT Info: public QObject
 {
     Q_OBJECT
 
-    Q_PROPERTY(KUrl uri READ uri)
-    Q_PROPERTY(KUrl resourceUri READ resourceUri)
     Q_PROPERTY(QString id READ id)
     Q_PROPERTY(QString name READ name)
 
@@ -85,16 +83,20 @@ public:
     Availability availability() const;
 
     /**
+     * @deprecated we don't guarantee that nepomuk is the backend
      * @returns the URI of this activity. The same URI is used by
      * activities KIO slave.
      * @note Functional only when availability is Everything
      */
+    KDE_DEPRECATED
     KUrl uri() const;
 
     /**
+     * @deprecated we don't guarantee that nepomuk is the backend
      * @returns the Nepomuk resource URI of this activity
      * @note Functional only when availability is Everything
      */
+    KDE_DEPRECATED
     KUrl resourceUri() const;
 
     /**

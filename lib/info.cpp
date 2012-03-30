@@ -106,18 +106,12 @@ bool Info::isValid() const
 
 KUrl Info::uri() const
 {
-    // TODO:
     return KUrl();
-    // KACTIVITYINFO_DBUS_CAST_RETURN(
-    //     QString, KUrl, Private::s_store->uri(d->id));
 }
 
 KUrl Info::resourceUri() const
 {
-    // TODO:
     return KUrl();
-    // KACTIVITYINFO_DBUS_CAST_RETURN(
-    //     QString, KUrl, Private::s_store->resourceUri(d->id));
 }
 
 QString Info::id() const
