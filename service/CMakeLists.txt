@@ -14,9 +14,6 @@ define_property(GLOBAL PROPERTY KACTIVITIES_BUILD_DUMMY_PLUGIN
 
 set(ADDITIONAL_LINK_LIBS)
 
-add_subdirectory(kded)
-# add_subdirectory(ontologies)
-
 # Checking for Nepomuk
 macro_optional_find_package(Nepomuk)
 macro_log_feature(
