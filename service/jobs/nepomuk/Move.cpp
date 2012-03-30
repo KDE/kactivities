@@ -79,7 +79,7 @@ namespace Private {
         // and remove the links for all except for the current
 
         const QString query = QString::fromLatin1(
-                "select ?activity where { ?activity a kao:Activity . ?activity nao:isRelated %1");
+                "select ?activity where { ?activity a kao:Activity . ?activity nao:isRelated %1 }");
 
         // First we are moving the directories linked to the activity
         Soprano::QueryResultIterator it
