@@ -1,10 +1,11 @@
 macro_optional_add_subdirectory(dummy)
 macro_optional_add_subdirectory(slc)
 macro_optional_add_subdirectory(activityranking)
+macro_optional_add_subdirectory(sqlite)
 
-macro_optional_find_package(Nepomuk)
-if(Nepomuk_FOUND)
+get_property(KACTIVITIES_BUILD_NEPOMUK_PLUGIN GLOBAL PROPERTY KACTIVITIES_BUILD_NEPOMUK_PLUGIN)
+
+if(KACTIVITIES_BUILD_NEPOMUK_PLUGIN AND Nepomuk_FOUND)
     macro_optional_add_subdirectory(nepomuk)
-    macro_optional_add_subdirectory(sqlite)
-endif(Nepomuk_FOUND)
+endif()
 

@@ -1,5 +1,12 @@
 project(ActivityManager)
 
+define_property(GLOBAL PROPERTY KACTIVITIES_BUILD_NEPOMUK_PLUGIN
+    BRIEF_DOCS "Should the nepomuk plugin be built?"
+    FULL_DOCS "The Nepomuk plugin is deprecated and replaced by sqlite
+    plugin which uses sqlite for statistics processing. If Nepomuk is enabled,
+    the sqlite plugin will export important data to it.")
+
+
 set(ADDITIONAL_LINK_LIBS)
 
 add_subdirectory(kded)
