@@ -24,6 +24,13 @@
 
 namespace KActivities {
 
+void ConsumerPrivate::setServicePresent(bool present)
+{
+    emit serviceStatusChanged(
+            present ? Consumer::Running : Consumer::NotRunning
+        );
+}
+
 Consumer::Consumer(QObject * parent)
     : QObject(parent), d(new ConsumerPrivate())
 {
@@ -33,6 +40,11 @@ Consumer::Consumer(QObject * parent)
             this, SIGNAL(activityAdded(QString)));
     connect(Manager::self(), SIGNAL(ActivityRemoved(QString)),
             this, SIGNAL(activityRemoved(QString)));
+
+    connect(Manager::self(), SIGNAL(presenceChanged(bool)),
+            d, SLOT(setServicePresent(bool)));
+    connect(d, SIGNAL(serviceStatusChanged(KActivities::Consumer::ServiceStatus)),
+            this, SIGNAL(serviceStatusChanged(KActivities::Consumer::ServiceStatus)));
 }
 
 Consumer::~Consumer()
@@ -87,11 +99,7 @@ Consumer::ServiceStatus Consumer::serviceStatus()
         return NotRunning;
     }
 
-    if (!Manager::self()->IsFeatureOperational("activity/resource-linking")) {
-        return BareFunctionality;
-    }
-
-    return FullFunctionality;
+    return Running;
 }
 
 } // namespace KActivities

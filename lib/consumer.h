@@ -70,8 +70,9 @@ public:
      */
     enum ServiceStatus {
         NotRunning,        ///< Service is not running
-        BareFunctionality, ///< Service is running without a sane backend
-        FullFunctionality  ///< Service is running, and a backend is available
+        BareFunctionality, ///< @deprecated Service is running without a sane backend.
+        FullFunctionality, ///< @deprecated Service is running, and a backend is available
+        Running
     };
 
     explicit Consumer(QObject * parent = 0);

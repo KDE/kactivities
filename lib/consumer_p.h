@@ -20,10 +20,20 @@
 #define ACTIVITIES_CONSUMER_P_H_
 
 #include "activitymanager_interface.h"
+#include "consumer.h"
 
 namespace KActivities {
 
-class ConsumerPrivate {
+class ConsumerPrivate: public QObject {
+    Q_OBJECT
+public:
+
+Q_SIGNALS:
+    void serviceStatusChanged(KActivities::Consumer::ServiceStatus status);
+
+public Q_SLOTS:
+    void setServicePresent(bool present);
+
 };
 
 } // namespace KActivities
