@@ -6,6 +6,11 @@ define_property(GLOBAL PROPERTY KACTIVITIES_BUILD_NEPOMUK_PLUGIN
     plugin which uses sqlite for statistics processing. If Nepomuk is enabled,
     the sqlite plugin will export important data to it.")
 
+define_property(GLOBAL PROPERTY KACTIVITIES_BUILD_DUMMY_PLUGIN
+    BRIEF_DOCS "Should the dummy plugin be built?"
+    FULL_DOCS "The dummy plugin does nothing. Enable only if you want to test
+    the plugin overriding mechanisms.")
+
 
 set(ADDITIONAL_LINK_LIBS)
 
