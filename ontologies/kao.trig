@@ -83,14 +83,16 @@ kao: {
           rdfs:comment "Resource for which the score is calculated." ;
           rdfs:domain kao:ResourceScoreCache ;
           rdfs:label "resource" ;
-          rdfs:range rdfs:Resource .
+          rdfs:range rdfs:Resource ;
+          nrl:maxCardinality "1" .
 
     kao:initiatingAgent
           a rdf:Property ;
           rdfs:comment "Relates the score to the agent initiating the events." ;
           rdfs:domain kao:ResourceScoreCache ;
           rdfs:label "involved agent" ;
-          rdfs:range nao:Agent .
+          rdfs:range nao:Agent ;
+          nrl:maxCardinality "1" .
 
     kao:cachedScore
           a rdf:Property ;
