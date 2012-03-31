@@ -298,6 +298,8 @@ bool ActivityManagerPrivate::setCurrentActivity(const QString & activity)
     if (!activities.contains(activity)) return false;
     if (currentActivity == activity)    return true;
 
+    activitiesDesktopsConfig().writeEntry(currentActivity, QString::number(KWindowSystem::currentDesktop()));
+
     // Start activity
     // TODO: Move this to job-based execution
     q->StartActivity(activity);
@@ -421,6 +423,13 @@ void ActivityManagerPrivate::emitCurrentActivityChanged(const QString & id)
     SharedInfo::self()->setCurrentActivity(id);
     emit q->CurrentActivityChanged(id);
 
+    if (activitiesDesktopsConfig().hasKey(id)) {
+        int desktopId = activitiesDesktopsConfig().readEntry(id).toInt();
+
+        if (desktopId <= KWindowSystem::numberOfDesktops() && desktopId >= 0) {
+            KWindowSystem::setCurrentDesktop(desktopId);
+	}
+    }
 }
 
 QString ActivityManager::AddActivity(const QString & name)
