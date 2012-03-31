@@ -237,6 +237,11 @@ KConfigGroup ActivityManagerPrivate::mainConfig()
     return KConfigGroup(&config, "main");
 }
 
+KConfigGroup ActivityManagerPrivate::activitiesDesktopsConfig()
+{
+    return KConfigGroup(&config, "activitiesDesktops");
+}
+
 void ActivityManagerPrivate::ensureCurrentActivityIsRunning()
 {
     QStringList runningActivities = q->ListActivities(ActivityManager::Running);
@@ -284,6 +289,8 @@ bool ActivityManagerPrivate::setCurrentActivity(const QString & id)
         //         );
         // }
 
+        activitiesDesktopsConfig().writeEntry(currentActivity, QString::number(KWindowSystem::currentDesktop()));
+
         q->StartActivity(id);
 
         currentActivity = id;
@@ -295,6 +302,14 @@ bool ActivityManagerPrivate::setCurrentActivity(const QString & id)
     // kDebug() << (void*) SharedInfo::self() << "Rankings << shared info";
     SharedInfo::self()->setCurrentActivity(id);
     emit q->CurrentActivityChanged(id);
+
+    if (activitiesDesktopsConfig().hasKey(id)) {
+        int desktopId = activitiesDesktopsConfig().readEntry(id).toInt();
+
+        if (desktopId <= KWindowSystem::numberOfDesktops() && desktopId >= 0)
+            KWindowSystem::setCurrentDesktop(desktopId);
+    }
+
     return true;
 }
 

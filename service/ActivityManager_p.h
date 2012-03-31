@@ -80,6 +80,7 @@ public:
 public:
     void initConifg();
 
+    KConfigGroup activitiesDesktopsConfig();
     KConfigGroup activitiesConfig();
     KConfigGroup mainConfig();
     QString activityName(const QString & id);
