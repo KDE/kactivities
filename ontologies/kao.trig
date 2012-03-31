@@ -98,7 +98,8 @@ kao: {
           rdfs:comment "The automatically calculated score" ;
           rdfs:domain kao:ResourceScoreCache ;
           rdfs:label "calculated score" ;
-          rdfs:range xsd:float .
+          rdfs:range xsd:float ;
+          nrl:maxCardinality "1" .
 
     kao:originalUrlBeforeEncryption
           a rdf:Property ;
@@ -119,10 +120,10 @@ kao: {
           nao:prefLabel "KDE Activities Ontology" ;
           nao:hasDefaultNamespace "http://nepomuk.kde.org/ontologies/2012/02/29/kao#" ;
           nao:hasDefaultNamespaceAbbreviation "kao" ;
-          nao:lastModified "2012-03-14T11:05:00Z" ;
+          nao:lastModified "2012-03-31T20:32:00Z" ;
           nao:serializationLanguage "TriG" ;
           nao:status "Unstable" ;
           nrl:updatable "0" ;
-          nao:version "2" .
+          nao:version "3" .
 }
 
