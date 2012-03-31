@@ -88,6 +88,7 @@ public:
 public:
     void initConifg();
 
+    KConfigGroup activitiesDesktopsConfig();
     KConfigGroup activitiesConfig();
     KConfigGroup activityIconsConfig();
     KConfigGroup mainConfig();

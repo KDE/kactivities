@@ -38,6 +38,11 @@ KConfigGroup ActivityManagerPrivate::mainConfig()
     return KConfigGroup(&config, "main");
 }
 
+KConfigGroup ActivityManagerPrivate::activitiesDesktopsConfig()
+{
+    return KConfigGroup(&config, "activitiesDesktops");
+}
+
 QString ActivityManagerPrivate::activityName(const QString & id)
 {
     return activitiesConfig().readEntry(id, QString());
