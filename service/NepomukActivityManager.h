@@ -27,8 +27,8 @@
 #include <Nepomuk/ResourceManager>
 #include <Nepomuk/Resource>
 #include <Nepomuk/Variant>
-#include "nie.h"
-#include "nfo.h"
+#include <Nepomuk/Vocabulary/NIE>
+#include <Nepomuk/Vocabulary/NFO>
 #include "kao.h"
 
 class NepomukActivityManager {

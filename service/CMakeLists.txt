@@ -35,18 +35,6 @@ if(Nepomuk_FOUND)
 
     soprano_add_ontology(
         sdo_SRCS
-        ${SHAREDDESKTOPONTOLOGIES_ROOT_DIR}/nie/nie.trig
-        "NIE" "Nepomuk::Vocabulary" "trig"
-    )
-
-    soprano_add_ontology(
-        sdo_SRCS
-        ${SHAREDDESKTOPONTOLOGIES_ROOT_DIR}/nie/nfo.trig
-        "NFO" "Nepomuk::Vocabulary" "trig"
-    )
-
-    soprano_add_ontology(
-        sdo_SRCS
         ${CMAKE_SOURCE_DIR}/ontologies/kao.trig
         "KAO" "Nepomuk::Vocabulary" "trig"
     )
