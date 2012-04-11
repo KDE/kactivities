@@ -28,6 +28,8 @@
 
 #ifdef HAVE_NEPOMUK
     #include "NepomukCommon.h"
+    #include <QDBusConnection>
+    #include <QDBusConnectionInterface>
 #endif // HAVE_NEPOMUK
 
 /**
@@ -68,7 +70,9 @@ void ResourceScoreCache::updateScore()
 
     // Forcing immediate sync of the score, in case of kamd being terminated improperly
     #ifdef HAVE_NEPOMUK
-    updateNepomukScore(d->activity, d->application, d->resource, score);
+    if (QDBusConnection::sessionBus().interface()->isServiceRegistered("org.kde.nepomuk.services.nepomukstorage")) {
+        updateNepomukScore(d->activity, d->application, d->resource, score);
+    }
     #endif
 
     Rankings::self()->resourceScoreUpdated(d->activity, d->application, d->resource, score);

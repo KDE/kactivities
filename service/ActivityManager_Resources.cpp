@@ -143,10 +143,10 @@ QStringList ActivityManager::ResourcesLinkedToActivity(const QString & activity)
 
 QList <KUrl> ActivityManager::resourcesLinkedToActivity(const QString & activity) const
 {
+    if (NEPOMUK_PRESENT) {
     #ifdef HAVE_NEPOMUK
         return EXEC_NEPOMUK(resourcesLinkedToActivity(activity.isEmpty() ? CurrentActivity() : activity));
-    #else
-        return QList <KUrl>();
     #endif
+    } else return QList <KUrl>();
 }
 

@@ -93,12 +93,17 @@ set(activity_manager_SRCS
     jobs/encryption/Mount.cpp
     jobs/encryption/InitializeStructure.cpp
 
-    jobs/nepomuk/Move.cpp
-
     ui/UiHandler.cpp
     ui/Ui.cpp
     ${sdo_SRCS}
     )
+
+if(Nepomuk_FOUND)
+    set(activity_manager_SRCS
+        ${activity_manager_SRCS}
+        jobs/nepomuk/Move.cpp
+        )
+endif(Nepomuk_FOUND)
 
 qt4_add_dbus_adaptor(
     activity_manager_SRCS org.kde.ActivityManager.xml

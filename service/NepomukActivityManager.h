@@ -23,18 +23,25 @@
 #include "config-features.h"
 
 #ifdef HAVE_NEPOMUK
+#    include <Nepomuk/ResourceManager>
+#    include <Nepomuk/Resource>
+#    include <Nepomuk/Variant>
+#    include <Nepomuk/Vocabulary/NIE>
+#    include <Nepomuk/Vocabulary/NFO>
+#    include "kao.h"
+#endif
 
-#include <Nepomuk/ResourceManager>
-#include <Nepomuk/Resource>
-#include <Nepomuk/Variant>
-#include <Nepomuk/Vocabulary/NIE>
-#include <Nepomuk/Vocabulary/NFO>
-#include "kao.h"
+#include <QObject>
 
-class NepomukActivityManager {
+class NepomukActivityManager: public QObject {
+    Q_OBJECT
+
+private Q_SLOTS:
+    void nepomukServiceOwnerChanged(const QString & service, const QString & oldOwner, const QString & newOwner);
+
+#ifdef HAVE_NEPOMUK
 public:
     ~NepomukActivityManager();
-
     static NepomukActivityManager * self();
 
     void init();
@@ -57,15 +64,15 @@ public:
 private:
     void __updateOntology();
 
-private:
     Nepomuk::Resource activityResource(const QString & id) const;
 
     NepomukActivityManager();
 
+    bool m_nepomukPresent;
     static NepomukActivityManager * s_instance;
+#endif // HAVE_NEPOMUK
 };
 
-#endif // HAVE_NEPOMUK
 
 #endif // NEPOMUKACTIVITYMANAGER_H_
 

@@ -23,14 +23,17 @@
     #warning "No Nepomuk, disabling some activity related features"
 #endif
 
+#include "NepomukActivityManager.h"
+
 #ifdef HAVE_NEPOMUK
 
-#include "NepomukActivityManager.h"
+#define NEPOMUK_DBUS_SERVICE "org.kde.nepomuk.services.nepomukstorage"
 
 #include "kao.h"
 #include <KConfigGroup>
-#include <Soprano/Vocabulary/NAO>
+#include <KDebug>
 
+#include <Soprano/Vocabulary/NAO>
 #include <Soprano/QueryResultIterator>
 #include <Soprano/Node>
 #include <Soprano/Model>
@@ -38,6 +41,9 @@
 #include <Nepomuk/Variant>
 #include <Nepomuk/ResourceManager>
 
+#include <QDBusServiceWatcher>
+#include <QDBusConnection>
+#include <QDBusConnectionInterface>
 
 using namespace Nepomuk::Vocabulary;
 using namespace Soprano::Vocabulary;
@@ -54,7 +60,20 @@ NepomukActivityManager * NepomukActivityManager::self()
 }
 
 NepomukActivityManager::NepomukActivityManager()
+    : m_nepomukPresent(false)
 {
+    QDBusServiceWatcher * watcher = new QDBusServiceWatcher(
+            NEPOMUK_DBUS_SERVICE,
+            QDBusConnection::sessionBus(),
+            QDBusServiceWatcher::WatchForOwnerChange,
+            this);
+
+    connect(watcher, SIGNAL(serviceOwnerChanged(QString, QString, QString)),
+            this, SLOT(nepomukServiceOwnerChanged(QString, QString, QString)));
+
+    if (QDBusConnection::sessionBus().interface()->isServiceRegistered(NEPOMUK_DBUS_SERVICE)) {
+        nepomukServiceOwnerChanged(NEPOMUK_DBUS_SERVICE, QString(), "something");
+    }
 }
 
 NepomukActivityManager::~NepomukActivityManager()
@@ -65,6 +84,8 @@ NepomukActivityManager::~NepomukActivityManager()
 
 void NepomukActivityManager::init()
 {
+    if (!m_nepomukPresent) return;
+
     Nepomuk::ResourceManager::instance()->init();
 }
 
@@ -81,6 +102,8 @@ void NepomukActivityManager::init()
 
 void NepomukActivityManager::__updateOntology()
 {
+    if (!m_nepomukPresent) return;
+
     KConfig config("activitymanagerrc");
     KConfigGroup configGroup(&config, "main");
 
@@ -138,6 +161,8 @@ void NepomukActivityManager::__updateOntology()
 
 void NepomukActivityManager::syncActivities(const QStringList activityIds, KConfigGroup config, KConfigGroup iconsConfig)
 {
+    if (!m_nepomukPresent) return;
+
     // Before we start syncing, we need to convert KEXT -> KAO
     __updateOntology();
 
@@ -171,17 +196,23 @@ void NepomukActivityManager::syncActivities(const QStringList activityIds, KConf
 
 void NepomukActivityManager::setActivityName(const QString & activity, const QString & name)
 {
+    if (!m_nepomukPresent) return;
+
     activityResource(activity).setLabel(name);
 }
 
 void NepomukActivityManager::setActivityIcon(const QString & activity, const QString & icon)
 {
+    if (!m_nepomukPresent) return;
+
     activityResource(activity).setSymbols(QStringList() << icon);
 }
 
 
 void NepomukActivityManager::setResourceMimeType(const KUrl & kuri, const QString & mimetype)
 {
+    if (!m_nepomukPresent) return;
+
     Nepomuk::Resource resource(kuri);
 
     if (!resource.hasProperty(NIE::mimeType())) {
@@ -216,6 +247,8 @@ void NepomukActivityManager::setResourceMimeType(const KUrl & kuri, const QStrin
 
 void NepomukActivityManager::setResourceTitle(const KUrl & kuri, const QString & title)
 {
+    if (!m_nepomukPresent) return;
+
     Nepomuk::Resource resource(kuri);
 
     if (!kuri.isLocalFile() || !resource.hasProperty(NIE::title())) {
@@ -225,6 +258,8 @@ void NepomukActivityManager::setResourceTitle(const KUrl & kuri, const QString &
 
 void NepomukActivityManager::linkResourceToActivity(const KUrl & resource, const QString & activity)
 {
+    if (!m_nepomukPresent) return;
+
     // TODO:
     // I'd like a resource isRelated activity more than vice-versa
     // but the active models are checking for the other way round.
@@ -243,12 +278,16 @@ void NepomukActivityManager::linkResourceToActivity(const KUrl & resource, const
 
 void NepomukActivityManager::unlinkResourceFromActivity(const KUrl & resource, const QString & activity)
 {
+    if (!m_nepomukPresent) return;
+
     activityResource(activity).removeProperty(NAO::isRelated(), Nepomuk::Resource(resource));
 }
 
 QList <KUrl> NepomukActivityManager::resourcesLinkedToActivity(const QString & activity) const
 {
     QList <KUrl> result;
+
+    if (!m_nepomukPresent) return result;
 
     foreach (const Nepomuk::Resource & resource, activityResource(activity).isRelateds()) {
         if (resource.hasProperty(NIE::url())) {
@@ -263,16 +302,20 @@ QList <KUrl> NepomukActivityManager::resourcesLinkedToActivity(const QString & a
 
 Nepomuk::Resource NepomukActivityManager::activityResource(const QString & id) const
 {
+    if (!m_nepomukPresent) return Nepomuk::Resource();
+
     return Nepomuk::Resource(id, KAO::Activity());
 }
 
 bool NepomukActivityManager::initialized() const
 {
-    return Nepomuk::ResourceManager::instance()->initialized();
+    return m_nepomukPresent;
 }
 
 void NepomukActivityManager::toRealUri(KUrl & kuri)
 {
+    if (!m_nepomukPresent) return;
+
     if (kuri.scheme() == "nepomuk") {
         Nepomuk::Resource resource(kuri);
 
@@ -281,5 +324,18 @@ void NepomukActivityManager::toRealUri(KUrl & kuri)
         }
     }
 }
-
 #endif // HAVE_NEPOMUK
+
+void NepomukActivityManager::nepomukServiceOwnerChanged(const QString & service, const QString & oldOwner, const QString & newOwner)
+{
+#ifdef HAVE_NEPOMUK
+    if ((m_nepomukPresent = !newOwner.isEmpty())) {
+        if (!Nepomuk::ResourceManager::instance()->initialized()) {
+            Nepomuk::ResourceManager::instance()->init();
+        }
+    }
+
+    kDebug() << "Is Nepomuk here?" << m_nepomukPresent;
+#endif // HAVE_NEPOMUK
+}
+

@@ -97,9 +97,6 @@ ActivityManager::ActivityManager()
     // Initializing the event processor
     EventProcessor::self();
 
-    // Initializing Nepomuk, if present
-    EXEC_NEPOMUK( init() );
-
     // Initializing config
     connect(&d->configSyncTimer, SIGNAL(timeout()),
              d, SLOT(configSync()));
