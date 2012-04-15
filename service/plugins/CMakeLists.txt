@@ -1,6 +1,7 @@
 macro_optional_add_subdirectory(slc)
 macro_optional_add_subdirectory(activityranking)
 macro_optional_add_subdirectory(sqlite)
+macro_optional_add_subdirectory(globalshortcuts)
 
 get_property(KACTIVITIES_BUILD_NEPOMUK_PLUGIN GLOBAL PROPERTY KACTIVITIES_BUILD_NEPOMUK_PLUGIN)
 get_property(KACTIVITIES_BUILD_DUMMY_PLUGIN GLOBAL PROPERTY KACTIVITIES_BUILD_DUMMY_PLUGIN)
