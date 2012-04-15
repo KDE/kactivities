@@ -1,0 +1,21 @@
+[Desktop Entry]
+Name=Global Shortcuts plugin
+Name[x-test]=xxGlobal Shortcuts pluginxx
+Comment=Adds global keyboard shorcuts to KActivityManager Daemon
+Comment[x-test]=xxAdds global keyboard shorcuts to KActivityManager Daemonxx
+Type=Service
+Icon=
+
+X-KDE-ServiceTypes=ActivityManager/Plugin
+X-KDE-Library=activitymanager_plugin_globalshortcuts
+X-KDE-PluginInfo-Author=Makis Marimpis
+X-KDE-PluginInfo-Email=makhsm@gmail.com
+X-KDE-PluginInfo-Name=org.kde.kactivitymanager.globalshortcuts
+X-KDE-PluginInfo-Version=1.0
+X-KDE-PluginInfo-Website=http://plasma.kde.org/
+X-KDE-PluginInfo-Category=Language
+X-KDE-PluginInfo-Depends=
+X-KDE-PluginInfo-License=GPL
+X-KDE-PluginInfo-EnabledByDefault=true
+
+X-ActivityManager-PluginType=normal
