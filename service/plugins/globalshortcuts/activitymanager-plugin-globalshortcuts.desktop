@@ -1,8 +1,8 @@
 [Desktop Entry]
 Name=Global Shortcuts plugin
 Name[x-test]=xxGlobal Shortcuts pluginxx
-Comment=Adds global keyboard shorcuts to KActivityManager Daemon
-Comment[x-test]=xxAdds global keyboard shorcuts to KActivityManager Daemonxx
+Comment=Adds global keyboard shortcuts to KActivityManager Daemon
+Comment[x-test]=xxAdds global keyboard shortcuts to KActivityManager Daemonxx
 Type=Service
 Icon=
 
