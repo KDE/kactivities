@@ -1,8 +1,11 @@
 [Desktop Entry]
 Name=Global Shortcuts plugin
+Name[nl]=Plug-in voor globale sneltoetsen
+Name[pt]='Plugin' de Atalhos Globais
+Name[sv]=Insticksprogram för globala genvägar
+Name[uk]=Додаток загальних скорочень
 Name[x-test]=xxGlobal Shortcuts pluginxx
 Comment=Adds global keyboard shortcuts to KActivityManager Daemon
-Comment[x-test]=xxAdds global keyboard shortcuts to KActivityManager Daemonxx
 Type=Service
 Icon=
 
