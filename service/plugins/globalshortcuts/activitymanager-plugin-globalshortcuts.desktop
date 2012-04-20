@@ -1,6 +1,8 @@
 [Desktop Entry]
 Name=Global Shortcuts plugin
+Name[da]=Plugin til globale genveje
 Name[ia]=Plugin de vias breve global
+Name[it]=Estensione per scorciatoie globali
 Name[kk]=Жалпы жүйелік тіркесімдер плагині
 Name[nl]=Plug-in voor globale sneltoetsen
 Name[pt]='Plugin' de Atalhos Globais
@@ -10,7 +12,9 @@ Name[sv]=Insticksprogram för globala genvägar
 Name[uk]=Додаток загальних скорочень
 Name[x-test]=xxGlobal Shortcuts pluginxx
 Comment=Adds global keyboard shorcuts to KActivityManager Daemon
+Comment[da]=Føjer globale tastaturgenveje til KActivityManager-dæmonen
 Comment[ia]=Adde vias breve de claviero global pro Daemon de KActivityManager
+Comment[it]=Aggiunge scorciatoie della tastiera globali al demone di gestione delle attività
 Comment[kk]=KActivityManager қызметіне Жалпы жүйелік тіркесімдерді қосу
 Comment[nl]=Voegt globale sneltoetsen toe aan KActivityManager-daemon
 Comment[pt]=Adiciona atalhos globais do teclado ao serviço KActivityManager
