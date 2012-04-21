@@ -1,5 +1,6 @@
 [Desktop Entry]
 Name=Sqlite Feeder Plugin
+Name[ca]=Connector de l'alimentador del Sqlite
 Name[es]=Complemento de aprovisionamiento de Sqlite
 Name[gl]=Engadido alimentador de Sqlite
 Name[he]=תוסף רסס של Nepomuk מבוסס Sqlite
@@ -18,6 +19,7 @@ Name[uk]=Додаток передавання даних Sqlite
 Name[x-test]=xxSqlite Feeder Pluginxx
 Name[zh_TW]=Sqlite Feeder 外掛程式
 Comment=Plugin to store and score events in Sqlite
+Comment[ca]=Connector per emmagatzemar i classificar esdeveniments en el Sqlite
 Comment[de]=Modul zum Speichern und Bewerten von Ereignissen in SQLite
 Comment[es]=Complemento para almacenar y puntuar eventos en Sqlite
 Comment[gl]=Un engadido para gardar e cualificar acontecementos en Sqlite
