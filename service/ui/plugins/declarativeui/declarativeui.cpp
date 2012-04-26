@@ -152,7 +152,6 @@ DeclarativeUiHandler::DeclarativeUiHandler(QObject * parent, const QVariantList 
     d->window->resize(800, 600);
     d->window->declarativeView()->rootContext()->setContextProperty("uihandler", d);
     d->window->declarativeView()->setPackageName("org.kde.ActivityManager.UiHandler");
-    d->window->hide();
 }
 
 DeclarativeUiHandler::~DeclarativeUiHandler()

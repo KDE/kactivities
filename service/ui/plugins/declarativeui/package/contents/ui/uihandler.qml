@@ -28,12 +28,21 @@ Rectangle {
     id: main
 
     color: Qt.rgba(0, 0, 0, 0.35)
+    visible: false
 
     width: 400
     height: 360
 
     property int mainIconSize: 64 + 32
     property int layoutPadding: 8
+
+    Timer {
+        running: true
+        repeat: false
+        interval: 1000
+
+        onTriggered: { main.visible = true }
+    }
 
     MouseArea {
         onClicked: { uihandler.cancel() }
