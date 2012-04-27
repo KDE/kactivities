@@ -20,6 +20,7 @@ Name[sr@latin]=Priključak globalnih prečica
 Name[sv]=Insticksprogram för globala genvägar
 Name[uk]=Додаток загальних скорочень
 Name[x-test]=xxGlobal Shortcuts pluginxx
+Name[zh_TW]=全域捷徑外掛程式
 Comment=Adds global keyboard shorcuts to KActivityManager Daemon
 Comment[ca]=Afegeix les dreceres de teclat globals al dimoni KActivityManager
 Comment[da]=Føjer globale tastaturgenveje til KActivityManager-dæmonen
@@ -39,6 +40,7 @@ Comment[sr@latin]=Dodaje globalne prečice sa tastature demonu menadžera aktivn
 Comment[sv]=Lägger till globala snabbtangenter till KActivityManager-demonen
 Comment[uk]=Додає загальні клавіатурні скорочення для використання у фоновій службі KActivityManager
 Comment[x-test]=xxAdds global keyboard shorcuts to KActivityManager Daemonxx
+Comment[zh_TW]=新增全域鍵盤捷徑到 KActivityManager 伺服程式
 Type=Service
 Icon=
 
