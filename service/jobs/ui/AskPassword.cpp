@@ -25,11 +25,12 @@
 namespace Jobs {
 namespace Ui {
 
-AskPassword::JOB_FACTORY(const QString & title, const QString & message, bool shouldVerify)
+AskPassword::JOB_FACTORY(const QString & title, const QString & message, bool shouldVerify, bool unlockMode)
 {
     JOB_FACTORY_PROPERTY(title);
     JOB_FACTORY_PROPERTY(message);
     JOB_FACTORY_PROPERTY(shouldVerify);
+    JOB_FACTORY_PROPERTY(unlockMode);
 }
 
 QString AskPassword::message() const
@@ -62,13 +63,22 @@ void AskPassword::setShouldVerify(bool value)
     m_shouldVerify = value;
 }
 
+bool AskPassword::unlockMode() const
+{
+    return m_unlockMode;
+}
+
+void AskPassword::setUnlockMode(bool value)
+{
+    m_unlockMode = value;
+}
 
 void AskPassword::start()
 {
     kDebug() << ">>> AskPasswording for the password" << m_message;
 
     // Needed due to namespace collision with Jobs::Ui
-    ::Ui::askPassword(m_title, m_message, m_shouldVerify,
+    ::Ui::askPassword(m_title, m_message, m_shouldVerify, m_unlockMode,
             this, "passwordReturned");
 }
 

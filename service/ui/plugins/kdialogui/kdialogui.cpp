@@ -33,14 +33,14 @@ class KDialogUiHandler::Private {
 public:
     class AskPassword: public QThread {
     public:
-        AskPassword(const QString & _title, const QString & _message, bool _newPassword,
+        AskPassword(const QString & _title, const QString & _message, bool _newPassword, bool _unlockMode,
                  QObject * _receiver, const char * _slot)
-            : title(_title), message(_message), newPassword(_newPassword),
+            : title(_title), message(_message), newPassword(_newPassword), unlockMode(_unlockMode),
               receiver(_receiver), slot(_slot)
         {
         }
 
-        QString askPassword(const QString & title, const QString & message, bool newPassword)
+        QString askPassword(const QString & title, const QString & message, bool newPassword, bool unlockMode)
         {
             #define ShowDialog(Type)                                                      \
                 Type dialog;                                                              \
@@ -62,7 +62,7 @@ public:
         }
 
         void run() {
-            const QString & password = askPassword(title, message, newPassword);
+            const QString & password = askPassword(title, message, newPassword, unlockMode);
 
             kDebug() << "Got password .... sending it to" << receiver << slot;
 
@@ -76,6 +76,7 @@ public:
         QString title;
         QString message;
         bool newPassword;
+        bool unlockMode;
         QObject * receiver;
         const char * slot;
     };
@@ -164,9 +165,9 @@ KDialogUiHandler::~KDialogUiHandler()
 }
 
 void KDialogUiHandler::askPassword(const QString & title, const QString & message,
-            bool newPassword, QObject * receiver, const char * slot)
+            bool newPassword, bool unlockMode, QObject * receiver, const char * slot)
 {
-    (new Private::AskPassword(title, message, newPassword, receiver, slot))->run();
+    (new Private::AskPassword(title, message, newPassword, unlockMode, receiver, slot))->run();
 }
 
 void KDialogUiHandler::ask(const QString & title, const QString & message,

@@ -34,9 +34,10 @@ class AskPassword: public Job {
     Q_PROPERTY(QString message READ message WRITE setMessage)
     Q_PROPERTY(QString title   READ title   WRITE setTitle)
     Q_PROPERTY(bool    shouldVerify READ shouldVerify WRITE setShouldVerify)
+    Q_PROPERTY(bool    unlockMode READ unlockMode WRITE setUnlockMode)
 
 public:
-    DECLARE_JOB_FACTORY(AskPassword, (const QString & title, const QString & message, bool shouldVerify = false));
+    DECLARE_JOB_FACTORY(AskPassword, (const QString & title, const QString & message, bool shouldVerify = false, bool unlockMode = false));
 
     QString message() const;
     void setMessage(const QString & message);
@@ -46,6 +47,9 @@ public:
 
     bool shouldVerify() const;
     void setShouldVerify(bool value);
+
+    bool unlockMode() const;
+    void setUnlockMode(bool value);
 
     virtual void start();
 
@@ -57,11 +61,12 @@ private Q_SLOTS:
 private:
     QString m_message;
     QString m_title;
-    bool    m_shouldVerify;
+    bool    m_shouldVerify : 1;
+    bool    m_unlockMode : 1;
 
 };
 
-inline AskPassword::Factory * askPassword(const QString & title, const QString & message, bool shouldVerify = false) {
+inline AskPassword::Factory * askPassword(const QString & title, const QString & message, bool shouldVerify = false, bool unlockMode = false) {
     return new AskPassword::Factory(title, message, shouldVerify);
 }
 

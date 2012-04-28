@@ -126,7 +126,7 @@ private:
     ActivityManager * const q;
     QDBusInterface * ksmserverInterface; // just keeping it for the signals
     QDBusInterface * screensaverInterface; // just keeping it for the signals
-    QString oldCurrentActivity;
+    QString currentActivityBeforeScreenLock;
 };
 
 #endif // ACTIVITY_MANAGER_P_H_

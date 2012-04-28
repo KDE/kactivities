@@ -320,7 +320,8 @@ bool ActivityManagerPrivate::setCurrentActivity(const QString & activity)
 
         <<  // Retrying to get the password until it succeeds or the user cancels password entry
             RETRY_JOB(
-                askPassword(i18n("Activity password"), i18n("Enter the password to unlock the activity")),
+                askPassword(i18n("Activity password"), i18n("Enter the password to unlock the activity",
+                            false, !currentActivityBeforeScreenLock.isEmpty())),
                 mount(activity),
                 message(i18n("Error"), i18n("Error unlocking the activity.\nYou've probably entered a wrong password."))
             )

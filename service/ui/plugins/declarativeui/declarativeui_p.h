@@ -54,7 +54,7 @@ public Q_SLOTS:
 
 Q_SIGNALS:
     void message(const QString & message);
-    void askPassword(const QString & title, const QString & message, bool newPassword);
+    void askPassword(const QString & title, const QString & message, bool newPassword, bool unlockMode);
     void ask(const QString & title, const QString & message, const QStringList & choices);
     void hideAll();
     void windowVisibleChanged();

@@ -270,9 +270,10 @@ void ActivityManagerPrivate::screenLockStateChanged(const bool locked)
         if (currentActivity.isEmpty()) {
             return;
         }
-        oldCurrentActivity = currentActivity;
+        currentActivityBeforeScreenLock = currentActivity;
         setCurrentActivity(QString());
     } else {
-        setCurrentActivity(oldCurrentActivity);
+        setCurrentActivity(currentActivityBeforeScreenLock);
+        currentActivityBeforeScreenLock.clear();
     }
 }

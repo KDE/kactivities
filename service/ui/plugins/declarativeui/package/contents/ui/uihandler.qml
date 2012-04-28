@@ -35,6 +35,13 @@ Rectangle {
     property int mainIconSize: 64 + 32
     property int layoutPadding: 8
 
+    Rectangle {
+        id: opaqueBackground
+
+        color: Qt.rgba(0, 0, 0, 1)
+        visible: false
+    }
+
     MouseArea {
         onClicked: { uihandler.cancel() }
 
@@ -161,7 +168,7 @@ Rectangle {
             dialogPassword.active = false
         }
 
-        // void askPassword(const QString & title, const QString & message, bool newPassword);
+        // void askPassword(const QString & title, const QString & message, bool newPassword, bool unlockMode);
         onAskPassword: {
             print("Asking for password....")
             if (newPassword) {
@@ -173,6 +180,7 @@ Rectangle {
                 dialogPassword.active = false
 
             } else {
+                opaqueBackground.visible = unlockMode
                 dialogPassword.title = title
                 dialogPassword.message = message
                 dialogPassword.password = ""
@@ -189,6 +197,7 @@ Rectangle {
             dialogChoice.active = false
             dialogNewPassword.active = false
             dialogPassword.active = false
+            opaqueBackground.visible = false
         }
     }
 }

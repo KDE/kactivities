@@ -40,7 +40,7 @@ public:
      * @arg slot method to call
      */
     static void askPassword(const QString & title, const QString & message,
-            bool newPassword,
+            bool newPassword, bool unlockMode,
             QObject * receiver, const char * slot);
 
     static void ask(const QString & title, const QString & message,
@@ -61,7 +61,7 @@ private:
     Ui(QObject * parent);
 
     void _askPassword(const QString & title, const QString & message,
-            bool newPassword,
+            bool newPassword, bool unlockMode,
             QObject * receiver, const char * slot);
 
     void _ask(const QString & title, const QString & message,

@@ -70,10 +70,10 @@ Ui::~Ui()
     delete d;
 }
 
-void Ui::_askPassword(const QString & title, const QString & message, bool newPassword,
+void Ui::_askPassword(const QString & title, const QString & message, bool newPassword, bool unlockMode,
         QObject * receiver, const char * slot)
 {
-    d->ui->askPassword(title, message, newPassword, receiver, slot);
+    d->ui->askPassword(title, message, newPassword, unlockMode, receiver, slot);
 }
 
 void Ui::_ask(const QString & title, const QString & message, const QStringList & choices,
@@ -93,10 +93,10 @@ void Ui::_setBusy(bool value)
 }
 
 void Ui::askPassword(const QString & title, const QString & message,
-        bool newPassword,
+        bool newPassword, bool unlockMode,
         QObject * receiver, const char * slot)
 {
-    Ui::self()->_askPassword(title, message, newPassword, receiver, slot);
+    Ui::self()->_askPassword(title, message, newPassword, unlockMode, receiver, slot);
 }
 
 void Ui::ask(const QString & title, const QString & message,

@@ -161,7 +161,7 @@ DeclarativeUiHandler::~DeclarativeUiHandler()
 }
 
 void DeclarativeUiHandler::askPassword(const QString & title, const QString & message,
-            bool newPassword, QObject * receiver, const char * slot)
+            bool newPassword, bool unlockMode, QObject * receiver, const char * slot)
 {
     kDebug() << title << message;
 
@@ -170,7 +170,7 @@ void DeclarativeUiHandler::askPassword(const QString & title, const QString & me
     d->slot     = slot;
     d->showWindow();
 
-    emit d->askPassword(title, message, newPassword);
+    emit d->askPassword(title, message, newPassword, unlockMode);
 }
 
 void DeclarativeUiHandler::ask(const QString & title, const QString & message,
