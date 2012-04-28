@@ -2,6 +2,7 @@
 Name=Global Shortcuts plugin
 Name[ca]=Connector de dreceres globals
 Name[da]=Plugin til globale genveje
+Name[el]=Πρόσθετο καθολικών συντομεύσεων
 Name[es]=Complemento de accesos rápidos de teclado globales
 Name[et]=Globaalsete kiirklahvide plugin
 Name[ia]=Plugin de vias breve global
@@ -18,6 +19,7 @@ Name[zh_CN]=全局快捷键插件
 Name[zh_TW]=全域捷徑外掛程式
 Comment=Adds global keyboard shortcuts to KActivityManager Daemon
 Comment[ca]=Afegeix les dreceres de teclat globals al dimoni KActivityManager
+Comment[el]=Προσθέτει καθολικές συντομεύσεις πληκτρολογίου στο δαίμονα KActivityManager
 Comment[es]=Añade accesos rápidos de teclado globales al demonio KActivityManager
 Comment[ia]=Adde vias breve de claviero global a Daemon de KactivityManager (gerente de activitate)
 Comment[nl]=Voegt globale sneltoetsen toe aan KActivityManager-daemon

@@ -28,6 +28,7 @@ Rectangle {
     id: main
 
     color: Qt.rgba(0, 0, 0, 0.35)
+    visible: false
 
     width: 400
     height: 360
@@ -40,6 +41,14 @@ Rectangle {
 
         color: Qt.rgba(0, 0, 0, 1)
         visible: false
+    }
+
+    Timer {
+        running: true
+        repeat: false
+        interval: 1000
+
+        onTriggered: { main.visible = true }
     }
 
     MouseArea {
