@@ -85,7 +85,7 @@ Rectangle {
         strengthText:           "Password strength meter:"
         passwordsMatchText:     "Passwords match"
         passwordsDontMatchText: "Passwords don't match"
-        okText:                 "Ok"
+        okText:                 "Save"
         cancelText:             "Cancel"
 
         onPasswordChosen: uihandler.returnPassword(password)
@@ -109,7 +109,7 @@ Rectangle {
 
         title:      "Enter the password"
         okText:     "Unlock"
-        cancelText: "Dismiss"
+        cancelText: "Cancel"
 
         onPasswordChosen: uihandler.returnPassword(password)
         onCanceled: uihandler.cancel()
