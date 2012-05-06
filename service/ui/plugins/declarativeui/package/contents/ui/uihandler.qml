@@ -79,14 +79,14 @@ Rectangle {
             Behavior on y { NumberAnimation { duration: 300 } }
         }
 
-        title:                  "Enter the password"
-        passwordText1:          "Password:"
-        passwordText2:          "Verify:"
-        strengthText:           "Password strength meter:"
-        passwordsMatchText:     "Passwords match"
-        passwordsDontMatchText: "Passwords don't match"
-        okText:                 "Ok"
-        cancelText:             "Cancel"
+        title:                  i18n("Enter the password")
+        passwordText1:          i18n("Password:")
+        passwordText2:          i18n("Verify:")
+        strengthText:           i18n("Password strength meter:")
+        passwordsMatchText:     i18n("Passwords match")
+        passwordsDontMatchText: i18n("Passwords do not match")
+        okText:                 i18n("Save")
+        cancelText:             i18n("Cancel")
 
         onPasswordChosen: uihandler.returnPassword(password)
 
@@ -107,9 +107,9 @@ Rectangle {
             Behavior on y { NumberAnimation { duration: 300 } }
         }
 
-        title:      "Enter the password"
-        okText:     "Unlock"
-        cancelText: "Dismiss"
+        title:      i18n("Enter the password")
+        okText:     i18n("Unlock")
+        cancelText: i18n("Cancel")
 
         onPasswordChosen: uihandler.returnPassword(password)
         onCanceled: uihandler.cancel()
@@ -130,7 +130,7 @@ Rectangle {
             Behavior on y { NumberAnimation { duration: 300 } }
         }
 
-        title:      "Choice"
+        title:      i18n("Choice")
 
         onChoiceChosen: uihandler.returnChoice(-1 - index)
         onCanceled: uihandler.cancel()
