@@ -4,4 +4,4 @@ Type=Service
 Name=File to activity linking plugin
 X-KDE-Library=kactivitymanagerd_fileitem_linking_plugin
 ServiceTypes=KFileItemAction/Plugin
-MimeType=all/all;*/*;application/octet-stream;
+MimeType=all/all;application/octet-stream;inode/directory;

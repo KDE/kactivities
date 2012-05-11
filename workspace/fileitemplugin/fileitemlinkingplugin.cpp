@@ -93,38 +93,6 @@ QList <QAction *> FileItemLinkingPlugin::actions(const KFileItemListProperties &
     if (itemCount == 0) {
         return result;
 
-    // } else if (itemCount == 1) {
-
-    //     const KUrl & url = d->items.at(0);
-
-    //     if (d->activities.isResourceLinkedToActivity(url)) {
-    //         d->addAction(rootMenu, QString(), i18n("Unlink from the current activity"), "list-remove")
-    //             ->setProperty("link", false);
-
-    //     } else {
-    //         d->addAction(rootMenu, QString(), i18n("Link to the current activity"), "list-add")
-    //             ->setProperty("link", true);
-
-    //     }
-
-    //     QStringList linkable, unlinkable;
-
-    //     foreach (const QString & activity, d->activities.listActivities()) {
-    //         (d->activities.isResourceLinkedToActivity(url, activity) ? unlinkable : linkable) << activity;
-    //     }
-
-    //     rootMenu->addSeparator()->setText(i18n("Link to:"));
-    //     foreach (const QString & activity, linkable) {
-    //         d->addAction(rootMenu, activity)
-    //             ->setProperty("link", true);
-    //     }
-
-    //     rootMenu->addSeparator()->setText(i18n("Unlink from:"));
-    //     foreach (const QString & activity, unlinkable) {
-    //         d->addAction(rootMenu, activity)
-    //             ->setProperty("link", false);
-    //     }
-
     } else {
 
         bool haveLinked = false;
