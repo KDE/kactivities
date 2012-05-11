@@ -281,12 +281,19 @@ public Q_SLOTS:
     void LinkResourceToActivity(const QString & uri, const QString & activity = QString());
 
     /**
-     * Links the specified resource to the activity
+     * Unlinks the specified resource from the activity
      * @param uri URI of the resource
-     * @param uri activity id of the activity to link to. If empty, the resource
-     *     is linked to the current activity
+     * @param uri activity id of the activity to unlink from. If empty, the resource
+     *     is unlinked from the current activity
      */
     void UnlinkResourceFromActivity(const QString & uri, const QString & activity = QString());
+
+    /**
+     * @returns whether the resource is linked to the activity
+     * @param uri URI of the resource
+     * @param uri activity id
+     */
+    bool IsResourceLinkedToActivity(const QString & uri, const QString & activity = QString()) const;
 
     /**
      * @returns the list of resources linked to the specified activity

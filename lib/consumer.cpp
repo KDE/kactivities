@@ -88,6 +88,17 @@ QStringList Consumer::listActivities() const
 void Consumer::linkResourceToActivity(const QUrl & uri, const QString & activityId)
 {
     Manager::self()->LinkResourceToActivity(uri.toString(), activityId);
+}
+
+void Consumer::unlinkResourceFromActivity(const QUrl & uri, const QString & activityId)
+{
+    Manager::self()->UnlinkResourceFromActivity(uri.toString(), activityId);
+}
+
+bool Consumer::isResourceLinkedToActivity(const QUrl & uri, const QString & activityId) const
+{
+    KACTIVITYCONSUMER_DBUS_RETURN(
+        bool, Manager::self()->IsResourceLinkedToActivity(uri.toString(), activityId), false );
 
 }
 

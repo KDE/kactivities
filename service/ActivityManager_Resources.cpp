@@ -129,6 +129,19 @@ void ActivityManager::UnlinkResourceFromActivity(const QString & uri, const QStr
 }
 
 
+bool ActivityManager::IsResourceLinkedToActivity(const QString & uri, const QString & _activity) const
+{
+    #ifdef HAVE_NEPOMUK
+    const QString & activity = _activity.isEmpty() ? CurrentActivity() : _activity;
+
+    return EXEC_NEPOMUK( isResourceLinkedToActivity(KUrl(uri), activity) );
+
+    #else
+    return false;
+    #endif
+}
+
+
 QStringList ActivityManager::ResourcesLinkedToActivity(const QString & activity) const
 {
     QStringList result;

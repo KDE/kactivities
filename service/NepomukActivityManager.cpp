@@ -300,6 +300,16 @@ QList <KUrl> NepomukActivityManager::resourcesLinkedToActivity(const QString & a
     return result;
 }
 
+bool NepomukActivityManager::isResourceLinkedToActivity(const KUrl & resource, const QString & activity) const
+{
+    if (!m_nepomukPresent) return false;
+
+    kDebug() << resourcesLinkedToActivity(activity);
+
+    return resourcesLinkedToActivity(activity).contains(resource);
+    // return activityResource(activity).hasProperty(NAO::isRelated(), ... TODO
+}
+
 Nepomuk::Resource NepomukActivityManager::activityResource(const QString & id) const
 {
     if (!m_nepomukPresent) return Nepomuk::Resource();

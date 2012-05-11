@@ -103,10 +103,25 @@ public:
     /**
      * Links a resource to the activity
      * @param uri URI of the resource
-     * @activityId id of the activity to link to. If empty, the
+     * @param activityId id of the activity to link to. If empty, the
      *    resource is linked to the current activity.
      */
     void linkResourceToActivity(const QUrl & uri, const QString & activityId = QString());
+
+    /**
+     * Unlinks a resource from the activity
+     * @param uri URI of the resource
+     * @param activityId id of the activity to unlink from. If empty, the
+     *    resource is unlinked from the current activity.
+     */
+    void unlinkResourceFromActivity(const QUrl & uri, const QString & activityId = QString());
+
+    /**
+     * @returns whether the resource is linket to the specified activity
+     * @param uri URI of the resource
+     * @param activityId id of the activity. If empty, the current activity is used.
+     */
+    bool isResourceLinkedToActivity(const QUrl & uri, const QString & activityId = QString()) const;
 
 Q_SIGNALS:
     /**

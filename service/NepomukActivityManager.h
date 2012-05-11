@@ -57,6 +57,7 @@ public:
 
     void linkResourceToActivity(const KUrl & resource, const QString & activity);
     void unlinkResourceFromActivity(const KUrl & resource, const QString & activity);
+    bool isResourceLinkedToActivity(const KUrl & resource, const QString & activity) const;
     QList < KUrl > resourcesLinkedToActivity(const QString & activity) const;
 
     void toRealUri(KUrl & url);

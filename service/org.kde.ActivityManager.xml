@@ -142,6 +142,15 @@
     <method name="UnlinkResourceFromActivity">
       <arg name="uri" type="s" direction="in"/>
     </method>
+    <method name="IsResourceLinkedToActivity">
+      <arg name="uri" type="s" direction="in"/>
+      <arg name="activity" type="s" direction="in"/>
+      <arg type="b" direction="out"/>
+    </method>
+    <method name="IsResourceLinkedToActivity">
+      <arg name="uri" type="s" direction="in"/>
+      <arg type="b" direction="out"/>
+    </method>
     <method name="ResourcesLinkedToActivity">
       <arg type="as" direction="out"/>
       <arg name="activity" type="s" direction="in"/>
