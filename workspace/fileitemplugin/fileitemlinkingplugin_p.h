@@ -21,8 +21,8 @@
 #include <kabstractfileitemactionplugin.h>
 
 #include <KUrl>
-#include <KActivities/Consumer>
-#include <KActivities/Info>
+#include "lib/consumer.h"
+#include "lib/info.h"
 
 class FileItemLinkingPlugin::Private: public QObject {
     Q_OBJECT
