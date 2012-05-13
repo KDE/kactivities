@@ -2,6 +2,10 @@
 Encoding=UTF-8
 Type=Service
 Name=File to activity linking plugin
+Name[nl]=Plug-in voor koppelen van bestand aan activiteit
+Name[pt]='Plugin' de ligação de ficheiros a actividades
+Name[uk]=Додаток прив’язування файлів до просторів дій
+Name[x-test]=xxFile to activity linking pluginxx
 X-KDE-Library=kactivitymanagerd_fileitem_linking_plugin
 ServiceTypes=KFileItemAction/Plugin
 MimeType=all/all;application/octet-stream;inode/directory;
