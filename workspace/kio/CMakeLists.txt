@@ -8,6 +8,7 @@ include_directories(
     ${KDE4_INCLUDES}
     ${KDE4_KIO_INCLUDES}
     ${NEPOMUK_INCLUDE_DIR}
+    ${SOPRANO_INCLUDE_DIR}
     )
 
 ########### next target ###############
