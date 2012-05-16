@@ -94,17 +94,8 @@ protected:
                           bool listing = false) const;
 
 private:
-    enum Path {
-        RootItem,
-        ActivityRootItem,
-        ActivityPathItem
-    };
-
-    Path parseUrl(const KUrl & url);
-
-    KActivities::Consumer activities;
-    QString m_activityId;
-    QString m_filename;
+    class Private;
+    Private * const d;
 };
 
 #endif // KIO_ACTIVITIES_H_

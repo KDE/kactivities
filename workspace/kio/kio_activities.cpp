@@ -28,6 +28,13 @@
 #include <QDebug>
 #include <QFile>
 
+#include <KFileItem>
+
+#include <Nepomuk/ResourceManager>
+#include <Soprano/QueryResultIterator>
+#include <Soprano/Model>
+#include <Soprano/Node>
+
 // #define KIO_ACTIVITIES_DEBUG
 
 #ifdef KIO_ACTIVITIES_DEBUG
@@ -75,12 +82,27 @@ using namespace Soprano::Vocabulary;
 using namespace Nepomuk::Vocabulary;
 using namespace KIO;
 
-namespace {
-    KIO::UDSEntry createFolderUDSEntry(const QString & name, const QString & displayName, const QDate & date)
+class ActivitiesProtocol::Private {
+public:
+    Private(ActivitiesProtocol * parent)
+        : kio(parent)
+    {
+    }
+
+    enum Path {
+        RootItem,
+        ActivityRootItem,
+        ActivityPathItem
+    };
+
+    KActivities::Consumer activities;
+    QString activityId;
+    QString filename;
+
+    KIO::UDSEntry createFolderUDSEntry(const QString & name, const QString & displayName, const QDate & date) const
     {
         KIO::UDSEntry uds;
         QDateTime dt(date, QTime(0, 0, 0));
-        // kDebug() << dt;
         kioDebug() << "ActivitiesProtocol createFolderUDSEntry" << name << displayName << date << '\n';
         uds.insert(KIO::UDSEntry::UDS_NAME, name);
         uds.insert(KIO::UDSEntry::UDS_DISPLAY_NAME, displayName);
@@ -93,7 +115,36 @@ namespace {
         return uds;
     }
 
-    Nepomuk::Query::Query buildQuery(const QString & activityId)
+    KIO::UDSEntry createUDSEntryForUrl(const KUrl & url) const
+    {
+        KIO::UDSEntry uds;
+
+        KFileItem fileItem(KFileItem::Unknown, KFileItem::Unknown, url, false);
+
+        QByteArray encodedPath = QUrl::toPercentEncoding(url.url());
+
+        kioDebug() << ">>>"
+            << fileItem.name() << fileItem.mimetype()
+            << '\n';
+
+        uds.insert(KIO::UDSEntry::UDS_NAME, QString::fromUtf8(encodedPath));
+        uds.insert(KIO::UDSEntry::UDS_DISPLAY_NAME, fileItem.name());
+        uds.insert(KIO::UDSEntry::UDS_MIME_TYPE, fileItem.mimetype());
+        uds.insert(KIO::UDSEntry::UDS_SIZE, fileItem.size());
+        uds.insert(KIO::UDSEntry::UDS_MODIFICATION_TIME, fileItem.time(KFileItem::ModificationTime).toTime_t());
+        uds.insert(KIO::UDSEntry::UDS_CREATION_TIME,     fileItem.time(KFileItem::CreationTime).toTime_t());
+        uds.insert(KIO::UDSEntry::UDS_ACCESS, fileItem.permissions());
+        uds.insert(KIO::UDSEntry::UDS_USER, KUser().loginName());
+        uds.insert(KIO::UDSEntry::UDS_LOCAL_PATH, url.toLocalFile());
+        uds.insert(KIO::UDSEntry::UDS_TARGET_URL, url.prettyUrl());
+
+        if (fileItem.isDir())
+            uds.insert(KIO::UDSEntry::UDS_FILE_TYPE, S_IFDIR);
+
+        return uds;
+    }
+
+    Nepomuk::Query::Query buildQuery(const QString & activityId) const
     {
         kioDebug() << "ActivitiesProtocol building query for" << activityId << '\n';
         Nepomuk::Resource activityResource(activityId, KAO::Activity());
@@ -111,12 +162,105 @@ namespace {
         return query;
     }
 
+    void listActivities() const
+    {
+        kio->listEntry(createFolderUDSEntry(
+                QString::fromLatin1("current"),
+                i18n("Current activity"),
+                QDate::currentDate()), false
+            );
 
-}
+        foreach (const QString & activityId, activities.listActivities()) {
+            kio->listEntry(createFolderUDSEntry(
+                    activityId,
+                    KActivities::Info::name(activityId),
+                    QDate::currentDate()), false
+                );
+        }
+
+        kio->listEntry(KIO::UDSEntry(), true);
+        kio->finished();
+    }
+
+    void listActivity() const
+    {
+        QString activity = activityId;
+
+        if (activity == "current") {
+            activity = activities.currentActivity();
+        }
+
+        if (!activity.isEmpty()) {
+            Nepomuk::Resource activityResource(activity, Nepomuk::Vocabulary::KAO::Activity());
+
+            const QString query = QString::fromLatin1(
+                    "select distinct ?r, ?url where { "
+                    "     ?r a nfo:FileDataObject . "
+                    "     ?r nie:url ?url . "
+                    "     %1 nao:isRelated ?r . "
+                    "} "
+                );
+
+            Soprano::QueryResultIterator it
+                = Nepomuk::ResourceManager::instance()->mainModel()->executeQuery(
+                    query.arg(Soprano::Node::resourceToN3(activityResource.uri())),
+                    Soprano::Query::QueryLanguageSparql);
+
+            while (it.next()) {
+                QUrl resource = it[0].uri();
+                QUrl file = it[1].uri();
+
+
+                kio->listEntry(createUDSEntryForUrl(it[1].uri()), false);
+
+            }
+
+            it.close();
+
+        }
+
+
+        // kio->listEntry(createFolderUDSEntry(
+        //             "_test", "_Test", QDate::currentDate()), false);
+        kio->listEntry(KIO::UDSEntry(), true);
+        kio->finished();
+    }
+
+    Path parseUrl(const KUrl & url)
+    {
+        activityId.clear();
+        filename.clear();
+
+        kioDebug() << "parsing ... " << url << '\n';
+
+        if (url.path().length() <= 1) {
+            return RootItem;
+        }
+
+        QStringList path = url.path().split('/', QString::SkipEmptyParts);
+
+        if (path.isEmpty()) {
+            return RootItem;
+        }
+
+        activityId = path.takeFirst();
+
+        if (path.isEmpty()) {
+            return ActivityRootItem;
+        }
+
+        filename = path.join("/");
+
+        return ActivityPathItem;
+    }
+
+private:
+    ActivitiesProtocol * const kio;
+};
 
 
 ActivitiesProtocol::ActivitiesProtocol(const QByteArray & poolSocket, const QByteArray & appSocket)
-    : KIO::ForwardingSlaveBase("activities", poolSocket, appSocket)
+    : KIO::ForwardingSlaveBase("activities", poolSocket, appSocket), d(new Private(this))
 {
     // kDebug();
     kioDebug() << "ActivitiesProtocol constructor" << '\n';
@@ -127,6 +271,7 @@ ActivitiesProtocol::~ActivitiesProtocol()
 {
     // kDebug();
     kioDebug() << "ActivitiesProtocol destr" << '\n';
+    delete d;
 }
 
 
@@ -138,24 +283,16 @@ void ActivitiesProtocol::listDir(const KUrl & url)
         return;
     }
 
-    switch(parseUrl(url)) {
-        case RootItem:
-        {
-            foreach (const QString & activityId, activities.listActivities()) {
-                listEntry(createFolderUDSEntry(
-                        activityId,
-                        KActivities::Info::name(activityId),
-                        QDate::currentDate()), false
-                    );
-            }
-
-            listEntry(KIO::UDSEntry(), true);
-            finished();
+    switch (d->parseUrl(url)) {
+        case Private::RootItem:
+            d->listActivities();
             break;
-        }
 
-        case ActivityRootItem:
-        case ActivityPathItem:
+        case Private::ActivityRootItem:
+            d->listActivity();
+            break;
+
+        case Private::ActivityPathItem:
             ForwardingSlaveBase::listDir(url);
             break;
 
@@ -178,7 +315,7 @@ void ActivitiesProtocol::get(const KUrl & url)
     // kDebug() << url;
     kioDebug() << "ActivitiesProtocol get" << url << '\n';
 
-    if (parseUrl(url)) {
+    if (d->parseUrl(url)) {
         ForwardingSlaveBase::get(url);
 
     } else {
@@ -193,7 +330,7 @@ void ActivitiesProtocol::put(const KUrl & url, int permissions, KIO::JobFlags fl
     // kDebug() << url;
     kioDebug() << "ActivitiesProtocol put" << url << '\n';
 
-    if (parseUrl(url)) {
+    if (d->parseUrl(url)) {
         ForwardingSlaveBase::put(url, permissions, flags);
     }
     else {
@@ -225,8 +362,12 @@ void ActivitiesProtocol::rename(const KUrl & src, const KUrl & dest, KIO::JobFla
 
 void ActivitiesProtocol::del(const KUrl & url, bool isfile)
 {
+    Q_UNUSED(url);
+    Q_UNUSED(isfile);
     // kDebug() << url;
-    ForwardingSlaveBase::del(url, isfile);
+    // ForwardingSlaveBase::del(url, isfile);
+
+    error(ERR_UNSUPPORTED_ACTION, url.prettyUrl());
 }
 
 
@@ -239,8 +380,10 @@ void ActivitiesProtocol::mimetype(const KUrl & url)
 
 void ActivitiesProtocol::stat(const KUrl & url)
 {
-    switch(parseUrl(url)) {
-        case RootItem:
+    kioDebug() << "ActivitiesProtocol stat for" << url << '\n';
+
+    switch (d->parseUrl(url)) {
+        case Private::RootItem:
         {
             KIO::UDSEntry uds;
             uds.insert(KIO::UDSEntry::UDS_NAME, QString::fromLatin1("/"));
@@ -249,6 +392,30 @@ void ActivitiesProtocol::stat(const KUrl & url)
             uds.insert(KIO::UDSEntry::UDS_MIME_TYPE, QString::fromLatin1("inode/directory"));
             statEntry(uds);
             finished();
+            break;
+        }
+
+        case Private::ActivityRootItem:
+        {
+            KIO::UDSEntry uds;
+            uds.insert(KIO::UDSEntry::UDS_NAME, d->activityId);
+            uds.insert(KIO::UDSEntry::UDS_FILE_TYPE, S_IFDIR);
+            uds.insert(KIO::UDSEntry::UDS_MIME_TYPE, QString::fromLatin1("inode/directory"));
+            statEntry(uds);
+            finished();
+            break;
+        }
+
+        case Private::ActivityPathItem:
+        {
+            // kioDebug() << "stat for ActivityPathItem" << d->filename << '\n';
+
+            // QString path = QUrl::fromPercentEncoding(d->filename.toUtf8());
+            // statEntry(d->createUDSEntryForUrl(KUrl(path)));
+            // finished();
+
+            ForwardingSlaveBase::stat(url);
+
             break;
         }
 
@@ -264,22 +431,20 @@ bool ActivitiesProtocol::rewriteUrl(const KUrl & url, KUrl & newURL)
 {
     kioDebug() << "REWRITE URL ----------------------------------\n";
     kioDebug() << "original url" << url.url() << '\n';
-    Path pathType = parseUrl(url);
+    Private::Path pathType = d->parseUrl(url);
 
-    if (pathType == ActivityRootItem) {
-        kioDebug() << "Activity root for" << m_activityId;
+    if (pathType == Private::ActivityPathItem) {
+        kioDebug() << "Activity path item for" << d->activityId << " " << d->filename << '\n';
 
-        newURL = buildQuery(m_activityId).toSearchUrl();
-        return true;
+        QString path = QUrl::fromPercentEncoding(d->filename.toUtf8());
+        newURL = KUrl(path);
 
-    } else if (pathType == ActivityPathItem) {
-        kioDebug() << "Activity path item for" << m_activityId << " " << m_filename << '\n';
-        newURL = buildQuery(m_activityId).toSearchUrl();
-        newURL.addPath(m_filename);
+        kioDebug() << "NEW:" << newURL << "-------------\n";
         return true;
 
     } else {
         return false;
+
     }
 }
 
@@ -287,49 +452,7 @@ bool ActivitiesProtocol::rewriteUrl(const KUrl & url, KUrl & newURL)
 void ActivitiesProtocol::prepareUDSEntry(KIO::UDSEntry & entry,
                                                  bool listing) const
 {
-    // kDebug() << entry.stringValue(KIO::UDSEntry::UDS_NEPOMUK_URI) << entry.stringValue(KIO::UDSEntry::UDS_MIME_TYPE) << listing;
     ForwardingSlaveBase::prepareUDSEntry(entry, listing);
-}
-
-
-ActivitiesProtocol::Path ActivitiesProtocol::parseUrl(const KUrl & url)
-{
-    kioDebug() << "parsing ... " << url << '\n';
-
-    if (url.path().length() <= 1) {
-        return RootItem;
-    }
-
-    QString path = url.path();
-    kioDebug() << "path is" << path << '\n';
-
-    if (path.startsWith('/'))
-        path.remove(0, 1);
-    kioDebug() << "path is now" << path << '\n';
-
-    int slashPos = path.indexOf('/');
-
-    if (slashPos == -1) {
-        m_activityId = path;
-        m_filename.clear();
-
-        kioDebug() << "Activity is" << m_activityId << "filename is" << m_filename << '\n';
-        return ActivityRootItem;
-
-    } else if (slashPos == path.length() - 1) {
-        m_activityId = path.left(slashPos - 1);
-        m_filename.clear();
-
-        kioDebug() << "Activity is" << m_activityId << "filename is" << m_filename << '\n';
-        return ActivityRootItem;
-
-    } else {
-        m_activityId = path.left(slashPos - 1);
-        m_filename   = path.mid(slashPos + 1);
-
-        kioDebug() << "Activity is" << m_activityId << "filename is" << m_filename << '\n';
-        return ActivityPathItem;
-    }
 }
 
 extern "C"
