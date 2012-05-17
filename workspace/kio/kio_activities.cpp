@@ -203,7 +203,7 @@ public:
 
             Soprano::QueryResultIterator it
                 = Nepomuk::ResourceManager::instance()->mainModel()->executeQuery(
-                    query.arg(Soprano::Node::resourceToN3(activityResource.uri())),
+                    query.arg(Soprano::Node::resourceToN3(activityResource.resourceUri())),
                     Soprano::Query::QueryLanguageSparql);
 
             while (it.next()) {
