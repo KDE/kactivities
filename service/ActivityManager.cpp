@@ -410,6 +410,8 @@ void ActivityManagerPrivate::emitCurrentActivityChanged(const QString & id)
     currentActivity = id;
     mainConfig().writeEntry("currentActivity", id);
 
+    EXEC_NEPOMUK( setCurrentActivity(id) );
+
     using namespace Jobs::Encryption::Common;
 
     if (!isActivityEncrypted(id)) {
@@ -426,7 +428,7 @@ void ActivityManagerPrivate::emitCurrentActivityChanged(const QString & id)
 
         if (desktopId <= KWindowSystem::numberOfDesktops() && desktopId >= 0) {
             KWindowSystem::setCurrentDesktop(desktopId);
-	}
+        }
     }
 }
 

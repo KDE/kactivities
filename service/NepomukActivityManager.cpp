@@ -45,6 +45,8 @@
 #include <QDBusConnection>
 #include <QDBusConnectionInterface>
 
+#include <KDirNotify>
+
 using namespace Nepomuk::Vocabulary;
 using namespace Soprano::Vocabulary;
 
@@ -334,6 +336,16 @@ void NepomukActivityManager::toRealUri(KUrl & kuri)
         }
     }
 }
+
+void NepomukActivityManager::setCurrentActivity(const QString & id)
+{
+    Q_UNUSED(id)
+
+    // The activities KIO works only if nepomuk is present, so we can
+    // freely send the change event here
+    org::kde::KDirNotify::emitFilesAdded("activities:/current");
+}
+
 #endif // HAVE_NEPOMUK
 
 void NepomukActivityManager::nepomukServiceOwnerChanged(const QString & service, const QString & oldOwner, const QString & newOwner)

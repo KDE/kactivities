@@ -62,6 +62,8 @@ public:
 
     void toRealUri(KUrl & url);
 
+    void setCurrentActivity(const QString & id);
+
 private:
     void __updateOntology();
 
