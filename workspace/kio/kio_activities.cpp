@@ -27,8 +27,10 @@
 
 #include <QDebug>
 #include <QFile>
+#include <QDir>
 
 #include <KFileItem>
+#include <KStandardDirs>
 
 #include <Nepomuk/ResourceManager>
 #include <Soprano/QueryResultIterator>
@@ -92,7 +94,8 @@ public:
     enum Path {
         RootItem,
         ActivityRootItem,
-        ActivityPathItem
+        ActivityPathItem,
+        PrivateActivityPathItem
     };
 
     KActivities::Consumer activities;
@@ -246,12 +249,14 @@ public:
         activityId = path.takeFirst();
 
         if (path.isEmpty()) {
-            return ActivityRootItem;
+            return (KActivities::Info(activityId).isEncrypted())
+                ? PrivateActivityPathItem : ActivityRootItem;
         }
 
         filename = path.join("/");
 
-        return ActivityPathItem;
+        return (KActivities::Info(activityId).isEncrypted())
+            ? PrivateActivityPathItem : ActivityRootItem;
     }
 
 private:
@@ -293,6 +298,7 @@ void ActivitiesProtocol::listDir(const KUrl & url)
             break;
 
         case Private::ActivityPathItem:
+        case Private::PrivateActivityPathItem:
             ForwardingSlaveBase::listDir(url);
             break;
 
@@ -407,6 +413,7 @@ void ActivitiesProtocol::stat(const KUrl & url)
         }
 
         case Private::ActivityPathItem:
+        case Private::PrivateActivityPathItem:
         {
             // kioDebug() << "stat for ActivityPathItem" << d->filename << '\n';
 
@@ -442,10 +449,17 @@ bool ActivitiesProtocol::rewriteUrl(const KUrl & url, KUrl & newURL)
         kioDebug() << "NEW:" << newURL << "-------------\n";
         return true;
 
-    } else {
-        return false;
-
     }
+
+    if (pathType == Private::PrivateActivityPathItem) {
+        static QDir activitiesDataFolder = QDir(KStandardDirs::locateLocal("data", "activitymanager/activities"));
+
+        newURL = KUrl("file://" + activitiesDataFolder.filePath("crypt-" + d->activityId + "/user/" + d->filename));
+
+        return true;
+    }
+
+    return false;
 }
 
 
