@@ -82,7 +82,7 @@ Item {
                 id: titleLabel
                 horizontalAlignment: Text.AlignHCenter
                 elide: Text.ElideRight
-                text: i18n("Set activity password")
+                text: i18n("Set Activity Password")
                 font.pointSize: theme.defaultFont.pointSize * 1.1
                 font.weight: Font.Bold
                 style: Text.Raised

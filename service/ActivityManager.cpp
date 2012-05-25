@@ -174,7 +174,7 @@ void ActivityManager::SetActivityEncrypted(const QString & activity, bool encryp
         setActivityEncryptedJob
 
         <<  // Ask for the password
-            askPassword(i18n("Activity password"), i18n("Enter the password to use for encryption"), true)
+            askPassword(i18n("Activity Password"), i18n("Enter the password to use for encryption"), true)
 
         <<  // Try to mount, or die trying :)
             DO_OR_DIE(
@@ -212,7 +212,7 @@ void ActivityManager::SetActivityEncrypted(const QString & activity, bool encryp
 
         <<  // Retrying to get the password until it succeeds or the user cancels password entry
             RETRY_JOB(
-                askPassword(i18n("Unprotect activity"), i18n("You are cancelling the protection of this activity. Its content will become public again and be accessed without a password.")),
+                askPassword(i18n("Unprotect Activity"), i18n("You are cancelling the protection of this activity. Its content will become public again and be accessed without a password.")),
                 mount(activity),
                 message(i18n("Error"), i18n("Error unlocking the activity.\nYou've probably entered a wrong password."))
             )
@@ -320,7 +320,7 @@ bool ActivityManagerPrivate::setCurrentActivity(const QString & activity)
 
         <<  // Retrying to get the password until it succeeds or the user cancels password entry
             RETRY_JOB(
-                askPassword(i18n("Unlock activity"), i18n("Enter the password to unlock the activity",
+                askPassword(i18n("Unlock Activity"), i18n("Enter the password to unlock the activity",
                             false, !currentActivityBeforeScreenLock.isEmpty())),
                 mount(activity),
                 message(i18n("Error"), i18n("Error unlocking the activity.\nYou've probably entered a wrong password."))
@@ -496,7 +496,7 @@ void ActivityManager::RemoveActivity(const QString & activity)
 
         <<  // Retrying to get the password until it succeeds or the user cancels password entry
             RETRY_JOB(
-                askPassword(i18n("Delete activity"), i18n("Enter the password to delete this protected activity.")),
+                askPassword(i18n("Delete Activity"), i18n("Enter the password to delete this protected activity.")),
                 mount(activity),
                 message(i18n("Error"), i18n("Error unlocking the activity.\nYou've probably entered a wrong password."))
             )
