@@ -82,8 +82,10 @@ public:
 
     KConfigGroup activitiesDesktopsConfig();
     KConfigGroup activitiesConfig();
+    KConfigGroup activitiesIconsConfig();
     KConfigGroup mainConfig();
     QString activityName(const QString & id);
+    QString activityIcon(const QString & id);
 
 public Q_SLOTS:
     void scheduleConfigSync();

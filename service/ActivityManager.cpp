@@ -232,6 +232,11 @@ KConfigGroup ActivityManagerPrivate::activitiesConfig()
     return KConfigGroup(&config, "activities");
 }
 
+KConfigGroup ActivityManagerPrivate::activitiesIconsConfig()
+{
+    return KConfigGroup(&config, "activities-icons");
+}
+
 KConfigGroup ActivityManagerPrivate::mainConfig()
 {
     return KConfigGroup(&config, "main");
@@ -316,6 +321,11 @@ bool ActivityManagerPrivate::setCurrentActivity(const QString & id)
 QString ActivityManagerPrivate::activityName(const QString & id)
 {
     return activitiesConfig().readEntry(id, QString());
+}
+
+QString ActivityManagerPrivate::activityIcon(const QString & id)
+{
+    return activitiesIconsConfig().readEntry(id, QString());
 }
 
 void ActivityManagerPrivate::scheduleConfigSync()
@@ -754,21 +764,7 @@ void ActivityManager::SetActivityDescription(const QString & id, const QString &
 
 QString ActivityManager::ActivityIcon(const QString & id) const
 {
-    if (!NEPOMUK_RUNNING || !d->activities.contains(id)) {
-        return QString();
-    }
-
-#ifdef HAVE_NEPOMUK
-    QStringList symbols = d->activityResource(id).symbols();
-
-    if (symbols.isEmpty()) {
-        return QString();
-    } else {
-        return symbols.first();
-    }
-#else
-    return QString();
-#endif
+    return d->activityIcon(id);
 }
 
 void ActivityManager::SetActivityIcon(const QString & id, const QString & icon)
