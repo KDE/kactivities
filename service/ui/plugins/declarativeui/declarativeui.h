@@ -26,7 +26,7 @@ class DeclarativeUiHandler: public UiHandler {
     Q_OBJECT
 
 public:
-    DeclarativeUiHandler(QObject *parent = 0, const QVariantList & args = QVariantList());
+    explicit DeclarativeUiHandler(QObject *parent = 0, const QVariantList & args = QVariantList());
     ~DeclarativeUiHandler();
 
     virtual void message(const QString & title, const QString & message);

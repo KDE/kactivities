@@ -26,7 +26,7 @@ class KDialogUiHandler: public UiHandler {
     Q_OBJECT
 
 public:
-    KDialogUiHandler(QObject *parent = 0, const QVariantList & args = QVariantList());
+    explicit KDialogUiHandler(QObject *parent = 0, const QVariantList & args = QVariantList());
     ~KDialogUiHandler();
 
     virtual void message(const QString & title, const QString & message);

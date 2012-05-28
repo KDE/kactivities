@@ -33,7 +33,7 @@ bool GlobalShortcutsPlugin::init()
     // All plugins are loaded from ActivityManager's ctor and this one
     // specifically makes use of some functionality (e.g. listing all activities
     // via dbus) that is provided after ActivityManager's ctor is called.
-    // So we queue the real inialization in a slot, for invokation
+    // So we queue the real inialization in a slot, for invocation
     // at a later time - when the application enter the main event loop.
     QMetaObject::invokeMethod(this, "realInit", Qt::QueuedConnection);
 

@@ -98,7 +98,7 @@ QList <QAction *> FileItemLinkingPlugin::actions(const KFileItemListProperties &
         bool haveLinked = false;
         bool haveUnlinked = false;
 
-        foreach (const KUrl url, d->items) {
+        foreach (const KUrl & url, d->items) {
             (d->activities.isResourceLinkedToActivity(url) ? haveLinked : haveUnlinked) = true;
         }
 
@@ -117,7 +117,7 @@ QList <QAction *> FileItemLinkingPlugin::actions(const KFileItemListProperties &
         foreach (const QString & activity, d->activities.listActivities()) {
             haveLinked = haveUnlinked = false;
 
-            foreach (const KUrl url, d->items) {
+            foreach (const KUrl & url, d->items) {
                 (d->activities.isResourceLinkedToActivity(url, activity) ? haveLinked : haveUnlinked) = true;
             }
 

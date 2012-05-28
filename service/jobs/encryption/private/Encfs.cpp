@@ -56,7 +56,7 @@ bool Encfs::isEncryptionInitialized(const QString & path) const
     const QStringList & files = dir.entryList(QDir::Hidden | QDir::Files);
 
     foreach (const QString & file, files) {
-        if (file.startsWith(".encfs")) {
+        if (file.startsWith(QLatin1String(".encfs"))) {
             return true;
         }
     }

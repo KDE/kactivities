@@ -29,7 +29,7 @@ class SlcPlugin: public Plugin
     Q_CLASSINFO("D-Bus Interface", "org.kde.ActivityManager.SLC")
 
 public:
-    SlcPlugin(QObject *parent = 0, const QVariantList & args = QVariantList());
+    explicit SlcPlugin(QObject *parent = 0, const QVariantList & args = QVariantList());
     ~SlcPlugin();
 
     virtual void addEvents(const EventList & events);

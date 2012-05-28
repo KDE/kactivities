@@ -25,7 +25,7 @@
 
 namespace KActivities {
 
-#ifdef Q_OS_WIN64
+#ifdef Q_OS_WIN64 // krazy:skip
 __inline int toInt(WId wid)
 {
 	return (int)((__int64)wid);

@@ -49,7 +49,7 @@ Ui::Ui(QObject * parent)
 {
     QString handlerLibrary = KDIALOG_UI_HANDLER;
 
-    QString platform = getenv("KDE_PLASMA_COMPONENTS_PLATFORM");
+    QString platform = getenv("KDE_PLASMA_COMPONENTS_PLATFORM"); // krazy:exclude=syscalls
     if (platform.isEmpty()) {
         KConfigGroup cg(KSharedConfig::openConfig("kdeclarativerc"), "Components-platform");
         platform = cg.readEntry("name", "desktop");

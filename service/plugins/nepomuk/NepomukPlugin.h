@@ -31,7 +31,7 @@
 
 class NepomukPlugin: public Plugin {
 public:
-    NepomukPlugin(QObject *parent = 0, const QVariantList & args = QVariantList());
+    explicit NepomukPlugin(QObject *parent = 0, const QVariantList & args = QVariantList());
 
     virtual void addEvents(const EventList & events);
 

@@ -28,7 +28,7 @@
 
 // copied from kdelibs\kdeui\notifications\kstatusnotifieritemdbus_p.cpp
 // if there is a common place for such definitions please move
-#ifdef Q_OS_WIN64
+#ifdef Q_OS_WIN64 // krazy:skip
 __inline int toInt(WId wid)
 {
     return (int)((__int64)wid);

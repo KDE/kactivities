@@ -73,7 +73,7 @@ static void signalHandler(int sig)
 }
 
 static void initSignalCatching() {
-#ifndef Q_OS_WIN32
+#ifndef Q_OS_WIN32 // krazy:skip
     struct sigaction action;
 
     ::sigemptyset(&action.sa_mask);

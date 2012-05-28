@@ -129,7 +129,7 @@ void SlcPlugin::updateFocus(WId wid)
         emit focusChanged(QString(), QString(), QString());
 
     } else if (wid == focussedWindow) {
-        // kDebug() << "It is the currently focussed window" << wid;
+        // kDebug() << "It is the currently focused window" << wid;
         SharedInfo::ResourceData resourceData = sharedInfo()->resources()[_focussedResourceURI()];
         emit focusChanged(focussedResourceURI(), resourceData.mimetype, resourceData.title);
 

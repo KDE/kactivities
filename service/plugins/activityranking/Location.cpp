@@ -89,7 +89,7 @@ Location * Location::self(QObject * parent)
 
 void Location::disable()
 {
-    d->current = QString();
+    d->current.clear();
     delete d->manager;
 }
 

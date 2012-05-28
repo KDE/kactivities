@@ -132,7 +132,8 @@ ActivityManager::ActivityManager()
         d->activities[activity] = ActivityManager::Stopped;
     }
 
-    foreach (const QString & activity, d->mainConfig().readEntry("runningActivities", d->activities.keys())) {
+    const QStringList & runningActivities = d->mainConfig().readEntry("runningActivities", d->activities.keys());
+    foreach (const QString & activity, runningActivities) {
         if (d->activities.contains(activity)) {
             d->activities[activity] = ActivityManager::Running;
         }
@@ -320,8 +321,8 @@ bool ActivityManagerPrivate::setCurrentActivity(const QString & activity)
 
         <<  // Retrying to get the password until it succeeds or the user cancels password entry
             RETRY_JOB(
-                askPassword(i18n("Unlock Activity"), i18n("Enter the password to unlock the activity",
-                            false, !currentActivityBeforeScreenLock.isEmpty())),
+                askPassword(i18n("Unlock Activity"), i18n("Enter the password to unlock the activity"),
+                            false, !currentActivityBeforeScreenLock.isEmpty()),
                 mount(activity),
                 message(i18n("Error"), i18n("Error unlocking the activity.\nYou've probably entered a wrong password."))
             )
@@ -366,9 +367,11 @@ void ActivityManagerPrivate::loadLastPublicActivity()
     if (lastPublicActivity.isEmpty() || Jobs::Encryption::Common::isActivityEncrypted(lastPublicActivity)) {
         lastPublicActivity.clear();
 
-        foreach (const QString & activity, activities.keys()) {
-            if (!Jobs::Encryption::Common::isActivityEncrypted(activity)) {
-                lastPublicActivity = activity;
+        QHashIterator < QString, ActivityManager::State > i(activities);
+        while (i.hasNext()) {
+            i.next();
+            if (!Jobs::Encryption::Common::isActivityEncrypted(i.key())) {
+                lastPublicActivity = i.key();
                 break;
             }
         }

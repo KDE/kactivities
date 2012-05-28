@@ -26,7 +26,7 @@
 
 class StatsPlugin: public Plugin {
 public:
-    StatsPlugin(QObject *parent = 0, const QVariantList & args = QVariantList());
+    explicit StatsPlugin(QObject *parent = 0, const QVariantList & args = QVariantList());
 
     virtual void addEvents(const EventList & events);
 

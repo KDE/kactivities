@@ -127,8 +127,8 @@ void CollectFilesToMove::scheduleMoveDir(File & dir)
 {
     kDebug();
     QString path = dir.url().toLocalFile();
-    if (!path.endsWith("/")) {
-        path += "/";
+    if (!path.endsWith('/')) {
+        path += '/';
     }
     m_movedDirs << path;
 

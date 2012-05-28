@@ -39,7 +39,7 @@ void ActivityManager::RegisterResourceEvent(QString application, uint _windowId,
         return;
 
     // Dirty way to skip special web browser URIs
-    if (uri.startsWith("about:"))
+    if (uri.startsWith(QLatin1String("about:")))
         return;
 
     // Dirty way to skip invalid URIs (needed for akregator)

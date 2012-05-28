@@ -137,7 +137,10 @@ public:
             dialog.mainWidget()->setLayout(layout);
 
             dialog.setMinimumSize(300, 32 * (choices.size() + 1));
-            dialog.exec();
+
+            // TODO: inspect this a bit more. It doesn't seem that it shows the
+            // problematic behaviour described here: http://blogs.kde.org/node/3919
+            dialog.exec(); // krazy:skip
 
             QMetaObject::invokeMethod(receiver, slot, Qt::QueuedConnection,
                     Q_ARG(int, dialog.result()));
