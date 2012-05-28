@@ -17,8 +17,8 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef ACTIVITIES_RESOURCEINSTANCE_H_
-#define ACTIVITIES_RESOURCEINSTANCE_H_
+#ifndef ACTIVITIES_RESOURCEINSTANCE_H
+#define ACTIVITIES_RESOURCEINSTANCE_H
 
 #include <QObject>
 #include <QWidget>
@@ -211,4 +211,5 @@ private:
 
 }
 
-#endif // ACTIVITIES_RESOURCEINSTANCE_H_
+#endif // ACTIVITIES_RESOURCEINSTANCE_H
+

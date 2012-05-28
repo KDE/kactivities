@@ -15,8 +15,8 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef SLC_H
-#define SLC_H
+#ifndef PLUGINS_SLC_SLC_H
+#define PLUGINS_SLC_SLC_H
 
 #include <QObject>
 #include <KUrl>
@@ -53,4 +53,5 @@ private:
     QHash < WId, KUrl > lastFocussedResource;
 };
 
-#endif
+#endif // PLUGINS_SLC_SLC_H
+

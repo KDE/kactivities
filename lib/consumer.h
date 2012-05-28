@@ -16,8 +16,8 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef ACTIVITIES_CONSUMER_H_
-#define ACTIVITIES_CONSUMER_H_
+#ifndef ACTIVITIES_CONSUMER_H
+#define ACTIVITIES_CONSUMER_H
 
 #include <QObject>
 #include <QWidget>
@@ -157,4 +157,5 @@ private:
 
 } // namespace KActivities
 
-#endif // ACTIVITIES_CONSUMER_H_
+#endif // ACTIVITIES_CONSUMER_H
+

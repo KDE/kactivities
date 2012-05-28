@@ -15,8 +15,8 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef STATS_PLUGIN_H
-#define STATS_PLUGIN_H
+#ifndef PLUGINS_SQLITE_STATS_PLUGIN_H
+#define PLUGINS_SQLITE_STATS_PLUGIN_H
 
 #include <QObject>
 #include <KUrl>
@@ -40,4 +40,4 @@ private:
     static StatsPlugin * s_instance;
 };
 
-#endif // STATS_PLUGIN_H
+#endif // PLUGINS_SQLITE_STATS_PLUGIN_H

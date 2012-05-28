@@ -16,11 +16,11 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <kdebug.h>
-
 #include "info.h"
 #include "info_p.h"
 #include "manager_p.h"
+
+#include <kdebug.h>
 
 namespace KActivities {
 

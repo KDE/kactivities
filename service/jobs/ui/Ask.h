@@ -17,8 +17,8 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef ASK_H_
-#define ASK_H_
+#ifndef JOBS_UI_ASK_H
+#define JOBS_UI_ASK_H
 
 #include "../Job.h"
 #include "../JobFactory.h"
@@ -68,5 +68,5 @@ inline Ask::Factory * ask(const QString & title, const QString & message, const 
 } // namespace Ui
 } // namespace Jobs
 
-#endif // ASK_H_
+#endif // JOBS_UI_ASK_H
 

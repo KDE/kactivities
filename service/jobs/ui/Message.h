@@ -17,8 +17,8 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef GENERAL_MESSAGE_H_
-#define GENERAL_MESSAGE_H_
+#ifndef JOBS_UI_MESSAGE_H
+#define JOBS_UI_MESSAGE_H
 
 #include "../Job.h"
 #include "../JobFactory.h"
@@ -65,5 +65,5 @@ inline Message::Factory * message(const QString & title, const QString & message
 } // namespace Ui
 } // namespace Jobs
 
-#endif // GENERAL_MESSAGE_H_
+#endif // JOBS_UI_MESSAGE_H
 

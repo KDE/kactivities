@@ -24,7 +24,7 @@
 
 #include <KDebug>
 
-#include "config-features.h"
+#include <config-features.h>
 
 #ifdef HAVE_NEPOMUK
     #include "NepomukCommon.h"

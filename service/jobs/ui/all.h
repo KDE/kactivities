@@ -17,7 +17,13 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+#ifndef JOBS_UI_ALL_H
+#define JOBS_UI_ALL_H
+
 #include "Ask.h"
 #include "AskPassword.h"
 #include "Message.h"
 #include "SetBusy.h"
+
+#endif // JOBS_UI_ALL_H
+

@@ -17,6 +17,12 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+#ifndef JOBS_ENCRYPTION_ALL_H
+#define JOBS_ENCRYPTION_ALL_H
+
 #include "Mount.h"
 #include "Common.h"
 #include "InitializeStructure.h"
+
+#endif // JOBS_ENCRYPTION_ALL_H
+

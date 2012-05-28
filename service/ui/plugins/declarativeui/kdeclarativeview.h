@@ -19,8 +19,8 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA .        *
  ***************************************************************************/
 
-#ifndef KDECLARATIVEVIEW_H
-#define KDECLARATIVEVIEW_H
+#ifndef UI_PLUGINS_DECLARATIVEUI_K_DECLARATIVE_VIEW_H
+#define UI_PLUGINS_DECLARATIVEUI_K_DECLARATIVE_VIEW_H
 
 #include <QDeclarativeView>
 
@@ -78,4 +78,4 @@ private:
     KDeclarativeViewPrivate *const d;
 };
 
-#endif //KDECLARATIVEVIEW_H
+#endif // UI_PLUGINS_DECLARATIVEUI_K_DECLARATIVE_VIEW_H

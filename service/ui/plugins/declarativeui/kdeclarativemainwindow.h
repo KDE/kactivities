@@ -20,8 +20,8 @@
  ***************************************************************************/
 
 
-#ifndef KDECLARATIVEMAINWINDOW_H
-#define KDECLARATIVEMAINWINDOW_H
+#ifndef UI_PLUGINS_DECLARATIVEUI_K_DECLARATIVE_MAIN_WINDOW_H
+#define UI_PLUGINS_DECLARATIVEUI_K_DECLARATIVE_MAIN_WINDOW_H
 
 #include <KMainWindow>
 
@@ -92,4 +92,5 @@ private:
     Q_PRIVATE_SLOT(d, void statusChanged(QDeclarativeView::Status))
 };
 
-#endif // KDECLARATIVEMAINWINDOW_H
+#endif // UI_PLUGINS_DECLARATIVEUI_K_DECLARATIVE_MAIN_WINDOW_H
+

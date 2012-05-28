@@ -17,8 +17,8 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef SET_BUSY_H_
-#define SET_BUSY_H_
+#ifndef JOBS_UI_SET_BUSY_H
+#define JOBS_UI_SET_BUSY_H
 
 #include "../Job.h"
 #include "../JobFactory.h"
@@ -53,5 +53,5 @@ inline SetBusy::Factory * setBusy(bool busy = true) {
 } // namespace Ui
 } // namespace Jobs
 
-#endif // SET_BUSY_H_
+#endif // JOBS_UI_SET_BUSY_H
 

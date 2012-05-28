@@ -17,8 +17,8 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef UIHANDLER_H_
-#define UIHANDLER_H_
+#ifndef UI_UI_HANDLER_H
+#define UI_UI_HANDLER_H
 
 #include <kdemacros.h>
 #include <KPluginFactory>
@@ -52,5 +52,5 @@ private:
     Private * const d;
 };
 
-#endif // UIHANDLER_H_
+#endif // UI_UI_HANDLER_H
 

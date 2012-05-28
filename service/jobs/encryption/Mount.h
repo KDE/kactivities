@@ -17,8 +17,8 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef ENCRYPTION_MOUNT_H_
-#define ENCRYPTION_MOUNT_H_
+#ifndef JOBS_ENCRYPTION_MOUNT_H
+#define JOBS_ENCRYPTION_MOUNT_H
 
 #include "../Job.h"
 #include "../JobFactory.h"
@@ -86,5 +86,5 @@ inline Mount::Factory * unmountExcept(const QString & activity)
 } // namespace Jobs
 } // namespace Encryption
 
-#endif // ENCRYPTION_MOUNT_H_
+#endif // JOBS_ENCRYPTION_MOUNT_H
 

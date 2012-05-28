@@ -17,6 +17,9 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+#ifndef JOBS_SCHEDULER_ABSTRACT_P_H
+#define JOBS_SCHEDULER_ABSTRACT_P_H
+
 #include "Abstract.h"
 
 #include <QList>
@@ -41,3 +44,5 @@ public:
 
 } // namespace Schedulers
 } // namespace Jobs
+
+#endif // JOBS_SCHEDULER_ABSTRACT_P_H

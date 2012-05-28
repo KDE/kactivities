@@ -17,8 +17,8 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef EVENT_H_
-#define EVENT_H_
+#ifndef EVENT_H
+#define EVENT_H
 
 #include <QString>
 #include <QWidget>
@@ -79,5 +79,5 @@ public:
 
 typedef QList<Event> EventList;
 
-#endif // EVENT_H_
+#endif // EVENT_H
 

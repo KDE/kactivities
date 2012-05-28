@@ -15,8 +15,8 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef GLOBALSHORTCUTS_H
-#define GLOBALSHORTCUTS_H
+#ifndef PLUGINS_GLOBAL_SHORTCUTS_GLOBAL_SHORTCUTS_H
+#define PLUGINS_GLOBAL_SHORTCUTS_GLOBAL_SHORTCUTS_H
 
 #include <KActionCollection>
 #include <KAction>
@@ -57,4 +57,4 @@ private:
     KActionCollection* m_actionCollection;
 };
 
-#endif
+#endif // PLUGINS_GLOBAL_SHORTCUTS_GLOBAL_SHORTCUTS_H

@@ -16,8 +16,8 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef ACTIVITIES_INFO_H_
-#define ACTIVITIES_INFO_H_
+#ifndef ACTIVITIES_INFO_H
+#define ACTIVITIES_INFO_H
 
 #include <QObject>
 #include <QWidget>
@@ -203,4 +203,5 @@ private:
 
 } // namespace KActivities
 
-#endif // ACTIVITIES_INFO_H_
+#endif // ACTIVITIES_INFO_H
+

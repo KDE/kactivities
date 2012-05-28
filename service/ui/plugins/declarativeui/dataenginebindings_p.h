@@ -16,8 +16,8 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef DATAENGINEBIND_H
-#define DATAENGINEBIND_H
+#ifndef UI_PLUGINS_DECLARATIVEUI_DATAENGINE_BINDINGS_P_H
+#define UI_PLUGINS_DECLARATIVEUI_DATAENGINE_BINDINGS_P_H
 
 #include <QScriptEngine>
 #include <QScriptValue>
@@ -79,5 +79,5 @@ int qScriptRegisterMapMetaType(
 
 void registerDataEngineMetaTypes(QScriptEngine *engine);
 
-#endif // DATAENGINE_H
+#endif // UI_PLUGINS_DECLARATIVEUI_DATAENGINE_BINDINGS_P_H
 

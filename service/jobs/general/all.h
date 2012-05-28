@@ -17,4 +17,10 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+#ifndef JOBS_GENERAL_ALL_H
+#define JOBS_GENERAL_ALL_H
+
 #include "Call.h"
+
+#endif // JOBS_GENERAL_ALL_H
+

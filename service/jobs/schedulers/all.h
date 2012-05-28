@@ -17,6 +17,9 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+#ifndef JOBS_SCHEDULERS_ALL_H
+#define JOBS_SCHEDULERS_ALL_H
+
 #include "Abstract.h"
 #include "Ordered.h"
 #include "Fallible.h"
@@ -24,3 +27,6 @@
 #include "Retry.h"
 #include "Switch.h"
 #include "Test.h"
+
+#endif // JOBS_SCHEDULERS_ALL_H
+

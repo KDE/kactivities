@@ -17,8 +17,8 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef ACTIVITIES_MANAGER_P_
-#define ACTIVITIES_MANAGER_P_
+#ifndef ACTIVITIES_MANAGER_P
+#define ACTIVITIES_MANAGER_P
 
 #include "activitymanager_interface.h"
 
@@ -49,4 +49,5 @@ private:
 
 } // namespace KActivities
 
-#endif // ACTIVITIES_MANAGER_P_
+#endif // ACTIVITIES_MANAGER_P
+

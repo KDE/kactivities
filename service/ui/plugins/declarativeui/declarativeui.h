@@ -15,8 +15,8 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef UI_HANDLER_DECLARATIVE_H_
-#define UI_HANDLER_DECLARATIVE_H_
+#ifndef UI_PLUGINS_DECLARATIVEUI_UI_DECLARATIVE_UI_H
+#define UI_PLUGINS_DECLARATIVEUI_UI_DECLARATIVE_UI_H
 
 #include <QObject>
 
@@ -41,4 +41,4 @@ private:
     Private * const d;
 };
 
-#endif
+#endif // UI_PLUGINS_DECLARATIVEUI_UI_DECLARATIVE_UI_H

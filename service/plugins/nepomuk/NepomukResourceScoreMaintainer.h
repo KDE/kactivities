@@ -17,8 +17,8 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef NEPOMUK_RESOURCE_SCORE_MAINTAINER_H_
-#define NEPOMUK_RESOURCE_SCORE_MAINTAINER_H_
+#ifndef PLUGINS_NEPOMUK_NEPOMUK_RESOURCE_SCORE_MAINTAINER_H
+#define PLUGINS_NEPOMUK_NEPOMUK_RESOURCE_SCORE_MAINTAINER_H
 
 #include <QThread>
 #include <Nepomuk/Resource>
@@ -44,4 +44,4 @@ private:
     class NepomukResourceScoreMaintainerPrivate * const d;
 };
 
-#endif // NEPOMUK_RESOURCE_SCORE_MAINTAINER_H_
+#endif // PLUGINS_NEPOMUK_NEPOMUK_RESOURCE_SCORE_MAINTAINER_H

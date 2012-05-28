@@ -17,8 +17,8 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef RANKINGSCLIENT_H_
-#define RANKINGSCLIENT_H_
+#ifndef PLUGINS_NEPOMUK_RANKINGS_CLIENT_H
+#define PLUGINS_NEPOMUK_RANKINGS_CLIENT_H
 
 #include <QObject>
 #include <QVariantList>
@@ -46,4 +46,4 @@ private:
     class RankingsClientPrivate * const d;
 };
 
-#endif // RANKINGSCLIENT_H_
+#endif // PLUGINS_NEPOMUK_RANKINGS_CLIENT_H

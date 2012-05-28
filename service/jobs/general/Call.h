@@ -17,8 +17,8 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef GENERAL_CALL_H_
-#define GENERAL_CALL_H_
+#ifndef JOBS_GENERAL_CALL_H
+#define JOBS_GENERAL_CALL_H
 
 #include "../Job.h"
 #include "../JobFactory.h"
@@ -76,5 +76,5 @@ inline Call::Factory * call(QObject * receiver, const QString & slot,
 } // namespace General
 } // namespace Jobs
 
-#endif // GENERAL_CALL_H_
+#endif // JOBS_GENERAL_CALL_H
 

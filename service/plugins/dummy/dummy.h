@@ -18,8 +18,8 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef Dummy_H
-#define Dummy_H
+#ifndef PLUGINS_DUMMY_DUMMY_H
+#define PLUGINS_DUMMY_DUMMY_H
 
 #include "../../Plugin.h"
 
@@ -32,4 +32,5 @@ public:
     ~DummyPlugin();
 };
 
-#endif
+#endif // PLUGINS_DUMMY_DUMMY_H
+

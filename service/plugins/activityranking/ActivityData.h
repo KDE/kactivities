@@ -17,8 +17,8 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef ACTIVITY_DATA_H_
-#define ACTIVITY_DATA_H_
+#ifndef PLUGINS_ACTIVITY_RANKING_ACTIVITY_DATA_H
+#define PLUGINS_ACTIVITY_RANKING_ACTIVITY_DATA_H
 
 #include <QObject>
 #include <QString>
@@ -45,4 +45,4 @@ const QDBusArgument & operator >> (const QDBusArgument & arg, ActivityData & rec
 
 QDebug operator << (QDebug dbg, const ActivityData & r);
 
-#endif // ACTIVITY_DATA_H_
+#endif // PLUGINS_ACTIVITY_RANKING_ACTIVITY_DATA_H

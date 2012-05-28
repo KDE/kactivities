@@ -17,8 +17,8 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef ACTIVITY_MANAGER_P_H_
-#define ACTIVITY_MANAGER_P_H_
+#ifndef ACTIVITY_MANAGER_P_H
+#define ACTIVITY_MANAGER_P_H
 
 #include <QSet>
 #include <QString>
@@ -31,7 +31,8 @@
 #include "ActivityManager.h"
 #include "Event.h"
 #include "SharedInfo.h"
-#include "config-features.h"
+
+#include <config-features.h>
 
 #ifdef HAVE_NEPOMUK
     #include <Nepomuk/ResourceManager>
@@ -129,5 +130,5 @@ private:
     QString currentActivityBeforeScreenLock;
 };
 
-#endif // ACTIVITY_MANAGER_P_H_
+#endif // ACTIVITY_MANAGER_P_H
 

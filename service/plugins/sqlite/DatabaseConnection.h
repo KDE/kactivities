@@ -17,8 +17,8 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef DATABASECONNECTION_H_
-#define DATABASECONNECTION_H_
+#ifndef PLUGINS_SQLITE_DATABASE_CONNECTION_H
+#define PLUGINS_SQLITE_DATABASE_CONNECTION_H
 
 #include <QDateTime>
 #include <QObject>
@@ -56,5 +56,5 @@ private:
 };
 
 
-#endif // DATABASECONNECTION_H_
+#endif // PLUGINS_SQLITE_DATABASE_CONNECTION_H
 

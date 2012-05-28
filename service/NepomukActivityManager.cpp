@@ -17,7 +17,7 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#include "config-features.h"
+#include <config-features.h>
 
 #if !defined(HAVE_NEPOMUK) && !defined(Q_CC_MSVC) // krazy:skip
     #warning "No Nepomuk, disabling some activity related features"

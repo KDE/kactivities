@@ -17,10 +17,11 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef NEPOMUK_MOVE_H_
-#define NEPOMUK_MOVE_H_
+#ifndef JOBS_NEPOMUK_MOVE_H
+#define JOBS_NEPOMUK_MOVE_H
 
-#include "config-features.h"
+#include <config-features.h>
+
 #ifdef HAVE_NEPOMUK
 
 #include "../Job.h"
@@ -112,5 +113,5 @@ namespace Private {
 } // namespace Jobs
 
 #endif // HAVE_NEPOMUK
-#endif // NEPOMUK_MOVE_H_
+#endif // JOBS_NEPOMUK_MOVE_H
 

@@ -17,6 +17,9 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+#ifndef FILE_ITEM_LINKING_PLUGIN_P_H
+#define FILE_ITEM_LINKING_PLUGIN_P_H
+
 #include "fileitemlinkingplugin.h"
 #include <kabstractfileitemactionplugin.h>
 
@@ -38,4 +41,6 @@ public:
     QAction * addAction(QMenu * menu, const QString & activityId, const QString & title = QString(), const QString & icon = QString());
 
 };
+
+#endif // FILE_ITEM_LINKING_PLUGIN_P_H
 

@@ -17,8 +17,8 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef PASSWORD_ASK_H_
-#define PASSWORD_ASK_H_
+#ifndef JOBS_UI_ASK_PASSWORD_H
+#define JOBS_UI_ASK_PASSWORD_H
 
 #include "../Job.h"
 #include "../JobFactory.h"
@@ -73,5 +73,5 @@ inline AskPassword::Factory * askPassword(const QString & title, const QString &
 } // namespace Ui
 } // namespace Jobs
 
-#endif // PASSWORD_ASK_H_
+#endif // JOBS_UI_ASK_PASSWORD_H
 

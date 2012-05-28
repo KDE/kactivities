@@ -18,8 +18,8 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef NEPOMUK_H
-#define NEPOMUK_H
+#ifndef PLUGINS_NEPOMUK_NEPOMUK_PLUGIN_H
+#define PLUGINS_NEPOMUK_NEPOMUK_PLUGIN_H
 
 #include <QObject>
 #include <KUrl>
@@ -48,4 +48,5 @@ private:
     static NepomukPlugin * s_instance;
 };
 
-#endif
+#endif // PLUGINS_NEPOMUK_NEPOMUK_PLUGIN_H
+

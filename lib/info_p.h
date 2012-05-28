@@ -16,8 +16,8 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef KACTIVITIESINFO_P_H_
-#define KACTIVITIESINFO_P_H_
+#ifndef KACTIVITIESINFO_P_H
+#define KACTIVITIESINFO_P_H
 
 #include "activitymanager_interface.h"
 #include "info.h"
@@ -43,4 +43,4 @@ public:
 
 } // namespace KActivities
 
-#endif // ACTIVITIES_INFO_P_H_
+#endif // ACTIVITIES_INFO_P_H

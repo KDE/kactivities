@@ -18,8 +18,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef KIO_ACTIVITIES_H_
-#define KIO_ACTIVITIES_H_
+#ifndef KIO_ACTIVITIES_H
+#define KIO_ACTIVITIES_H
 
 #include <kio/forwardingslavebase.h>
 
@@ -98,4 +98,4 @@ private:
     Private * const d;
 };
 
-#endif // KIO_ACTIVITIES_H_
+#endif // KIO_ACTIVITIES_H

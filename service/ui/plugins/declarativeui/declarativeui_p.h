@@ -15,8 +15,8 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef UI_HANDLER_DECLARATIVE_P_H_
-#define UI_HANDLER_DECLARATIVE_P_H_
+#ifndef UI_PLUGINS_DECLARATIVEUI_DECLARATIVE_UI_P_H
+#define UI_PLUGINS_DECLARATIVEUI_DECLARATIVE_UI_P_H
 
 #include "declarativeui.h"
 #include "kdeclarativemainwindow.h"
@@ -62,5 +62,5 @@ Q_SIGNALS:
     friend class DeclarativeUiHandler;
 };
 
-#endif // UI_HANDLER_DECLARATIVE_P_H_
+#endif // UI_PLUGINS_DECLARATIVEUI_DECLARATIVE_UI_P_H
 

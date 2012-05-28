@@ -15,8 +15,8 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ACTIVITYRANKING_H
-#define ACTIVITYRANKING_H
+#ifndef PLUGINS_ACTIVITY_RANKING_ACTIVITY_RANKING_H
+#define PLUGINS_ACTIVITY_RANKING_ACTIVITY_RANKING_H
 
 #include <QObject>
 #include <QList>
@@ -66,4 +66,5 @@ private:
     Private * const d;
 };
 
-#endif
+#endif // PLUGINS_ACTIVITY_RANKING_ACTIVITY_RANKING_H
+

@@ -15,8 +15,8 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef UI_HANDLER_KDIALOG_H
-#define UI_HANDLER_KDIALOG_H
+#ifndef UI_PLUGINS_KDIALOGEUI_KDIALOG_UI_H
+#define UI_PLUGINS_KDIALOGEUI_KDIALOG_UI_H
 
 #include <QObject>
 
@@ -41,4 +41,5 @@ private:
     Private * const d;
 };
 
-#endif
+#endif // UI_PLUGINS_KDIALOGEUI_KDIALOG_UI_H
+

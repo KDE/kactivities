@@ -45,7 +45,7 @@
 
 #include "ui/Ui.h"
 
-#include "config-features.h"
+#include <config-features.h>
 
 // Private
 

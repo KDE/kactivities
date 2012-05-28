@@ -17,10 +17,10 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef NEPOMUKACTIVITYMANAGER_H_
-#define NEPOMUKACTIVITYMANAGER_H_
+#ifndef NEPOMUK_ACTIVITY_MANAGER_H
+#define NEPOMUK_ACTIVITY_MANAGER_H
 
-#include "config-features.h"
+#include <config-features.h>
 
 #ifdef HAVE_NEPOMUK
 #    include <Nepomuk/ResourceManager>
@@ -77,5 +77,5 @@ private:
 };
 
 
-#endif // NEPOMUKACTIVITYMANAGER_H_
+#endif // NEPOMUK_ACTIVITY_MANAGER_H
 

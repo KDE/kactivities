@@ -17,8 +17,8 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef GENERAL_CHANGE_ACTIVITY_H_
-#define GENERAL_CHANGE_ACTIVITY_H_
+#ifndef JOBS_ACTIVITY_START_H
+#define JOBS_ACTIVITY_START_H
 
 #include "../Job.h"
 #include "../JobFactory.h"
@@ -67,5 +67,5 @@ inline Change::Factory * change(QObject * receiver, const QString & slot, const 
 } // namespace Activity
 } // namespace Jobs
 
-#endif // GENERAL_CHANGE_ACTIVITY_H_
+#endif // JOBS_ACTIVITY_START_H
 

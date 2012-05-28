@@ -17,8 +17,8 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef ACTIVITY_MANAGER_H_
-#define ACTIVITY_MANAGER_H_
+#ifndef ACTIVITY_MANAGER_H
+#define ACTIVITY_MANAGER_H
 
 #define ActivityManagerServicePath "org.kde.ActivityManager"
 
@@ -308,4 +308,4 @@ private:
     class ActivityManagerPrivate * const d;
 };
 
-#endif // ACTIVITY_MANAGER_H_
+#endif // ACTIVITY_MANAGER_H

@@ -17,8 +17,8 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef RESOURCE_SCORE_CACHE_H_
-#define RESOURCE_SCORE_CACHE_H_
+#ifndef PLUGINS_SQLITE_RESOURCE_SCORE_CACHE_H
+#define PLUGINS_SQLITE_RESOURCE_SCORE_CACHE_H
 
 #include <QString>
 #include <QUrl>
@@ -39,4 +39,4 @@ private:
     class ResourceScoreCachePrivate * const d;
 };
 
-#endif // RESOURCE_SCORE_CACHE_H_
+#endif // PLUGINS_SQLITE_RESOURCE_SCORE_CACHE_H

@@ -17,8 +17,8 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef ENCRYPTION_COMMON_H_
-#define ENCRYPTION_COMMON_H_
+#ifndef JOBS_ENCRYPTION_COMMON_H
+#define JOBS_ENCRYPTION_COMMON_H
 
 #include <QString>
 
@@ -64,5 +64,5 @@ namespace Common {
 } // namespace Encryption
 } // namespace Jobs
 
-#endif // ENCRYPTION_COMMON_H_
+#endif // JOBS_ENCRYPTION_COMMON_H
 

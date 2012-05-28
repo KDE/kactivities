@@ -16,8 +16,8 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef ACTIVITIES_CONSUMER_P_H_
-#define ACTIVITIES_CONSUMER_P_H_
+#ifndef ACTIVITIES_CONSUMER_P_H
+#define ACTIVITIES_CONSUMER_P_H
 
 #include "activitymanager_interface.h"
 #include "consumer.h"
@@ -38,4 +38,5 @@ public Q_SLOTS:
 
 } // namespace KActivities
 
-#endif // ACTIVITIES_CONSUMER_P_H_
+#endif // ACTIVITIES_CONSUMER_P_H
+

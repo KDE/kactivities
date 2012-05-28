@@ -21,9 +21,7 @@
 #include "EventProcessor.h"
 #include "Plugin.h"
 
-#include "config-features.h"
-
-#include <KDebug>
+#include <config-features.h>
 
 #include <QDateTime>
 #include <QList>
@@ -92,7 +90,6 @@ EventProcessor * EventProcessor::self()
 #ifdef FAKE_EVENTS_FEED
 
 #include <QTextStream>
-#include <QDateTime>
 #include <QFile>
 
 void EventProcessor_FakeEventsFeed(EventProcessor * ep)

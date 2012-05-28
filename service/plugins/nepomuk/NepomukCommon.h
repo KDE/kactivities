@@ -17,8 +17,8 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef NEPOMUK_COMMON_H_
-#define NEPOMUK_COMMON_H_
+#ifndef PLUGINS_NEPOMUK_NEPOMUK_COMMON_H
+#define PLUGINS_NEPOMUK_NEPOMUK_COMMON_H
 
 #include <nepomuk/nie.h>
 #include "NepomukPlugin.h"
@@ -79,4 +79,4 @@ public:
 
 Nepomuk::Resource & activityResource(const QString & id);
 
-#endif // NEPOMUK_COMMON_H_
+#endif // PLUGINS_NEPOMUK_NEPOMUK_COMMON_H

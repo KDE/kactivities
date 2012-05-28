@@ -15,8 +15,8 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef RANKINGS_H
-#define RANKINGS_H
+#ifndef PLUGINS_SQLITE_RANKINGS_H
+#define PLUGINS_SQLITE_RANKINGS_H
 
 #include <QHash>
 #include <QObject>
@@ -121,4 +121,5 @@ private:
     QHash < Rankings::Activity, qreal > * m_scoreTrashold;
 };
 
-#endif
+#endif // PLUGINS_SQLITE_RANKINGS_H
+

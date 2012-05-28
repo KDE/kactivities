@@ -17,10 +17,10 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef NEPOMUK_COMMON_H_
-#define NEPOMUK_COMMON_H_
+#ifndef PLUGINS_SQLITE_NEPOMUK_COMMON_H
+#define PLUGINS_SQLITE_NEPOMUK_COMMON_H
 
-#include "config-features.h"
+#include <config-features.h>
 
 #ifdef HAVE_NEPOMUK
 
@@ -108,4 +108,5 @@ inline void updateNepomukScore(const QString & activity, const QString & applica
 
 #endif // HAVE_NEPOMUK
 
-#endif // NEPOMUK_COMMON_H_
+#endif // PLUGINS_SQLITE_NEPOMUK_COMMON_H
+
