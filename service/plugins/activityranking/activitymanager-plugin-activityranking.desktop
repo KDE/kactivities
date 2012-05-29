@@ -1,6 +1,7 @@
 [Desktop Entry]
 Name=Activity ranking plugin
 Name[ca]=Connector d'ordenació d'activitats
+Name[de]=Modul für Aktivitätenbewertung
 Name[el]=Πρόσθετο αξιολόγησης δραστηριοτήτων
 Name[es]=Complemento de puntuación de actividades
 Name[et]=Tegevuste hindamise plugin
@@ -23,6 +24,7 @@ Name[zh_CN]=活动评分插件
 Name[zh_TW]=活動排序外掛程式
 Comment=Plugin to rank activities based on usage
 Comment[ca]=Connector per ordenar les activitats segons l'ús
+Comment[de]=Modul, das Aktivitäten anhand der Benutzung bewertet
 Comment[el]=Πρόσθετο για την αξιολόγηση δραστηριοτήτων με βάση τη χρήση
 Comment[es]=Complemento para puntuar actividades basándose en su uso
 Comment[et]=Plugin tegevuste hindamiseks kasutuse põhjal

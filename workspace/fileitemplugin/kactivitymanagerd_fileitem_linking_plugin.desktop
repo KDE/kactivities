@@ -18,6 +18,7 @@ Name[sv]=Länkinsticksprogram från fil till aktivitet
 Name[tr]=Etkinliğe dosya bağlama eklentisi
 Name[uk]=Додаток прив’язування файлів до просторів дій
 Name[x-test]=xxFile to activity linking pluginxx
+Name[zh_CN]=文件关联活动插件
 X-KDE-Library=kactivitymanagerd_fileitem_linking_plugin
 ServiceTypes=KFileItemAction/Plugin
 MimeType=all/all;application/octet-stream;inode/directory;
