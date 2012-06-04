@@ -3,6 +3,7 @@ Encoding=UTF-8
 Type=Service
 Name=File to activity linking plugin
 Name[ca]=Fitxer a connector d'enllaç d'activitat
+Name[el]=Αρχείο σε πρόσθετο σύνδεσης δραστηριοτήτων
 Name[es]=Complemento de enlace de archivo a actividad
 Name[et]=Faili tegevusega linkimise plugin
 Name[gl]=Engadido para ligar ficheiros con actividades
