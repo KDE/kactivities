@@ -35,6 +35,7 @@ Comment[fi]=Lisää järjestelmänlaajuiset pikanäppäimet KActivityManager-tau
 Comment[gl]=Engade atallos de teclado globais ao Daemon KActivityManager
 Comment[hu]=Globális gyorsbillentyűk hozzáadása a KActivityManager démonhoz
 Comment[ia]=Adde vias breve de claviero global a Daemon de KactivityManager (gerente de activitate)
+Comment[it]=Aggiunge scorciatoie della tastiera globali al demone di gestione delle attività
 Comment[nl]=Voegt globale sneltoetsen toe aan KActivityManager-daemon
 Comment[pl]=Dodaj globalne skróty klawiaturowe do demona KActivityManager
 Comment[pt]=Adiciona atalhos globais do teclado para o serviço KActivityManager
