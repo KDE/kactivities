@@ -143,6 +143,19 @@ ActivityManager::ActivityManager()
 
     EXEC_NEPOMUK( syncActivities(d->activities.keys(), d->activitiesConfig(), d->activityIconsConfig()) );
 
+#ifdef HAVE_NEPOMUK
+    if (NEPOMUK_PRESENT) {
+        connect(this, SIGNAL(CurrentActivityChanged(QString)),
+                NepomukActivityManager::self(), SLOT(setCurrentActivity(QString)));
+        connect(this, SIGNAL(ActivityAdded(QString)),
+                NepomukActivityManager::self(), SLOT(addActivity(QString)));
+        connect(this, SIGNAL(ActivityRemoved(QString)),
+                NepomukActivityManager::self(), SLOT(removeActivity(QString)));
+
+    }
+#endif
+
+
     d->loadLastPublicActivity();
 }
 
@@ -413,7 +426,7 @@ void ActivityManagerPrivate::emitCurrentActivityChanged(const QString & id)
     currentActivity = id;
     mainConfig().writeEntry("currentActivity", id);
 
-    EXEC_NEPOMUK( setCurrentActivity(id) );
+    // EXEC_NEPOMUK( setCurrentActivity(id) );
 
     using namespace Jobs::Encryption::Common;
 

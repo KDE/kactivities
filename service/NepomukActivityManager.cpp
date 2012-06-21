@@ -45,6 +45,8 @@
 #include <QDBusConnection>
 #include <QDBusConnectionInterface>
 
+// The activities KIO works only if nepomuk is present, so we can
+// freely send the change event here
 #include <KDirNotify>
 
 using namespace Nepomuk::Vocabulary;
@@ -89,6 +91,9 @@ void NepomukActivityManager::init()
     if (!m_nepomukPresent) return;
 
     Nepomuk::ResourceManager::instance()->init();
+
+    org::kde::KDirNotify::emitFilesAdded("activities:/");
+    org::kde::KDirNotify::emitFilesAdded("activities:/current");
 }
 
 
@@ -171,6 +176,8 @@ void NepomukActivityManager::syncActivities(const QStringList activityIds, KConf
     bool configNeedsSyncing = false;
 
     foreach (const QString & activityId, activityIds) {
+        org::kde::KDirNotify::emitFilesAdded("activities:/" + activityId);
+
         Nepomuk::Resource resource(activityId, KAO::Activity());
 
         QString name = config.readEntry(activityId, QString());
@@ -276,6 +283,10 @@ void NepomukActivityManager::linkResourceToActivity(const KUrl & resource, const
     //     );
 
     activityResource(activity).addIsRelated(Nepomuk::Resource(resource));
+
+    if (m_currentActivity == activity)
+        org::kde::KDirNotify::emitFilesAdded("activities:/current");
+    org::kde::KDirNotify::emitFilesAdded("activities:/" + activity);
 }
 
 void NepomukActivityManager::unlinkResourceFromActivity(const KUrl & resource, const QString & activity)
@@ -283,6 +294,10 @@ void NepomukActivityManager::unlinkResourceFromActivity(const KUrl & resource, c
     if (!m_nepomukPresent) return;
 
     activityResource(activity).removeProperty(NAO::isRelated(), Nepomuk::Resource(resource));
+
+    if (m_currentActivity == activity)
+        org::kde::KDirNotify::emitFilesAdded("activities:/current");
+    org::kde::KDirNotify::emitFilesAdded("activities:/" + activity);
 }
 
 QList <KUrl> NepomukActivityManager::resourcesLinkedToActivity(const QString & activity) const
@@ -339,11 +354,20 @@ void NepomukActivityManager::toRealUri(KUrl & kuri)
 
 void NepomukActivityManager::setCurrentActivity(const QString & id)
 {
-    Q_UNUSED(id)
+    m_currentActivity = id;
 
-    // The activities KIO works only if nepomuk is present, so we can
-    // freely send the change event here
     org::kde::KDirNotify::emitFilesAdded("activities:/current");
+}
+
+void NepomukActivityManager::addActivity(const QString & activity)
+{
+    org::kde::KDirNotify::emitFilesAdded("activities:/");
+    org::kde::KDirNotify::emitFilesAdded("activities:/activity");
+}
+
+void NepomukActivityManager::removeActivity(const QString & activity)
+{
+    org::kde::KDirNotify::emitFilesAdded("activities:/");
 }
 
 #endif // HAVE_NEPOMUK

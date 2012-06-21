@@ -48,6 +48,7 @@ public:
     bool initialized() const;
 
     void syncActivities(const QStringList activityIds, KConfigGroup config, KConfigGroup iconsConfig);
+
     void setActivityName(const QString & activity, const QString & name);
     void setActivityDescription(const QString & activity, const QString & description);
     void setActivityIcon(const QString & activity, const QString & icon);
@@ -62,7 +63,10 @@ public:
 
     void toRealUri(KUrl & url);
 
+public Q_SLOTS:
     void setCurrentActivity(const QString & id);
+    void addActivity(const QString & activity);
+    void removeActivity(const QString & activity);
 
 private:
     void __updateOntology();
@@ -73,6 +77,7 @@ private:
 
     bool m_nepomukPresent;
     static NepomukActivityManager * s_instance;
+    QString m_currentActivity;
 #endif // HAVE_NEPOMUK
 };
 
