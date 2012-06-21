@@ -352,6 +352,10 @@ void NepomukActivityManager::toRealUri(KUrl & kuri)
     }
 }
 
+#endif // HAVE_NEPOMUK
+
+#ifdef HAVE_NEPOMUK
+
 void NepomukActivityManager::setCurrentActivity(const QString & id)
 {
     m_currentActivity = id;
@@ -370,7 +374,22 @@ void NepomukActivityManager::removeActivity(const QString & activity)
     org::kde::KDirNotify::emitFilesAdded("activities:/");
 }
 
+#else // doesn't HAVE_NEPOMUK
+
+void NepomukActivityManager::setCurrentActivity(const QString & id)
+{
+}
+
+void NepomukActivityManager::addActivity(const QString & activity)
+{
+}
+
+void NepomukActivityManager::removeActivity(const QString & activity)
+{
+}
+
 #endif // HAVE_NEPOMUK
+
 
 void NepomukActivityManager::nepomukServiceOwnerChanged(const QString & service, const QString & oldOwner, const QString & newOwner)
 {

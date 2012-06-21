@@ -17,12 +17,16 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+#include <config-features.h>
+
 #include "StatsPlugin.h"
 #include "ResourceScoreMaintainer.h"
 
 #include "../../Event.h"
-#include "kao.h"
 
+#ifdef HAVE_NEPOMUK
+#include "kao.h"
+#endif
 
 #include <kdebug.h>
 

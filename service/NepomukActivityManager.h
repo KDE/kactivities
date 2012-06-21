@@ -63,11 +63,6 @@ public:
 
     void toRealUri(KUrl & url);
 
-public Q_SLOTS:
-    void setCurrentActivity(const QString & id);
-    void addActivity(const QString & activity);
-    void removeActivity(const QString & activity);
-
 private:
     void __updateOntology();
 
@@ -79,6 +74,11 @@ private:
     static NepomukActivityManager * s_instance;
     QString m_currentActivity;
 #endif // HAVE_NEPOMUK
+
+public Q_SLOTS:
+    void setCurrentActivity(const QString & id);
+    void addActivity(const QString & activity);
+    void removeActivity(const QString & activity);
 };
 
 
