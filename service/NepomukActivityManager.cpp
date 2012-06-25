@@ -400,6 +400,9 @@ void NepomukActivityManager::nepomukServiceOwnerChanged(const QString & service,
         }
     }
 
+    org::kde::KDirNotify::emitFilesAdded("activities:/");
+    org::kde::KDirNotify::emitFilesAdded("activities:/current");
+
     kDebug() << "Is Nepomuk here?" << m_nepomukPresent;
 #endif // HAVE_NEPOMUK
 }
