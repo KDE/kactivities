@@ -366,7 +366,7 @@ void NepomukActivityManager::setCurrentActivity(const QString & id)
 void NepomukActivityManager::addActivity(const QString & activity)
 {
     org::kde::KDirNotify::emitFilesAdded("activities:/");
-    org::kde::KDirNotify::emitFilesAdded("activities:/activity");
+    org::kde::KDirNotify::emitFilesAdded("activities:/" + activity);
 }
 
 void NepomukActivityManager::removeActivity(const QString & activity)
