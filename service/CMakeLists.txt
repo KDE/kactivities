@@ -1,5 +1,11 @@
 project(ActivityManager)
 
+define_property(GLOBAL PROPERTY KACTIVITIES_BUILD_ACTIVITYRANKING_PLUGIN
+    BRIEF_DOCS "Should the activity ranking plugin be built?"
+    FULL_DOCS "The activity ranking plugin is needed for Plasma Active.
+    If you are building KActivities for Plasma Desktop, it is safe
+    to build without it.")
+
 define_property(GLOBAL PROPERTY KACTIVITIES_BUILD_NEPOMUK_PLUGIN
     BRIEF_DOCS "Should the nepomuk plugin be built?"
     FULL_DOCS "The Nepomuk plugin is deprecated and replaced by sqlite
