@@ -2,3 +2,7 @@
 tags
 _tests
 .videproject/ctags
+*swp
+*~
+.kdev4
+kactivities.kdev4

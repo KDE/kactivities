@@ -1,0 +1,62 @@
+<!DOCTYPE node PUBLIC "-//freedesktop//DTD D-BUS Object Introspection 1.0//EN" "http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
+<node>
+  <interface name="org.kde.ActivityManager.Resources">
+
+    <method name="RegisterResourceEvent">
+      <arg name="application" type="s" direction="in"/>
+      <arg name="windowId" type="u" direction="in"/>
+      <arg name="uri" type="s" direction="in"/>
+      <arg name="event" type="u" direction="in"/>
+      <arg name="reason" type="u" direction="in"/>
+    </method>
+
+    <method name="RegisterResourceMimeType">
+      <arg name="uri" type="s" direction="in"/>
+      <arg name="mimetype" type="s" direction="in"/>
+    </method>
+
+    <method name="RegisterResourceTitle">
+      <arg name="uri" type="s" direction="in"/>
+      <arg name="title" type="s" direction="in"/>
+    </method>
+
+    <method name="LinkResourceToActivity">
+      <arg name="uri" type="s" direction="in"/>
+      <arg name="activity" type="s" direction="in"/>
+    </method>
+
+    <method name="LinkResourceToActivity">
+      <arg name="uri" type="s" direction="in"/>
+    </method>
+
+    <method name="UnlinkResourceFromActivity">
+      <arg name="uri" type="s" direction="in"/>
+      <arg name="activity" type="s" direction="in"/>
+    </method>
+
+    <method name="UnlinkResourceFromActivity">
+      <arg name="uri" type="s" direction="in"/>
+    </method>
+
+    <method name="IsResourceLinkedToActivity">
+      <arg name="uri" type="s" direction="in"/>
+      <arg name="activity" type="s" direction="in"/>
+      <arg type="b" direction="out"/>
+    </method>
+
+    <method name="IsResourceLinkedToActivity">
+      <arg name="uri" type="s" direction="in"/>
+      <arg type="b" direction="out"/>
+    </method>
+
+    <method name="ResourcesLinkedToActivity">
+      <arg type="as" direction="out"/>
+      <arg name="activity" type="s" direction="in"/>
+    </method>
+
+    <method name="ResourcesLinkedToActivity">
+      <arg type="as" direction="out"/>
+    </method>
+
+  </interface>
+</node>
