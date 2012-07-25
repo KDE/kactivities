@@ -350,11 +350,16 @@ void ActivityManagerPrivate::syncActivitiesWithNepomuk()
         Nepomuk::Resource activityResource(activityId, KEXT::Activity());
 
         QString name = activitiesConfig().readEntry(activityId, QString());
+        QString icon = activitiesIconsConfig().readEntry(activityId, QString());
 
         activityResource.setProperty(KEXT::activityIdentifier(), activityId);
 
         if (!name.isEmpty()) {
             activityResource.setLabel(name);
+        }
+
+        if (!icon.isEmpty()) {
+            activityResource.setSymbols(QStringList() << icon);
         }
     }
 #endif // HAVE_NEPOMUK
@@ -770,6 +775,8 @@ QString ActivityManager::ActivityIcon(const QString & id) const
 void ActivityManager::SetActivityIcon(const QString & id, const QString & icon)
 {
     // kDebug() << id << icon;
+    
+    d->activitiesIconsConfig().writeEntry(id, icon);
 
     if (!NEPOMUK_RUNNING || !d->activities.contains(id)) {
         return;
