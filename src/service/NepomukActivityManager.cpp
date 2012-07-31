@@ -19,7 +19,7 @@
 
 #include <config-features.h>
 
-#if !defined(HAVE_NEPOMUK) && !defined(Q_CC_MSVC) // krazy:skip
+#if !defined(HAVE_NEPOMUK) && defined(__GNUC__) // krazy:skip
     #warning "No Nepomuk, disabling some activity related features"
 #endif
 
