@@ -21,6 +21,7 @@
 #define UTILS_REMOVE_IF_H
 
 #include <config-features.h>
+#include <algorithm>
 
 /********************************************************************
  *  Syntactic sugar for the erase-remove idiom                      *
