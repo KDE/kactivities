@@ -1,5 +1,5 @@
 Lib:
-- Interface for the org.kde.ActivityManager.Features object
+  Nothing
 
 Service:
 - KSMserver code needs to be moved into a separate class
