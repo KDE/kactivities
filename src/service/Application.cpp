@@ -224,10 +224,10 @@ static void initSignalCatching();
 
 int main(int argc, char ** argv)
 {
-    KAboutData about("kactivitymanagerd", nullptr, ki18n("KDE Activity Manager"), "2.0",
+    KAboutData about("kactivitymanagerd", nullptr, ki18n("KDE Activity Manager"), "3.0",
             ki18n("KDE Activity Management Service"),
             KAboutData::License_GPL,
-            ki18n("(c) 2010, 2011, 2012 Ivan Cukic, Sebastian Trueg"), KLocalizedString(),
+            ki18n("(c) 2010, 2011, 2012 Ivan Cukic"), KLocalizedString(),
             "http://www.kde.org/");
 
     KCmdLineArgs::init(argc, argv, &about);
