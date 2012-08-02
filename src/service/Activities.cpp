@@ -38,6 +38,7 @@
 #include "jobs/nepomuk/all.h"
 #include "jobs/schedulers/all.h"
 #include "jobs/ui/all.h"
+#include "jobs/ksmserver/KSMServer.h"
 
 #ifdef HAVE_NEPOMUK
 #include "jobs/encryption/Common.h"
@@ -58,7 +59,6 @@
 Activities::Private::Private(Activities * parent)
     : config("activitymanagerrc"),
       q(parent),
-      ksmserverInterface(nullptr),
       screensaverInterface(nullptr)
 {
 }
@@ -91,18 +91,16 @@ Activities::Activities(QObject * parent)
     d->configSyncTimer.setSingleShot(true);
     d->configSyncTimer.setInterval(2 * 60 * 1000);
 
-    // Listen to ksmserver for starting/stopping
-    val watcher = new QDBusServiceWatcher("org.kde.ksmserver",
-                                                           QDBusConnection::sessionBus(),
-                                                           QDBusServiceWatcher::WatchForRegistration);
-    connect(watcher, SIGNAL(serviceRegistered(QString)), d.get(), SLOT(sessionServiceRegistered()));
-    d->sessionServiceRegistered();
+    d->ksmserver = new KSMServer(this);
+    connect(d->ksmserver, SIGNAL(activitySessionStateChanged(QString, int)),
+            d.get(), SLOT(activitySessionStateChanged(QString, int)));
 
     // Listen to screensaver for starting/stopping
-    val watcher2 = new QDBusServiceWatcher("org.kde.screensaver",
-                                                            QDBusConnection::sessionBus(),
-                                                            QDBusServiceWatcher::WatchForRegistration);
-    connect(watcher2, SIGNAL(serviceRegistered(QString)), d.get(), SLOT(screensaverServiceRegistered()));
+    val screensaverWatcher = new QDBusServiceWatcher("org.kde.screensaver",
+            QDBusConnection::sessionBus(),
+            QDBusServiceWatcher::WatchForRegistration,
+            this);
+    connect(screensaverWatcher, SIGNAL(serviceRegistered(QString)), d.get(), SLOT(screensaverServiceRegistered()));
     d->screensaverServiceRegistered();
 
     // Activity initialization ///////////////////////////////////////////////////////////////////////////////
@@ -509,6 +507,10 @@ void Activities::RemoveActivity(const QString & activity)
 
 void Activities::Private::removeActivity(const QString & activity)
 {
+    // TODO: transitioningActivity should be removed,
+    // we need to check whether the activity is in a
+    // proper state to be deleted
+
     // If the activity is running, stash it
     q->StopActivity(activity);
 
@@ -522,14 +524,6 @@ void Activities::Private::removeActivity(const QString & activity)
     // set another activity as current
     if (currentActivity == activity) {
         ensureCurrentActivityIsRunning();
-    }
-
-    if (transitioningActivity == activity) {
-        //very unlikely, but perhaps not impossible
-        //but it being deleted doesn't mean ksmserver is un-busy..
-        //in fact, I'm not quite sure what would happen.... FIXME
-        //so I'll just add some output to warn that it happened.
-        // kDebug() << "deleting activity in transition. watch out!";
     }
 
     emit q->ActivityRemoved(activity);
@@ -649,26 +643,6 @@ void Activities::SetActivityIcon(const QString & id, const QString & icon)
     emit ActivityChanged(id);
 }
 
-void Activities::Private::sessionServiceRegistered()
-{
-    delete ksmserverInterface;
-
-    ksmserverInterface = new QDBusInterface("org.kde.ksmserver", "/KSMServer", "org.kde.KSMServerInterface");
-
-    if (ksmserverInterface->isValid()) {
-        ksmserverInterface->setParent(this);
-        connect(ksmserverInterface, SIGNAL(subSessionOpened()), this, SLOT(startCompleted()));
-        connect(ksmserverInterface, SIGNAL(subSessionClosed()), this, SLOT(stopCompleted()));
-        connect(ksmserverInterface, SIGNAL(subSessionCloseCanceled()), this, SLOT(stopCancelled())); //spelling fail :)
-
-    } else {
-        delete ksmserverInterface;
-        ksmserverInterface = nullptr;
-        kDebug() << "couldn't connect to ksmserver! session stuff won't work";
-
-    }
-}
-
 void Activities::Private::screensaverServiceRegistered()
 {
     delete screensaverInterface;
@@ -735,145 +709,53 @@ void Activities::Private::ensureCurrentActivityIsRunning()
 
 void Activities::StartActivity(const QString & id)
 {
-    // kDebug() << id;
+    kDebug() << "Starting activity" << id;
 
     if (!d->activities.contains(id) ||
             d->activities[id] != Stopped) {
+        kDebug() << "Activity is not stopped..." << d->activities[id];
         return;
     }
 
-    if (!d->transitioningActivity.isEmpty()) {
-        // kDebug() << "busy!!";
-        //TODO: implement a queue instead
-        return;
-    }
-
-    d->transitioningActivity = id;
+    kDebug() << "Starting the session";
     d->setActivityState(id, Starting);
-
-    //ugly hack to avoid dbus deadlocks
-    QMetaObject::invokeMethod(d.get(), "reallyStartActivity", Qt::QueuedConnection, Q_ARG(QString, id));
-}
-
-void Activities::Private::reallyStartActivity(const QString & id)
-{
-    bool called = false;
-    // start the starting :)
-    QDBusInterface kwin("org.kde.kwin", "/KWin", "org.kde.KWin");
-    if (kwin.isValid()) {
-        QDBusMessage reply = kwin.call("startActivity", id);
-        if (reply.type() == QDBusMessage::ErrorMessage) {
-            // kDebug() << "dbus error:" << reply.errorMessage();
-
-        } else {
-            QList<QVariant> ret = reply.arguments();
-            if (ret.length() == 1 && ret.first().toBool()) {
-                called = true;
-            } else {
-                // kDebug() << "call returned false; probably ksmserver is busy";
-                setActivityState(transitioningActivity, Activities::Stopped);
-                transitioningActivity.clear();
-                return; //assume we're mid-logout and just don't touch anything
-            }
-        }
-    } else {
-        // kDebug() << "couldn't get kwin interface";
-    }
-
-    if (!called) {
-        //maybe they use compiz?
-        //go ahead without the session
-        startCompleted();
-    }
-    configSync(); //force immediate sync
-}
-
-void Activities::Private::startCompleted()
-{
-    if (transitioningActivity.isEmpty()) {
-        // kDebug() << "huh?";
-        return;
-    }
-    setActivityState(transitioningActivity, Activities::Running);
-    transitioningActivity.clear();
+    d->ksmserver->startActivitySession(id);
 }
 
 void Activities::StopActivity(const QString & id)
 {
-    // kDebug() << id;
+    kDebug() << "Stopping activity" << id;
 
     if (!d->activities.contains(id) ||
             d->activities[id] == Stopped) {
+        kDebug() << "Already stopped";
         return;
     }
 
-    if (!d->transitioningActivity.isEmpty()) {
-        // kDebug() << "busy!!";
-        //TODO: implement a queue instead
-        return;
-    }
-
-    d->transitioningActivity = id;
+    kDebug() << "Stopping the session";
     d->setActivityState(id, Stopping);
-
-    //ugly hack to avoid dbus deadlocks
-    QMetaObject::invokeMethod(d.get(), "reallyStopActivity", Qt::QueuedConnection, Q_ARG(QString, id));
+    d->ksmserver->stopActivitySession(id);
 }
 
-void Activities::Private::reallyStopActivity(const QString & id)
+void Activities::Private::activitySessionStateChanged(const QString & activity, int status)
 {
-    bool called = false;
-    // start the stopping :)
-    QDBusInterface kwin("org.kde.kwin", "/KWin", "org.kde.KWin");
-    if (kwin.isValid()) {
-        QDBusMessage reply = kwin.call("stopActivity", id);
-        if (reply.type() == QDBusMessage::ErrorMessage) {
-            // kDebug() << "dbus error:" << reply.errorMessage();
+    switch (status) {
+        case KSMServer::Started:
+        case KSMServer::FailedToStop:
+            setActivityState(activity, Activities::Running);
+            break;
 
-        } else {
-            QList<QVariant> ret = reply.arguments();
-            if (ret.length() == 1 && ret.first().toBool()) {
-                called = true;
+        case KSMServer::Stopped:
+            setActivityState(activity, Activities::Stopped);
 
-            } else {
-                // kDebug() << "call returned false; probably ksmserver is busy";
-                stopCancelled();
-                return; //assume we're mid-logout and just don't touch anything
+            if (currentActivity == activity) {
+                ensureCurrentActivityIsRunning();
             }
-        }
-    } else {
-        // kDebug() << "couldn't get kwin interface";
+
+            break;
     }
 
-    if (!called) {
-        //maybe they use compiz?
-        //go ahead without the session
-        stopCompleted();
-    }
-}
-
-void Activities::Private::stopCompleted()
-{
-    if (transitioningActivity.isEmpty()) {
-        // kDebug() << "huh?";
-        return;
-    }
-    setActivityState(transitioningActivity, Activities::Stopped);
-    if (currentActivity == transitioningActivity) {
-        ensureCurrentActivityIsRunning();
-    }
-    transitioningActivity.clear();
-    configSync(); //force immediate sync
-}
-
-void Activities::Private::stopCancelled()
-{
-    if (transitioningActivity.isEmpty()) {
-        // kDebug() << "huh?";
-        return;
-    }
-    setActivityState(transitioningActivity, Activities::Running);
-    transitioningActivity.clear();
+    configSync();
 }
 
 int Activities::ActivityState(const QString & id) const

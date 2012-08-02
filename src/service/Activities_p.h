@@ -28,6 +28,8 @@
 
 #include "Activities.h"
 
+class KSMServer;
+
 class QDBusInterface;
 class KJob;
 
@@ -54,12 +56,11 @@ public:
     QString currentActivity;
     QString toBeCurrentActivity;
 
-    // opening/closing activity (ksmserver can only handle one at a time)
-    QString transitioningActivity;
-
     // Configuration
     QTimer configSyncTimer;
     KConfig config;
+
+    KSMServer * ksmserver;
 
     // Encryption
     void setActivityEncrypted(const QString & activity, bool encrypted);
@@ -79,19 +80,13 @@ public Q_SLOTS:
     void scheduleConfigSync(const bool shortInterval = false);
     void configSync();
 
-    void startCompleted();
-    void stopCompleted();
-    void stopCancelled();
     void removeActivity(const QString & activity);
+    void activitySessionStateChanged(const QString & activity, int state);
 
     void emitCurrentActivityChanged(const QString & activity);
 
-    // for avoiding dbus deadlocks
-    void reallyStartActivity(const QString & id);
-    void reallyStopActivity(const QString & id);
     // void onActivityEncryptionChanged(const QString id, const bool encrypted);
 
-    void sessionServiceRegistered();
     void screensaverServiceRegistered();
 
 public Q_SLOTS:
@@ -101,7 +96,6 @@ public Q_SLOTS:
 private:
     Activities * const q;
 
-    QDBusInterface * ksmserverInterface; // just keeping it for the signals
     QDBusInterface * screensaverInterface; // just keeping it for the signals
     QString currentActivityBeforeScreenLock;
 };

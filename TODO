@@ -2,7 +2,7 @@ Lib:
   Nothing
 
 Service:
-- KSMserver code needs to be moved into a separate class
+- Finish encryption
 
 Workspace:
 - KCM for activities

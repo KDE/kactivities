@@ -96,6 +96,8 @@ set (activity_manager_SRCS
     jobs/encryption/Mount.cpp
     jobs/encryption/InitializeStructure.cpp
 
+    jobs/ksmserver/KSMServer.cpp
+
     ui/UiHandler.cpp
     ui/Ui.cpp
 
