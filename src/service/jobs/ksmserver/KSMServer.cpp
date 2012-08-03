@@ -137,19 +137,14 @@ void KSMServer::stopActivitySession(const QString & activity)
 void KSMServer::Private::processLater(const QString & activity, bool start)
 {
     kDebug() << "Scheduling" << activity << "to be" << (start ? "started" : "stopped");
-    bool found = false;
 
-    for (auto & item: queue) {
+    foreach (auto & item, queue) {
         if (item.first == activity) {
-            item.second = start;
-            found = true;
-            break;
+            return;
         }
     }
 
-    if (!found) {
-        queue << qMakePair(activity, start);
-    }
+    queue << qMakePair(activity, start);
 
     if (!processing) {
         processing = true;
