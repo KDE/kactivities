@@ -56,8 +56,10 @@ else ()
 
     add_subdirectory(service)
 
+    # No point in having workspace addons without the service
+    add_subdirectory(workspace)
+
 endif ()
 
 add_subdirectory(ontologies)
-add_subdirectory(workspace)
 
