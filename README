@@ -34,6 +34,11 @@ Compiler compatibility:
    - GCC 4.5
    - GCC 4.7
    - LLVM/Clang 3.1
+  When you set up different builds alongside the main one, you  can use
+  scripts/commit.sh to build them all before committing. The script
+  calls git commit if all builds finished successfully. See the script
+  for more info.
+
 
 Convenience macros and methods:
 
