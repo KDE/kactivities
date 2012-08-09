@@ -46,7 +46,7 @@ public:
 #define D_PTR \
     class Private;                            \
     friend class Private;                     \
-    const ::kamd::utils::d_ptr<Private> d;    \
+    const ::kamd::utils::d_ptr<Private> d     \
 
 } // namespace utils
 } // namespace kamd
