@@ -1,6 +1,22 @@
 [Desktop Entry]
 Name=Virtual desktop switcher
+Name[hu]=Virtuális asztal váltó
+Name[nl]=Virtueel bureaublad omschakelaar
+Name[pt]=Selector de ecrãs virtuais
+Name[pt_BR]=Alternador de áreas de trabalho virtuais
+Name[sk]=Prepínač virtuálnych plôch
+Name[sv]=Byte av virtuellt skrivbord
+Name[uk]=Перемикач віртуальних стільниць
+Name[x-test]=xxVirtual desktop switcherxx
 Comment=When switching to an activity, opens the virtual desktop last used with that activity
+Comment[hu]=Amikor aktivitást vált, megnyitja az aktivitás által utoljára használt virtuális asztalt
+Comment[nl]=Bij het omschakelen naar een activiteit, opent het virtuele bureaublad dat het laatst werd gebruikt met die activiteit
+Comment[pt]=Ao mudar para uma actividade, abre o ecrã virtual usado da última vez com essa actividade
+Comment[pt_BR]=Ao alternar para uma atividade, abre a última área de trabalho virtual usada com esta atividade
+Comment[sk]=Pri prepnutí na aktivitu, otvorí virtuálnu plochu naposledy použitú s danou aktivitou.
+Comment[sv]=Vid byte till en aktivitet, öppnar det virtuella skrivbord som senast användes med den aktiviteten
+Comment[uk]=Під час перемикання на простір дій відкриває віртуальну стільницю, яку було використано у цьому просторі останньою
+Comment[x-test]=xxWhen switching to an activity, opens the virtual desktop last used with that activityxx
 
 Type=Service
 Icon=

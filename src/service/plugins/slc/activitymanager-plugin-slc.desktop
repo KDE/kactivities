@@ -40,6 +40,14 @@ Name[x-test]=xxShare-Like-Connect Pluginxx
 Name[zh_CN]=分享-喜爱-连接插件
 Name[zh_TW]=Share-Like-Connect 外掛程式
 Comment=Provides data to Share-Like-Connect applet
+Comment[hu]=Adatot szolgáltat a Share-Like-Connect kisalkalmazáshoz
+Comment[nl]=Levert gegevens aan het applet Share-Like-Connect
+Comment[pt]=Fornece os dados à 'applet' do Share-Like-Connect
+Comment[pt_BR]=Fornece dados para o miniaplicativo Share-Like-Connect
+Comment[sk]=Poskytuje dáta pre applet Share-Like-Connect
+Comment[sv]=Tillhandahåller data för Share-Like-Connect miniprogram
+Comment[uk]=Надає дані аплетові Share-Like-Connect
+Comment[x-test]=xxProvides data to Share-Like-Connect appletxx
 Type=Service
 Icon=
 

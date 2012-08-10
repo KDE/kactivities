@@ -34,6 +34,14 @@ Name[x-test]=xxGlobal Shortcuts pluginxx
 Name[zh_CN]=全局快捷键插件
 Name[zh_TW]=全域捷徑外掛程式
 Comment=Adds global keyboard shortcuts for activity switching
+Comment[hu]=Globális gyorsbillentyűk hozzáadása az aktivitás váltóhoz
+Comment[nl]=Voegt globale sneltoetsen toe aan omschakelen van activiteit
+Comment[pt]=Adiciona atalhos globais do teclado para a mudança de actividades
+Comment[pt_BR]=Adiciona atalhos de teclado globais para alternar atividades
+Comment[sk]=Pridá globálne klávesové skratky na prepínanie aktivít
+Comment[sv]=Lägger till globala snabbtangenter för aktivitetsbyte
+Comment[uk]=Додає загальні клавіатурні скорочення для перемикання просторів дій
+Comment[x-test]=xxAdds global keyboard shortcuts for activity switchingxx
 Type=Service
 Icon=
 
