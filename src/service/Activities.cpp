@@ -81,22 +81,24 @@ Activities::Activities(QObject * parent)
     // Basic initialization //////////////////////////////////////////////////////////////////////////////////
 
     // Initializing D-Bus service
+
     new ActivitiesAdaptor(this);
     QDBusConnection::sessionBus().registerObject(
             ACTIVITY_MANAGER_OBJECT_PATH(Activities), this);
 
     // Initializing config
+
     connect(&d->configSyncTimer, SIGNAL(timeout()),
              d.get(), SLOT(configSync()));
 
     d->configSyncTimer.setSingleShot(true);
-    d->configSyncTimer.setInterval(2 * 60 * 1000);
 
     d->ksmserver = new KSMServer(this);
     connect(d->ksmserver, SIGNAL(activitySessionStateChanged(QString, int)),
             d.get(), SLOT(activitySessionStateChanged(QString, int)));
 
     // Listen to screensaver for starting/stopping
+
     val screensaverWatcher = new QDBusServiceWatcher("org.kde.screensaver",
             QDBusConnection::sessionBus(),
             QDBusServiceWatcher::WatchForRegistration,
@@ -146,7 +148,6 @@ void Activities::Private::setActivityEncrypted(const QString & activity, bool en
     using namespace Jobs::Ui;
     using namespace Jobs::Encryption;
     using namespace Jobs::Encryption::Common;
-    // using namespace Jobs::General;
 
     // Is the encryption enabled?
     if (!Encryption::Common::isEnabled()) return;
@@ -351,7 +352,7 @@ void Activities::Private::loadLastPublicActivity()
     auto lastPublicActivity = mainConfig().readEntry("lastUnlockedActivity", QString());
 
     // If the last one turns out to be encrypted, try to load any public activity
-    if (lastPublicActivity.isEmpty() || Jobs::Encryption::Common::isActivityEncrypted(lastPublicActivity)) {
+    if (lastPublicActivity.isEmpty() || isActivityEncrypted(lastPublicActivity)) {
         lastPublicActivity.clear();
 
         kamd::utils::find_if_assoc(activities,
@@ -391,6 +392,9 @@ void Activities::Private::loadLastPublicActivity()
 
 void Activities::Private::checkForSetCurrentActivityError(KJob * job)
 {
+    // If we have failed switching the activity, load the last used
+    // non-private activity
+
     if (job->error()) {
         loadLastPublicActivity();
     }
@@ -398,12 +402,13 @@ void Activities::Private::checkForSetCurrentActivityError(KJob * job)
 
 void Activities::Private::emitCurrentActivityChanged(const QString & id)
 {
+    // Saving the current activity, and notifying
+    // clients of the change
+
     currentActivity = id;
     mainConfig().writeEntry("currentActivity", id);
 
     EXEC_NEPOMUK( setCurrentActivity(id) );
-
-    using namespace Jobs::Encryption::Common;
 
     if (!isActivityEncrypted(id)) {
         mainConfig().writeEntry("lastUnlockedActivity", id);
@@ -420,11 +425,14 @@ QString Activities::AddActivity(const QString & name)
 
     // Ensuring a new Uuid. The loop should usually end after only
     // one iteration
+
     val & existingActivities = d->activities.keys();
     while (id.isEmpty() || existingActivities.contains(id)) {
         id = QUuid::createUuid();
         id.replace(QRegExp("[{}]"), QString());
     }
+
+    // Saves the activity info to the config
 
     d->setActivityState(id, Running);
 
@@ -455,7 +463,7 @@ void Activities::RemoveActivity(const QString & activity)
     using namespace Jobs::Encryption::Common;
     using namespace Jobs::General;
 
-    if (Jobs::Encryption::Common::isActivityEncrypted(activity)) {
+    if (isActivityEncrypted(activity)) {
 
         removeActivityJob
 
@@ -497,8 +505,7 @@ void Activities::RemoveActivity(const QString & activity)
         initializeStructure(activity, InitializeStructure::DeinitializeBoth)
 
     <<  // Remove
-        General::call(d.get(), "removeActivity", activity, true /* wait finished */
-        );
+        General::call(d.get(), "removeActivity", activity, true /* wait finished */);
 
     removeActivityJob.start();
 }
@@ -554,26 +561,25 @@ QString Activities::Private::activityIcon(const QString & id)
     return activityIconsConfig().readEntry(id, QString());
 }
 
-void Activities::Private::scheduleConfigSync(const bool shortInterval)
+void Activities::Private::scheduleConfigSync(const bool soon)
 {
-#define SHORT_INTERVAL (5 * 1000)
-#define LONG_INTERVAL (2 * 60 * 1000)
+    static val shortInterval = 5 * 1000;
+    static val longInterval  = 2 * 60 * 1000;
 
-    if (shortInterval) {
-        if (configSyncTimer.interval() != SHORT_INTERVAL) {
-            // always change to SHORT_INTERVAL if the current one is LONG_INTERVAL.
+    // short interval has priority to the long one
+    if (soon) {
+        if (configSyncTimer.interval() != shortInterval) {
+            // always change to shortInterval if the current one is longInterval.
             configSyncTimer.stop();
-            configSyncTimer.setInterval(SHORT_INTERVAL);
+            configSyncTimer.setInterval(shortInterval);
         }
-    } else if (configSyncTimer.interval() != LONG_INTERVAL && !configSyncTimer.isActive()) {
-        configSyncTimer.setInterval(LONG_INTERVAL);
+    } else if (configSyncTimer.interval() != longInterval && !configSyncTimer.isActive()) {
+        configSyncTimer.setInterval(longInterval);
     }
 
     if (!configSyncTimer.isActive()) {
         configSyncTimer.start();
     }
-#undef SHORT_INTERVAL
-#undef LONG_INTERVAL
 }
 
 void Activities::Private::configSync()
@@ -693,6 +699,9 @@ void Activities::Private::setActivityState(const QString & id, Activities::State
 
 void Activities::Private::ensureCurrentActivityIsRunning()
 {
+    // If the current activity is not running,
+    // make some other activity current
+
     val & runningActivities = q->ListActivities(Activities::Running);
 
     if (!runningActivities.contains(currentActivity)) {
@@ -763,13 +772,14 @@ int Activities::ActivityState(const QString & id) const
 
 void Activities::Private::screenLockStateChanged(const bool locked)
 {
+    // Going into limbo state if the current activity
+    // is private, and the screen has been locked
+
     if (locked) {
         // already in limbo state.
         if (currentActivity.isEmpty()) {
             return;
         }
-
-        using namespace Jobs::Encryption::Common;
 
         if (isActivityEncrypted(currentActivity)) {
             currentActivityBeforeScreenLock = currentActivity;

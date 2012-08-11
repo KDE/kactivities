@@ -35,16 +35,20 @@ public:
 
     void run();
 
+    // Inserts the event directly into the queue
     void insertEvent(const Event & newEvent);
 
+    // Processes the event and inserts it into the queue
     void addEvent(const QString & application, WId wid, const QString & uri,
                 int type, int reason);
 
+    // Processes the event and inserts it into the queue
     void addEvent(const Event & newEvent);
 
     QList <KUrl> resourcesLinkedToActivity(const QString & activity) const;
 
 private Q_SLOTS:
+    // Reacting to window manager signals
     void windowClosed(WId windowId);
 
     void activeWindowChanged(WId windowId);

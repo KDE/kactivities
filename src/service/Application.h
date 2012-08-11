@@ -28,7 +28,7 @@ class Activities;
 class Features;
 
 /**
- * Application
+ * Main application object
  */
 class Application: public KUniqueApplication {
     Q_OBJECT

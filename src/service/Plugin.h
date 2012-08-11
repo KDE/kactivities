@@ -48,11 +48,24 @@ public:
     Plugin(QObject * parent);
     virtual ~Plugin();
 
+    /**
+     * Initializes the plugin.
+     * @arg modules Activities, Resources and Features manager objects
+     * @returns the plugin needs to return whether it has
+     *      successfully been initialized
+     */
     virtual bool init(const QHash < QString, QObject * > & modules);
 
+    /**
+     * Returns the config group for the plugin.
+     * In order to use it, you need to set the plugin name.
+     */
     KConfigGroup config();
     QString name() const;
 
+    /**
+     * Convinience meta-method to provide prettier invocation of QMetaObject::invokeMethod
+     */
     template <typename ReturnType, Qt::ConnectionType connection>
     static ReturnType callOn(QObject * object, const char * method, const char * returnTypeName)
     {

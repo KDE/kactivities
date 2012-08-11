@@ -240,8 +240,7 @@ QList <KUrl> Resources::Private::resourcesLinkedToActivity(const QString & activ
 
 void Resources::Private::windowClosed(WId windowId)
 {
-    kDebug() << "Window closed..." << windowId
-             << "one of ours?" << windows.contains(windowId);
+    // Testing whether the window is a registered one
 
     if (!windows.contains(windowId)) {
         return;
@@ -250,6 +249,8 @@ void Resources::Private::windowClosed(WId windowId)
     if (focussedWindow == windowId) {
         focussedWindow = 0;
     }
+
+    // Closing all the resources that the window registered
 
     foreach (const KUrl & uri, windows[windowId].resources) {
         q->RegisterResourceEvent(windows[windowId].application,
@@ -261,9 +262,11 @@ void Resources::Private::windowClosed(WId windowId)
 
 void Resources::Private::activeWindowChanged(WId windowId)
 {
-    Q_UNUSED(windowId)
-    kDebug() << "Window focussed..." << windowId
-             << "one of ours?" << windows.contains(windowId);
+    // If the focussed window has changed, we need to create a
+    // FocussedOut event for the resource it contains,
+    // and FocussedIn for the resource of the new active window.
+    // The windows can do this manually, but if they are
+    // SDI, we can do it on our own.
 
     if (windowId == focussedWindow) return;
 
@@ -331,8 +334,6 @@ void Resources::RegisterResourceEvent(QString application, uint _windowId,
     KUrl kuri(uri);
     WId windowId = (WId) _windowId;
 
-    kDebug() << "New event on the horizon" << application << windowId << event << uri;
-
     EXEC_NEPOMUK( toRealUri(kuri) );
 
     d->addEvent(application, windowId,
@@ -368,12 +369,15 @@ void Resources::RegisterResourceTitle(const QString & uri, const QString & title
 void Resources::LinkResourceToActivity(const QString & uri, const QString & activity)
 {
     #ifdef HAVE_NEPOMUK
+    // Moves the files related to the activity to
+    // the private encrypted folder
     if (Jobs::Encryption::Common::isActivityEncrypted(activity)) {
         Jobs::Nepomuk::move(activity, true, QStringList() << uri)
             ->create(this)->start();
     }
     #endif
 
+    // Links the resource to the activity
     return doWithNepomukForActivity(activity, [&uri,this] (const QString & activity)
         {
             EXEC_NEPOMUK( linkResourceToActivity(KUrl(uri), activity) );
@@ -386,12 +390,15 @@ void Resources::LinkResourceToActivity(const QString & uri, const QString & acti
 void Resources::UnlinkResourceFromActivity(const QString & uri, const QString & activity)
 {
     #ifdef HAVE_NEPOMUK
+    // Moves the files related to the activity from
+    // the private encrypted folder
     if (Jobs::Encryption::Common::isActivityEncrypted(activity)) {
         Jobs::Nepomuk::move(activity, true, QStringList() << uri)
             ->create(this)->start();
     }
     #endif
 
+    // Unlinks the resource to the activity
     return doWithNepomukForActivity(activity, [&uri,this] (const QString & activity)
         {
             EXEC_NEPOMUK( unlinkResourceFromActivity(KUrl(uri), activity) );

@@ -48,6 +48,9 @@
 
 static QList < QThread * > s_moduleThreads;
 
+
+// Runs a QObject inside a QThread
+
 template <typename T>
 T * runInQThread()
 {

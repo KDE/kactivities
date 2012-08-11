@@ -115,6 +115,8 @@ void NepomukActivityManager::reinit()
     static val prefix = QLatin1String("activities:/");
 
     if (m_nepomukPresent) {
+        // If nepomuk is online, syncing the activities
+        // and updates activities kio paths
 
         syncActivities(activitiesList);
         Nepomuk::ResourceManager::instance()->init();
@@ -127,6 +129,8 @@ void NepomukActivityManager::reinit()
         }
 
     } else {
+        // If nepomuk is offline, removes items from activities kio
+
         QStringList removed;
 
         removed << prefix + "current";

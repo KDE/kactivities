@@ -63,7 +63,7 @@ public:
     };
 
     /**
-     * Creates new Activities
+     * Creates new Activities object
      */
     Activities(QObject * parent = nullptr);
 

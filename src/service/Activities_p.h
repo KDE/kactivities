@@ -40,12 +40,15 @@ public:
     Private(Activities * parent);
     ~Private();
 
-    void addRunningActivity(const QString & id);
-    void removeRunningActivity(const QString & id);
+    // Loads the last non-private activity
+    // the user has used
     void loadLastPublicActivity();
 
-public Q_SLOTS:
+    // If the current activity is not running,
+    // make some other activity current
     void ensureCurrentActivityIsRunning();
+
+public Q_SLOTS:
     bool setCurrentActivity(const QString & id);
 
 public:
@@ -54,12 +57,12 @@ public:
 
     // Current activity
     QString currentActivity;
-    QString toBeCurrentActivity;
 
     // Configuration
     QTimer configSyncTimer;
     KConfig config;
 
+    // Interface to the session management
     KSMServer * ksmserver;
 
     // Encryption
@@ -67,8 +70,6 @@ public:
     bool isActivityEncrypted(const QString & activity) const;
 
 public:
-    void initConifg();
-
     KConfigGroup activitiesConfig();
     KConfigGroup activityIconsConfig();
     KConfigGroup mainConfig();
@@ -77,15 +78,19 @@ public:
 
 
 public Q_SLOTS:
-    void scheduleConfigSync(const bool shortInterval = false);
+    // Schedules config syncing to be done after
+    // a predefined time interval
+    // if soon == true, the syncing is performed
+    // after a few seconds, otherwise a few minutes
+    void scheduleConfigSync(const bool soon = false);
+
+    // Immediately syncs the configuration file
     void configSync();
 
     void removeActivity(const QString & activity);
     void activitySessionStateChanged(const QString & activity, int state);
 
     void emitCurrentActivityChanged(const QString & activity);
-
-    // void onActivityEncryptionChanged(const QString id, const bool encrypted);
 
     void screensaverServiceRegistered();
 

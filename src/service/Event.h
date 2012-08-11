@@ -54,6 +54,9 @@ public:
 
     };
 
+    // TODO: Remove
+    // Was introduced for better cooperation with Zeitgeist
+    // We don't use it
     enum Reason {
         User = 0,
         Scheduled = 1,

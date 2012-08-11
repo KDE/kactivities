@@ -36,6 +36,10 @@
 
 class Activities;
 
+/**
+ * Synchronizes KAMD data with Nepomuk
+ * (activities, names, icons etc.)
+ */
 class NepomukActivityManager: public QObject {
     Q_OBJECT
 
@@ -49,10 +53,13 @@ public:
     ~NepomukActivityManager();
     static NepomukActivityManager * self();
 
+    // Returns whether nepomuk is present
     bool initialized() const;
 
+    // Syncs the specified activities info between kamd and nepomuk storage
     void syncActivities(const QStringList & activityIds);
 
+    // Sets the info for activity nepomuk resource
     void setActivityName(const QString & activity, const QString & name);
     void setActivityDescription(const QString & activity, const QString & description);
     void setActivityIcon(const QString & activity, const QString & icon);
@@ -60,27 +67,34 @@ public:
     void setResourceMimeType(const KUrl & resource, const QString & mimetype);
     void setResourceTitle(const KUrl & resource, const QString & title);
 
+    // Manages isRelated relations between various resources and activities
     void linkResourceToActivity(const KUrl & resource, const QString & activity);
     void unlinkResourceFromActivity(const KUrl & resource, const QString & activity);
     bool isResourceLinkedToActivity(const KUrl & resource, const QString & activity) const;
     QList < KUrl > resourcesLinkedToActivity(const QString & activity) const;
 
+    // Gets a nepomuk:// url and returns a normal one, if exists
     void toRealUri(KUrl & url);
 
 private:
+    NepomukActivityManager();
+
+    // Updates database to fit the latest version of
+    // the kamd ontology
     void __updateOntology();
 
+    // Returns activity nepomuk resource object
     Nepomuk::Resource activityResource(const QString & id) const;
-    void init(Activities * parent);
 
-    NepomukActivityManager();
+    // Initializes the class by specifying activities manager
+    void init(Activities * parent);
 
     bool m_nepomukPresent;
     static NepomukActivityManager * s_instance;
     QString m_currentActivity;
 
     // If sync activities failed due to nepomuk being started after us:
-    QStringList  m_cache_activityIds;
+    QStringList m_cache_activityIds;
 
     // Ordinary pointer since this is our parent
     Activities * m_activities;

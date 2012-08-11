@@ -43,6 +43,9 @@ Features::~Features()
 {
 }
 
+// Features object is just a gateway to the other KAMD modules.
+// This is a convenience method to pass the request down to the module
+
 template <typename Function>
 static bool passToModule(const QString & feature, Function f)
 {

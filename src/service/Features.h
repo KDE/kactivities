@@ -29,8 +29,8 @@
 #include <utils/nullptr.h>
 
 /**
- * Service for tracking the user actions and managing the
- * activities
+ * Features object provides one interface for clients
+ * to access other objects' features
  */
 class Features: public Module {
     Q_OBJECT
