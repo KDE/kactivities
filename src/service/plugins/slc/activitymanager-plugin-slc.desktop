@@ -40,6 +40,7 @@ Name[x-test]=xxShare-Like-Connect Pluginxx
 Name[zh_CN]=分享-喜爱-连接插件
 Name[zh_TW]=Share-Like-Connect 外掛程式
 Comment=Provides data to Share-Like-Connect applet
+Comment[he]=מספק מידע לתוספ שתף-אוהב-מתחבר
 Comment[hu]=Adatot szolgáltat a Share-Like-Connect kisalkalmazáshoz
 Comment[nl]=Levert gegevens aan het applet Share-Like-Connect
 Comment[pt]=Fornece os dados à 'applet' do Share-Like-Connect
