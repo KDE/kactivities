@@ -23,8 +23,8 @@
 
 #include <KAction>
 
-#include <utils/val.h>
 #include <utils/nullptr.h>
+#include <utils/val.h>
 
 val objectNamePattern       = QString::fromLatin1("switch-to-activity-%1");
 val objectNamePatternLength = objectNamePattern.length() - 2;

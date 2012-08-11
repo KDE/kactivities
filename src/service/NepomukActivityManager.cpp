@@ -38,23 +38,28 @@
 #include <Soprano/Node>
 #include <Soprano/Model>
 
-#include <Nepomuk/Variant>
-#include <Nepomuk/ResourceManager>
-#include <Nepomuk/Vocabulary/NIE>
-#include <Nepomuk/Vocabulary/NFO>
+#include <Nepomuk2/Variant>
+#include <Nepomuk2/ResourceManager>
+#include <Nepomuk2/Vocabulary/NIE>
+#include <Nepomuk2/Vocabulary/NFO>
 
 #include <QDBusServiceWatcher>
 #include <QDBusConnection>
 #include <QDBusConnectionInterface>
 
-#include <utils/nullptr.h>
+#include <Activities.h>
 
 // TODO: Move into a plugin
 // The activities KIO works only if nepomuk is present, so we can
 // freely send the change event here
 #include <KDirNotify>
 
+#include <utils/nullptr.h>
+#include <utils/val.h>
+
+namespace Nepomuk = Nepomuk2;
 using namespace Nepomuk::Vocabulary;
+using namespace KDE::Vocabulary;
 using namespace Soprano::Vocabulary;
 
 NepomukActivityManager * NepomukActivityManager::s_instance = nullptr;
@@ -87,18 +92,50 @@ NepomukActivityManager::NepomukActivityManager()
 
 NepomukActivityManager::~NepomukActivityManager()
 {
+    s_instance = nullptr;
 }
 
 // Methods
 
-void NepomukActivityManager::init()
+void NepomukActivityManager::init(Activities * parent)
 {
-    if (!m_nepomukPresent) return;
+    if (parent) {
+        m_activities = parent;
+        setParent(parent);
+    }
 
-    Nepomuk::ResourceManager::instance()->init();
+    // Giving the time to Activities object to properly form
+    QMetaObject::invokeMethod(this, "reinit", Qt::QueuedConnection);
+}
 
-    org::kde::KDirNotify::emitFilesAdded("activities:/");
-    org::kde::KDirNotify::emitFilesAdded("activities:/current");
+void NepomukActivityManager::reinit()
+{
+    val activitiesList = m_activities->ListActivities();
+
+    static val prefix = QLatin1String("activities:/");
+
+    if (m_nepomukPresent) {
+
+        syncActivities(activitiesList);
+        Nepomuk::ResourceManager::instance()->init();
+
+        org::kde::KDirNotify::emitFilesAdded(prefix);
+        org::kde::KDirNotify::emitFilesAdded(prefix + "current");
+
+        foreach (const QString & activity, activitiesList) {
+            org::kde::KDirNotify::emitFilesAdded(prefix + activity);
+        }
+
+    } else {
+        QStringList removed;
+
+        removed << prefix + "current";
+        foreach (const QString & activity, activitiesList) {
+            removed << prefix + activity;
+        }
+
+        org::kde::KDirNotify::emitFilesRemoved(removed);
+    }
 }
 
 
@@ -115,6 +152,11 @@ void NepomukActivityManager::init()
 void NepomukActivityManager::__updateOntology()
 {
     if (!m_nepomukPresent) return;
+
+    // run once guard
+    static bool init = false;
+    if (init) return;
+    init = true;
 
     KConfig config("activitymanagerrc");
     KConfigGroup configGroup(&config, "main");
@@ -171,22 +213,24 @@ void NepomukActivityManager::__updateOntology()
 ///////////////////////////////////////////////////////////////////////////////////////
 
 
-void NepomukActivityManager::syncActivities(const QStringList activityIds, KConfigGroup config, KConfigGroup iconsConfig)
+void NepomukActivityManager::syncActivities(const QStringList & activityIds)
 {
-    if (!m_nepomukPresent) return;
+    if (!m_nepomukPresent || !m_activities) {
+        m_cache_activityIds.append(activityIds);
+        return;
+    }
 
     // Before we start syncing, we need to convert KEXT -> KAO
+    // TODO: Remove after 4.10
     __updateOntology();
-
-    bool configNeedsSyncing = false;
 
     foreach (const QString & activityId, activityIds) {
         org::kde::KDirNotify::emitFilesAdded("activities:/" + activityId);
 
-        Nepomuk::Resource resource(activityId, KAO::Activity());
+        auto resource = activityResource(activityId);
 
-        QString name = config.readEntry(activityId, QString());
-        QString icon = iconsConfig.readEntry(activityId, QString());
+        val name = m_activities->ActivityName(activityId);
+        val icon = m_activities->ActivityIcon(activityId);
 
         resource.setProperty(KAO::activityIdentifier(), activityId);
 
@@ -199,25 +243,30 @@ void NepomukActivityManager::syncActivities(const QStringList activityIds, KConf
         } else {
             QStringList symbols = resource.symbols();
             if (symbols.size() > 0) {
-                iconsConfig.writeEntry(activityId, symbols.at(0));
-                configNeedsSyncing = true;
+                m_activities->SetActivityIcon(activityId, symbols.at(0));
             }
         }
     }
 
-    if (configNeedsSyncing) config.sync();
+    m_cache_activityIds.clear();
 }
 
 void NepomukActivityManager::setActivityName(const QString & activity, const QString & name)
 {
-    if (!m_nepomukPresent) return;
+    if (!m_nepomukPresent) {
+        m_cache_activityIds << activity;
+        return;
+    }
 
     activityResource(activity).setLabel(name);
 }
 
 void NepomukActivityManager::setActivityIcon(const QString & activity, const QString & icon)
 {
-    if (!m_nepomukPresent) return;
+    if (!m_nepomukPresent) {
+        m_cache_activityIds << activity;
+        return;
+    }
 
     activityResource(activity).setSymbols(QStringList() << icon);
 }
@@ -302,7 +351,7 @@ QList <KUrl> NepomukActivityManager::resourcesLinkedToActivity(const QString & a
         if (resource.hasProperty(NIE::url())) {
             result << resource.property(NIE::url()).toUrl();
         } else {
-            result << resource.resourceUri();
+            result << resource.uri();
         }
     }
 
@@ -356,7 +405,8 @@ void NepomukActivityManager::setCurrentActivity(const QString & id)
 
 void NepomukActivityManager::addActivity(const QString & activity)
 {
-    Q_UNUSED(activity)
+    syncActivities(QStringList() << activity);
+
     org::kde::KDirNotify::emitFilesAdded("activities:/");
     org::kde::KDirNotify::emitFilesAdded("activities:/" + activity);
 }
@@ -384,6 +434,10 @@ void NepomukActivityManager::removeActivity(const QString & activity)
     Q_UNUSED(activity)
 }
 
+void NepomukActivityManager::reinit()
+{
+}
+
 #endif // HAVE_NEPOMUK
 
 
@@ -392,9 +446,12 @@ void NepomukActivityManager::nepomukServiceOwnerChanged(const QString & service,
     Q_UNUSED(service)
     Q_UNUSED(oldOwner)
 #ifdef HAVE_NEPOMUK
-    if ((m_nepomukPresent = !newOwner.isEmpty())) {
-        if (!Nepomuk::ResourceManager::instance()->initialized()) {
-            Nepomuk::ResourceManager::instance()->init();
+    m_nepomukPresent = !newOwner.isEmpty();
+    init(nullptr);
+
+    if (m_nepomukPresent) {
+        if (!m_cache_activityIds.isEmpty()) {
+            syncActivities(m_cache_activityIds);
         }
     }
 

@@ -23,8 +23,8 @@
 
 #include <KWindowSystem>
 
-#include <utils/val.h>
 #include <utils/nullptr.h>
+#include <utils/val.h>
 
 val configPattern       = QString::fromLatin1("desktop-for-%1");
 

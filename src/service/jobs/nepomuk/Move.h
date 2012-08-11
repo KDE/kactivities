@@ -33,10 +33,12 @@
 
 #include <KUrl>
 
-namespace Nepomuk {
+namespace Nepomuk2 {
     class Resource;
     class File;
 } // namespace Nepomuk
+
+namespace Nepomuk = Nepomuk2;
 
 namespace Jobs {
 namespace Nepomuk {

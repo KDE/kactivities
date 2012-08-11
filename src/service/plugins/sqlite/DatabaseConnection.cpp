@@ -32,8 +32,8 @@
 
 #include <config-features.h>
 #include <utils/nullptr.h>
-#include <utils/val.h>
 #include <utils/d_ptr_implementation.h>
+#include <utils/val.h>
 
 class DatabaseConnection::Private {
 public:

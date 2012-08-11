@@ -367,10 +367,12 @@ void Resources::RegisterResourceTitle(const QString & uri, const QString & title
 
 void Resources::LinkResourceToActivity(const QString & uri, const QString & activity)
 {
+    #ifdef HAVE_NEPOMUK
     if (Jobs::Encryption::Common::isActivityEncrypted(activity)) {
         Jobs::Nepomuk::move(activity, true, QStringList() << uri)
             ->create(this)->start();
     }
+    #endif
 
     return doWithNepomukForActivity(activity, [&uri,this] (const QString & activity)
         {
@@ -383,10 +385,12 @@ void Resources::LinkResourceToActivity(const QString & uri, const QString & acti
 
 void Resources::UnlinkResourceFromActivity(const QString & uri, const QString & activity)
 {
+    #ifdef HAVE_NEPOMUK
     if (Jobs::Encryption::Common::isActivityEncrypted(activity)) {
         Jobs::Nepomuk::move(activity, true, QStringList() << uri)
             ->create(this)->start();
     }
+    #endif
 
     return doWithNepomukForActivity(activity, [&uri,this] (const QString & activity)
         {

@@ -30,28 +30,30 @@
 #include <Soprano/Node>
 #include <Soprano/Model>
 
-#include <Nepomuk/Variant>
-#include <Nepomuk/ResourceManager>
-#include <Nepomuk/Resource>
-#include <Nepomuk/File>
+#include <Nepomuk2/Variant>
+#include <Nepomuk2/ResourceManager>
+#include <Nepomuk2/Resource>
+#include <Nepomuk2/File>
 
-#include <Nepomuk/Query/Query>
-#include <Nepomuk/Query/ResourceTypeTerm>
-#include <Nepomuk/Query/ResourceTerm>
-#include <Nepomuk/Query/ComparisonTerm>
-#include <Nepomuk/Types/Property>
+#include <Nepomuk2/Query/Query>
+#include <Nepomuk2/Query/ResourceTypeTerm>
+#include <Nepomuk2/Query/ResourceTerm>
+#include <Nepomuk2/Query/ComparisonTerm>
+#include <Nepomuk2/Types/Property>
 
-#include <kao.h>
-#include <Nepomuk/Vocabulary/NFO>
-#include <Nepomuk/Vocabulary/NIE>
+#include <Nepomuk2/Vocabulary/NFO>
+#include <Nepomuk2/Vocabulary/NIE>
 #include <Soprano/Vocabulary/NAO>
+#include <kao.h>
 
 #include <KIO/CopyJob>
 #include <jobs/encryption/Common.h>
 #include <KUrl>
 
+namespace Nepomuk = Nepomuk2;
 using namespace Soprano::Vocabulary;
 using namespace Nepomuk::Vocabulary;
+using namespace KDE::Vocabulary;
 using namespace Nepomuk::Query;
 using namespace Nepomuk;
 
@@ -85,7 +87,7 @@ namespace Private {
         Soprano::QueryResultIterator it
             = ResourceManager::instance()->mainModel()->executeQuery(
                 query.arg(
-                    Soprano::Node::resourceToN3(resource.resourceUri())
+                    Soprano::Node::resourceToN3(resource.uri())
                 ),
                 Soprano::Query::QueryLanguageSparql);
 

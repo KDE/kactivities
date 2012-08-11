@@ -1,8 +1,5 @@
 project(activitymanager-plugin-sqlite)
 
-# Checking for Nepomuk
-# find_package(Nepomuk REQUIRED)
-
 set(
    sqliteplugin_SRCS
    DatabaseConnection.cpp
@@ -20,14 +17,14 @@ qt4_add_dbus_adaptor(
    Rankings.h Rankings
    )
 
-if(Nepomuk_FOUND)
+if(NepomukCore_FOUND)
     include_directories(${NEPOMUK_INCLUDE_DIR} ${SOPRANO_INCLUDE_DIR})
 
     soprano_add_ontology(sqliteplugin_SRCS
         ${CMAKE_SOURCE_DIR}/src/ontologies/kao.trig
-        "KAO" "Nepomuk::Vocabulary" "trig"
+        "KAO" "KDE::Vocabulary" "trig"
         )
-endif(Nepomuk_FOUND)
+endif()
 
 include_directories(
    ${CMAKE_SOURCE_DIR}/src
@@ -49,8 +46,7 @@ target_link_libraries(
    ${QT_QTSQL_LIBRARIES}
    ${KDE4_KDECORE_LIBS}
    ${KDE4_KDEUI_LIBS}
-   ${NEPOMUK_LIBRARIES}
-   ${NEPOMUK_QUERY_LIBRARIES}
+   ${NEPOMUK_CORE_LIBRARY}
    ${SOPRANO_LIBRARIES}
    )
 

@@ -29,15 +29,17 @@
 #include <Soprano/Node>
 #include <Soprano/Model>
 
-#include <nepomuk/nie.h>
-#include <Nepomuk/Resource>
-#include <Nepomuk/ResourceManager>
-#include <Nepomuk/Variant>
-
-#include <utils/val.h>
+#include <Nepomuk2/Vocabulary/NIE>
+#include <Nepomuk2/Resource>
+#include <Nepomuk2/ResourceManager>
+#include <Nepomuk2/Variant>
 
 #include "kao.h"
 
+#include <utils/val.h>
+
+namespace Nepomuk = Nepomuk2;
+using namespace KDE::Vocabulary;
 using namespace Nepomuk::Vocabulary;
 using namespace Soprano::Vocabulary;
 
@@ -62,7 +64,7 @@ inline QString resN3(const QUrl & uri)
 
 inline QString resN3(const Nepomuk::Resource & resource)
 {
-    return Soprano::Node::resourceToN3(resource.resourceUri());
+    return Soprano::Node::resourceToN3(resource.uri());
 }
 
 inline void updateNepomukScore(const QString & activity, const QString & application, const QUrl & resource, qreal score)

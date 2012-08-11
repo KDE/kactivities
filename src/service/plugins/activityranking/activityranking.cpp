@@ -31,12 +31,12 @@
 #include <KStandardDirs>
 #include <KDebug>
 
-#include <utils/val.h>
-#include <utils/for_each_assoc.h>
-#include <utils/d_ptr_implementation.h>
-
 #include "Plugin.h"
 #include "Location.h"
+
+#include <utils/for_each_assoc.h>
+#include <utils/d_ptr_implementation.h>
+#include <utils/val.h>
 
 #define PRINT_LAST_ERROR(A) if (A.lastError().isValid()) kDebug() << "DATABASE ERROR" << A.lastError();
 

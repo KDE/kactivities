@@ -16,28 +16,31 @@ set (ADDITIONAL_LINK_LIBS)
 
 # Checking for Nepomuk
 
-macro_optional_find_package (Nepomuk)
-macro_log_feature (Nepomuk_FOUND
-    "Nepomuk" "Nepomuk" "http://www.kde.org" FALSE ""
+macro_optional_find_package (NepomukCore)
+macro_log_feature (NepomukCore_FOUND
+    "Nepomuk Core" "Nepomuk Core" "https://projects.kde.org/projects/kde/kdelibs/nepomuk-core" FALSE ""
     "STRONGLY_RECOMMENDED: Nepomuk is needed for some activity-related info"
     )
 
 set (sdo_SRCS)
 
-if (Nepomuk_FOUND)
+if (NepomukCore_FOUND)
     set (HAVE_NEPOMUK 1)
 
+    find_package (Soprano)
+
     include_directories (${NEPOMUK_INCLUDE_DIRS})
+
     set (ADDITIONAL_LINK_LIBS
         ${ADDITIONAL_LINK_LIBS}
-        ${NEPOMUK_LIBRARIES}
+        ${NEPOMUK_CORE_LIBRARY}
         ${NEPOMUK_QUERY_LIBRARIES}
         ${SOPRANO_LIBRARIES}
         )
 
     soprano_add_ontology (sdo_SRCS
         ${CMAKE_SOURCE_DIR}/src/ontologies/kao.trig
-        "KAO" "Nepomuk::Vocabulary" "trig"
+        "KAO" "KDE::Vocabulary" "trig"
         )
 
 endif ()
@@ -104,7 +107,7 @@ set (activity_manager_SRCS
     ${sdo_SRCS}
     )
 
-if (Nepomuk_FOUND)
+if (NepomukCore_FOUND)
     set(activity_manager_SRCS
         ${activity_manager_SRCS}
         jobs/nepomuk/Move.cpp

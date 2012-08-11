@@ -32,7 +32,7 @@
 #include <KFileItem>
 #include <KStandardDirs>
 
-#include <Nepomuk/ResourceManager>
+#include <Nepomuk2/ResourceManager>
 #include <Soprano/QueryResultIterator>
 #include <Soprano/Model>
 #include <Soprano/Node>
@@ -70,18 +70,19 @@ QDebug kioDebug()
 
 #include "kao.h"
 
-#include <Nepomuk/Resource>
-#include <Nepomuk/Query/Query>
-#include <Nepomuk/Query/FileQuery>
-#include <Nepomuk/Query/ResourceTerm>
-#include <Nepomuk/Query/ComparisonTerm>
+#include <Nepomuk2/Resource>
+#include <Nepomuk2/Query/Query>
+#include <Nepomuk2/Query/FileQuery>
+#include <Nepomuk2/Query/ResourceTerm>
+#include <Nepomuk2/Query/ComparisonTerm>
 
 #include "lib/info.h"
 
 #include <Soprano/Vocabulary/NAO>
 
+namespace Nepomuk = Nepomuk2;
 using namespace Soprano::Vocabulary;
-using namespace Nepomuk::Vocabulary;
+using namespace KDE::Vocabulary;
 using namespace KIO;
 
 class ActivitiesProtocol::Private {
@@ -194,7 +195,7 @@ public:
         }
 
         if (!activity.isEmpty()) {
-            Nepomuk::Resource activityResource(activity, Nepomuk::Vocabulary::KAO::Activity());
+            Nepomuk::Resource activityResource(activity, KAO::Activity());
 
             const QString query = QString::fromLatin1(
                     "select distinct ?r, ?url where { "
@@ -206,7 +207,7 @@ public:
 
             Soprano::QueryResultIterator it
                 = Nepomuk::ResourceManager::instance()->mainModel()->executeQuery(
-                    query.arg(Soprano::Node::resourceToN3(activityResource.resourceUri())),
+                    query.arg(Soprano::Node::resourceToN3(activityResource.uri())),
                     Soprano::Query::QueryLanguageSparql);
 
             while (it.next()) {

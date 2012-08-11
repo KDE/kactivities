@@ -20,7 +20,7 @@ set(kio_activities_PART_SRCS
 soprano_add_ontology(
     kio_activities_PART_SRCS
     ${CMAKE_SOURCE_DIR}/src/ontologies/kao.trig
-    "KAO" "Nepomuk::Vocabulary" "trig"
+    "KAO" "KDE::Vocabulary" "trig"
     )
 
 
@@ -32,7 +32,7 @@ kde4_add_plugin(
 target_link_libraries(
     kio_activities
     ${KDE4_KIO_LIBS}
-    ${NEPOMUK_LIBRARIES}
+    ${NEPOMUK_CORE_LIBRARY}
     ${NEPOMUK_QUERY_LIBRARIES}
     ${SOPRANO_LIBRARIES}
     kactivities

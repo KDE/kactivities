@@ -27,10 +27,10 @@
 #include <QDBusPendingReply>
 #include <QDBusPendingCallWatcher>
 
+#include <KDebug>
+
 #include <utils/d_ptr_implementation.h>
 #include <utils/val.h>
-
-#include <KDebug>
 
 #define KWIN_SERVICE "org.kde.kwin"
 #define KSMSERVER_SERVICE "org.kde.ksmserver"

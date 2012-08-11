@@ -24,13 +24,14 @@
 #include <KDebug>
 
 #include <config-features.h>
-#include <utils/d_ptr_implementation.h>
 
 #ifdef HAVE_NEPOMUK
     #include "NepomukCommon.h"
     #include <QDBusConnection>
     #include <QDBusConnectionInterface>
 #endif // HAVE_NEPOMUK
+
+#include <utils/d_ptr_implementation.h>
 
 /**
  *

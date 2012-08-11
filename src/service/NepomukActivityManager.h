@@ -23,15 +23,18 @@
 #include <config-features.h>
 
 #ifdef HAVE_NEPOMUK
-#    include <Nepomuk/Resource>
+#    include <Nepomuk2/Resource>
 #    define EXEC_NEPOMUK(A) NepomukActivityManager::self()->A
 #    define NEPOMUK_PRESENT NepomukActivityManager::self()->initialized()
+     namespace Nepomuk = Nepomuk2;
 #else
 #    define EXEC_NEPOMUK(A) // nepomuk disabled //
 #    define NEPOMUK_PRESENT false
 #endif
 
 #include <QObject>
+
+class Activities;
 
 class NepomukActivityManager: public QObject {
     Q_OBJECT
@@ -41,13 +44,14 @@ private Q_SLOTS:
 
 #ifdef HAVE_NEPOMUK
 public:
+    // TODO: Change from singleton to owned by Activities object,
+    // with singleton accessor
     ~NepomukActivityManager();
     static NepomukActivityManager * self();
 
-    void init();
     bool initialized() const;
 
-    void syncActivities(const QStringList activityIds, KConfigGroup config, KConfigGroup iconsConfig);
+    void syncActivities(const QStringList & activityIds);
 
     void setActivityName(const QString & activity, const QString & name);
     void setActivityDescription(const QString & activity, const QString & description);
@@ -67,18 +71,28 @@ private:
     void __updateOntology();
 
     Nepomuk::Resource activityResource(const QString & id) const;
+    void init(Activities * parent);
 
     NepomukActivityManager();
 
     bool m_nepomukPresent;
     static NepomukActivityManager * s_instance;
     QString m_currentActivity;
+
+    // If sync activities failed due to nepomuk being started after us:
+    QStringList  m_cache_activityIds;
+
+    // Ordinary pointer since this is our parent
+    Activities * m_activities;
 #endif // HAVE_NEPOMUK
 
 public Q_SLOTS:
     void setCurrentActivity(const QString & id);
     void addActivity(const QString & activity);
     void removeActivity(const QString & activity);
+    void reinit();
+
+    friend class Activities;
 };
 
 

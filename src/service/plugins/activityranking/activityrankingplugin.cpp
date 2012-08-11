@@ -18,9 +18,9 @@
 #include "activityrankingplugin.h"
 #include "activityranking.h"
 
-#include <utils/d_ptr_implementation.h>
-
 #include <memory>
+
+#include <utils/d_ptr_implementation.h>
 
 class ActivityRankingPlugin::Private {
 public:

@@ -24,13 +24,13 @@
 
 #include <KDebug>
 
-#include <utils/val.h>
-#include <utils/for_each_assoc.h>
-#include <utils/remove_if.h>
-
 #include "ResourceScoreCache.h"
 #include "DatabaseConnection.h"
 #include "StatsPlugin.h"
+
+#include <utils/for_each_assoc.h>
+#include <utils/remove_if.h>
+#include <utils/val.h>
 
 #define RESULT_COUNT_LIMIT 10
 #define COALESCE_ACTIVITY(Activity) ((Activity.isEmpty()) ? \

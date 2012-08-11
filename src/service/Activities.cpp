@@ -27,6 +27,7 @@
 #include <QDBusConnection>
 #include <QDBusInterface>
 #include <QUuid>
+#include <KLocalizedString>
 
 #include <KDebug>
 
@@ -51,8 +52,8 @@
 
 #include <utils/nullptr.h>
 #include <utils/d_ptr_implementation.h>
-#include <utils/val.h>
 #include <utils/find_if_assoc.h>
+#include <utils/val.h>
 
 // Private
 
@@ -121,18 +122,15 @@ Activities::Activities(QObject * parent)
 
     // Synchronizing with nepomuk
 
-    EXEC_NEPOMUK( syncActivities(d->activities.keys(), d->activitiesConfig(), d->activityIconsConfig()) );
-
 #ifdef HAVE_NEPOMUK
-    if (NEPOMUK_PRESENT) {
-        connect(this, SIGNAL(CurrentActivityChanged(QString)),
-                NepomukActivityManager::self(), SLOT(setCurrentActivity(QString)));
-        connect(this, SIGNAL(ActivityAdded(QString)),
-                NepomukActivityManager::self(), SLOT(addActivity(QString)));
-        connect(this, SIGNAL(ActivityRemoved(QString)),
-                NepomukActivityManager::self(), SLOT(removeActivity(QString)));
+    EXEC_NEPOMUK( init(this) );
 
-    }
+    connect(this, SIGNAL(CurrentActivityChanged(QString)),
+            NepomukActivityManager::self(), SLOT(setCurrentActivity(QString)));
+    connect(this, SIGNAL(ActivityAdded(QString)),
+            NepomukActivityManager::self(), SLOT(addActivity(QString)));
+    connect(this, SIGNAL(ActivityRemoved(QString)),
+            NepomukActivityManager::self(), SLOT(removeActivity(QString)));
 #endif
 
     d->loadLastPublicActivity();

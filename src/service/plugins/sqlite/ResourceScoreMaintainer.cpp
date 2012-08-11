@@ -25,12 +25,12 @@
 
 #include <time.h>
 
-#include <utils/for_each_assoc.h>
-#include <utils/val.h>
-#include <utils/d_ptr_implementation.h>
-
 #include "StatsPlugin.h"
 #include "ResourceScoreCache.h"
+
+#include <utils/for_each_assoc.h>
+#include <utils/d_ptr_implementation.h>
+#include <utils/val.h>
 
 class ResourceScoreMaintainer::Private: public QThread {
 public:
