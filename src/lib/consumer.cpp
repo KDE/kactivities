@@ -34,6 +34,10 @@ void ConsumerPrivate::setServicePresent(bool present)
 Consumer::Consumer(QObject * parent)
     : QObject(parent), d(new ConsumerPrivate())
 {
+    if (!ConsumerPrivateCommon::s_instance) {
+        ConsumerPrivateCommon::s_instance = new ConsumerPrivateCommon();
+    }
+
     connect(Manager::activities(), SIGNAL(CurrentActivityChanged(const QString &)),
             this, SIGNAL(currentActivityChanged(const QString &)));
     connect(Manager::activities(), SIGNAL(ActivityAdded(QString)),
@@ -45,7 +49,84 @@ Consumer::Consumer(QObject * parent)
             d, SLOT(setServicePresent(bool)));
     connect(d, SIGNAL(serviceStatusChanged(KActivities::Consumer::ServiceStatus)),
             this, SIGNAL(serviceStatusChanged(KActivities::Consumer::ServiceStatus)));
+
+    // Getting the current activity
+    const QDBusPendingCall & currentActivityCall = Manager::activities()->CurrentActivity();
+    QDBusPendingCallWatcher * currentActivityCallWatcher = new QDBusPendingCallWatcher(currentActivityCall, this);
+
+    QObject::connect(currentActivityCallWatcher, SIGNAL(finished(QDBusPendingCallWatcher*)),
+            ConsumerPrivateCommon::s_instance, SLOT(currentActivityCallFinished(QDBusPendingCallWatcher*)));
+
+    // Getting the list of activities
+    const QDBusPendingCall & listActivitiesCall = Manager::activities()->ListActivities();
+    QDBusPendingCallWatcher * listActivitiesCallWatcher = new QDBusPendingCallWatcher(listActivitiesCall, this);
+
+    QObject::connect(listActivitiesCallWatcher, SIGNAL(finished(QDBusPendingCallWatcher*)),
+            ConsumerPrivateCommon::s_instance, SLOT(listActivitiesCallFinished(QDBusPendingCallWatcher*)));
 }
+
+ConsumerPrivateCommon * ConsumerPrivateCommon::s_instance = 0;
+
+ConsumerPrivateCommon::ConsumerPrivateCommon()
+{
+    connect(Manager::activities(), SIGNAL(CurrentActivityChanged(const QString &)),
+            this, SLOT(currentActivityChanged(const QString &)));
+    connect(Manager::activities(), SIGNAL(ActivityAdded(QString)),
+            this, SLOT(activityAdded(QString)));
+    connect(Manager::activities(), SIGNAL(ActivityRemoved(QString)),
+            this, SLOT(activityRemoved(QString)));
+}
+
+void ConsumerPrivateCommon::currentActivityCallFinished(QDBusPendingCallWatcher *call)
+{
+    if (!currentActivity.isEmpty()) return;
+
+    QDBusPendingReply <QString> reply = *call;
+
+    if (!reply.isError()) {
+        currentActivity = reply.argumentAt<0>();
+        kDebug() << currentActivity;
+    }
+
+    call->deleteLater();
+}
+
+void ConsumerPrivateCommon::listActivitiesCallFinished(QDBusPendingCallWatcher *call)
+{
+    if (!listActivities.isEmpty()) return;
+
+    QDBusPendingReply <QStringList> reply = *call;
+
+    if (!reply.isError()) {
+        listActivities = reply.argumentAt<0>();
+        kDebug() << listActivities;
+    }
+
+    call->deleteLater();
+}
+
+void ConsumerPrivateCommon::currentActivityChanged(const QString & activity)
+{
+    kDebug() << "current activity is" << activity;
+    currentActivity = activity;
+}
+
+void ConsumerPrivateCommon::activityAdded(const QString & activity)
+{
+    kDebug() << "new activity added" << activity;
+    if (!listActivities.contains(activity)) {
+        listActivities << activity;
+    }
+}
+
+void ConsumerPrivateCommon::activityRemoved(const QString & activity)
+{
+    kDebug() << "activity removed added" << activity;
+    if (listActivities.contains(activity)) {
+        listActivities.removeAll(activity);
+    }
+}
+
 
 Consumer::~Consumer()
 {
@@ -69,8 +150,12 @@ Consumer::~Consumer()
 
 QString Consumer::currentActivity() const
 {
-    KACTIVITYCONSUMER_DBUS_RETURN(
-        QString, Manager::activities()->CurrentActivity(), QString() );
+    if (ConsumerPrivateCommon::s_instance->currentActivity.isEmpty()) {
+        KACTIVITYCONSUMER_DBUS_RETURN(
+            QString, Manager::activities()->CurrentActivity(), QString() );
+    } else {
+        return ConsumerPrivateCommon::s_instance->currentActivity;
+    }
 }
 
 QStringList Consumer::listActivities(Info::State state) const
@@ -81,8 +166,12 @@ QStringList Consumer::listActivities(Info::State state) const
 
 QStringList Consumer::listActivities() const
 {
-    KACTIVITYCONSUMER_DBUS_RETURN(
-        QStringList, Manager::activities()->ListActivities(), QStringList() );
+    if (ConsumerPrivateCommon::s_instance->listActivities.isEmpty()) {
+        KACTIVITYCONSUMER_DBUS_RETURN(
+            QStringList, Manager::activities()->ListActivities(), QStringList() );
+    } else {
+        return ConsumerPrivateCommon::s_instance->listActivities;
+    }
 }
 
 void Consumer::linkResourceToActivity(const QUrl & uri, const QString & activityId)

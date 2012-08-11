@@ -21,7 +21,29 @@
 
 #include "consumer.h"
 
+class QDBusPendingCallWatcher;
+
 namespace KActivities {
+
+class ConsumerPrivateCommon: public QObject {
+    Q_OBJECT
+
+public:
+    ConsumerPrivateCommon();
+
+public Q_SLOTS:
+    void currentActivityCallFinished(QDBusPendingCallWatcher * call);
+    void listActivitiesCallFinished(QDBusPendingCallWatcher * call);
+
+    void currentActivityChanged(const QString & activity);
+    void activityAdded(const QString & activity);
+    void activityRemoved(const QString & activity);
+
+public:
+    QString currentActivity;
+    QStringList listActivities;
+    static ConsumerPrivateCommon * s_instance;
+};
 
 class ConsumerPrivate: public QObject {
     Q_OBJECT
@@ -32,7 +54,6 @@ Q_SIGNALS:
 
 public Q_SLOTS:
     void setServicePresent(bool present);
-
 };
 
 } // namespace KActivities
