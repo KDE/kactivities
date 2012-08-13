@@ -35,6 +35,7 @@ Name[x-test]=xxGlobal Shortcuts pluginxx
 Name[zh_CN]=全局快捷键插件
 Name[zh_TW]=全域捷徑外掛程式
 Comment=Adds global keyboard shortcuts for activity switching
+Comment[es]=Añade accesos rápidos de teclado globales para el cambio de actividad
 Comment[he]=מוסיף קיצורי מקשים גלובאלים למעבר בין פעילויות
 Comment[hu]=Globális gyorsbillentyűk hozzáadása az aktivitás váltóhoz
 Comment[nl]=Voegt globale sneltoetsen toe aan omschakelen van activiteit
