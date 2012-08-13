@@ -14,20 +14,10 @@ endif ()
 
 set (ADDITIONAL_LINK_LIBS)
 
-# Checking for Nepomuk
-
-macro_optional_find_package (NepomukCore)
-macro_log_feature (NepomukCore_FOUND
-    "Nepomuk Core" "Nepomuk Core" "https://projects.kde.org/projects/kde/kdelibs/nepomuk-core" FALSE ""
-    "STRONGLY_RECOMMENDED: Nepomuk is needed for some activity-related info"
-    )
-
 set (sdo_SRCS)
 
-if (NepomukCore_FOUND)
+if (NepomukCore_FOUND AND Nepomuk_FOUND)
     set (HAVE_NEPOMUK 1)
-
-    find_package (Soprano)
 
     include_directories (${NEPOMUK_INCLUDE_DIRS})
 
