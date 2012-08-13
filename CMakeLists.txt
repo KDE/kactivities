@@ -19,8 +19,8 @@ IF(NepomukCore_FOUND)
     MACRO_LOG_FEATURE(Nepomuk_FOUND "Nepomuk" "The Nepomuk libraries" "http://www.kde.org" TRUE "" "The Nepomuk libraries are required for some activities related functionalities")
 ENDIF()
 
-set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules ${CMAKE_MODULE_PATH})
+SET(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules ${CMAKE_MODULE_PATH})
 
-add_subdirectory(src)
+ADD_SUBDIRECTORY(src)
 
-macro_display_feature_log ()
+MACRO_DISPLAY_FEATURE_LOG ()
