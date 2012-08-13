@@ -19,7 +19,9 @@ set (sdo_SRCS)
 if (NepomukCore_FOUND AND Nepomuk_FOUND)
     set (HAVE_NEPOMUK 1)
 
-    include_directories (${NEPOMUK_INCLUDE_DIRS})
+    include_directories (${NEPOMUK_INCLUDE_DIRS}
+                         ${NEPOMUK_CORE_INCLUDE_DIR}
+                        )
 
     set (ADDITIONAL_LINK_LIBS
         ${ADDITIONAL_LINK_LIBS}
