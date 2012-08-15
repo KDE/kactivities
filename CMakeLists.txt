@@ -14,10 +14,15 @@ MACRO_LOG_FEATURE(NepomukCore_FOUND
     "STRONGLY_RECOMMENDED: Nepomuk is needed for some activity-related info"
     )
 
-IF(NepomukCore_FOUND)
-    FIND_PACKAGE(Nepomuk)
-    MACRO_LOG_FEATURE(Nepomuk_FOUND "Nepomuk" "The Nepomuk libraries" "http://www.kde.org" TRUE "" "The Nepomuk libraries are required for some activities related functionalities")
-ENDIF()
+    IF(NepomukCore_FOUND)
+        FIND_PACKAGE(Soprano)
+        MACRO_LOG_FEATURE(Soprano_FOUND
+          "Soprano" "Semantic Desktop Storing" "http://soprano.sourceforge.net" TRUE ""
+          "Soprano is needed to build and use the Nepomuk related functionalities"
+          )
+
+        include(SopranoAddOntology)
+    ENDIF()
 
 SET(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules ${CMAKE_MODULE_PATH})
 

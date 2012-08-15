@@ -18,8 +18,6 @@ qt4_add_dbus_adaptor(
    )
 
 if(NepomukCore_FOUND)
-    include_directories(${NEPOMUK_INCLUDE_DIRS})
-
     soprano_add_ontology(sqliteplugin_SRCS
         ${CMAKE_SOURCE_DIR}/src/ontologies/kao.trig
         "KAO" "KDE::Vocabulary" "trig"

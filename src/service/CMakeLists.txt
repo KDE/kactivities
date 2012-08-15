@@ -16,17 +16,16 @@ set (ADDITIONAL_LINK_LIBS)
 
 set (sdo_SRCS)
 
-if (NepomukCore_FOUND AND Nepomuk_FOUND)
+if (NepomukCore_FOUND AND Soprano_FOUND)
     set (HAVE_NEPOMUK 1)
 
-    include_directories (${NEPOMUK_INCLUDE_DIRS}
-                         ${NEPOMUK_CORE_INCLUDE_DIR}
+    include_directories (${NEPOMUK_CORE_INCLUDE_DIR}
+                         ${SOPRANO_INCLUDES}
                         )
 
     set (ADDITIONAL_LINK_LIBS
         ${ADDITIONAL_LINK_LIBS}
         ${NEPOMUK_CORE_LIBRARY}
-        ${NEPOMUK_QUERY_LIBRARIES}
         ${SOPRANO_LIBRARIES}
         )
 

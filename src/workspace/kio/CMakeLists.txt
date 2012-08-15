@@ -7,7 +7,6 @@ include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}
     ${KDE4_INCLUDES}
     ${KDE4_KIO_INCLUDES}
-    ${NEPOMUK_INCLUDE_DIR}
     ${SOPRANO_INCLUDE_DIR}
     )
 
@@ -33,7 +32,6 @@ target_link_libraries(
     kio_activities
     ${KDE4_KIO_LIBS}
     ${NEPOMUK_CORE_LIBRARY}
-    ${NEPOMUK_QUERY_LIBRARIES}
     ${SOPRANO_LIBRARIES}
     kactivities
     )
