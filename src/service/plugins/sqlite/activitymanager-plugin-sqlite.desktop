@@ -1,5 +1,5 @@
 [Desktop Entry]
-Name=Sqlite Feeder Plugin
+Name=Sqlite Feeder
 Name[ca]=Connector de l'alimentador del Sqlite
 Name[da]=Sqlite-feeder-plugin
 Name[el]=Πρόσθετο τροφοδότη Sqlite
@@ -73,7 +73,7 @@ Comment[x-test]=xxPlugin to store and score events in Sqlitexx
 Comment[zh_CN]=将事件在 Sqlite 中存储并打分的插件
 Comment[zh_TW]=在 Sqlite 裡儲存與評分事件用的外掛程式
 Type=Service
-Icon=sqlite
+Icon=server-database
 
 X-KDE-ServiceTypes=ActivityManager/Plugin
 X-KDE-Library=activitymanager_plugin_sqlite
@@ -82,7 +82,7 @@ X-KDE-PluginInfo-Email=ivan.cukic@kde.org
 X-KDE-PluginInfo-Name=org.kde.kactivitymanager.sqlite
 X-KDE-PluginInfo-Version=1.0
 X-KDE-PluginInfo-Website=http://plasma.kde.org/
-X-KDE-PluginInfo-Category=Language
+X-KDE-PluginInfo-Category=
 X-KDE-PluginInfo-Depends=
 X-KDE-PluginInfo-License=GPL
 X-KDE-PluginInfo-EnabledByDefault=true

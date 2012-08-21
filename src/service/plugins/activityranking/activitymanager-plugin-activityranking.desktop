@@ -1,5 +1,5 @@
 [Desktop Entry]
-Name=Activity ranking plugin
+Name=Activity ranking
 Name[ca]=Connector d'ordenació d'activitats
 Name[da]=Plugin til aktivitetsrangering
 Name[de]=Modul für Aktivitätenbewertung
@@ -71,7 +71,7 @@ Comment[x-test]=xxPlugin to rank activities based on usagexx
 Comment[zh_CN]=根据使用情况对活动评分的插件
 Comment[zh_TW]=以用量來排序活動的外掛程式
 Type=Service
-Icon=
+Icon=flag
 
 X-KDE-ServiceTypes=ActivityManager/Plugin
 X-KDE-Library=activitymanager_plugin_activityranking
@@ -80,7 +80,7 @@ X-KDE-PluginInfo-Email=ivan.cukic@kde.org
 X-KDE-PluginInfo-Name=org.kde.kactivitymanager.activityranking
 X-KDE-PluginInfo-Version=1.0
 X-KDE-PluginInfo-Website=http://plasma.kde.org/
-X-KDE-PluginInfo-Category=Language
+X-KDE-PluginInfo-Category=
 X-KDE-PluginInfo-Depends=
 X-KDE-PluginInfo-License=GPL
 X-KDE-PluginInfo-EnabledByDefault=true

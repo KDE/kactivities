@@ -1,5 +1,5 @@
 [Desktop Entry]
-Name=Share-Like-Connect Plugin
+Name=Share-Like-Connect
 Name[ca]=Connector «Share-Like-Connect»
 Name[da]=Share-Like-Connect-plugin
 Name[de]=„Share-Like-Connect“-Modul
@@ -56,7 +56,7 @@ Comment[sv]=Tillhandahåller data för Share-Like-Connect miniprogram
 Comment[uk]=Надає дані аплетові Share-Like-Connect
 Comment[x-test]=xxProvides data to Share-Like-Connect appletxx
 Type=Service
-Icon=
+Icon=mail-forward
 
 X-KDE-ServiceTypes=ActivityManager/Plugin
 X-KDE-Library=activitymanager_plugin_slc
@@ -65,7 +65,7 @@ X-KDE-PluginInfo-Email=ivan.cukic@kde.org
 X-KDE-PluginInfo-Name=org.kde.kactivitymanager.slc
 X-KDE-PluginInfo-Version=1.0
 X-KDE-PluginInfo-Website=http://plasma.kde.org/
-X-KDE-PluginInfo-Category=Language
+X-KDE-PluginInfo-Category=
 X-KDE-PluginInfo-Depends=
 X-KDE-PluginInfo-License=GPL
 X-KDE-PluginInfo-EnabledByDefault=true

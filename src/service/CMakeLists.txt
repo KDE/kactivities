@@ -17,8 +17,6 @@ set (ADDITIONAL_LINK_LIBS)
 set (sdo_SRCS)
 
 if (NepomukCore_FOUND AND Soprano_FOUND)
-    set (HAVE_NEPOMUK 1)
-
     include_directories (${NEPOMUK_CORE_INCLUDE_DIR}
                          ${SOPRANO_INCLUDES}
                         )
@@ -35,10 +33,6 @@ if (NepomukCore_FOUND AND Soprano_FOUND)
         )
 
 endif ()
-
-# config file
-
-configure_file (config-features.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-features.h)
 
 # Standard stuff
 

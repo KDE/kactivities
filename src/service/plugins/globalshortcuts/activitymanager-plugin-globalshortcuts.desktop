@@ -1,5 +1,5 @@
 [Desktop Entry]
-Name=Global Shortcuts plugin
+Name=Global Shortcuts
 Name[ca]=Connector de dreceres globals
 Name[da]=Plugin til globale genveje
 Name[de]=Modul für globale Kurzbefehle
@@ -53,7 +53,7 @@ Comment[sv]=Lägger till globala snabbtangenter för aktivitetsbyte
 Comment[uk]=Додає загальні клавіатурні скорочення для перемикання просторів дій
 Comment[x-test]=xxAdds global keyboard shortcuts for activity switchingxx
 Type=Service
-Icon=
+Icon=configure-shortcuts
 
 X-KDE-ServiceTypes=ActivityManager/Plugin
 X-KDE-Library=activitymanager_plugin_globalshortcuts
@@ -62,7 +62,7 @@ X-KDE-PluginInfo-Email=makhsm@gmail.com
 X-KDE-PluginInfo-Name=org.kde.kactivitymanager.globalshortcuts
 X-KDE-PluginInfo-Version=1.0
 X-KDE-PluginInfo-Website=http://plasma.kde.org/
-X-KDE-PluginInfo-Category=Language
+X-KDE-PluginInfo-Category=
 X-KDE-PluginInfo-Depends=
 X-KDE-PluginInfo-License=GPL
 X-KDE-PluginInfo-EnabledByDefault=true

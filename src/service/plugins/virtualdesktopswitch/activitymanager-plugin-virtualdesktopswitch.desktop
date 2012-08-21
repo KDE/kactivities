@@ -33,7 +33,7 @@ Comment[uk]=Під час перемикання на простір дій ві
 Comment[x-test]=xxWhen switching to an activity, opens the virtual desktop last used with that activityxx
 
 Type=Service
-Icon=
+Icon=preferences-system-windows
 
 X-KDE-ServiceTypes=ActivityManager/Plugin
 X-KDE-Library=activitymanager_plugin_virtualdesktopswitch
@@ -42,7 +42,7 @@ X-KDE-PluginInfo-Email=ivan.cukic@kde.org
 X-KDE-PluginInfo-Name=org.kde.kactivitymanager.virtualdesktopswitch
 X-KDE-PluginInfo-Version=1.0
 X-KDE-PluginInfo-Website=http://plasma.kde.org/
-X-KDE-PluginInfo-Category=Language
+X-KDE-PluginInfo-Category=
 X-KDE-PluginInfo-Depends=
 X-KDE-PluginInfo-License=GPL
 X-KDE-PluginInfo-EnabledByDefault=true
