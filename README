@@ -15,11 +15,13 @@ Commit policy:
   patches to the plasma-devel@kde.org mailing list, or (please don't) directly
   to the repository maintainer (see MAINTAINER file).
 
+
 Code policy:
 
   The code needs to follow KDElibs coding style in *all* parts of the project,
   not only the library. You can find more information about the style here:
   http://techbase.kde.org/Policies/Kdelibs_Coding_Style
+
 
 Compiler compatibility:
 
@@ -38,6 +40,11 @@ Compiler compatibility:
   scripts/commit.sh to build them all before committing. The script
   calls git commit if all builds finished successfully. See the script
   for more info.
+
+
+File naming:
+  The library files are lower-case, apart from the pretty headers.
+  The service, and the rest of the repository should be in camel-case.
 
 
 Convenience macros and methods:
