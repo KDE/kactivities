@@ -1,5 +1,13 @@
 [Desktop Entry]
 Name=Activity ranking
+Name[es]=Puntuación de las actividades
+Name[hu]=Aktivitásértékelő
+Name[pt]=Classificação da actividade
+Name[pt_BR]=Classificação de atividades
+Name[sk]=Hodnotenie aktivít
+Name[sv]=Aktivitetsrankning
+Name[uk]=Оцінювання просторів дій
+Name[x-test]=xxActivity rankingxx
 Comment=Plugin to rank activities based on usage
 Comment[ca]=Connector per ordenar les activitats segons l'ús
 Comment[da]=Plugin til at rangere aktiviteter baseret på brug

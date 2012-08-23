@@ -1,5 +1,13 @@
 [Desktop Entry]
 Name=Sqlite Feeder
+Name[es]=Aprovisionamiento de Sqlite
+Name[hu]=Sqlite-feltöltő
+Name[pt]=Fontes do SQLite
+Name[pt_BR]=Fonte de notícias do Sqlite
+Name[sk]=Podávač Sqlite
+Name[sv]=SQLite-inmatning
+Name[uk]=Передавання даних Sqlite
+Name[x-test]=xxSqlite Feederxx
 Comment=Plugin to store and score events in Sqlite
 Comment[ca]=Connector per emmagatzemar i classificar esdeveniments en el Sqlite
 Comment[da]=Plugin til at gemme og bedømme begivenheder i Sqlite
