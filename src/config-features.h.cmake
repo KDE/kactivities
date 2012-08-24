@@ -4,6 +4,8 @@
 #cmakedefine HAVE_NEPOMUK
 #cmakedefine HAVE_QZEITGEIST
 
+#cmakedefine KAMD_DATA_DIR "@KAMD_DATA_DIR@"
+
 #cmakedefine FUSERMOUNT_PATH "@FUSERMOUNT_PATH@"
 
 #ifndef FUSERMOUNT_PATH
