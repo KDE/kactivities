@@ -18,7 +18,7 @@ set (sdo_SRCS)
 
 if (NepomukCore_FOUND AND Soprano_FOUND)
     include_directories (${NEPOMUK_CORE_INCLUDE_DIR}
-                         ${SOPRANO_INCLUDES}
+                         ${SOPRANO_INCLUDE_DIR}
                         )
 
     set (ADDITIONAL_LINK_LIBS
