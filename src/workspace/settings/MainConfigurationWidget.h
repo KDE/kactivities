@@ -47,9 +47,9 @@ protected:
 
 private:
     enum WhatToRemember {
-        AllApplications,
-        SpecificApplications,
-        NoApplications
+        AllApplications      = 0,
+        SpecificApplications = 1,
+        NoApplications       = 2
     };
 
     D_PTR;

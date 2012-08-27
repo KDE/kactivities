@@ -19,12 +19,15 @@
 #define PLUGINS_SQLITE_STATS_PLUGIN_H
 
 #include <QObject>
+#include <QSet>
 
 #include <Plugin.h>
 #include "Rankings.h"
 
 #include <utils/nullptr.h>
 #include <utils/override.h>
+
+class QFileSystemWatcher;
 
 class StatsPlugin: public Plugin {
     Q_OBJECT
@@ -40,11 +43,25 @@ public:
 
 private Q_SLOTS:
     void addEvents(const EventList & events);
+    void loadConfiguration();
 
 private:
+    enum WhatToRemember {
+        AllApplications      = 0,
+        SpecificApplications = 1,
+        NoApplications       = 2
+    };
+
     Rankings * m_rankings;
     QObject * m_activities;
     QObject * m_resources;
+    QFileSystemWatcher * m_configWatcher;
+
+    QSet <QString> m_apps;
+
+    bool m_blockedByDefault : 1;
+    bool m_blockAll : 1;
+    WhatToRemember m_whatToRemember : 2;
 
     static StatsPlugin * s_instance;
 };
