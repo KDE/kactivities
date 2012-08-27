@@ -1,0 +1,15 @@
+[Desktop Entry]
+Icon=preferences-activities
+Type=Service
+ServiceTypes=KCModule
+
+X-KDE-ModuleType=Library
+X-KDE-Library=kcm_activities
+X-KDE-FactoryName=kcm_activities
+X-KDE-ParentApp=kcontrol
+X-KDE-System-Settings-Parent-Category=workspace-behavior
+X-KDE-Weight=4
+
+Name=Activities
+Comment=Configure the activities system
+

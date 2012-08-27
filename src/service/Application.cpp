@@ -65,9 +65,6 @@ T * runInQThread()
 
         void run() _override
         {
-            qDebug() << "This is the current thread id for" <<
-                T::staticMetaObject.className() << QThread::currentThreadId() << QThread::currentThread();
-
             std::unique_ptr<T> o(object);
             exec();
         }
@@ -81,8 +78,6 @@ T * runInQThread()
 
     object->moveToThread(thread);
     thread->start();
-
-    qDebug() << "running in thread" << object->metaObject()->className();
 
     return object;
 }
@@ -115,7 +110,6 @@ Application::Application()
     setQuitOnLastWindowClosed(false);
 
     if (!QDBusConnection::sessionBus().registerService("org.kde.ActivityManager")) {
-        qDebug() << "There can be only one running instance of Activity Manager";
         exit(0);
     }
 
@@ -130,9 +124,15 @@ Application::Application()
 void Application::loadPlugins()
 {
     val offers = KServiceTypeTrader::self()->query("ActivityManager/Plugin");
-    auto disabledPlugins =
-        KSharedConfig::openConfig("activitymanager-pluginsrc")
-            ->group("Global").readEntry("disabledPlugins", QStringList());
+
+    val config = KSharedConfig::openConfig("activitymanagerrc");
+    auto disabledPlugins = config->group("Global").readEntry("disabledPlugins", QStringList());
+
+    val pluginsGroup = config->group("Plugins");
+    foreach (const QString & plugin, pluginsGroup.keyList()) {
+        if (!pluginsGroup.readEntry(plugin, true))
+            disabledPlugins << plugin;
+    }
 
     // Adding overriden plugins into the list of disabled ones
 
@@ -149,19 +149,17 @@ void Application::loadPlugins()
     // Loading plugins and initializing them
 
     foreach (val & service, offers) {
-        qDebug() << "Loading library for:" << service->library();
-        if (disabledPlugins.contains(service->library())) {
+        if (disabledPlugins.contains(service->library()) ||
+                disabledPlugins.contains(service->property("X-KDE-PluginInfo-Name").toString() + "Enabled")) {
             continue;
         }
 
-        qDebug() << "Creating Factory:" << service->library();
         val factory = KPluginLoader(service->library()).factory();
 
         if (!factory) {
             continue;
         }
 
-        qDebug() << "Creating plugin:" << service->library();
         val plugin = factory->create < Plugin > (this);
 
         if (plugin) {
@@ -174,10 +172,7 @@ void Application::loadPlugins()
 
 Application::~Application()
 {
-    qDebug() << "Killing the plugins";
-
     foreach (val plugin, d->plugins) {
-        qDebug() << plugin->metaObject()->className();
         delete plugin;
     }
 
