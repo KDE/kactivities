@@ -47,6 +47,7 @@ StatsPlugin::StatsPlugin(QObject *parent, const QVariantList & args)
 bool StatsPlugin::init(const QHash < QString, QObject * > & modules)
 {
     m_activities = modules["activities"];
+    m_resources = modules["resources"];
 
     setName("org.kde.kactivitymanager.sqlite");
 
@@ -55,6 +56,9 @@ bool StatsPlugin::init(const QHash < QString, QObject * > & modules)
 
     connect(m_activities, SIGNAL(CurrentActivityChanged(QString)),
             Rankings::self(), SLOT(setCurrentActivity(QString)));
+
+    connect(m_resources, SIGNAL(ProcessedResourceEvents(EventList)),
+            this, SLOT(addEvents(EventList)));
 
     return true;
 }

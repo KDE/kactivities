@@ -27,6 +27,8 @@
 #include <utils/override.h>
 
 class StatsPlugin: public Plugin {
+    Q_OBJECT
+
 public:
     explicit StatsPlugin(QObject *parent = nullptr, const QVariantList & args = QVariantList());
 
@@ -42,6 +44,7 @@ private Q_SLOTS:
 private:
     Rankings * m_rankings;
     QObject * m_activities;
+    QObject * m_resources;
 
     static StatsPlugin * s_instance;
 };
