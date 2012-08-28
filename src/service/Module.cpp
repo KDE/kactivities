@@ -37,7 +37,14 @@ QHash < QString, QObject * > Module::Private::s_modules;
 Module::Module(const QString & name, QObject * parent)
     : QObject(parent), d()
 {
-    Private::s_modules[name] = this;
+    registerModule(name, this);
+}
+
+void Module::registerModule(const QString & name, QObject * module) {
+    if (!name.isEmpty()) {
+        Private::s_modules[name] = module;
+        qDebug() << "Module " << name << "is registered";
+    }
 }
 
 Module::~Module()
@@ -76,5 +83,11 @@ void Module::setFeatureEnabled(const QStringList & feature, bool value)
 {
     Q_UNUSED(feature)
     Q_UNUSED(value)
+}
+
+QStringList Module::listFeatures(const QStringList & feature) const
+{
+    Q_UNUSED(feature)
+    return QStringList();
 }
 

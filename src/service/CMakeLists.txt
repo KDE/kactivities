@@ -44,18 +44,22 @@ include_directories (
     ${KDE4_INCLUDES}
     )
 
+set (plugin_implementation_SRCS
+    ${CMAKE_CURRENT_SOURCE_DIR}/Plugin.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Module.cpp
+    )
+
 add_subdirectory (plugins)
 add_subdirectory (ui/plugins)
 
 set (activity_manager_SRCS
     Application.cpp
 
-    Module.cpp
     Activities.cpp
     Resources.cpp
     Features.cpp
 
-    Plugin.cpp
+    ${plugin_implementation_SRCS}
 
     NepomukActivityManager.cpp
 

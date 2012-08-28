@@ -41,6 +41,12 @@ public:
 
     QString currentActivity() const;
 
+public:
+    virtual bool isFeatureOperational(const QStringList & feature) const _override;
+    virtual bool isFeatureEnabled(const QStringList & feature) const _override;
+    virtual void setFeatureEnabled(const QStringList & feature, bool value) _override;
+    virtual QStringList listFeatures(const QStringList & feature) const _override;
+
 private Q_SLOTS:
     void addEvents(const EventList & events);
     void loadConfiguration();

@@ -42,6 +42,10 @@ public:
     virtual bool isFeatureOperational(const QStringList & feature) const;
     virtual bool isFeatureEnabled(const QStringList & feature) const;
     virtual void setFeatureEnabled(const QStringList & feature, bool value);
+    virtual QStringList listFeatures(const QStringList & feature) const;
+
+protected:
+    static void registerModule(const QString & name, QObject * module);
 
 private:
     D_PTR;

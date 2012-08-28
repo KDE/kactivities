@@ -819,3 +819,11 @@ void Activities::setFeatureEnabled(const QStringList & feature, bool value)
     }
 }
 
+QStringList Activities::listFeatures(const QStringList & feature) const
+{
+    Q_UNUSED(feature)
+    static QStringList features("encryption");
+
+    return features;
+}
+

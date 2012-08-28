@@ -171,4 +171,31 @@ void StatsPlugin::addEvents(const EventList & events)
     }
 }
 
+bool StatsPlugin::isFeatureOperational(const QStringList & feature) const
+{
+    Q_UNUSED(feature)
+    return false;
+}
+
+bool StatsPlugin::isFeatureEnabled(const QStringList & feature) const
+{
+    Q_UNUSED(feature)
+    return false;
+
+}
+
+void StatsPlugin::setFeatureEnabled(const QStringList & feature, bool value)
+{
+    Q_UNUSED(feature)
+    Q_UNUSED(value)
+}
+
+QStringList StatsPlugin::listFeatures(const QStringList & feature) const
+{
+    Q_UNUSED(feature)
+    static val features = (QStringList() << "scoring" << "more");
+
+    return features;
+}
+
 KAMD_EXPORT_PLUGIN(StatsPlugin, "activitymanger_plugin_sqlite")

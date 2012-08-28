@@ -229,7 +229,9 @@ int main(int argc, char ** argv)
             "http://www.kde.org/");
 
     KCmdLineArgs::init(argc, argv, &about);
-    initSignalCatching();
+
+    if (!KCmdLineArgs::allArguments().contains("--nofork"))
+        initSignalCatching();
 
     return Application::self()->exec();
 }
