@@ -1,6 +1,7 @@
 [Desktop Entry]
 Name=Sqlite Feeder
 Name[es]=Aprovisionamiento de Sqlite
+Name[eu]=Sqlite elikatzailea
 Name[hu]=Sqlite-feltöltő
 Name[nl]=Sqlite-feeder
 Name[pt]=Fontes do SQLite
@@ -20,6 +21,7 @@ Comment[de]=Modul zum Speichern und Bewerten von Ereignissen in SQLite
 Comment[el]=Πρόσθετο παροχής και υπολογισμού γεγονότων στο Sqlite
 Comment[es]=Complemento para almacenar y puntuar eventos en Sqlite
 Comment[et]=Plugin sündmuste salvestamiseks Sqlite'i ja nende hindamiseks
+Comment[eu]=Sqlite-n gertaerak biltegiratu eta puntuatzeko plugina
 Comment[fi]=Liitännäinen tapahtumien tallentamiseen ja arvostelemiseen Sqlitessa
 Comment[fr]=Module externe pour mémoriser et noter des évènements dans Sqlite
 Comment[gl]=Un complemento para gardar e cualificar acontecementos en Sqlite

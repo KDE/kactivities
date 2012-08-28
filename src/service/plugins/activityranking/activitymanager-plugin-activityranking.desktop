@@ -1,6 +1,7 @@
 [Desktop Entry]
 Name=Activity ranking
 Name[es]=Puntuación de las actividades
+Name[eu]=Jardueren sailkapena
 Name[hu]=Aktivitásértékelő
 Name[nl]=Activiteitenwaardering
 Name[pt]=Classificação da actividade
@@ -20,6 +21,7 @@ Comment[de]=Modul, das Aktivitäten anhand der Benutzung bewertet
 Comment[el]=Πρόσθετο για την αξιολόγηση δραστηριοτήτων με βάση τη χρήση
 Comment[es]=Complemento para puntuar actividades basándose en su uso
 Comment[et]=Plugin tegevuste hindamiseks kasutuse põhjal
+Comment[eu]=Jarduerak erabileraren arabera sailkatzeko plugina
 Comment[fi]=Liitännäinen aktiviteettien lajittelemiseen käytön mukaan
 Comment[fr]=Module externe pour classer les activités en fonction de leur utilisation
 Comment[gl]=Un complemento para clasificar as actividades segundo o uso
