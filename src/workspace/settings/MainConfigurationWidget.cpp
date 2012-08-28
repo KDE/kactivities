@@ -195,7 +195,7 @@ void MainConfigurationWidget::load()
     d->pluginSelector->load();
     d->blacklistedApplicationsModel->load();
 
-    val statisticsConfig = d->pluginConfig->group("Plugin-org.kde.kactivitymanager.sqlite");
+    val statisticsConfig = d->pluginConfig->group("Plugin-org.kde.kactivitymanager.resourcescoring");
 
     val whatToRemember = (WhatToRemember) statisticsConfig.readEntry("what-to-remember", (int)AllApplications);
     d->radioRememberAllApplications->setChecked(whatToRemember == AllApplications);
@@ -211,7 +211,7 @@ void MainConfigurationWidget::save()
     d->pluginSelector->save();
     d->blacklistedApplicationsModel->save();
 
-    auto statisticsConfig = d->pluginConfig->group("Plugin-org.kde.kactivitymanager.sqlite");
+    auto statisticsConfig = d->pluginConfig->group("Plugin-org.kde.kactivitymanager.resourcescoring");
 
     WhatToRemember whatToRemember = AllApplications;
 
@@ -227,7 +227,7 @@ void MainConfigurationWidget::save()
 
     auto pluginListConfig = d->mainConfig->group("Plugins");
 
-    pluginListConfig.writeEntry("org.kde.kactivitymanager.sqliteEnabled",
+    pluginListConfig.writeEntry("org.kde.kactivitymanager.resourcescoringEnabled",
             whatToRemember != NoApplications);
 
     statisticsConfig.sync();

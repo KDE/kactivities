@@ -56,7 +56,7 @@ bool StatsPlugin::init(const QHash < QString, QObject * > & modules)
     m_activities = modules["activities"];
     m_resources = modules["resources"];
 
-    setName("org.kde.kactivitymanager.sqlite");
+    setName("org.kde.kactivitymanager.resourcescoring");
 
     DatabaseConnection::self();
     Rankings::init(this);

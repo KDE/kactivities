@@ -71,7 +71,7 @@ void BlacklistedApplicationsModel::load()
 {
     // Loading plugin configuration
 
-    val config = d->pluginConfig->group("Plugin-org.kde.kactivitymanager.sqlite");
+    val config = d->pluginConfig->group("Plugin-org.kde.kactivitymanager.resourcescoring");
 
     val defaultBlockedValue = config.readEntry("blocked-by-default", false);
     auto blockedApplications = QSet<QString>::fromList(config.readEntry("blocked-applications", QStringList()));
@@ -138,7 +138,7 @@ void BlacklistedApplicationsModel::load()
 
 void BlacklistedApplicationsModel::save()
 {
-    auto config = d->pluginConfig->group("Plugin-org.kde.kactivitymanager.sqlite");
+    auto config = d->pluginConfig->group("Plugin-org.kde.kactivitymanager.resourcescoring");
     QStringList blockedApplications;
     QStringList allowedApplications;
 
