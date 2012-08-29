@@ -1,0 +1,31 @@
+
+
+.\" " " " " " " " " " " " " " " " " " " " " " " " " " " "
+.\"                                                     "
+.\" It is best to view this file with the man tool:     "
+.\" man ./README.packagers                              "
+.\"                                                     "
+.\" " " " " " " " " " " " " " " " " " " " " " " " " " " "
+
+
+.\" Best to view this file with the man tool
+.TH README KAMD  2012-08-29 "KDE" "KActivities Packagers"
+
+.SH LIBRARY
+
+The library can be used even if the service is not running nor installed.
+The dependencies are minimal since it is only a thin wrapper for the d-bus
+service.
+
+.SH SERVICE
+
+.TP
+.B Activity encryption
+For the encryption to work, FUSE needs to be properly set up and encfs
+installed. If the locations of fusermount and encfs are not standard
+(/bin/fusermount and /usr/bin/encfs) you can set the custom ones by
+supplying cmake with a few additional parameters:
+
+    -DFUSERMOUNT_PATH="/path/to/fusermount"
+    -DENCFS_PATH="/path/to/encfs"
+
