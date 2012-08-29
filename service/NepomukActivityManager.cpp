@@ -282,7 +282,7 @@ void NepomukActivityManager::linkResourceToActivity(const KUrl & resource, const
     //         )
     //     );
 
-    activityResource(activity).addIsRelated(Nepomuk::Resource(resource));
+    activityResource(activity).addProperty(Soprano::Vocabulary::NAO::isRelated(), resource);
 
     if (m_currentActivity == activity)
         org::kde::KDirNotify::emitFilesAdded("activities:/current");
