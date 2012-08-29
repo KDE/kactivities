@@ -13,5 +13,9 @@
       <arg name="feature" type="s" direction="in"/>
       <arg name="value" type="b" direction="in"/>
     </method>
+    <method name="ListFeatures">
+      <arg type="as" direction="out"/>
+      <arg name="module" type="s" direction="in"/>
+    </method>
   </interface>
 </node>

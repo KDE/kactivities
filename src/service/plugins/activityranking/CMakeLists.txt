@@ -15,7 +15,7 @@ set(
    activityrankingplugin.cpp
    ActivityData.cpp
    Location.cpp
-   ../../Plugin.cpp
+   ${plugin_implementation_SRCS}
    )
 
 qt4_add_dbus_adaptor(

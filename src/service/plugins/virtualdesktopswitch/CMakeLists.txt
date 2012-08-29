@@ -12,7 +12,7 @@ include_directories(
 set(
    virtualdesktopswitch_SRCS
    virtualdesktopswitch.cpp
-   ../../Plugin.cpp
+   ${plugin_implementation_SRCS}
    )
 
 kde4_add_plugin(

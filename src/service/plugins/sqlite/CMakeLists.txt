@@ -8,7 +8,7 @@ set(
    ResourceScoreMaintainer.cpp
    Rankings.cpp
    NepomukCommon.cpp
-   ../../Plugin.cpp
+   ${plugin_implementation_SRCS}
    )
 
 qt4_add_dbus_adaptor(

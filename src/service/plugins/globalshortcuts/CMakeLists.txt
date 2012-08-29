@@ -12,7 +12,7 @@ include_directories(
 set(
    globalshortcuts_SRCS
    globalshortcuts.cpp
-   ../../Plugin.cpp
+   ${plugin_implementation_SRCS}
    )
 
 kde4_add_plugin(

@@ -47,6 +47,8 @@ public Q_SLOTS:
 
     void SetFeatureEnabled(const QString & feature, bool value);
 
+    QStringList ListFeatures(const QString & module) const;
+
 private:
     D_PTR;
 };

@@ -30,6 +30,7 @@
 #include <KConfigGroup>
 
 #include "Event.h"
+#include "Module.h"
 
 #include <utils/d_ptr.h>
 
@@ -41,7 +42,7 @@
 /**
  *
  */
-class KDE_EXPORT Plugin: public QObject {
+class KDE_EXPORT Plugin: public Module {
     Q_OBJECT
 
 public:

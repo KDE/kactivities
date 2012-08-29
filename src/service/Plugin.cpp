@@ -35,7 +35,7 @@ public:
 };
 
 Plugin::Plugin(QObject * parent)
-    : QObject(parent), d()
+    : Module(QString(), parent), d()
 {
 }
 
@@ -65,7 +65,10 @@ KConfigGroup Plugin::config()
 
 void Plugin::setName(const QString & name)
 {
+    Q_ASSERT(d->name.isEmpty());
+
     d->name = name;
+    registerModule(name, this);
 }
 
 QString Plugin::name() const

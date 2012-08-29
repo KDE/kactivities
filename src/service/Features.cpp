@@ -46,42 +46,52 @@ Features::~Features()
 // Features object is just a gateway to the other KAMD modules.
 // This is a convenience method to pass the request down to the module
 
-template <typename Function>
-static bool passToModule(const QString & feature, Function f)
+template <typename RetType, typename Function>
+static RetType passToModule(const QString & feature, RetType defaultResult, Function f)
 {
     val params = feature.split('/');
     val module = Module::get(params.first());
 
-    if (!module) return false;
+    if (!module) return defaultResult;
 
     return f(static_cast<Module*>(module), params.mid(1));
 }
 
-#define FEATURES_PASS_TO_MODULE(What)                                \
-    passToModule(feature,                                            \
-        [=] (Module * module, const QStringList & params) -> bool {  \
-            What                                                     \
+#define FEATURES_PASS_TO_MODULE(RetType, DefaultResult, What)          \
+    passToModule(feature, DefaultResult,                               \
+        [=] (Module * module, const QStringList & params) -> RetType { \
+            What                                                       \
         });
 
 bool Features::IsFeatureOperational(const QString & feature) const
 {
-    return FEATURES_PASS_TO_MODULE(
+    return FEATURES_PASS_TO_MODULE(bool, false,
         return module->isFeatureOperational(params);
     );
 }
 
 bool Features::IsFeatureEnabled(const QString & feature) const
 {
-    return FEATURES_PASS_TO_MODULE(
+    return FEATURES_PASS_TO_MODULE(bool, false,
         return module->isFeatureEnabled(params);
     );
 }
 
 void Features::SetFeatureEnabled(const QString & feature, bool value)
 {
-    FEATURES_PASS_TO_MODULE(
+    FEATURES_PASS_TO_MODULE(bool, false,
         module->setFeatureEnabled(params, value);
         return true;
+    );
+}
+
+QStringList Features::ListFeatures(const QString & feature) const
+{
+    if (feature.isEmpty()) {
+        return Module::get().keys();
+    }
+    return FEATURES_PASS_TO_MODULE(QStringList, QStringList(),
+        return module->listFeatures(params);
     );
 }
 
