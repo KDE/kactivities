@@ -63,7 +63,7 @@ Manager * Manager::self()
 {
     if (!s_instance) {
         // check if the activity manager is already running
-        if (!isActivityServiceRunning()) {
+        if (!isServicePresent()) {
 
             // not running, trying to launch it
             QString error;
@@ -87,7 +87,7 @@ Manager * Manager::self()
     return s_instance;
 }
 
-bool Manager::isActivityServiceRunning()
+bool Manager::isServicePresent()
 {
     return QDBusConnection::sessionBus().interface()->isServiceRegistered(ACTIVITY_MANAGER_DBUS_PATH);
 }
@@ -97,7 +97,7 @@ void Manager::serviceOwnerChanged(const QString & serviceName, const QString & o
     Q_UNUSED(oldOwner)
 
     if (serviceName == ACTIVITY_MANAGER_DBUS_PATH) {
-        emit presenceChanged(!newOwner.isEmpty());
+        emit servicePresenceChanged(!newOwner.isEmpty());
     }
 }
 

@@ -163,7 +163,7 @@ Info::Availability Info::availability() const
 {
     Availability result = Nothing;
 
-    if (!Manager::isActivityServiceRunning()) {
+    if (!Manager::isServicePresent()) {
         return result;
     }
 

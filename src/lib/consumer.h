@@ -56,6 +56,8 @@ class ConsumerPrivate;
  * Resource can be anything that is identifiable by an URI (for example,
  * a local file or a web page)
  *
+ * This class is not thread-safe
+ *
  * @since 4.5
  */
 class KACTIVITIES_EXPORT Consumer: public QObject {
@@ -81,17 +83,36 @@ public:
 
     /**
      * @returns the id of the current activity
+     * @note Activity ID is a UUID-formatted string. If the activities
+     *     service is not running, or there was some error, the
+     *     method will return null UUID. The ID can also be an empty
+     *     string in the case there is no current activity.
+     * @note If the class didn't have enough time to pre-fetch
+     *     the current activity, this method will block the execution
+     *     until a valid result is retrieved. It can block only
+     *     on the first call.
      */
     QString currentActivity() const;
 
     /**
      * @returns the list of activities filtered by state
      * @param state state of the activity
+     * @note If the activities service is not running, only a null
+     *     activity will be returned.
+     * @note For the states other than Running, this method
+     *     will block until it receives a proper reply from
+     *     the activities service.
+     * @note For the list of running activities, it will behave
+     *     the same as currentActivity method
      */
     QStringList listActivities(Info::State state) const;
 
     /**
      * @returns the list of all existing activities
+     * @note If the activities service is not running, only a null
+     *     activity will be returned.
+     * @note This method behaves like the currentActivity
+     *     (blocking at most on the first invocation)
      */
     QStringList listActivities() const;
 

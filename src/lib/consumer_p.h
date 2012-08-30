@@ -21,39 +21,53 @@
 
 #include "consumer.h"
 
+#include <QSet>
+
 class QDBusPendingCallWatcher;
 
 namespace KActivities {
 
-class ConsumerPrivateCommon: public QObject {
-    Q_OBJECT
-
-public:
-    ConsumerPrivateCommon();
-
-public Q_SLOTS:
-    void currentActivityCallFinished(QDBusPendingCallWatcher * call);
-    void listActivitiesCallFinished(QDBusPendingCallWatcher * call);
-
-    void currentActivityChanged(const QString & activity);
-    void activityAdded(const QString & activity);
-    void activityRemoved(const QString & activity);
-
-public:
-    QString currentActivity;
-    QStringList listActivities;
-    static ConsumerPrivateCommon * s_instance;
-};
-
 class ConsumerPrivate: public QObject {
     Q_OBJECT
+
 public:
+    static ConsumerPrivate * self(QObject * consumer);
+    void free(QObject * consumer);
+
+public Q_SLOTS:
+    void setServicePresent(bool present);
+    void initializeCachedData();
+
+    void currentActivityCallFinished(QDBusPendingCallWatcher * call);
+    void listAllActivitiesCallFinished(QDBusPendingCallWatcher * call);
+    void listRunningActivitiesCallFinished(QDBusPendingCallWatcher * call);
+
+    void setCurrentActivity(const QString & activity);
+    void addActivity(const QString & activity);
+    void removeActivity(const QString & activity);
+    void setActivityState(const QString & activity, int state);
 
 Q_SIGNALS:
     void serviceStatusChanged(KActivities::Consumer::ServiceStatus status);
 
-public Q_SLOTS:
-    void setServicePresent(bool present);
+    void currentActivityChanged(const QString & id);
+    void activityAdded(const QString & id);
+    void activityRemoved(const QString & id);
+
+public:
+    QString currentActivity;
+    QStringList allActivities;
+    QStringList runningActivities;
+
+    QDBusPendingCallWatcher * currentActivityCallWatcher;
+    QDBusPendingCallWatcher * listAllActivitiesCallWatcher;
+    QDBusPendingCallWatcher * listRunningActivitiesCallWatcher;
+
+    QSet <QObject *> consumers;
+
+private:
+    ConsumerPrivate();
+    static ConsumerPrivate * s_instance;
 };
 
 } // namespace KActivities
