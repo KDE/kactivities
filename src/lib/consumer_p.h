@@ -23,6 +23,8 @@
 
 #include <QSet>
 
+#include "utils_p.h"
+
 class QDBusPendingCallWatcher;
 
 namespace KActivities {
@@ -39,8 +41,8 @@ public Q_SLOTS:
     void initializeCachedData();
 
     void currentActivityCallFinished(QDBusPendingCallWatcher * call);
-    void listAllActivitiesCallFinished(QDBusPendingCallWatcher * call);
-    void listRunningActivitiesCallFinished(QDBusPendingCallWatcher * call);
+    void listActivitiesCallFinished(QDBusPendingCallWatcher * call);
+    void runningActivitiesCallFinished(QDBusPendingCallWatcher * call);
 
     void setCurrentActivity(const QString & activity);
     void addActivity(const QString & activity);
@@ -55,13 +57,9 @@ Q_SIGNALS:
     void activityRemoved(const QString & id);
 
 public:
-    QString currentActivity;
-    QStringList allActivities;
-    QStringList runningActivities;
-
-    QDBusPendingCallWatcher * currentActivityCallWatcher;
-    QDBusPendingCallWatcher * listAllActivitiesCallWatcher;
-    QDBusPendingCallWatcher * listRunningActivitiesCallWatcher;
+    KAMD_REMOTE_VALUE_CUSTOM_HANDLER(QString, currentActivity);
+    KAMD_REMOTE_VALUE_CUSTOM_HANDLER(QStringList, listActivities);
+    KAMD_REMOTE_VALUE_CUSTOM_HANDLER(QStringList, runningActivities);
 
     QSet <QObject *> consumers;
 

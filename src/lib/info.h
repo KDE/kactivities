@@ -37,6 +37,8 @@ class InfoPrivate;
  * This class provides info about an activity. Most methods in it
  * require a Nepomuk backend running.
  *
+ * This class is not thread-safe
+ *
  * @see Consumer for info about activities
  *
  * @since 4.5
@@ -46,7 +48,8 @@ class KACTIVITIES_EXPORT Info: public QObject
     Q_OBJECT
 
     Q_PROPERTY(QString id READ id)
-    Q_PROPERTY(QString name READ name)
+    Q_PROPERTY(QString name READ name NOTIFY nameChanged)
+    Q_PROPERTY(QString icon READ icon NOTIFY iconChanged)
 
 public:
     explicit Info(const QString & activityId, QObject * parent = 0 /*nullptr*/);
@@ -88,7 +91,6 @@ public:
      * activities KIO slave.
      * @note Functional only when availability is Everything
      */
-    KDE_DEPRECATED
     KUrl uri() const;
 
     /**
@@ -159,9 +161,19 @@ public:
 
 Q_SIGNALS:
     /**
-     * Emitted when the activity's name, icon or description is changed
+     * Emitted when the activity's name, icon or some custom property is changed
      */
     void infoChanged();
+
+    /**
+     * Emitted when the name is changed
+     */
+    void nameChanged(const QString & name);
+
+    /**
+     * Emitted when the icon was changed
+     */
+    void iconChanged(const QString & icon);
 
     /**
      * Emitted when the activity is added
@@ -198,6 +210,11 @@ private:
     Q_PRIVATE_SLOT(d, void started(const QString &))
     Q_PRIVATE_SLOT(d, void stopped(const QString &))
     Q_PRIVATE_SLOT(d, void infoChanged(const QString &))
+    Q_PRIVATE_SLOT(d, void nameChanged(const QString &, const QString &))
+    Q_PRIVATE_SLOT(d, void iconChanged(const QString &, const QString &))
+    Q_PRIVATE_SLOT(d, void setServicePresent(bool))
+    Q_PRIVATE_SLOT(d, void nameCallFinished(QDBusPendingCallWatcher*))
+    Q_PRIVATE_SLOT(d, void iconCallFinished(QDBusPendingCallWatcher*))
 
     friend class InfoPrivate;
 };

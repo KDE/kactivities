@@ -48,50 +48,14 @@ void ConsumerPrivate::free(QObject * consumer)
     }
 }
 
-void ConsumerPrivate::currentActivityCallFinished(QDBusPendingCallWatcher * call)
-{
-    QDBusPendingReply <QString> reply = * call;
-
-    currentActivity = reply.isError()
-        ? nulluuid
-        : reply.argumentAt<0>();
-
-    currentActivityCallWatcher = 0;
-    call->deleteLater();
-}
-
-void ConsumerPrivate::listAllActivitiesCallFinished(QDBusPendingCallWatcher * call)
-{
-    QDBusPendingReply <QStringList> reply = * call;
-
-    if (!reply.isError()) {
-        allActivities = reply.argumentAt<0>();
-    } else {
-        allActivities.clear();
-    }
-
-    listAllActivitiesCallWatcher = 0;
-    call->deleteLater();
-}
-
-void ConsumerPrivate::listRunningActivitiesCallFinished(QDBusPendingCallWatcher * call)
-{
-    QDBusPendingReply <QStringList> reply = * call;
-
-    if (!reply.isError()) {
-        runningActivities = reply.argumentAt<0>();
-    } else {
-        runningActivities.clear();
-    }
-
-    listRunningActivitiesCallWatcher = 0;
-    call->deleteLater();
-}
+KAMD_RETRIEVE_REMOTE_VALUE_HANDLER(QString,     ConsumerPrivate, currentActivity, nulluuid)
+KAMD_RETRIEVE_REMOTE_VALUE_HANDLER(QStringList, ConsumerPrivate, listActivities, QStringList())
+KAMD_RETRIEVE_REMOTE_VALUE_HANDLER(QStringList, ConsumerPrivate, runningActivities, QStringList())
 
 ConsumerPrivate::ConsumerPrivate()
     : currentActivityCallWatcher(0),
-      listAllActivitiesCallWatcher(0),
-      listRunningActivitiesCallWatcher(0)
+      listActivitiesCallWatcher(0),
+      runningActivitiesCallWatcher(0)
 {
     connect(Manager::activities(), SIGNAL(CurrentActivityChanged(const QString &)),
             this, SLOT(setCurrentActivity(const QString &)));
@@ -123,26 +87,9 @@ void ConsumerPrivate::setServicePresent(bool present)
 
 void ConsumerPrivate::initializeCachedData()
 {
-    // Getting the current activity
-    const QDBusPendingCall & currentActivityCall = Manager::activities()->CurrentActivity();
-    currentActivityCallWatcher = new QDBusPendingCallWatcher(currentActivityCall, this);
-
-    connect(currentActivityCallWatcher, SIGNAL(finished(QDBusPendingCallWatcher*)),
-            this, SLOT(currentActivityCallFinished(QDBusPendingCallWatcher*)));
-
-    // Getting the list of activities
-    const QDBusPendingCall & listAllActivitiesCall = Manager::activities()->ListActivities();
-    listAllActivitiesCallWatcher = new QDBusPendingCallWatcher(listAllActivitiesCall, this);
-
-    connect(listAllActivitiesCallWatcher, SIGNAL(finished(QDBusPendingCallWatcher*)),
-            this, SLOT(listAllActivitiesCallFinished(QDBusPendingCallWatcher*)));
-
-    // Getting the list of running activities
-    const QDBusPendingCall & listRunningActivitiesCall = Manager::activities()->ListActivities(Info::Running);
-    listRunningActivitiesCallWatcher = new QDBusPendingCallWatcher(listRunningActivitiesCall, this);
-
-    connect(listRunningActivitiesCallWatcher, SIGNAL(finished(QDBusPendingCallWatcher*)),
-            this, SLOT(listRunningActivitiesCallFinished(QDBusPendingCallWatcher*)));
+    KAMD_RETRIEVE_REMOTE_VALUE(currentActivity, CurrentActivity(), this);
+    KAMD_RETRIEVE_REMOTE_VALUE(listActivities, ListActivities(), this);
+    KAMD_RETRIEVE_REMOTE_VALUE(runningActivities, ListActivities(Info::Running), this);
 }
 
 void ConsumerPrivate::setCurrentActivity(const QString & activity)
@@ -156,8 +103,8 @@ void ConsumerPrivate::setCurrentActivity(const QString & activity)
 void ConsumerPrivate::addActivity(const QString & activity)
 {
     kDebug() << "new activity added" << activity;
-    if (!allActivities.contains(activity)) {
-        allActivities << activity;
+    if (!listActivities.contains(activity)) {
+        listActivities << activity;
         runningActivities << activity;
     }
 
@@ -167,7 +114,7 @@ void ConsumerPrivate::addActivity(const QString & activity)
 void ConsumerPrivate::removeActivity(const QString & activity)
 {
     kDebug() << "activity removed added" << activity;
-    allActivities.removeAll(activity);
+    listActivities.removeAll(activity);
     runningActivities.removeAll(activity);
 
     emit activityRemoved(activity);
@@ -205,65 +152,24 @@ Consumer::~Consumer()
     d->free(this);
 }
 
-// macro defines a shorthand for validating and returning a d-bus result
-// @param TYPE type of the result
-// @param METHOD invocation of the d-bus method
-// @param DEFAULT value to be used if the reply was not valid
-#define KACTIVITYCONSUMER_DBUS_RETURN(TYPE, METHOD, DEFAULT)  \
-    if (!Manager::isServicePresent()) return DEFAULT;         \
-                                                              \
-    QDBusReply < TYPE > dbusReply = METHOD;                   \
-    if (dbusReply.isValid()) {                                \
-        return dbusReply.value();                             \
-    } else {                                                  \
-        kDebug() << "d-bus reply was invalid"                 \
-                 << dbusReply.value()                         \
-                 << dbusReply.error();                        \
-        return DEFAULT;                                       \
-    }
-
-static inline void waitForCallFinished(QDBusPendingCallWatcher * watcher)
-{
-    if (watcher) {
-        watcher->waitForFinished();
-    }
-}
-
-QString Consumer::currentActivity() const
-{
-    if (!Manager::isServicePresent()) return nulluuid;
-
-    waitForCallFinished(d->currentActivityCallWatcher);
-
-    kDebug() << "Returning the current activity" << d->currentActivity;
-
-    return d->currentActivity;
-}
+KAMD_REMOTE_VALUE_GETTER(QString, Consumer, currentActivity, nulluuid)
+KAMD_REMOTE_VALUE_GETTER(QStringList, Consumer, listActivities, QStringList(nulluuid))
 
 QStringList Consumer::listActivities(Info::State state) const
 {
     if (state == Info::Running) {
         if (!Manager::isServicePresent()) return QStringList(nulluuid);
 
-        waitForCallFinished(d->listRunningActivitiesCallWatcher);
+        waitForCallFinished(d->runningActivitiesCallWatcher);
 
         kDebug() << "Returning the running activities" << d->runningActivities;
 
         return d->runningActivities;
     }
 
-    KACTIVITYCONSUMER_DBUS_RETURN(
-        QStringList, Manager::activities()->ListActivities(state), QStringList() );
-}
-
-QStringList Consumer::listActivities() const
-{
-    waitForCallFinished(d->listAllActivitiesCallWatcher);
-
-    kDebug() << "Returning the activity list" <<
-        d->allActivities;
-
-    return d->allActivities;
+    KAMD_RETRIEVE_REMOTE_VALUE_SYNC(
+            QStringList, activities, ListActivities(state), QStringList(nulluuid)
+        );
 }
 
 void Consumer::linkResourceToActivity(const QUrl & uri, const QString & activityId)
@@ -280,12 +186,11 @@ void Consumer::unlinkResourceFromActivity(const QUrl & uri, const QString & acti
 
 bool Consumer::isResourceLinkedToActivity(const QUrl & uri, const QString & activityId) const
 {
-    KACTIVITYCONSUMER_DBUS_RETURN(
-        bool, Manager::resources()->IsResourceLinkedToActivity(uri.toString(), activityId), false );
+    KAMD_RETRIEVE_REMOTE_VALUE_SYNC(
+            bool, resources, IsResourceLinkedToActivity(uri.toString(), activityId), false
+        );
 
 }
-
-#undef KACTIVITYCONSUMER_DBUS_RETURN
 
 Consumer::ServiceStatus Consumer::serviceStatus()
 {

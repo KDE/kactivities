@@ -45,15 +45,6 @@
       <arg name="name" type="s" direction="in"/>
     </method>
 
-    <method name="ActivityDescription">
-      <arg type="s" direction="out"/>
-      <arg name="id" type="s" direction="in"/>
-    </method>
-    <method name="SetActivityDescription">
-      <arg name="id" type="s" direction="in"/>
-      <arg name="description" type="s" direction="in"/>
-    </method>
-
     <method name="ActivityIcon">
       <arg type="s" direction="out"/>
       <arg name="id" type="s" direction="in"/>
@@ -81,6 +72,14 @@
     </signal>
     <signal name="ActivityChanged">
       <arg name="id" type="s" direction="out"/>
+    </signal>
+    <signal name="ActivityNameChanged">
+      <arg name="id" type="s" direction="out"/>
+      <arg name="name" type="s" direction="out"/>
+    </signal>
+    <signal name="ActivityIconChanged">
+      <arg name="id" type="s" direction="out"/>
+      <arg name="icon" type="s" direction="out"/>
     </signal>
     <signal name="ActivityStateChanged">
       <arg name="id" type="s" direction="out"/>

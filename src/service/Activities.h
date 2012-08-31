@@ -141,19 +141,6 @@ public Q_SLOTS:
     void SetActivityName(const QString & id, const QString & name);
 
     /**
-     * @returns the description of the specified activity
-     * @param id id of the activity
-     */
-    QString ActivityDescription(const QString & id) const;
-
-    /**
-     * Sets the description of the specified activity
-     * @param id id of the activity
-     * @param description description to be set
-     */
-    void SetActivityDescription(const QString & id, const QString & description);
-
-    /**
      * @returns the icon of the specified activity
      * @param id id of the activity
      */
@@ -200,7 +187,21 @@ Q_SIGNALS:
     void ActivityRemoved(const QString & id);
 
     /**
-     * Emitted when an activity name, description and/or icon are changed
+     * Emitted when an activity name is changed
+     * @param id id of the changed activity
+     * @param name name of the changed activity
+     */
+    void ActivityNameChanged(const QString & id, const QString & name);
+
+    /**
+     * Emitted when an activity icon is changed
+     * @param id id of the changed activity
+     * @param icon name of the changed activity
+     */
+    void ActivityIconChanged(const QString & id, const QString & icon);
+
+    /**
+     * Emitted when an activity is changed (name, icon, or some other property)
      * @param id id of the changed activity
      */
     void ActivityChanged(const QString & id);
