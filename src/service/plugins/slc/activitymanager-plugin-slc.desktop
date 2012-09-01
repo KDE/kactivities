@@ -16,6 +16,7 @@ Name[sr@latin]=Podeli-oceni-poveži (SLC)
 Name[sv]=Share-Like-Connect
 Name[uk]=Share-Like-Connect
 Name[x-test]=xxShare-Like-Connectxx
+Name[zh_CN]=分享-喜爱-连接
 Comment=Provides data to Share-Like-Connect applet
 Comment[es]=Proporciona datos a la miniaplicación Compartir-Me gusta-Conectar
 Comment[eu]=Share-Like-Connect appletari datuak hornitzen dizkio
@@ -34,6 +35,7 @@ Comment[sr@latin]=Pruža podatke apletu podeli-oceni-poveži (SLC)
 Comment[sv]=Tillhandahåller data för Share-Like-Connect miniprogram
 Comment[uk]=Надає дані аплетові Share-Like-Connect
 Comment[x-test]=xxProvides data to Share-Like-Connect appletxx
+Comment[zh_CN]=为分享-喜爱-连接小程序提供数据
 Type=Service
 Icon=mail-forward
 

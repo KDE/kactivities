@@ -1,5 +1,6 @@
 [Desktop Entry]
 Name=Global Shortcuts
+Name[cs]=Globální zkratky
 Name[es]=Accesos rápidos de teclado globales
 Name[eu]=Lasterbide orokorrak
 Name[fi]=Työpöydänlaajuiset pikanäppäimet
@@ -16,6 +17,7 @@ Name[sr@latin]=Globalne prečice
 Name[sv]=Globala genvägar
 Name[uk]=Загальні клавіатурні скорочення
 Name[x-test]=xxGlobal Shortcutsxx
+Name[zh_CN]=全局快捷键
 Comment=Adds global keyboard shortcuts for activity switching
 Comment[es]=Añade accesos rápidos de teclado globales para el cambio de actividad
 Comment[eu]=Teklatuaren lasterbide orokorrak eransten ditu jardueren artean aldatzeko
@@ -35,6 +37,7 @@ Comment[sr@latin]=Dodaje globalne prečice sa tastature za menjanje aktivnosti
 Comment[sv]=Lägger till globala snabbtangenter för aktivitetsbyte
 Comment[uk]=Додає загальні клавіатурні скорочення для перемикання просторів дій
 Comment[x-test]=xxAdds global keyboard shortcuts for activity switchingxx
+Comment[zh_CN]=为活动切换添加全局键盘快捷键
 Type=Service
 Icon=configure-shortcuts
 

@@ -15,6 +15,7 @@ Name[sr@latin]=Rangiranje aktivnosti
 Name[sv]=Aktivitetsrankning
 Name[uk]=Оцінювання просторів дій
 Name[x-test]=xxActivity rankingxx
+Name[zh_CN]=活动评分
 Comment=Plugin to rank activities based on usage
 Comment[ca]=Connector per ordenar les activitats segons l'ús
 Comment[da]=Plugin til at rangere aktiviteter baseret på brug
