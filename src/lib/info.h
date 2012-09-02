@@ -41,6 +41,23 @@ class InfoPrivate;
  *
  * @see Consumer for info about activities
  *
+ * The API of the class is synchronous, but the most used properties
+ * are pre-fetched and cached. This means that, in order to get the least
+ * amount of d-bus related locks, you should declare long-lived instances
+ * of this class.
+ *
+ * For example, this is wrong (works, but blocks):
+ * @code
+ * void someMethod(const QString & activityId) {
+ *     Info info(activityId);
+ *     doSomethingWith(info.name());
+ * }
+ * @endcode
+ *
+ * The methods that are cached are marked as 'pre-fetched and cached'.
+ * Methods that will block until the response from the service is returned
+ * are marked as 'blocking'.
+ *
  * @since 4.5
  */
 class KACTIVITIES_EXPORT Info: public QObject
@@ -89,7 +106,6 @@ public:
      * @deprecated we don't guarantee that nepomuk is the backend
      * @returns the URI of this activity. The same URI is used by
      * activities KIO slave.
-     * @note Functional only when availability is Everything
      */
     KUrl uri() const;
 
@@ -109,6 +125,7 @@ public:
     /**
      * @returns the name of the activity
      * @note Functional when availability is BasicInfo or Everything
+     * @note This method is <b>pre-fetched and cached</b>
      */
     QString name() const;
 
@@ -117,11 +134,13 @@ public:
      * freedesktop.org name or a file path. Or empty if
      * no icon is set.
      * @note Functional only when availability is Everything
+     * @note This method is <b>pre-fetched and cached</b>
      */
     QString icon() const;
 
     /**
      * @returns the state of the activity
+     * @note This method is <b>cached</b>
      */
     State state() const;
 
@@ -136,6 +155,7 @@ public:
      * This function is provided for convenience.
      * @returns the name of the specified activity
      * @param id id of the activity
+     * @note This method is <b>blocking</b>, you should use Info::name()
      */
     static QString name(const QString & id);
 
@@ -143,6 +163,7 @@ public:
     /**
      * Links the specified resource to the activity
      * @param resourceUri resource URI
+     * @note This method is <b>asynchronous</b>
      */
     void linkResource(const KUrl & resourceUri);
 
@@ -150,13 +171,16 @@ public:
     /**
      * Unlinks the specified resource from the activity
      * @param resourceUri resource URI
+     * @note This method is <b>asynchronous</b>
      */
     void unlinkResource(const KUrl & resourceUri);
 
 
     /**
      * @returns the list of linked resources
+     * @note This method is <b>blocking</b>
      */
+    KDE_DEPRECATED
     KUrl::List linkedResources() const;
 
 Q_SIGNALS:

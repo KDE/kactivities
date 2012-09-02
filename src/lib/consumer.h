@@ -56,14 +56,29 @@ class ConsumerPrivate;
  * Resource can be anything that is identifiable by an URI (for example,
  * a local file or a web page)
  *
- * This class is not thread-safe
+ * The API of the class is synchronous, but the most used properties
+ * are pre-fetched and cached. This means that, in order to get the least
+ * amount of d-bus related locks, you should declare long-lived instances
+ * of this class.
+ *
+ * For example, this is wrong (works, but blocks):
+ * @code
+ * void someMethod() {
+ *     Consumer c;
+ *     doSomethingWith(c.listActivities());
+ * }
+ * @endcode
+ *
+ * The methods that are cached are marked as 'pre-fetched and cached'.
+ * Methods that will block until the response from the service is returned
+ * are marked as 'blocking'.
  *
  * @since 4.5
  */
 class KACTIVITIES_EXPORT Consumer: public QObject {
     Q_OBJECT
 
-    Q_PROPERTY(QString currentActivity READ currentActivity)
+    Q_PROPERTY(QString currentActivity READ currentActivity NOTIFY currentActivityChanged)
     Q_PROPERTY(QStringList activities READ listActivities)
 
 public:
@@ -87,10 +102,7 @@ public:
      *     service is not running, or there was some error, the
      *     method will return null UUID. The ID can also be an empty
      *     string in the case there is no current activity.
-     * @note If the class didn't have enough time to pre-fetch
-     *     the current activity, this method will block the execution
-     *     until a valid result is retrieved. It can block only
-     *     on the first call.
+     * @note This method is <b>pre-fetched and cached</b>
      */
     QString currentActivity() const;
 
@@ -99,11 +111,7 @@ public:
      * @param state state of the activity
      * @note If the activities service is not running, only a null
      *     activity will be returned.
-     * @note For the states other than Running, this method
-     *     will block until it receives a proper reply from
-     *     the activities service.
-     * @note For the list of running activities, it will behave
-     *     the same as currentActivity method
+     * @note This method is <b>pre-fetched and cached only for the Info::Running state</b>
      */
     QStringList listActivities(Info::State state) const;
 
@@ -111,8 +119,7 @@ public:
      * @returns the list of all existing activities
      * @note If the activities service is not running, only a null
      *     activity will be returned.
-     * @note This method behaves like the currentActivity
-     *     (blocking at most on the first invocation)
+     * @note This method is <b>pre-fetched and cached</b>
      */
     QStringList listActivities() const;
 
@@ -126,6 +133,7 @@ public:
      * @param uri URI of the resource
      * @param activityId id of the activity to link to. If empty, the
      *    resource is linked to the current activity.
+     * @note This method is <b>asynchronous</b>
      */
     void linkResourceToActivity(const QUrl & uri, const QString & activityId = QString());
 
@@ -134,6 +142,7 @@ public:
      * @param uri URI of the resource
      * @param activityId id of the activity to unlink from. If empty, the
      *    resource is unlinked from the current activity.
+     * @note This method is <b>asynchronous</b>
      */
     void unlinkResourceFromActivity(const QUrl & uri, const QString & activityId = QString());
 
@@ -141,6 +150,7 @@ public:
      * @returns whether the resource is linket to the specified activity
      * @param uri URI of the resource
      * @param activityId id of the activity. If empty, the current activity is used.
+     * @note This method is <b>blocking</b>
      */
     bool isResourceLinkedToActivity(const QUrl & uri, const QString & activityId = QString()) const;
 
