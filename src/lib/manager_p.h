@@ -36,7 +36,7 @@ class Manager: public QObject {
 public:
     static Manager * self();
 
-    static bool isActivityServiceRunning();
+    static bool isServicePresent();
 
     static Service::Activities * activities();
     static Service::Resources  * resources();
@@ -46,7 +46,7 @@ public Q_SLOTS:
     void serviceOwnerChanged(const QString & serviceName, const QString & oldOwner, const QString & newOwner);
 
 Q_SIGNALS:
-    void presenceChanged(bool present);
+    void servicePresenceChanged(bool present);
 
 private:
     Manager();

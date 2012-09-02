@@ -20,8 +20,23 @@
 #define KACTIVITIESINFO_P_H
 
 #include "info.h"
+#include <QObject>
+
+#include "utils_p.h"
 
 namespace KActivities {
+
+class InfoPrivateCommon: public QObject {
+    Q_OBJECT
+public:
+    static InfoPrivateCommon * self();
+
+    InfoPrivateCommon();
+    virtual ~InfoPrivateCommon();
+
+private:
+    static InfoPrivateCommon * s_instance;
+};
 
 class InfoPrivate {
 public:
@@ -34,10 +49,19 @@ public:
     void started(const QString &) const;
     void stopped(const QString &) const;
     void infoChanged(const QString &) const;
+    void nameChanged(const QString &, const QString &) const;
+    void iconChanged(const QString &, const QString &) const;
+    void setServicePresent(bool present);
+
+    void initializeCachedData();
 
     Info *q;
     Info::State state;
-    QString id;
+
+    KAMD_REMOTE_VALUE(QString, name);
+    KAMD_REMOTE_VALUE(QString, icon);
+
+    const QString id;
 };
 
 } // namespace KActivities
