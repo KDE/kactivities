@@ -8,8 +8,10 @@ if(KACTIVITIES_BUILD_ACTIVITYRANKING_PLUGIN)
     macro_optional_add_subdirectory(activityranking)
 endif()
 
-if(KACTIVITIES_BUILD_NEPOMUK_PLUGIN AND Nepomuk_FOUND)
+if(Nepomuk_FOUND)
     macro_optional_add_subdirectory(sqlite)
+endif()
+if(KACTIVITIES_BUILD_NEPOMUK_PLUGIN AND Nepomuk_FOUND)
     macro_optional_add_subdirectory(nepomuk)
 endif()
 
