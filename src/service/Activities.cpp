@@ -414,7 +414,7 @@ void Activities::Private::emitCurrentActivityChanged(const QString & id)
         mainConfig().writeEntry("lastUnlockedActivity", id);
     }
 
-    scheduleConfigSync(true);
+    scheduleConfigSync();
 
     emit q->CurrentActivityChanged(id);
 }
@@ -563,8 +563,8 @@ QString Activities::Private::activityIcon(const QString & id)
 
 void Activities::Private::scheduleConfigSync(const bool soon)
 {
-    static val shortInterval = 1000;
-    static val longInterval  = 30 * 1000;
+    static val shortInterval = 5 * 1000;
+    static val longInterval  = 2 * 60 * 1000;
 
     // short interval has priority to the long one
     if (soon) {
@@ -606,25 +606,18 @@ QString Activities::ActivityName(const QString & id) const
 
 void Activities::SetActivityName(const QString & id, const QString & name)
 {
-    kDebug() << "Step 1";
     if (!d->activities.contains(id)) return;
 
     if (name == d->activityName(id)) return;
 
-    kDebug() << "Step 2";
     d->activitiesConfig().writeEntry(id, name);
 
-    kDebug() << "Step 3";
     EXEC_NEPOMUK( setActivityName(id, name) );
 
-    kDebug() << "Step 4";
-    d->scheduleConfigSync(true);
+    d->scheduleConfigSync();
 
-    kDebug() << "Step 5";
     emit ActivityNameChanged(id, name);
-    kDebug() << "Step 6";
     emit ActivityChanged(id);
-    kDebug() << "Step 7";
 }
 
 QString Activities::ActivityIcon(const QString & id) const
