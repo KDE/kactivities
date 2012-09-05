@@ -75,6 +75,15 @@ void ResourceInstancePrivate::openResource()
     registerResourceEvent(application, wid, uri, Opened, reason);
 }
 
+ResourceInstance::ResourceInstance(WId wid, QObject *parent)
+    : QObject(parent), d(new ResourceInstancePrivate())
+{
+    kDebug(1000) << "Creating ResourceInstance: empty for now";
+    d->wid = wid;
+    d->reason = User;
+    d->application = QCoreApplication::instance()->applicationName();
+}
+
 ResourceInstance::ResourceInstance(WId wid, AccessReason reason, const QString &application, QObject *parent)
     : QObject(parent), d(new ResourceInstancePrivate())
 {
@@ -82,8 +91,6 @@ ResourceInstance::ResourceInstance(WId wid, AccessReason reason, const QString &
     d->wid = wid;
     d->reason = reason;
     d->application = application.isEmpty() ? QCoreApplication::instance()->applicationName() : application;
-
-    setTitle("title");
 }
 
 ResourceInstance::ResourceInstance(WId wid, QUrl resourceUri, const QString &mimetype,

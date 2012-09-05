@@ -76,6 +76,13 @@ public:
     /**
      * Creates a new resource instance
      * @param wid id of the window that will show the resource
+     * @param parent pointer to the parent object
+     */
+    explicit ResourceInstance(WId wid, QObject *parent = 0 /*nullptr*/);
+
+    /**
+     * Creates a new resource instance
+     * @param wid id of the window that will show the resource
      * @param reason reason for opening the resource
      * @param application application's name (the name used for the .desktop file).
      *        If not specified, QCoreApplication::applicationName is used
