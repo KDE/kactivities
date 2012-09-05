@@ -103,11 +103,9 @@ public:
     Availability availability() const;
 
     /**
-     * @deprecated we don't guarantee that nepomuk is the backend
      * @returns the URI of this activity. The same URI is used by
      * activities KIO slave.
      */
-    KDE_DEPRECATED
     KUrl uri() const;
 
     /**

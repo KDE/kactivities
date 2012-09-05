@@ -160,7 +160,7 @@ bool Info::isValid() const
 
 KUrl Info::uri() const
 {
-    return KUrl("activities:" + d->id);
+    return KUrl("activities://" + d->id);
 }
 
 KUrl Info::resourceUri() const
