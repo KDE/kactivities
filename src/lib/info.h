@@ -107,6 +107,7 @@ public:
      * @returns the URI of this activity. The same URI is used by
      * activities KIO slave.
      */
+    KDE_DEPRECATED
     KUrl uri() const;
 
     /**
@@ -158,7 +159,6 @@ public:
      * @note This method is <b>blocking</b>, you should use Info::name()
      */
     static QString name(const QString & id);
-
 
     /**
      * Links the specified resource to the activity
