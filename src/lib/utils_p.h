@@ -19,6 +19,9 @@
 
 #include <QDBusPendingCallWatcher>
 
+#include <KDebug>
+#include <KLocalizedString>
+
 // Creates an async call to retrieve a value from the dbus service
 // and initializes the call watcher
 #define KAMD_RETRIEVE_REMOTE_VALUE(Variable, MethodToCall, Target)                      \

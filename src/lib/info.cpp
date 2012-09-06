@@ -21,9 +21,6 @@
 #include "manager_p.h"
 
 #include <QFileSystemWatcher>
-#include <KStandardDirs>
-#include <KLocalizedString>
-#include <kdebug.h>
 
 namespace KActivities {
 
