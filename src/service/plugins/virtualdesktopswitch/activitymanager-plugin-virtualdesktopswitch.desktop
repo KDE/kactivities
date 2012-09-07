@@ -1,5 +1,6 @@
 [Desktop Entry]
 Name=Virtual desktop switcher
+Name[el]=Εναλλάκτης εικονικής επιφάνειας εργασίας
 Name[es]=Selector de escritorio virtual
 Name[eu]=Alegiazko mahaigain aldatzailea
 Name[he]=מעביר שולחנות עבודה
@@ -19,6 +20,7 @@ Name[uk]=Перемикач віртуальних стільниць
 Name[x-test]=xxVirtual desktop switcherxx
 Name[zh_CN]=虚拟桌面切换器
 Comment=When switching to an activity, opens the virtual desktop last used with that activity
+Comment[el]=Όταν γίνεται εναλλαγή δραστηριότητας, ανοίγει την εικονική επιφάνεια εργασίας που χρησιμοποιήθηκε τελευταία με τη δραστηριότητα αυτή
 Comment[es]=Cuando se cambia a una actividad, abre el escritorio virtual usado por última vez con dicha actividad
 Comment[eu]=Jarduera batera aldatzean, jarduera horrekin erabilitako azken alegiazko mahaigaina irekitzen du
 Comment[he]=בעת מעבר בין פעילויות, פותח את שולחן העבודה בשימוש אחרון בפעילות המתאימה
