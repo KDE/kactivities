@@ -17,30 +17,29 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef FILE_ITEM_LINKING_PLUGIN_P_H
-#define FILE_ITEM_LINKING_PLUGIN_P_H
+#ifndef KACTIVITIES_ITEMMODELS_ACTIVITIES_H_
+#define KACTIVITIES_ITEMMODELS_ACTIVITIES_H_
 
-#include "fileitemlinkingplugin.h"
-#include <kabstractfileitemactionplugin.h>
+#include <QAbstractListModel>
 
-#include <KUrl>
-#include "lib/core/consumer.h"
-#include "lib/core/info.h"
+namespace KActivities {
+namespace ItemModels {
 
-class FileItemLinkingPlugin::Private: public QObject {
-    Q_OBJECT
-
+/**
+ * Activities
+ */
+class Activities: public QAbstractListModel {
 public:
-    KActivities::Consumer activities;
-    KUrl::List items;
+    Activities();
+    virtual ~Activities();
 
-public Q_SLOTS:
-    void actionTriggered();
-
-public:
-    QAction * addAction(QMenu * menu, const QString & activityId, const QString & title = QString(), const QString & icon = QString());
-
+private:
+    class Private;
+    Private * const d;
 };
 
-#endif // FILE_ITEM_LINKING_PLUGIN_P_H
+} // namespace ItemModels
+} // namespace KActivities
+
+#endif // KACTIVITIES_ITEMMODELS_ACTIVITIES_H_
 

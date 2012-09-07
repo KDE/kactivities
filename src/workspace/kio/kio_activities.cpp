@@ -76,7 +76,7 @@ QDebug kioDebug()
 #include <Nepomuk2/Query/ResourceTerm>
 #include <Nepomuk2/Query/ComparisonTerm>
 
-#include "lib/info.h"
+#include "lib/core/info.h"
 
 #include <Soprano/Vocabulary/NAO>
 
