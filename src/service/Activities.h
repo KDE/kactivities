@@ -28,6 +28,8 @@
 #include <utils/d_ptr.h>
 #include <utils/nullptr.h>
 
+#include <common/dbus/org.kde.ActivityManager.Activities.h>
+
 /**
  * Service for tracking the user actions and managing the
  * activities
@@ -153,6 +155,16 @@ public Q_SLOTS:
      */
     void SetActivityIcon(const QString & id, const QString & icon);
 
+public Q_SLOTS:
+    /**
+     * @returns a list of activities with basic info about them
+     */
+    ActivityInfoList ListActivitiesWithInformation() const;
+
+    /**
+     * @returns the info about an activity
+     */
+    ActivityInfo ActivityInformation(const QString & id) const;
 
 Q_SIGNALS:
     /**
@@ -221,5 +233,6 @@ public:
 private:
     D_PTR;
 };
+
 
 #endif // ACTIVITY_MANAGER_H

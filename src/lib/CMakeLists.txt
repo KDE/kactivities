@@ -1,4 +1,4 @@
 
 add_subdirectory(core)
-add_subdirectory(itemmodels)
+add_subdirectory(models)
 

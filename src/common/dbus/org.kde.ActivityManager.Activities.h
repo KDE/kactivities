@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2012 Ivan Cukic <ivan.cukic(at)kde.org>
+ *   Copyright (C) 2010, 2011, 2012 Ivan Cukic <ivan.cukic(at)kde.org>
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License version 2,
@@ -17,27 +17,29 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#include "activities.h"
+#ifndef KAMD_ACTIVITIES_DBUS_H
+#define KAMD_ACTIVITIES_DBUS_H
 
-namespace KActivities {
-namespace ItemModels {
+#include <QString>
+#include <QList>
+#include <QDBusArgument>
+#include <QDebug>
 
-class Activities::Private {
-
+struct ActivityInfo {
+    QString id;
+    QString name;
+    QString icon;
+    int state;
 };
 
-Activities::Activities()
-    : d(new Private())
-{
+typedef QList<ActivityInfo> ActivityInfoList;
 
-}
+Q_DECLARE_METATYPE(ActivityInfo)
+Q_DECLARE_METATYPE(ActivityInfoList)
 
-Activities::~Activities()
-{
-    delete d;
-}
+QDBusArgument & operator << (QDBusArgument & arg, const ActivityInfo);
+const QDBusArgument & operator >> (const QDBusArgument & arg, ActivityInfo & rec);
 
+QDebug operator << (QDebug dbg, const ActivityInfo & r);
 
-
-} // namespace ItemModels
-} // namespace KActivities
+#endif // KAMD_ACTIVITIES_DBUS_H

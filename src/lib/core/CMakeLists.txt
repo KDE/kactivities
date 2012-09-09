@@ -1,5 +1,6 @@
 project(kactivities)
 
+FIND_PACKAGE(Qt4 REQUIRED)
 FIND_PACKAGE(KDE4 REQUIRED)
 INCLUDE(KDE4Defaults)
 INCLUDE(MacroLibrary)
@@ -65,11 +66,18 @@ include_directories(
 set(
    kactivities_LIB_SRCS
 
+   ${CMAKE_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.Activities.cpp
    consumer.cpp
    controller.cpp
    info.cpp
    manager_p.cpp
    resourceinstance.cpp
+   )
+
+set_source_files_properties(
+   ${CMAKE_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.Activities.xml
+   PROPERTIES
+   INCLUDE ${CMAKE_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.Activities.h
    )
 
 qt4_add_dbus_interface(

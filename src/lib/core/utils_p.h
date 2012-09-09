@@ -26,8 +26,8 @@
 // and initializes the call watcher
 #define KAMD_RETRIEVE_REMOTE_VALUE(Variable, MethodToCall, Target)                      \
     const QDBusPendingCall & Variable##Call = Manager::activities()->MethodToCall;      \
-    Variable##CallWatcher = new QDBusPendingCallWatcher(Variable##Call, Target);   \
-                                                                                             \
+    Variable##CallWatcher = new QDBusPendingCallWatcher(Variable##Call, Target);        \
+                                                                                        \
     QObject::connect(Variable##CallWatcher, SIGNAL(finished(QDBusPendingCallWatcher*)), \
             Target, SLOT(Variable##CallFinished(QDBusPendingCallWatcher*)))
 
@@ -61,7 +61,7 @@
 
 // Defines a handler for pre-fetching of the activity info
 #define KAMD_RETRIEVE_REMOTE_VALUE_HANDLER(ReturnType, Namespace, Variable, DefaultValue)   \
-    void Namespace::Variable##CallFinished(QDBusPendingCallWatcher * call) \
+    void Namespace::Variable##CallFinished(QDBusPendingCallWatcher * call)       \
     {                                                                            \
         QDBusPendingReply <ReturnType> reply = * call;                           \
                                                                                  \
