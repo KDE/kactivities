@@ -74,7 +74,7 @@ NepomukActivityManager * NepomukActivityManager::self()
 }
 
 NepomukActivityManager::NepomukActivityManager()
-    : m_nepomukPresent(false)
+    : m_nepomukPresent(false), m_activities(nullptr)
 {
     QDBusServiceWatcher * watcher = new QDBusServiceWatcher(
             NEPOMUK_DBUS_SERVICE,
@@ -99,13 +99,13 @@ NepomukActivityManager::~NepomukActivityManager()
 
 void NepomukActivityManager::init(Activities * parent)
 {
-    if (parent) {
+    if (parent && !m_activities) {
         m_activities = parent;
         setParent(parent);
-    }
 
-    // Giving the time to Activities object to properly form
-    QMetaObject::invokeMethod(this, "reinit", Qt::QueuedConnection);
+        // Giving the time to Activities object to properly form
+        QMetaObject::invokeMethod(this, "reinit", Qt::QueuedConnection);
+    }
 }
 
 void NepomukActivityManager::reinit()
@@ -226,7 +226,7 @@ void NepomukActivityManager::syncActivities(const QStringList & activityIds)
 
     // Before we start syncing, we need to convert KEXT -> KAO
     // TODO: Remove after 4.10
-    __updateOntology();
+    // __updateOntology();
 
     foreach (const QString & activityId, activityIds) {
         org::kde::KDirNotify::emitFilesAdded("activities:/" + activityId);
@@ -366,8 +366,6 @@ bool NepomukActivityManager::isResourceLinkedToActivity(const KUrl & resource, c
 {
     if (!m_nepomukPresent) return false;
 
-    kDebug() << resourcesLinkedToActivity(activity);
-
     return resourcesLinkedToActivity(activity).contains(resource);
 }
 
@@ -375,7 +373,9 @@ Nepomuk::Resource NepomukActivityManager::activityResource(const QString & id) c
 {
     if (!m_nepomukPresent) return Nepomuk::Resource();
 
-    return Nepomuk::Resource(id, KAO::Activity());
+    Nepomuk::Resource resource(id, KAO::Activity());
+
+    return resource;
 }
 
 bool NepomukActivityManager::initialized() const

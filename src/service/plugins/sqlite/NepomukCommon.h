@@ -43,45 +43,81 @@ using namespace KDE::Vocabulary;
 using namespace Nepomuk::Vocabulary;
 using namespace Soprano::Vocabulary;
 
-#define agentResource(ID)    Nepomuk::Resource(ID, NAO::Agent())
-
-inline Nepomuk::Resource anyResource(const QUrl & uri)
+inline QUrl resourceForUrl(const QUrl & url)
 {
-    Nepomuk::Resource result(uri);
-    result.setProperty(NIE::url(), uri);
-    return result;
+    static val & query = QString::fromLatin1(
+            "select ?r where { "
+                "?r nie:url %1 . "
+            "} LIMIT 1");
+
+    Soprano::QueryResultIterator it =
+        Nepomuk::ResourceManager::instance()->mainModel()->executeQuery(
+            query.arg(Soprano::Node::resourceToN3(url)), Soprano::Query::QueryLanguageSparql);
+
+    if (it.next()) {
+        return it[0].uri();
+
+    } else {
+        Nepomuk::Resource resource(url);
+        resource.setProperty(NIE::url(), url);
+
+        // Add more data to
+
+        return resource.uri();
+    }
 }
 
-inline Nepomuk::Resource anyResource(const QString & uri)
+inline QUrl resourceForId(const QString & id, const QUrl & type)
 {
-    return anyResource(KUrl(uri));
+    static val & _query = QString::fromLatin1(
+            "select ?r where { "
+                "?r a %1 . "
+                "?r nao:identifier %2 . "
+            "} LIMIT 1");
+
+    val & query = _query.arg(
+            /* %1 */ Soprano::Node::resourceToN3(type),
+            /* %2 */ Soprano::Node::literalToN3(id)
+        );
+
+    Soprano::QueryResultIterator it =
+        Nepomuk::ResourceManager::instance()->mainModel()->executeQuery(
+            query, Soprano::Query::QueryLanguageSparql);
+
+    if (it.next()) {
+        return it[0].uri();
+
+    } else {
+        Nepomuk::Resource agent(QUrl(), type);
+        agent.setProperty(NAO::identifier(), id);
+
+        return agent.uri();
+    }
 }
+
 
 inline QString resN3(const QUrl & uri)
 {
     return Soprano::Node::resourceToN3(uri);
 }
 
-inline QString resN3(const Nepomuk::Resource & resource)
-{
-    return Soprano::Node::resourceToN3(resource.uri());
-}
-
 inline void updateNepomukScore(const QString & activity, const QString & application, const QUrl & resource, qreal score)
 {
     Nepomuk::Resource scoreCache;
 
-    val query = QString::fromLatin1("select ?r where { "
+    static val & _query = QString::fromLatin1("select ?r where { "
                                     "?r a %1 . "
                                     "?r kao:usedActivity %2 . "
                                     "?r kao:initiatingAgent %3 . "
                                     "?r kao:targettedResource %4 . "
                                     "} LIMIT 1"
-            ).arg(
+            );
+
+    val query = _query.arg(
                 /* %1 */ resN3(KAO::ResourceScoreCache()),
-                /* %2 */ resN3(Nepomuk::Resource(activity, KAO::Activity())),
-                /* %3 */ resN3(agentResource(application)),
-                /* %4 */ resN3(anyResource(resource))
+                /* %2 */ resN3(resourceForId(activity, KAO::Activity())),
+                /* %3 */ resN3(resourceForId(application, NAO::Agent())),
+                /* %4 */ resN3(resourceForUrl(resource))
             );
 
     auto it = Nepomuk::ResourceManager::instance()->mainModel()->executeQuery(query, Soprano::Query::QueryLanguageSparql);
@@ -95,13 +131,15 @@ inline void updateNepomukScore(const QString & activity, const QString & applica
     } else {
         Nepomuk::Resource result(QUrl(), KAO::ResourceScoreCache());
 
-        result.setProperty(KAO::targettedResource(), Nepomuk::Resource(resource));
-        result.setProperty(KAO::initiatingAgent(),   agentResource(application));
-        result.setProperty(KAO::usedActivity(),      Nepomuk::Resource(activity, KAO::Activity()));
+        result.setProperty(KAO::targettedResource(), resourceForUrl(resource));
+        result.setProperty(KAO::initiatingAgent(),   resourceForId(application, NAO::Agent()));
+        result.setProperty(KAO::usedActivity(),      resourceForId(activity, KAO::Activity()));
 
         scoreCache = result;
     }
 
+    scoreCache.removeProperty(NAO::score());
+    scoreCache.removeProperty(KAO::cachedScore());
     scoreCache.setProperty(KAO::cachedScore(), score);
 }
 

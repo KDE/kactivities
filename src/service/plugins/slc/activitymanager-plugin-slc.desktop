@@ -1,5 +1,6 @@
 [Desktop Entry]
 Name=Share-Like-Connect
+Name[el]=Share-Like-Connect
 Name[es]=Compartir-Me gusta-Conectar
 Name[eu]=Share-Like-Connect
 Name[fi]=Share-Like-Connect
@@ -18,8 +19,10 @@ Name[uk]=Share-Like-Connect
 Name[x-test]=xxShare-Like-Connectxx
 Name[zh_CN]=分享-喜爱-连接
 Comment=Provides data to Share-Like-Connect applet
+Comment[el]=Παρέχει δεδομένα σε μικροεφαρμογή Share-Like-Connect
 Comment[es]=Proporciona datos a la miniaplicación Compartir-Me gusta-Conectar
 Comment[eu]=Share-Like-Connect appletari datuak hornitzen dizkio
+Comment[gl]=Fornece datos á applet compartir-como-conectar
 Comment[he]=מספק מידע לתוספ שתף-אוהב-מתחבר
 Comment[hu]=Adatot szolgáltat a Share-Like-Connect kisalkalmazáshoz
 Comment[ia]=Provide datos pro applet Share-Like-Connect

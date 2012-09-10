@@ -12,6 +12,7 @@ X-KDE-Weight=4
 
 Name=Activities
 Name[cs]=Aktivity
+Name[el]=Δραστηριότητες
 Name[es]=Actividades
 Name[hu]=Aktivitások
 Name[ia]=Activitates
@@ -28,6 +29,7 @@ Name[uk]=Простори дій
 Name[x-test]=xxActivitiesxx
 Name[zh_CN]=活动
 Comment=Configure the activities system
+Comment[el]=Διαμόρφωση του συστήματος δραστηριοτήτων
 Comment[es]=Configurar el sistema de actividades
 Comment[hu]=Az aktivitások rendszer beállítása
 Comment[ia]=Configura le systema de activitates
