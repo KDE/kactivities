@@ -75,5 +75,12 @@ void ResourceScoreCache::updateScore()
     }
     #endif
 
-    Rankings::self()->resourceScoreUpdated(d->activity, d->application, d->resource, score);
+    // Rankings::self()->resourceScoreUpdated(d->activity, d->application, d->resource, score);
+    kDebug() << "Sending resourceScoreUpdated event";
+    QMetaObject::invokeMethod(StatsPlugin::self(), "resourceScoreUpdated",
+            Q_ARG(QString, d->activity),
+            Q_ARG(QString, d->application),
+            Q_ARG(QString, d->resource.toString()),
+            Q_ARG(double, score)
+        );
 }

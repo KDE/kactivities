@@ -102,6 +102,8 @@ void ActivityModel::Private::servicePresenceChanged(bool present)
     model_reset m(q);
 
     valid = false;
+
+    if (valid) fetchActivityList();
 }
 
 void ActivityModel::Private::fetchActivityList()

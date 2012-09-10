@@ -69,6 +69,7 @@ set(
 
    ${CMAKE_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.Activities.cpp
    activitymodel.cpp
+   resourcemodel.cpp
    ../core/manager_p.cpp
    )
 
@@ -124,12 +125,14 @@ set(
    kactivities-models_LIB_HEADERS
 
    activitymodel.h
+   resourcemodel.h
    kactivities_models_export.h
    )
 
 set(
    kactivities-models_LIB_PRETTY_HEADERS
    includes/KActivities/Models/ActivityModel
+   includes/KActivities/Models/ResourceModel
    )
 
 install(
