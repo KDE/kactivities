@@ -117,6 +117,10 @@ target_link_libraries(
    kactivities-models
    ${KDE4_KDECORE_LIBS}
    ${KDE4_KDEUI_LIBS}
+   ${KDE4_KIO_LIBS}
+   ${NEPOMUK_CORE_LIBRARY}
+   ${NEPOMUK_QUERY_LIBRARY}
+   ${SOPRANO_LIBRARIES}
    )
 
 ## install

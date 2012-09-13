@@ -54,6 +54,12 @@ public:
         Recent     // Show recently used resources
     };
 
+    enum Roles {
+        ResourceUrl = Qt::UserRole,
+        ResourceScore,
+        ResourceIconName
+    };
+
     virtual int rowCount(const QModelIndex & parent = QModelIndex()) const;
     virtual QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const;
     virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
@@ -113,6 +119,12 @@ public Q_SLOTS:
 private:
     Q_PRIVATE_SLOT(d, void servicePresenceChanged(bool))
     Q_PRIVATE_SLOT(d, void resourceScoreUpdated(QString, QString, QString, double))
+
+    Q_PRIVATE_SLOT(d, void newEntries(QList<Nepomuk2::Query::Result>))
+    Q_PRIVATE_SLOT(d, void entriesRemoved(QList<QUrl>))
+    Q_PRIVATE_SLOT(d, void error(QString))
+
+    Q_PRIVATE_SLOT(d, void setCurrentActivity(QString))
 
     friend class Private;
 
