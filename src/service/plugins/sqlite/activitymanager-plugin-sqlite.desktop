@@ -18,6 +18,7 @@ Name[sv]=SQLite-inmatning
 Name[uk]=Передавання даних Sqlite
 Name[x-test]=xxSqlite Feederxx
 Name[zh_CN]=Sqlite 采集器
+Name[zh_TW]=Sqlite Feeder
 Comment=Plugin to store and score events in Sqlite
 Comment[ca]=Connector per emmagatzemar i classificar esdeveniments en el Sqlite
 Comment[da]=Plugin til at gemme og bedømme begivenheder i Sqlite

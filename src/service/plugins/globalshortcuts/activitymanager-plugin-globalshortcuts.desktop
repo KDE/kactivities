@@ -20,6 +20,7 @@ Name[sv]=Globala genvägar
 Name[uk]=Загальні клавіатурні скорочення
 Name[x-test]=xxGlobal Shortcutsxx
 Name[zh_CN]=全局快捷键
+Name[zh_TW]=全域捷徑
 Comment=Adds global keyboard shortcuts for activity switching
 Comment[ca]=Afegeix les dreceres de teclat globals per canvi d'activitats
 Comment[el]=Προσθέτει καθολικές συντομεύσεις πληκτρολογίου για εναλλαγή δραστηριοτήτων
@@ -43,6 +44,7 @@ Comment[sv]=Lägger till globala snabbtangenter för aktivitetsbyte
 Comment[uk]=Додає загальні клавіатурні скорочення для перемикання просторів дій
 Comment[x-test]=xxAdds global keyboard shortcuts for activity switchingxx
 Comment[zh_CN]=为活动切换添加全局键盘快捷键
+Comment[zh_TW]=新增活動切換的全域鍵盤捷徑
 Type=Service
 Icon=configure-shortcuts
 

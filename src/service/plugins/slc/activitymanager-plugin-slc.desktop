@@ -19,6 +19,7 @@ Name[sv]=Share-Like-Connect
 Name[uk]=Оприлюднти-Уподобати-З’єднати
 Name[x-test]=xxShare-Like-Connectxx
 Name[zh_CN]=分享-喜爱-连接
+Name[zh_TW]=Share-Like-Connect
 Comment=Provides data to Share-Like-Connect applet
 Comment[ca]=Proporciona dades a la miniaplicació «Share-Like-Connect»
 Comment[el]=Παρέχει δεδομένα σε μικροεφαρμογή Share-Like-Connect
@@ -41,6 +42,7 @@ Comment[sv]=Tillhandahåller data för Share-Like-Connect miniprogram
 Comment[uk]=Надає дані аплетові Оприлюднити-Уподобати-З’єднати
 Comment[x-test]=xxProvides data to Share-Like-Connect appletxx
 Comment[zh_CN]=为分享-喜爱-连接小程序提供数据
+Comment[zh_TW]=提供資料給 Share-Like-Connect 小程式
 Type=Service
 Icon=mail-forward
 

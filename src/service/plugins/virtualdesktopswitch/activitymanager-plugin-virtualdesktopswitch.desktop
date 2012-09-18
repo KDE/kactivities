@@ -21,6 +21,7 @@ Name[sv]=Byte av virtuellt skrivbord
 Name[uk]=Перемикач віртуальних стільниць
 Name[x-test]=xxVirtual desktop switcherxx
 Name[zh_CN]=虚拟桌面切换器
+Name[zh_TW]=虛擬桌面切換器
 Comment=When switching to an activity, opens the virtual desktop last used with that activity
 Comment[ca]=En canviar a una activitat, obre el darrer escriptori virtual utilitzat amb aquesta activitat
 Comment[el]=Όταν γίνεται εναλλαγή δραστηριότητας, ανοίγει την εικονική επιφάνεια εργασίας που χρησιμοποιήθηκε τελευταία με τη δραστηριότητα αυτή
@@ -43,6 +44,7 @@ Comment[sv]=Vid byte till en aktivitet, öppnar det virtuella skrivbord som sena
 Comment[uk]=Під час перемикання на простір дій відкриває віртуальну стільницю, яку було використано у цьому просторі останньою
 Comment[x-test]=xxWhen switching to an activity, opens the virtual desktop last used with that activityxx
 Comment[zh_CN]=切换活动时打开上次一同使用的虚拟桌面
+Comment[zh_TW]=切換到一個活動時，開啟該活動中上次使用的虛擬桌面
 
 Type=Service
 Icon=preferences-system-windows
