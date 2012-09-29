@@ -69,6 +69,9 @@ ConsumerPrivate::ConsumerPrivate()
     connect(Manager::self(), SIGNAL(servicePresenceChanged(bool)),
             this, SLOT(setServicePresent(bool)));
 
+    kDebug() << "We are checking whether the service is present" <<
+        Manager::isServicePresent();
+
     if (Manager::isServicePresent()) {
         initializeCachedData();
     }
@@ -131,8 +134,6 @@ void ConsumerPrivate::setActivityState(const QString & activity, int state)
     }
 }
 
-
-
 Consumer::Consumer(QObject * parent)
     : QObject(parent), d(ConsumerPrivate::self(this))
 {
@@ -160,7 +161,7 @@ QStringList Consumer::listActivities(Info::State state) const
     if (state == Info::Running) {
         if (!Manager::isServicePresent()) return QStringList(nulluuid);
 
-        waitForCallFinished(d->runningActivitiesCallWatcher);
+        waitForCallFinished(d->runningActivitiesCallWatcher, &d->runningActivitiesMutex);
 
         kDebug() << "Returning the running activities" << d->runningActivities;
 

@@ -5,4 +5,5 @@ _tests
 *swp
 *~
 .kdev4
+.cmake-params
 kactivities.kdev4
