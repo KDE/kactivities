@@ -43,7 +43,7 @@ bool VirtualDesktopSwitchPlugin::init(const QHash < QString, QObject * > & modul
 {
     qDebug() << "VirtualDesktopSwitch::init";
 
-    setName("org.kde.kactivitymanager.virtualdesktopswitch");
+    setName("org.kde.ActivityManager.VirtualDesktopSwitch");
 
     m_activitiesService = modules["activities"];
 

@@ -31,6 +31,7 @@ class QFileSystemWatcher;
 
 class StatsPlugin: public Plugin {
     Q_OBJECT
+    Q_CLASSINFO("D-Bus Interface", "org.kde.ActivityManager.Resources.Scoring")
 
 public:
     explicit StatsPlugin(QObject *parent = nullptr, const QVariantList & args = QVariantList());
@@ -40,6 +41,9 @@ public:
     virtual bool init(const QHash < QString, QObject * > & modules) _override;
 
     QString currentActivity() const;
+
+Q_SIGNALS:
+    void resourceScoreUpdated(const QString & activity, const QString & client, const QString & resource, double score);
 
 public:
     virtual bool isFeatureOperational(const QStringList & feature) const _override;

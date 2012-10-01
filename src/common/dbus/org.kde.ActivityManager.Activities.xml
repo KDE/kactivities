@@ -36,6 +36,18 @@
       <arg name="state" type="i" direction="in"/>
     </method>
 
+    <method name="ListActivitiesWithInformation">
+      <arg type="a(sssd)" direction="out"/>
+      <annotation name="com.trolltech.QtDBus.QtTypeName.Out0" value="ActivityInfoList" />
+      <annotation name="org.qtproject.QtDBus.QtTypeName.Out0" value="ActivityInfoList" />
+    </method>
+    <method name="ActivityInformation">
+      <arg type="(sssd)" direction="out"/>
+      <annotation name="com.trolltech.QtDBus.QtTypeName.Out0" value="ActivityInfo" />
+      <annotation name="org.qtproject.QtDBus.QtTypeName.Out0" value="ActivityInfo" />
+      <arg name="id" type="s" direction="in"/>
+    </method>
+
     <method name="ActivityName">
       <arg type="s" direction="out"/>
       <arg name="id" type="s" direction="in"/>

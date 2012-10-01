@@ -599,6 +599,27 @@ QStringList Activities::ListActivities(int state) const
     return d->activities.keys((State)state);
 }
 
+QList<ActivityInfo> Activities::ListActivitiesWithInformation() const
+{
+    QList<ActivityInfo> result;
+
+    foreach (const QString & activityId, ListActivities()) {
+        result << ActivityInformation(activityId);
+    }
+
+    return result;
+}
+
+ActivityInfo Activities::ActivityInformation(const QString & activityId) const
+{
+    ActivityInfo activityInfo;
+    activityInfo.id    = activityId;
+    activityInfo.name  = ActivityName(activityId);
+    activityInfo.icon  = ActivityIcon(activityId);
+    activityInfo.state = ActivityState(activityId);
+    return activityInfo;
+}
+
 QString Activities::ActivityName(const QString & id) const
 {
     return d->activityName(id);

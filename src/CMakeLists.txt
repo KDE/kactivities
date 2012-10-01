@@ -40,6 +40,7 @@ CXX_CHECK_FEATURE ("c++11" "override"           "N3206" HAVE_CXX11_OVERRIDE     
 CXX_CHECK_FEATURE ("c++11" "unique_ptr"         "none"  HAVE_CXX11_UNIQUE_PTR         "${ADDITIONAL_DEFINITIONS}")
 CXX_CHECK_FEATURE ("c++11" "variadic-templates" "N2242" HAVE_CXX11_VARIADIC_TEMPLATES "${ADDITIONAL_DEFINITIONS}")
 CXX_CHECK_FEATURE ("c++11" "initializer-lists"  "N2672" HAVE_CXX11_INITIALIZER_LISTS  "${ADDITIONAL_DEFINITIONS}")
+
 add_subdirectory(lib)
 
 # config file

@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2012 Ivan Cukic <ivan.cukic(at)kde.org>
+ *   Copyright (C) 2010, 2011, 2012 Ivan Cukic <ivan.cukic(at)kde.org>
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License version 2,
@@ -17,30 +17,29 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef FILE_ITEM_LINKING_PLUGIN_P_H
-#define FILE_ITEM_LINKING_PLUGIN_P_H
+#ifndef KAMD_ACTIVITIES_DBUS_H
+#define KAMD_ACTIVITIES_DBUS_H
 
-#include "fileitemlinkingplugin.h"
-#include <kabstractfileitemactionplugin.h>
+#include <QString>
+#include <QList>
+#include <QDBusArgument>
+#include <QDebug>
 
-#include <KUrl>
-#include "lib/core/consumer.h"
-#include "lib/core/info.h"
-
-class FileItemLinkingPlugin::Private: public QObject {
-    Q_OBJECT
-
-public:
-    KActivities::Consumer activities;
-    KUrl::List items;
-
-public Q_SLOTS:
-    void actionTriggered();
-
-public:
-    QAction * addAction(QMenu * menu, const QString & activityId, const QString & title = QString(), const QString & icon = QString());
-
+struct ActivityInfo {
+    QString id;
+    QString name;
+    QString icon;
+    int state;
 };
 
-#endif // FILE_ITEM_LINKING_PLUGIN_P_H
+typedef QList<ActivityInfo> ActivityInfoList;
 
+Q_DECLARE_METATYPE(ActivityInfo)
+Q_DECLARE_METATYPE(ActivityInfoList)
+
+QDBusArgument & operator << (QDBusArgument & arg, const ActivityInfo);
+const QDBusArgument & operator >> (const QDBusArgument & arg, ActivityInfo & rec);
+
+QDebug operator << (QDebug dbg, const ActivityInfo & r);
+
+#endif // KAMD_ACTIVITIES_DBUS_H

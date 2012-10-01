@@ -6,16 +6,22 @@ set(
    StatsPlugin.cpp
    ResourceScoreCache.cpp
    ResourceScoreMaintainer.cpp
-   Rankings.cpp
+   # Rankings.cpp
    NepomukCommon.cpp
    ${plugin_implementation_SRCS}
    )
 
 qt4_add_dbus_adaptor(
    sqliteplugin_SRCS
-   org.kde.ActivityManager.Rankings.xml
-   Rankings.h Rankings
+   org.kde.ActivityManager.Resources.Scoring.xml
+   StatsPlugin.h StatsPlugin
    )
+
+# qt4_add_dbus_adaptor(
+#    sqliteplugin_SRCS
+#    org.kde.ActivityManager.Rankings.xml
+#    Rankings.h Rankings
+#    )
 
 if(NepomukCore_FOUND)
     soprano_add_ontology(sqliteplugin_SRCS

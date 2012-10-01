@@ -21,6 +21,7 @@
 
 #include "StatsPlugin.h"
 #include "ResourceScoreMaintainer.h"
+#include "scoringadaptor.h"
 
 #include "../../Event.h"
 
@@ -32,7 +33,7 @@
 #include <KDebug>
 #include <KStandardDirs>
 
-#include "Rankings.h"
+// #include "Rankings.h"
 #include "DatabaseConnection.h"
 
 #include <utils/nullptr.h>
@@ -49,6 +50,9 @@ StatsPlugin::StatsPlugin(QObject *parent, const QVariantList & args)
 {
     Q_UNUSED(args)
     s_instance = this;
+
+    new ScoringAdaptor(this);
+    QDBusConnection::sessionBus().registerObject("/ActivityManager/Resources/Scoring", this);
 }
 
 bool StatsPlugin::init(const QHash < QString, QObject * > & modules)
@@ -56,13 +60,13 @@ bool StatsPlugin::init(const QHash < QString, QObject * > & modules)
     m_activities = modules["activities"];
     m_resources = modules["resources"];
 
-    setName("org.kde.kactivitymanager.resourcescoring");
+    setName("org.kde.ActivityManager.Resources.Scoring");
 
     DatabaseConnection::self();
-    Rankings::init(this);
+    // Rankings::init(this);
 
-    connect(m_activities, SIGNAL(CurrentActivityChanged(QString)),
-            Rankings::self(), SLOT(setCurrentActivity(QString)));
+    // connect(m_activities, SIGNAL(CurrentActivityChanged(QString)),
+    //         Rankings::self(), SLOT(setCurrentActivity(QString)));
 
     connect(m_resources, SIGNAL(ProcessedResourceEvents(EventList)),
             this, SLOT(addEvents(EventList)));

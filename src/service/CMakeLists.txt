@@ -54,6 +54,7 @@ add_subdirectory (ui/plugins)
 
 set (activity_manager_SRCS
     Application.cpp
+    ${CMAKE_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.Activities.cpp
 
     Activities.cpp
     Resources.cpp

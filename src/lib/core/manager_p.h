@@ -20,6 +20,8 @@
 #ifndef ACTIVITIES_MANAGER_P
 #define ACTIVITIES_MANAGER_P
 
+#include <common/dbus/org.kde.ActivityManager.Activities.h>
+
 #include "activities_interface.h"
 #include "resources_interface.h"
 #include "features_interface.h"
