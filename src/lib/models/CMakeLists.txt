@@ -63,6 +63,8 @@ include_directories (
    ${QDBUS_INCLUDE_DIRS}
    ${KDE4_INCLUDES}
    ${KDE4_KIO_INCLUDES}
+   ${NEPOMUK_CORE_INCLUDE_DIR}
+   ${SOPRANO_INCLUDE_DIR}
    )
 
 set (
