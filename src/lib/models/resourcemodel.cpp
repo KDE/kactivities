@@ -489,8 +489,8 @@ QVariant ResourceModel::data(const QModelIndex & index, int role) const
 
     switch (role) {
         case Qt::DisplayRole:
-            // return info.title;
-            return QString(info.title + " " + QString::number(info.score));
+            return info.title;
+            // return QString(info.title + " " + QString::number(info.score));
 
         case Qt::DecorationRole:
             return KIcon(info.icon);
@@ -526,6 +526,8 @@ void ResourceModel::setActivity(const QString & activity)
 
     d->showCurrentActivity = d->activity.isEmpty();
 
+    emit activityChanged(activity);
+
     d->reload();
 }
 
@@ -538,7 +540,12 @@ void ResourceModel::setApplication(const QString & application)
 {
     if (d->application == application) return;
 
+    kDebug() << "Setting the application to:" << application;
+
     d->application = application;
+
+    emit applicationChanged(application);
+
     d->reload();
 }
 
@@ -552,6 +559,9 @@ void ResourceModel::setLimit(int count)
     if (d->limit == count) return;
 
     d->limit = count;
+
+    emit limitChanged(count);
+
     d->reload();
 }
 

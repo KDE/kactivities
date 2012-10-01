@@ -77,6 +77,8 @@ public:
 
     void listActivitiesCallFinished(QDBusPendingCallWatcher * watcher);
     void activityInfoCallFinished(QDBusPendingCallWatcher * watcher);
+    QMutex listActivitiesMutex;
+    QMutex activityInfoMutex;
 
     void activityNameChanged(const QString & activity, const QString & name);
     void activityIconChanged(const QString & activity, const QString & icon);
@@ -141,6 +143,8 @@ void ActivityModel::Private::listActivitiesCallFinished(QDBusPendingCallWatcher 
     }
 
     valid = true;
+
+    kDebug() << activities.size();
 
     watcher->deleteLater();
 }
@@ -228,6 +232,7 @@ void ActivityModel::Private::activityRemoved(const QString & activity)
 ActivityModel::ActivityModel(QObject * parent)
     : QAbstractListModel(parent), d(new Private(this))
 {
+    kDebug() << "################";
     d->valid = false;
 
     QHash<int, QByteArray> roles;

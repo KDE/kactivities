@@ -36,9 +36,9 @@ namespace Models {
 class KACTIVITIES_MODELS_EXPORT ResourceModel: public QAbstractListModel {
     Q_OBJECT
 
-    Q_PROPERTY(QString activity READ activity WRITE setActivity)
-    Q_PROPERTY(QString application READ application WRITE setApplication)
-    Q_PROPERTY(int limit READ limit WRITE setLimit)
+    Q_PROPERTY(QString activity READ activity WRITE setActivity NOTIFY activityChanged)
+    Q_PROPERTY(QString application READ application WRITE setApplication NOTIFY applicationChanged)
+    Q_PROPERTY(int limit READ limit WRITE setLimit NOTIFY limitChanged)
 
 public:
     ResourceModel(QObject * parent = 0);
@@ -114,6 +114,11 @@ public Q_SLOTS:
      * @returns display mode
      */
     ContentMode contentMode() const;
+
+Q_SIGNALS:
+    void applicationChanged(const QString & application);
+    void activityChanged(const QString & activity);
+    void limitChanged(int limit);
 
 
 private:
