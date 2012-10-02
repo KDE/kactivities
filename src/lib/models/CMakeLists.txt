@@ -58,8 +58,6 @@ add_definitions (${QT_DEFINITIONS} ${QT_QTDBUS_DEFINITIONS} ${KDE4_DEFINITIONS})
 include_directories (
     ${CMAKE_SOURCE_DIR}/src
     ${CMAKE_BINARY_DIR}/src
-    ${CMAKE_SOURCE_DIR}/src/libs/core
-    ${CMAKE_BINARY_DIR}/src/libs/core
     ${QDBUS_INCLUDE_DIRS}
     ${KDE4_INCLUDES}
     ${KDE4_KIO_INCLUDES}

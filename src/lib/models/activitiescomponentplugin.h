@@ -29,6 +29,6 @@ public:
     void registerTypes(const char * uri);
 };
 
-Q_EXPORT_PLUGIN2(lancelotcomponentdataplugin, LancelotComponentDataPlugin);
+Q_EXPORT_PLUGIN2(lancelotcomponentdataplugin, LancelotComponentDataPlugin)
 
 #endif // LANCELOT_DATA_PLUGIN_H

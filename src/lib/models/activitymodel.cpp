@@ -48,7 +48,7 @@ static bool activityInfoLessThen(const ActivityInfo & left, const ActivityInfo &
 
 class ActivityModel::Private {
 public:
-    DECLARE_RAII_MODEL_UPDATERS(ActivityModel);
+    DECLARE_RAII_MODEL_UPDATERS(ActivityModel)
 
     Private(ActivityModel * parent)
         : q(parent), valid(false)

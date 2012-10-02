@@ -102,10 +102,10 @@ typedef QList < ResourceInfo > ResourceInfoList;
 
 class ResourceModel::Private {
 public:
-    DECLARE_RAII_MODEL_UPDATERS(ResourceModel);
+    DECLARE_RAII_MODEL_UPDATERS(ResourceModel)
 
     Private(ResourceModel * parent)
-        : service(0), limit(10), q(parent), valid(false), showCurrentActivity(true)
+        : limit(10), service(0), q(parent), valid(false), showCurrentActivity(true)
     {
         servicePresenceChanged(Manager::isServicePresent());
 
