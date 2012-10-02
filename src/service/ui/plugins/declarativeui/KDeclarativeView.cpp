@@ -19,8 +19,8 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA .        *
  ***************************************************************************/
 
-#include "kdeclarativeview.h"
-#include "dataenginebindings_p.h"
+#include "KDeclarativeView.h"
+#include "DataEngineBindings_p.h"
 
 #include <QDeclarativeContext>
 #include <QDeclarativeEngine>
@@ -123,4 +123,4 @@ bool KDeclarativeView::useGL() const
     return d->useGL;
 }
 
-#include "kdeclarativeview.moc"
+#include "KDeclarativeView.moc"

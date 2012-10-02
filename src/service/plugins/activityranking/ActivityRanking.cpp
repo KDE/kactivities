@@ -15,7 +15,7 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "activityranking.h"
+#include "ActivityRanking.h"
 #include "activityrankingadaptor.h"
 
 #include <QFile>
@@ -581,4 +581,4 @@ QList < ActivityData > ActivityRanking::activities()
     return result;
 }
 
-#include "activityranking.moc"
+#include "ActivityRanking.moc"

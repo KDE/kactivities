@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "kio_activities.h"
+#include "KioActivities.h"
 
 #include <sys/types.h>
 #include <unistd.h>
@@ -494,4 +494,4 @@ extern "C"
     }
 }
 
-#include "kio_activities.moc"
+#include "KioActivities.moc"

@@ -1,5 +1,5 @@
 
-set(sdo_SRCS "")
+set (sdo_SRCS "")
 
 # C++11
 
@@ -11,19 +11,19 @@ if (CMAKE_COMPILER_IS_GNUCXX OR CMAKE_COMPILER_IS_CLANG)
     set (ADDITIONAL_DEFINITIONS "-std=c++0x")
 endif ()
 
-if(NepomukCore_FOUND)
-    include_directories(${NEPOMUK_CORE_INCLUDE_DIR})
-    add_subdirectory(fileitemplugin)
-    add_subdirectory(kio)
-endif()
+if (NepomukCore_FOUND)
+    include_directories (${NEPOMUK_CORE_INCLUDE_DIR})
+    add_subdirectory (fileitemplugin)
+    add_subdirectory (kio)
+endif ()
 
-find_package(KDeclarative)
+find_package (KDeclarative)
 
-macro_log_feature(
+macro_log_feature (
     KDeclarative_FOUND "libkdeclarative" "KDE Declarative (QML) support from kdelibs is needed for the settings module" "http://www.kde.org"
     TRUE "" ""
 )
 
-if(KDeclarative_FOUND)
-    add_subdirectory(settings)
-endif()
+if (KDeclarative_FOUND)
+    add_subdirectory (settings)
+endif ()

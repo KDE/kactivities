@@ -1,11 +1,11 @@
-project(kactivities)
+project (kactivities)
 
-FIND_PACKAGE(Qt4 REQUIRED)
-FIND_PACKAGE(KDE4 REQUIRED)
-INCLUDE(KDE4Defaults)
-INCLUDE(MacroLibrary)
-INCLUDE(MacroOptionalAddSubdirectory)
-INCLUDE(FindPackageHandleStandardArgs)
+find_package (Qt4 REQUIRED)
+find_package (KDE4 REQUIRED)
+include (KDE4Defaults)
+include (MacroLibrary)
+include (MacroOptionalAddSubdirectory)
+include (FindPackageHandleStandardArgs)
 
 # =======================================================
 # Information to update before to release this library.
@@ -17,9 +17,9 @@ INCLUDE(FindPackageHandleStandardArgs)
 # 0.2.0 => 0.2.0
 
 # Library API version
-SET(KACTIVITIES_LIB_MAJOR_VERSION "6")
-SET(KACTIVITIES_LIB_MINOR_VERSION "0")
-SET(KACTIVITIES_LIB_PATCH_VERSION "0")
+set (KACTIVITIES_LIB_MAJOR_VERSION "6")
+set (KACTIVITIES_LIB_MINOR_VERSION "0")
+set (KACTIVITIES_LIB_PATCH_VERSION "0")
 
 # Suffix to add at end of version string. Usual values are:
 # "-git"   : alpha code unstable from git. Do not use in production
@@ -28,152 +28,157 @@ SET(KACTIVITIES_LIB_PATCH_VERSION "0")
 # "-beta3" : beta3 release.
 # "-rc"    : release candidate.
 # ""       : final relase. Can be used in production.
-SET(KACTIVITIES_LIB_SUFFIX_VERSION "")
+set (KACTIVITIES_LIB_SUFFIX_VERSION "")
 
 # Library ABI version used by linker.
 # For details : http://www.gnu.org/software/libtool/manual/libtool.html#Updating-version-info
-SET(KACTIVITIES_LIB_SO_CUR_VERSION "6")
-SET(KACTIVITIES_LIB_SO_REV_VERSION "0")
-SET(KACTIVITIES_LIB_SO_AGE_VERSION "0")
+set (KACTIVITIES_LIB_SO_CUR_VERSION "6")
+set (KACTIVITIES_LIB_SO_REV_VERSION "0")
+set (KACTIVITIES_LIB_SO_AGE_VERSION "0")
 
 # =======================================================
 # Set env. variables accordinly.
 
-set(KACTIVITIES_INCLUDE_DIR
+set (KACTIVITIES_INCLUDE_DIR
     "${CMAKE_CURRENT_SOURCE_DIR}/.."
     "${CMAKE_CURRENT_SOURCE_DIR}/"
     CACHE STRING
     "Location of libkactivities headers" FORCE)
-set(KACTIVITIES_LIBS
+set (KACTIVITIES_LIBS
     "kactivities"
     CACHE STRING
     "Location of libkactivities binary" FORCE)
 
-SET(KACTIVITIES_LIB_VERSION_STRING "${KACTIVITIES_LIB_MAJOR_VERSION}.${KACTIVITIES_LIB_MINOR_VERSION}.${KACTIVITIES_LIB_PATCH_VERSION}${KACTIVITIES_LIB_SUFFIX_VERSION}")
-SET(KACTIVITIES_LIB_VERSION_ID "0x0${KACTIVITIES_LIB_MAJOR_VERSION}0${KACTIVITIES_LIB_MINOR_VERSION}0${KACTIVITIES_LIB_PATCH_VERSION}")
-SET(KACTIVITIES_LIB_SO_VERSION_STRING "${KACTIVITIES_LIB_SO_CUR_VERSION}.${KACTIVITIES_LIB_SO_REV_VERSION}.${KACTIVITIES_LIB_SO_AGE_VERSION}")
+set (KACTIVITIES_LIB_VERSION_STRING "${KACTIVITIES_LIB_MAJOR_VERSION}.${KACTIVITIES_LIB_MINOR_VERSION}.${KACTIVITIES_LIB_PATCH_VERSION}${KACTIVITIES_LIB_SUFFIX_VERSION}")
+set (KACTIVITIES_LIB_VERSION_ID "0x0${KACTIVITIES_LIB_MAJOR_VERSION}0${KACTIVITIES_LIB_MINOR_VERSION}0${KACTIVITIES_LIB_PATCH_VERSION}")
+set (KACTIVITIES_LIB_SO_VERSION_STRING "${KACTIVITIES_LIB_SO_CUR_VERSION}.${KACTIVITIES_LIB_SO_REV_VERSION}.${KACTIVITIES_LIB_SO_AGE_VERSION}")
 
-ADD_DEFINITIONS (${QT_DEFINITIONS} ${QT_QTDBUS_DEFINITIONS} ${KDE4_DEFINITIONS})
+add_definitions (${QT_DEFINITIONS} ${QT_QTDBUS_DEFINITIONS} ${KDE4_DEFINITIONS})
 
-include_directories(
-   ${CMAKE_SOURCE_DIR}/src
-   ${CMAKE_BINARY_DIR}/src
-   ${QDBUS_INCLUDE_DIRS}
-   ${KDE4_INCLUDES}
-   ${KDE4_KIO_INCLUDES}
-   )
+include_directories (
+    ${CMAKE_SOURCE_DIR}/src
+    ${CMAKE_BINARY_DIR}/src
+    ${QDBUS_INCLUDE_DIRS}
+    ${KDE4_INCLUDES}
+    ${KDE4_KIO_INCLUDES}
+    )
 
-set(
-   kactivities_LIB_SRCS
+set (
+    kactivities_LIB_SRCS
 
-   ${CMAKE_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.Activities.cpp
-   consumer.cpp
-   controller.cpp
-   info.cpp
-   manager_p.cpp
-   resourceinstance.cpp
-   )
+    ${CMAKE_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.Activities.cpp
+    consumer.cpp
+    controller.cpp
+    info.cpp
+    manager_p.cpp
+    resourceinstance.cpp
+    )
 
-set_source_files_properties(
-   ${CMAKE_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.Activities.xml
-   PROPERTIES
-   INCLUDE ${CMAKE_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.Activities.h
-   )
+set_source_files_properties (
+    ${CMAKE_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.Activities.xml
+    PROPERTIES
+    INCLUDE ${CMAKE_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.Activities.h
+    )
 
-qt4_add_dbus_interface(
-   kactivities_LIB_SRCS
+qt4_add_dbus_interface (
+    kactivities_LIB_SRCS
 
-   ${CMAKE_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.Activities.xml
-   activities_interface
-   )
+    ${CMAKE_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.Activities.xml
+    activities_interface
+    )
 
-qt4_add_dbus_interface(
-   kactivities_LIB_SRCS
+qt4_add_dbus_interface (
+    kactivities_LIB_SRCS
 
-   ${CMAKE_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.Resources.xml
-   resources_interface
-   )
+    ${CMAKE_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.Resources.xml
+    resources_interface
+    )
 
-qt4_add_dbus_interface(
-   kactivities_LIB_SRCS
+qt4_add_dbus_interface (
+    kactivities_LIB_SRCS
 
-   ${CMAKE_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.Features.xml
-   features_interface
-   )
+    ${CMAKE_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.Features.xml
+    features_interface
+    )
 
-kde4_add_library(
-   kactivities SHARED
-   ${kactivities_LIB_SRCS}
-   )
+kde4_add_library (
+    kactivities SHARED
+    ${kactivities_LIB_SRCS}
+    )
 
+set_target_properties (
+    kactivities
+    PROPERTIES
+    VERSION ${KACTIVITIES_LIB_SO_VERSION_STRING}
+    SOVERSION ${KACTIVITIES_LIB_SO_CUR_VERSION}
+    )
 
-set_target_properties(
-   kactivities
-   PROPERTIES
-   VERSION ${KACTIVITIES_LIB_SO_VERSION_STRING}
-   SOVERSION ${KACTIVITIES_LIB_SO_CUR_VERSION}
-   )
-
-target_link_libraries(
-   kactivities
-   ${KDE4_KDECORE_LIBS}
-   )
+target_link_libraries (
+    kactivities
+    ${KDE4_KDECORE_LIBS}
+    )
 
 ## install
 
-set(
-   kactivities_LIB_HEADERS
-   consumer.h
-   controller.h
-   info.h
-   resourceinstance.h
-   kactivities_export.h
-   )
+set (
+    kactivities_LIB_HEADERS
+    consumer.h
+    controller.h
+    info.h
+    resourceinstance.h
+    kactivities_export.h
+    )
 
-set(
-   kactivities_LIB_PRETTY_HEADERS
-   includes/KActivities/Consumer
-   includes/KActivities/Controller
-   includes/KActivities/Info
-   includes/KActivities/ResourceInstance
-   )
+set (
+    kactivities_LIB_PRETTY_HEADERS
+    includes/KActivities/Consumer
+    includes/KActivities/Controller
+    includes/KActivities/Info
+    includes/KActivities/ResourceInstance
+    )
 
-install(
-   FILES ${kactivities_LIB_HEADERS}
-   DESTINATION ${INCLUDE_INSTALL_DIR}/kactivities
-   COMPONENT Devel
-   )
+install (
+    FILES ${kactivities_LIB_HEADERS}
+    DESTINATION ${INCLUDE_INSTALL_DIR}/kactivities
+    COMPONENT Devel
+    )
 
-install(
-   FILES ${kactivities_LIB_PRETTY_HEADERS}
-   DESTINATION ${INCLUDE_INSTALL_DIR}/KDE/KActivities
-   COMPONENT Devel
-   )
+install (
+    FILES ${kactivities_LIB_PRETTY_HEADERS}
+    DESTINATION ${INCLUDE_INSTALL_DIR}/KDE/KActivities
+    COMPONENT Devel
+    )
 
-install(
-   TARGETS kactivities
-   EXPORT kactivitiesLibraryTargets
-   ${INSTALL_TARGETS_DEFAULT_ARGS}
-   )
+install (
+    TARGETS kactivities
+    EXPORT kactivitiesLibraryTargets
+    ${INSTALL_TARGETS_DEFAULT_ARGS}
+    )
 
-install(
-   EXPORT kactivitiesLibraryTargets
-   DESTINATION ${LIB_INSTALL_DIR}/cmake/KActivities
-   FILE KActivitiesLibraryTargets.cmake
-   )
-
-IF(NOT WIN32)
-  CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/libkactivities.pc.cmake ${CMAKE_CURRENT_BINARY_DIR}/libkactivities.pc)
-  INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/libkactivities.pc DESTINATION ${LIB_INSTALL_DIR}/pkgconfig )
-ENDIF(NOT WIN32)
-
-CONFIGURE_FILE(KActivitiesConfig.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/KActivitiesConfig.cmake @ONLY)
-MACRO_WRITE_BASIC_CMAKE_VERSION_FILE(${CMAKE_CURRENT_BINARY_DIR}/KActivitiesConfigVersion.cmake
-                                     ${KACTIVITIES_LIB_MAJOR_VERSION} ${KACTIVITIES_LIB_MINOR_VERSION} ${KACTIVITIES_LIB_PATCH_VERSION})
-
-INSTALL(
-    FILES ${CMAKE_CURRENT_BINARY_DIR}/KActivitiesConfig.cmake
-          ${CMAKE_CURRENT_BINARY_DIR}/KActivitiesConfigVersion.cmake
+install (
+    EXPORT kactivitiesLibraryTargets
     DESTINATION ${LIB_INSTALL_DIR}/cmake/KActivities
+    FILE KActivitiesLibraryTargets.cmake
+    )
+
+if (NOT WIN32)
+    configure_file (${CMAKE_CURRENT_SOURCE_DIR}/libkactivities.pc.cmake ${CMAKE_CURRENT_BINARY_DIR}/libkactivities.pc)
+    install (FILES ${CMAKE_CURRENT_BINARY_DIR}/libkactivities.pc DESTINATION ${LIB_INSTALL_DIR}/pkgconfig )
+endif ()
+
+configure_file (KActivitiesConfig.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/KActivitiesConfig.cmake @ONLY)
+macro_write_basic_cmake_version_file (
+    ${CMAKE_CURRENT_BINARY_DIR}/KActivitiesConfigVersion.cmake
+    ${KACTIVITIES_LIB_MAJOR_VERSION}
+    ${KACTIVITIES_LIB_MINOR_VERSION}
+    ${KACTIVITIES_LIB_PATCH_VERSION}
+    )
+
+install (
+    FILES
+    ${CMAKE_CURRENT_BINARY_DIR}/KActivitiesConfig.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/KActivitiesConfigVersion.cmake
+    DESTINATION
+    ${LIB_INSTALL_DIR}/cmake/KActivities
 )
 

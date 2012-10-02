@@ -1,9 +1,9 @@
-configure_file(kao.ontology.in ${CMAKE_CURRENT_BINARY_DIR}/kao.ontology)
+configure_file (kao.ontology.in ${CMAKE_CURRENT_BINARY_DIR}/kao.ontology)
 
 install (
-  FILES
+    FILES
     kao.trig
     ${CMAKE_CURRENT_BINARY_DIR}/kao.ontology
-  DESTINATION
+    DESTINATION
     ${KACTIVITIES_ONTOLOGIES_DIR}
-)
+    )

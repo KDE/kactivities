@@ -19,8 +19,8 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA .        *
  ***************************************************************************/
 
-#include "kdeclarativemainwindow.h"
-#include "kdeclarativeview.h"
+#include "KDeclarativeMainWindow.h"
+#include "KDeclarativeView.h"
 
 #include <QApplication>
 #include <QDeclarativeContext>
@@ -156,4 +156,4 @@ void KDeclarativeMainWindow::setCaption(const QString &caption, bool modified)
     KMainWindow::setCaption(caption, true);
 }
 
-#include "kdeclarativemainwindow.moc"
+#include "KDeclarativeMainWindow.moc"

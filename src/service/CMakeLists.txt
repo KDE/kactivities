@@ -1,4 +1,4 @@
-project(ActivityManager)
+project (ActivityManager)
 
 # C++11
 
@@ -17,17 +17,17 @@ set (ADDITIONAL_LINK_LIBS)
 set (sdo_SRCS)
 
 if (NepomukCore_FOUND AND Soprano_FOUND)
-    include_directories (${NEPOMUK_CORE_INCLUDE_DIR}
-                         ${SOPRANO_INCLUDE_DIR}
-                        )
+    include_directories (${NEPOMUK_CORE_INCLUDE_DIR} ${SOPRANO_INCLUDE_DIR})
 
-    set (ADDITIONAL_LINK_LIBS
+    set (
+        ADDITIONAL_LINK_LIBS
         ${ADDITIONAL_LINK_LIBS}
         ${NEPOMUK_CORE_LIBRARY}
         ${SOPRANO_LIBRARIES}
         )
 
-    soprano_add_ontology (sdo_SRCS
+    soprano_add_ontology (
+        sdo_SRCS
         ${CMAKE_SOURCE_DIR}/src/ontologies/kao.trig
         "KAO" "KDE::Vocabulary" "trig"
         )
@@ -98,23 +98,27 @@ set (activity_manager_SRCS
     )
 
 if (NepomukCore_FOUND)
-    set(activity_manager_SRCS
+    set (
+        activity_manager_SRCS
         ${activity_manager_SRCS}
         jobs/nepomuk/Move.cpp
         )
 endif ()
 
-qt4_add_dbus_adaptor (activity_manager_SRCS
+qt4_add_dbus_adaptor (
+    activity_manager_SRCS
     ../common/dbus/org.kde.ActivityManager.Activities.xml
     Activities.h Activities
     )
 
-qt4_add_dbus_adaptor (activity_manager_SRCS
+qt4_add_dbus_adaptor (
+    activity_manager_SRCS
     ../common/dbus/org.kde.ActivityManager.Resources.xml
     Resources.h Resources
     )
 
-qt4_add_dbus_adaptor (activity_manager_SRCS
+qt4_add_dbus_adaptor (
+    activity_manager_SRCS
     ../common/dbus/org.kde.ActivityManager.Features.xml
     Features.h Features
     )
@@ -147,5 +151,4 @@ install (FILES
     files/activitymanager-plugin.desktop
     DESTINATION ${SERVICETYPES_INSTALL_DIR}
     )
-
 

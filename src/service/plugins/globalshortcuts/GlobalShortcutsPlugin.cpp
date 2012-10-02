@@ -16,7 +16,7 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "globalshortcuts.h"
+#include "GlobalShortcutsPlugin.h"
 
 #include <QStringList>
 #include <QString>

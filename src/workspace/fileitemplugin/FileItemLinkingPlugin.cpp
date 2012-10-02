@@ -17,8 +17,8 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#include "fileitemlinkingplugin.h"
-#include "fileitemlinkingplugin_p.h"
+#include "FileItemLinkingPlugin.h"
+#include "FileItemLinkingPlugin_p.h"
 
 #include <kfileitemlistproperties.h>
 

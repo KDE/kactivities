@@ -20,7 +20,7 @@
 #ifndef FILE_ITEM_LINKING_PLUGIN_P_H
 #define FILE_ITEM_LINKING_PLUGIN_P_H
 
-#include "fileitemlinkingplugin.h"
+#include "FileItemLinkingPlugin.h"
 #include <kabstractfileitemactionplugin.h>
 
 #include <KUrl>

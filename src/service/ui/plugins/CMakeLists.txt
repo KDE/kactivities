@@ -1,3 +1,3 @@
-macro_optional_add_subdirectory(kdialogui)
-macro_optional_add_subdirectory(declarativeui)
+macro_optional_add_subdirectory (kdialogui)
+macro_optional_add_subdirectory (declarativeui)
 

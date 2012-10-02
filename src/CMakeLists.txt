@@ -1,29 +1,31 @@
 
-set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules ${CMAKE_MODULE_PATH})
+set (CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules ${CMAKE_MODULE_PATH})
 
 # Installation directory for ontologies.  Needed here because used in both ontology/ and lib/ sub
 # directories.
 
-set(KACTIVITIES_ONTOLOGIES_DIR ${CMAKE_INSTALL_PREFIX}/share/ontology/kde)
+set (KACTIVITIES_ONTOLOGIES_DIR ${CMAKE_INSTALL_PREFIX}/share/ontology/kde)
 
-add_definitions(-DQT_USE_FAST_CONCATENATION -DQT_USE_FAST_OPERATOR_PLUS)
+add_definitions (-DQT_USE_FAST_CONCATENATION -DQT_USE_FAST_OPERATOR_PLUS)
 
 # Checking for Nepomuk
-macro_optional_find_package(NepomukCore)
-macro_log_feature(NepomukCore_FOUND
+macro_optional_find_package (NepomukCore)
+macro_log_feature (
+    NepomukCore_FOUND
     "Nepomuk Core" "Nepomuk Core" "https://projects.kde.org/nepomuk-core" FALSE ""
     "STRONGLY_RECOMMENDED: Nepomuk is needed for some activity-related info"
     )
 
-if(NepomukCore_FOUND)
-    find_package(Soprano)
-    macro_log_feature(Soprano_FOUND
-      "Soprano" "Semantic Desktop Storing" "http://soprano.sourceforge.net" TRUE ""
-      "Soprano is needed to build and use the Nepomuk related functionalities"
-      )
+if (NepomukCore_FOUND)
+    find_package (Soprano)
+    macro_log_feature (
+        Soprano_FOUND
+        "Soprano" "Semantic Desktop Storing" "http://soprano.sourceforge.net" TRUE ""
+        "Soprano is needed to build and use the Nepomuk related functionalities"
+        )
 
-    include(SopranoAddOntology)
-endif()
+    include (SopranoAddOntology)
+endif ()
 
 if (NepomukCore_FOUND AND Soprano_FOUND)
     set (HAVE_NEPOMUK 1)
@@ -31,21 +33,21 @@ endif ()
 
 # Testing for C++0x/C++11 features
 
-include(CheckCxxFeatures)
+include (CheckCxxFeatures)
 
-CXX_CHECK_FEATURE ("c++11" "auto"               "N2546" HAVE_CXX11_AUTO               "${ADDITIONAL_DEFINITIONS}")
-CXX_CHECK_FEATURE ("c++11" "nullptr"            "N2431" HAVE_CXX11_NULLPTR            "${ADDITIONAL_DEFINITIONS}")
-CXX_CHECK_FEATURE ("c++11" "lambda"             "N2927" HAVE_CXX11_LAMBDA             "${ADDITIONAL_DEFINITIONS}")
-CXX_CHECK_FEATURE ("c++11" "override"           "N3206" HAVE_CXX11_OVERRIDE           "${ADDITIONAL_DEFINITIONS}")
-CXX_CHECK_FEATURE ("c++11" "unique_ptr"         "none"  HAVE_CXX11_UNIQUE_PTR         "${ADDITIONAL_DEFINITIONS}")
-CXX_CHECK_FEATURE ("c++11" "variadic-templates" "N2242" HAVE_CXX11_VARIADIC_TEMPLATES "${ADDITIONAL_DEFINITIONS}")
-CXX_CHECK_FEATURE ("c++11" "initializer-lists"  "N2672" HAVE_CXX11_INITIALIZER_LISTS  "${ADDITIONAL_DEFINITIONS}")
+cxx_check_feature ("c++11" "auto"               "N2546" HAVE_CXX11_AUTO               "${ADDITIONAL_DEFINITIONS}")
+cxx_check_feature ("c++11" "nullptr"            "N2431" HAVE_CXX11_NULLPTR            "${ADDITIONAL_DEFINITIONS}")
+cxx_check_feature ("c++11" "lambda"             "N2927" HAVE_CXX11_LAMBDA             "${ADDITIONAL_DEFINITIONS}")
+cxx_check_feature ("c++11" "override"           "N3206" HAVE_CXX11_OVERRIDE           "${ADDITIONAL_DEFINITIONS}")
+cxx_check_feature ("c++11" "unique_ptr"         "none"  HAVE_CXX11_UNIQUE_PTR         "${ADDITIONAL_DEFINITIONS}")
+cxx_check_feature ("c++11" "variadic-templates" "N2242" HAVE_CXX11_VARIADIC_TEMPLATES "${ADDITIONAL_DEFINITIONS}")
+cxx_check_feature ("c++11" "initializer-lists"  "N2672" HAVE_CXX11_INITIALIZER_LISTS  "${ADDITIONAL_DEFINITIONS}")
 
-add_subdirectory(lib)
+add_subdirectory (lib)
 
 # config file
 
-set(KAMD_DATA_DIR "${DATA_INSTALL_DIR}/activitymanager/")
+set (KAMD_DATA_DIR "${DATA_INSTALL_DIR}/activitymanager/")
 
 configure_file (config-features.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-features.h)
 
@@ -84,12 +86,12 @@ else ()
             )
     endif ()
 
-    add_subdirectory(service)
+    add_subdirectory (service)
 
     # No point in having workspace addons without the service
-    add_subdirectory(workspace)
+    add_subdirectory (workspace)
 
 endif ()
 
-add_subdirectory(ontologies)
+add_subdirectory (ontologies)
 

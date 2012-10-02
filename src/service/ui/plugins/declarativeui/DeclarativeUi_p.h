@@ -18,8 +18,8 @@
 #ifndef UI_PLUGINS_DECLARATIVEUI_DECLARATIVE_UI_P_H
 #define UI_PLUGINS_DECLARATIVEUI_DECLARATIVE_UI_P_H
 
-#include "declarativeui.h"
-#include "kdeclarativemainwindow.h"
+#include "DeclarativeUi.h"
+#include "KDeclarativeMainWindow.h"
 
 #include <QObject>
 

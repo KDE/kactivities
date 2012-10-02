@@ -15,10 +15,10 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "declarativeui.h"
-#include "declarativeui_p.h"
-#include "kdeclarativemainwindow.h"
-#include "kdeclarativeview.h"
+#include "DeclarativeUi.h"
+#include "DeclarativeUi_p.h"
+#include "KDeclarativeMainWindow.h"
+#include "KDeclarativeView.h"
 
 #include <QMetaObject>
 #include <QDeclarativeContext>

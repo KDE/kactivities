@@ -1,13 +1,18 @@
-PROJECT(KACTIVITIES)
+project (KACTIVITIES)
 
-FIND_PACKAGE(KDE4 REQUIRED)
+find_package (KDE4 REQUIRED)
 
-INCLUDE(KDE4Defaults)
-INCLUDE(MacroLibrary)
-INCLUDE(MacroOptionalAddSubdirectory)
-INCLUDE(FindPackageHandleStandardArgs)
-SET(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules ${CMAKE_MODULE_PATH})
+include (KDE4Defaults)
+include (MacroLibrary)
+include (MacroOptionalAddSubdirectory)
+include (FindPackageHandleStandardArgs)
 
-ADD_SUBDIRECTORY(src)
+set (
+    CMAKE_MODULE_PATH
+    ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules
+    ${CMAKE_MODULE_PATH}
+    )
 
-MACRO_DISPLAY_FEATURE_LOG ()
+add_subdirectory (src)
+
+macro_display_feature_log ()

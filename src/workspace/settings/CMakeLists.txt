@@ -1,4 +1,4 @@
-project(KCMActivities)
+project (KCMActivities)
 
 include_directories (
     ${CMAKE_SOURCE_DIR}/src
@@ -10,20 +10,20 @@ include_directories (
     ${CMAKE_CURRENT_SOURCE_DIR}/ui/
 )
 
-set(KAMD_KCM_SRCS
+set (KAMD_KCM_SRCS
     kcm_activities.cpp
     MainConfigurationWidget.cpp
     BlacklistedApplicationsModel.cpp
 )
 
-kde4_add_ui_files(
+kde4_add_ui_files (
     KAMD_KCM_SRCS
     ui/MainConfigurationWidgetBase.ui
 )
 
-kde4_add_plugin(kcm_activities ${KAMD_KCM_SRCS})
+kde4_add_plugin (kcm_activities ${KAMD_KCM_SRCS})
 
-target_link_libraries(kcm_activities
+target_link_libraries (kcm_activities
     ${KDE4_KDEUI_LIBS}
     ${KDE4_KCMUTILS_LIBS}
     ${QT_QTSQL_LIBRARY}
@@ -33,15 +33,15 @@ target_link_libraries(kcm_activities
     ${KDE4_PLASMA_LIBS}
 )
 
-install(TARGETS kcm_activities
+install (TARGETS kcm_activities
     DESTINATION ${PLUGIN_INSTALL_DIR}
 )
 
-install(FILES kcm_activities.desktop
+install (FILES kcm_activities.desktop
     DESTINATION ${SERVICES_INSTALL_DIR}
 )
 
-install(FILES
+install (FILES
     qml/BlacklistApplicationView.qml
     DESTINATION ${DATA_INSTALL_DIR}/activitymanager/workspace/settings
 )

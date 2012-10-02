@@ -56,164 +56,168 @@ set (KACTIVITIES_MODELS_LIB_SO_VERSION_STRING "${KACTIVITIES_MODELS_LIB_SO_CUR_V
 add_definitions (${QT_DEFINITIONS} ${QT_QTDBUS_DEFINITIONS} ${KDE4_DEFINITIONS})
 
 include_directories (
-   ${CMAKE_SOURCE_DIR}/src
-   ${CMAKE_BINARY_DIR}/src
-   ${CMAKE_SOURCE_DIR}/src/libs/core
-   ${CMAKE_BINARY_DIR}/src/libs/core
-   ${QDBUS_INCLUDE_DIRS}
-   ${KDE4_INCLUDES}
-   ${KDE4_KIO_INCLUDES}
-   ${NEPOMUK_CORE_INCLUDE_DIR}
-   ${SOPRANO_INCLUDE_DIR}
-   )
+    ${CMAKE_SOURCE_DIR}/src
+    ${CMAKE_BINARY_DIR}/src
+    ${CMAKE_SOURCE_DIR}/src/libs/core
+    ${CMAKE_BINARY_DIR}/src/libs/core
+    ${QDBUS_INCLUDE_DIRS}
+    ${KDE4_INCLUDES}
+    ${KDE4_KIO_INCLUDES}
+    ${NEPOMUK_CORE_INCLUDE_DIR}
+    ${SOPRANO_INCLUDE_DIR}
+    )
 
 set (
-   kactivities-models_LIB_SRCS
+    kactivities-models_LIB_SRCS
 
-   ${CMAKE_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.Activities.cpp
-   activitymodel.cpp
-   resourcemodel.cpp
-   ../core/manager_p.cpp
-   )
+    ${CMAKE_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.Activities.cpp
+    activitymodel.cpp
+    resourcemodel.cpp
+    ../core/manager_p.cpp
+    )
 
 set (
-   kactivities-models-component_LIB_SRCS
-   activitiescomponentplugin.cpp
-   )
+    kactivities-models-component_LIB_SRCS
+    activitiescomponentplugin.cpp
+    )
 
 set_source_files_properties (
-   ${CMAKE_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.Activities.xml
-   PROPERTIES
-   INCLUDE ${CMAKE_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.Activities.h
-   )
+    ${CMAKE_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.Activities.xml
+    PROPERTIES
+    INCLUDE ${CMAKE_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.Activities.h
+    )
 
 qt4_add_dbus_interface (
-   kactivities-models_LIB_SRCS
+    kactivities-models_LIB_SRCS
 
-   ${CMAKE_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.Activities.xml
-   activities_interface
-   )
-
-qt4_add_dbus_interface (
-   kactivities-models_LIB_SRCS
-
-   ${CMAKE_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.Resources.xml
-   resources_interface
-   )
+    ${CMAKE_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.Activities.xml
+    activities_interface
+    )
 
 qt4_add_dbus_interface (
-   kactivities-models_LIB_SRCS
+    kactivities-models_LIB_SRCS
 
-   ${CMAKE_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.Features.xml
-   features_interface
-   )
+    ${CMAKE_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.Resources.xml
+    resources_interface
+    )
+
+qt4_add_dbus_interface (
+    kactivities-models_LIB_SRCS
+
+    ${CMAKE_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.Features.xml
+    features_interface
+    )
 
 kde4_add_library (
-   kactivities-models SHARED
-   ${kactivities-models_LIB_SRCS}
-   )
+    kactivities-models SHARED
+    ${kactivities-models_LIB_SRCS}
+    )
 
 kde4_add_library (
-   kactivities-models-component-plugin SHARED
-   ${kactivities-models-component_LIB_SRCS}
-   )
+    kactivities-models-component-plugin SHARED
+    ${kactivities-models-component_LIB_SRCS}
+    )
 
 set_target_properties (
-   kactivities-models
-   PROPERTIES
-   VERSION ${KACTIVITIES_MODELS_LIB_SO_VERSION_STRING}
-   SOVERSION ${KACTIVITIES_MODELS_LIB_SO_CUR_VERSION}
-   )
+    kactivities-models
+    PROPERTIES
+    VERSION ${KACTIVITIES_MODELS_LIB_SO_VERSION_STRING}
+    SOVERSION ${KACTIVITIES_MODELS_LIB_SO_CUR_VERSION}
+    )
 
 target_link_libraries (
-   kactivities-models
-   ${KDE4_KDECORE_LIBS}
-   ${KDE4_KDEUI_LIBS}
-   ${KDE4_KIO_LIBS}
-   ${NEPOMUK_CORE_LIBRARY}
-   ${NEPOMUK_QUERY_LIBRARY}
-   ${SOPRANO_LIBRARIES}
-   )
+    kactivities-models
+    ${KDE4_KDECORE_LIBS}
+    ${KDE4_KDEUI_LIBS}
+    ${KDE4_KIO_LIBS}
+    ${NEPOMUK_CORE_LIBRARY}
+    ${NEPOMUK_QUERY_LIBRARY}
+    ${SOPRANO_LIBRARIES}
+    )
 
 target_link_libraries (
-   kactivities-models-component-plugin
-   kactivities-models
-   ${KDE4_KDECORE_LIBS}
-   ${KDE4_KDEUI_LIBS}
-   ${KDE4_KIO_LIBS}
-   ${NEPOMUK_CORE_LIBRARY}
-   ${NEPOMUK_QUERY_LIBRARY}
-   ${SOPRANO_LIBRARIES}
-   ${QT_QTDECLARATIVE_LIBRARY}
-   )
+    kactivities-models-component-plugin
+    kactivities-models
+    ${KDE4_KDECORE_LIBS}
+    ${KDE4_KDEUI_LIBS}
+    ${KDE4_KIO_LIBS}
+    ${NEPOMUK_CORE_LIBRARY}
+    ${NEPOMUK_QUERY_LIBRARY}
+    ${SOPRANO_LIBRARIES}
+    ${QT_QTDECLARATIVE_LIBRARY}
+    )
 
 ## install
 
 set (
-   kactivities-models_LIB_HEADERS
+    kactivities-models_LIB_HEADERS
 
-   activitymodel.h
-   resourcemodel.h
-   kactivities_models_export.h
-   )
+    activitymodel.h
+    resourcemodel.h
+    kactivities_models_export.h
+    )
 
 set (
-   kactivities-models_LIB_PRETTY_HEADERS
-   includes/KActivities/Models/ActivityModel
-   includes/KActivities/Models/ResourceModel
-   )
+    kactivities-models_LIB_PRETTY_HEADERS
+    includes/KActivities/Models/ActivityModel
+    includes/KActivities/Models/ResourceModel
+    )
 
 install (
-   FILES ${kactivities-models_LIB_HEADERS}
-   DESTINATION ${INCLUDE_INSTALL_DIR}/kactivities-models
-   COMPONENT Devel
-   )
+    FILES ${kactivities-models_LIB_HEADERS}
+    DESTINATION ${INCLUDE_INSTALL_DIR}/kactivities-models
+    COMPONENT Devel
+    )
 
 install (
-   FILES ${kactivities-models_LIB_PRETTY_HEADERS}
-   DESTINATION ${INCLUDE_INSTALL_DIR}/KDE/KActivities/Models
-   COMPONENT Devel
-   )
+    FILES ${kactivities-models_LIB_PRETTY_HEADERS}
+    DESTINATION ${INCLUDE_INSTALL_DIR}/KDE/KActivities/Models
+    COMPONENT Devel
+    )
 
 install (
-   TARGETS kactivities-models
-   EXPORT kactivities-modelsLibraryTargets
-   ${INSTALL_TARGETS_DEFAULT_ARGS}
-   )
+    TARGETS kactivities-models
+    EXPORT kactivities-modelsLibraryTargets
+    ${INSTALL_TARGETS_DEFAULT_ARGS}
+    )
 
 install (
-   EXPORT kactivities-modelsLibraryTargets
-   DESTINATION ${LIB_INSTALL_DIR}/cmake/KActivities-Models
-   FILE KActivitiesModelsLibraryTargets.cmake
-   )
+    EXPORT kactivities-modelsLibraryTargets
+    DESTINATION ${LIB_INSTALL_DIR}/cmake/KActivities-Models
+    FILE KActivitiesModelsLibraryTargets.cmake
+    )
 
 install (
-   TARGETS
-   kactivities-models-component-plugin
-   DESTINATION
-   ${IMPORTS_INSTALL_DIR}/org/kde/activities/models
-   )
+    TARGETS
+    kactivities-models-component-plugin
+    DESTINATION
+    ${IMPORTS_INSTALL_DIR}/org/kde/activities/models
+    )
 
-install(
-   FILES
-   qmldir
-   DESTINATION
-   ${IMPORTS_INSTALL_DIR}/org/kde/activities/models
-   )
+install (
+    FILES
+    qmldir
+    DESTINATION
+    ${IMPORTS_INSTALL_DIR}/org/kde/activities/models
+    )
 
 if (NOT WIN32)
-  configure_file (${CMAKE_CURRENT_SOURCE_DIR}/libkactivities-models.pc.cmake ${CMAKE_CURRENT_BINARY_DIR}/libkactivities-models.pc)
-  install (FILES ${CMAKE_CURRENT_BINARY_DIR}/libkactivities-models.pc DESTINATION ${LIB_INSTALL_DIR}/pkgconfig )
+    configure_file (${CMAKE_CURRENT_SOURCE_DIR}/libkactivities-models.pc.cmake ${CMAKE_CURRENT_BINARY_DIR}/libkactivities-models.pc)
+    install (FILES ${CMAKE_CURRENT_BINARY_DIR}/libkactivities-models.pc DESTINATION ${LIB_INSTALL_DIR}/pkgconfig )
 endif (NOT WIN32)
 
 configure_file (KActivities-ModelsConfig.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/KActivities-ModelsConfig.cmake @ONLY)
 
-macro_write_basic_cmake_version_file(${CMAKE_CURRENT_BINARY_DIR}/KActivities-ModelsConfigVersion.cmake
-                                     ${KACTIVITIES_MODELS_LIB_MAJOR_VERSION} ${KACTIVITIES_MODELS_LIB_MINOR_VERSION} ${KACTIVITIES_MODELS_LIB_PATCH_VERSION})
+macro_write_basic_cmake_version_file (
+    ${CMAKE_CURRENT_BINARY_DIR}/KActivities-ModelsConfigVersion.cmake
+    ${KACTIVITIES_MODELS_LIB_MAJOR_VERSION}
+    ${KACTIVITIES_MODELS_LIB_MINOR_VERSION}
+    ${KACTIVITIES_MODELS_LIB_PATCH_VERSION}
+    )
 
 install (
     FILES ${CMAKE_CURRENT_BINARY_DIR}/KActivities-ModelsConfig.cmake
     ${CMAKE_CURRENT_BINARY_DIR}/KActivities-ModelsConfigVersion.cmake
     DESTINATION ${LIB_INSTALL_DIR}/cmake/KActivities-Models
-)
+    )
 

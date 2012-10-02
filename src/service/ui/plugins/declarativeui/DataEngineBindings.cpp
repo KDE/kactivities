@@ -16,7 +16,7 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#include "dataenginebindings_p.h"
+#include "DataEngineBindings_p.h"
 
 typedef Plasma::Service *ServicePtr;
 QScriptValue qScriptValueFromService(QScriptEngine *engine, const ServicePtr &service)

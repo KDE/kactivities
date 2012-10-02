@@ -15,8 +15,8 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "activityrankingplugin.h"
-#include "activityranking.h"
+#include "ActivityRankingPlugin.h"
+#include "ActivityRanking.h"
 
 #include <memory>
 
@@ -74,4 +74,4 @@ ActivityRankingPlugin::~ActivityRankingPlugin()
 
 KAMD_EXPORT_PLUGIN(ActivityRankingPlugin, "activitymanger_plugin_activityranking")
 
-#include "activityrankingplugin.moc"
+#include "ActivityRankingPlugin.moc"
