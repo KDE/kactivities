@@ -77,6 +77,7 @@ public:
      * Creates a new resource instance
      * @param wid id of the window that will show the resource
      * @param parent pointer to the parent object
+     * @since 4.10
      */
     explicit ResourceInstance(WId wid, QObject *parent = 0 /*nullptr*/);
 
