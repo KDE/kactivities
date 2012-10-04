@@ -18,7 +18,7 @@ include (FindPackageHandleStandardArgs)
 
 # Library API version
 set (KACTIVITIES_LIB_MAJOR_VERSION "6")
-set (KACTIVITIES_LIB_MINOR_VERSION "0")
+set (KACTIVITIES_LIB_MINOR_VERSION "1")
 set (KACTIVITIES_LIB_PATCH_VERSION "0")
 
 # Suffix to add at end of version string. Usual values are:
@@ -33,7 +33,7 @@ set (KACTIVITIES_LIB_SUFFIX_VERSION "")
 # Library ABI version used by linker.
 # For details : http://www.gnu.org/software/libtool/manual/libtool.html#Updating-version-info
 set (KACTIVITIES_LIB_SO_CUR_VERSION "6")
-set (KACTIVITIES_LIB_SO_REV_VERSION "0")
+set (KACTIVITIES_LIB_SO_REV_VERSION "1")
 set (KACTIVITIES_LIB_SO_AGE_VERSION "0")
 
 # =======================================================
