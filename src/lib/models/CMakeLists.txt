@@ -129,7 +129,6 @@ target_link_libraries (
     ${KDE4_KDEUI_LIBS}
     ${KDE4_KIO_LIBS}
     ${NEPOMUK_CORE_LIBRARY}
-    ${NEPOMUK_QUERY_LIBRARY}
     ${SOPRANO_LIBRARIES}
     )
 
@@ -140,7 +139,6 @@ target_link_libraries (
     ${KDE4_KDEUI_LIBS}
     ${KDE4_KIO_LIBS}
     ${NEPOMUK_CORE_LIBRARY}
-    ${NEPOMUK_QUERY_LIBRARY}
     ${SOPRANO_LIBRARIES}
     ${QT_QTDECLARATIVE_LIBRARY}
     )
