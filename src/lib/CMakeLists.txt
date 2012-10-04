@@ -1,4 +1,7 @@
 
 add_subdirectory (core)
-add_subdirectory (models)
+
+if (NepomukCore_FOUND)
+    add_subdirectory (models)
+endif ()
 
