@@ -6,5 +6,5 @@ _tests
 *~
 .kdev4
 .cmake-params
-.clang-complete
+.clang_complete
 kactivities.kdev4
