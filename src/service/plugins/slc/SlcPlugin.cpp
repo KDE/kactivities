@@ -55,10 +55,15 @@ void SlcPlugin::registeredResourceEvent(const Event & event)
     switch (event.type) {
         case Event::FocussedIn:
 
-            if (m_focussedResource != event.uri) {
-                m_focussedResource = event.uri;
-                val & info = m_resources[m_focussedResource];
-                emit focusChanged(event.uri, info.mimetype, info.title);
+            if (!event.uri.startsWith("about")) {
+                if (m_focussedResource != event.uri) {
+                    m_focussedResource = event.uri;
+                    val & info = m_resources[m_focussedResource];
+                    emit focusChanged(event.uri, info.mimetype, info.title);
+                }
+            } else {
+                m_focussedResource.clear();
+                emit focusChanged(QString(), QString(), QString());
             }
 
             break;

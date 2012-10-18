@@ -321,15 +321,9 @@ void Resources::RegisterResourceEvent(QString application, uint _windowId,
         || uri.isEmpty()
         || application.isEmpty()
         // Dirty way to skip special web browser URIs
-        || uri.startsWith(QLatin1String("about:"))
+        // This is up to the plugin - whether it wants it filtered out or not
+        // || uri.startsWith(QLatin1String("about:"))
     ) return;
-
-    // Dirty way to skip invalid URIs (needed for akregator)
-    QChar firstChar = uri[0];
-    if (
-            (firstChar < 'a' || firstChar > 'z') &&
-            (firstChar < 'A' || firstChar > 'Z')
-       ) return;
 
     KUrl kuri(uri);
     WId windowId = (WId) _windowId;
