@@ -52,7 +52,7 @@
            <item>
             <widget class="QRadioButton" name="radioDontRememberApplications">
              <property name="text">
-              <string>Don't remember</string>
+              <string>Do not remember</string>
              </property>
             </widget>
            </item>
