@@ -144,7 +144,7 @@ Item {
                     }
                     spacing: 8
                     PlasmaComponents.Label {
-                        text: i18n("Protecting an activity will make your private data safe. Private activities require the user to enter a password to be accessed. The content added to the activity will not be shared with other activities and won't appear in search results. Private data will be encrypted to protect unwanted access. <br/>We do not guarantee complete safety of data against theft.")
+                        text: i18n("Protecting an activity will make your private data safe. Private activities require the user to enter a password to be accessed. The content added to the activity will not be shared with other activities and will not appear in search results. Private data will be encrypted to protect unwanted access.<br/>We do not guarantee complete safety of data against theft.")
                         wrapMode: Text.WordWrap
                         anchors {
                             left: parent.left
