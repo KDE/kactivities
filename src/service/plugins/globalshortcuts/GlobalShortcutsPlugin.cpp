@@ -115,5 +115,5 @@ QString GlobalShortcutsPlugin::activityName(const QString & activityId) const
         );
 }
 
-KAMD_EXPORT_PLUGIN(GlobalShortcutsPlugin, "activitymanger_plugin_globalshortcuts")
+KAMD_EXPORT_PLUGIN(GlobalShortcutsPlugin, "activitymanager_plugin_globalshortcuts")
 
