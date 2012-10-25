@@ -29,7 +29,7 @@
 
 #define KAMD_EXPORT_UI_HANDLER(ClassName, AboutData)                   \
     K_PLUGIN_FACTORY(ClassName##Factory, registerPlugin<ClassName>();) \
-    K_EXPORT_PLUGIN(ClassName##Factory("AboutData"))
+    K_EXPORT_PLUGIN(ClassName##Factory(AboutData))
 
 class KDE_EXPORT UiHandler: public QObject {
     Q_OBJECT
