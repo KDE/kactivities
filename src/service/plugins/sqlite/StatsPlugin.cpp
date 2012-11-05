@@ -30,6 +30,9 @@
 #endif
 
 #include <QFileSystemWatcher>
+#include <QSqlDatabase>
+#include <QSqlQuery>
+
 #include <KDebug>
 #include <KStandardDirs>
 
@@ -96,7 +99,6 @@ void StatsPlugin::loadConfiguration()
     }
 
     // TODO: Ignore encrypted
-    // TODO: Delete old events, as per configuration
     m_blockedByDefault = config().readEntry("blocked-by-default", false);
     m_blockAll = false;
     m_whatToRemember = (WhatToRemember)config().readEntry("what-to-remember", (int)AllApplications);
@@ -110,6 +112,10 @@ void StatsPlugin::loadConfiguration()
             ).toSet();
     }
 
+    // Delete old events, as per configuration
+    // TODO: This should be also done from time to time,
+    // not only on startup
+    deleteEarlierStats(QString(), config().readEntry("keep-history-for", 0));
 }
 
 StatsPlugin * StatsPlugin::self()
@@ -203,6 +209,93 @@ QStringList StatsPlugin::listFeatures(const QStringList & feature) const
     static val features = (QStringList() << "scoring" << "more");
 
     return features;
+}
+
+void StatsPlugin::deleteRecentStats(const QString & activity, int count, const QString & what)
+{
+    val activityCheck = activity.isEmpty() ?
+        QString(" 1 ") :
+        QString(" usedActivity = '" + activity + "' ");
+
+    // If we need to delete everything,
+    // no need to bother with the count and the date
+
+    if (what == "everything") {
+        DatabaseConnection::self()->database().exec(
+                "DELETE FROM kext_ResourceScoreCache WHERE " + activityCheck
+            );
+        DatabaseConnection::self()->database().exec(
+                "DELETE FROM nuao_DesktopEvent WHERE " + activityCheck
+            );
+        // TODO: Remove from Nepomuk as well
+
+        return;
+    }
+
+    // Deleting a specified length of time
+
+    auto now = QDateTime::currentDateTime();
+
+    if (what == "h") {
+        now = now.addSecs(-count * 60 * 60);
+
+    } else if (what == "d") {
+        now = now.addDays(-count);
+
+    } else if (what == "m") {
+        now = now.addMonths(-count);
+    }
+
+    // Maybe we should decrease the scores for the previosuly
+    // cached items. Thkinking it is not that important.
+
+    static val queryRSC = QString(
+            "DELETE FROM kext_ResourceScoreCache "
+            " WHERE %1 "
+            " AND firstUpdate > %2 "
+        );
+    static val queryDE = QString(
+            "DELETE FROM nuao_DesktopEvent "
+            " WHERE %1 "
+            " AND end > %2 "
+        );
+
+    DatabaseConnection::self()->database().exec(
+        queryRSC
+            .arg(activityCheck)
+            .arg(now.toTime_t())
+        );
+    DatabaseConnection::self()->database().exec(
+        queryDE
+            .arg(activityCheck)
+            .arg(now.toTime_t())
+        );
+    // TODO: Remove from Nepomuk as well
+}
+
+void StatsPlugin::deleteEarlierStats(const QString & activity, int months)
+{
+    if (months == 0) return;
+
+    val activityCheck = activity.isEmpty() ?
+        QString(" 1 ") :
+        QString(" usedActivity = '" + activity + "' ");
+
+    // Deleting a specified length of time
+
+    val time = QDateTime::currentDateTime().addMonths(-months);
+
+    static val queryDE = QString(
+            "DELETE FROM nuao_DesktopEvent "
+            " WHERE %1 "
+            " AND start < %2 "
+        );
+
+    DatabaseConnection::self()->database().exec(
+        queryDE
+            .arg(activityCheck)
+            .arg(time.toTime_t())
+        );
 }
 
 KAMD_EXPORT_PLUGIN(StatsPlugin, "activitymanger_plugin_sqlite")

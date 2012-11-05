@@ -42,6 +42,12 @@ public Q_SLOTS:
 private Q_SLOTS:
     void updateLayout();
 
+    void forget(int count, const QString & what);
+    void forgetLastHour();
+    void forgetTwoHours();
+    void forgetDay();
+    void forgetAll();
+
 protected:
     bool eventFilter(QObject *obj, QEvent *event);
 

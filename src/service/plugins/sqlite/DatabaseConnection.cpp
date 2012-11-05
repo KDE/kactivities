@@ -41,6 +41,7 @@ public:
     bool initialized : 1;
 
     static const QString insertSchemaInfoQuery;
+    static const QString updateSchemaInfoQuery;
 
     static const QString openDesktopEventQuery;
     static const QString closeDesktopEventQuery;
@@ -64,6 +65,9 @@ public:
 
 const QString DatabaseConnection::Private::insertSchemaInfoQuery
         = "INSERT INTO schemaInfo VALUES ('%1', '%2')";
+
+const QString DatabaseConnection::Private::updateSchemaInfoQuery
+        = "UPDATE schemaInfo SET value = '%2' WHERE key = '%1'";
 
 const QString DatabaseConnection::Private::openDesktopEventQuery
         = "INSERT INTO nuao_DesktopEvent VALUES ("
@@ -91,7 +95,8 @@ const QString DatabaseConnection::Private::createResourceScoreCacheQuery
             "'%3', "     // targettedResource
             "0,"         // scoreType
             "0.0,"       // cachedScore
-            "-1"         // lastUpdate
+            "-1,"        // lastUpdate
+            "%4"         // firstUpdate
             ")"
             ;
 
@@ -157,6 +162,7 @@ void DatabaseConnection::getResourceScoreCache(const QString & usedActivity, con
             .arg(usedActivity)
             .arg(initiatingAgent)
             .arg(targettedResource.toString())
+            .arg(QDateTime::currentDateTime().toTime_t())
         );
 
     // Getting the old score
@@ -267,24 +273,24 @@ QSqlDatabase & DatabaseConnection::database()
     return d->database;
 }
 
-#define RESOURCES_DATABASE_SCHEMA_VERSION "1.0"
 void DatabaseConnection::initDatabaseSchema()
 {
-    bool schemaUpToDate = false;
+    QString dbSchemaVersion = "0.0";
 
     auto query = d->database.exec("SELECT value FROM SchemaInfo WHERE key = 'version'");
 
     if (query.next()) {
-        schemaUpToDate = (RESOURCES_DATABASE_SCHEMA_VERSION == query.value(0).toString());
+        dbSchemaVersion = query.value(0).toString();
     }
 
-    if (!schemaUpToDate) {
-        // We just need to initialize - will handle updates if needed in post 1.0
+    if (dbSchemaVersion < "1.0") {
+        qDebug() << "The database doesn't exist, it is being created";
 
         query.exec("CREATE TABLE IF NOT EXISTS SchemaInfo (key text PRIMARY KEY, value text)");
-        query.exec(Private::insertSchemaInfoQuery.arg("version", RESOURCES_DATABASE_SCHEMA_VERSION));
+        query.exec(Private::insertSchemaInfoQuery.arg("version", "1.0"));
 
-        query.exec("CREATE TABLE IF NOT EXISTS nuao_DesktopEvent ("
+        query.exec(
+                "CREATE TABLE IF NOT EXISTS nuao_DesktopEvent ("
                 "usedActivity TEXT, "
                 "initiatingAgent TEXT, "
                 "targettedResource TEXT, "
@@ -293,7 +299,8 @@ void DatabaseConnection::initDatabaseSchema()
                 ")"
             );
 
-        query.exec("CREATE TABLE IF NOT EXISTS kext_ResourceScoreCache ("
+        query.exec(
+                "CREATE TABLE IF NOT EXISTS kext_ResourceScoreCache ("
                 "usedActivity TEXT, "
                 "initiatingAgent TEXT, "
                 "targettedResource TEXT, "
@@ -302,6 +309,26 @@ void DatabaseConnection::initDatabaseSchema()
                 "lastUpdate INTEGER, "
                 "PRIMARY KEY(usedActivity, initiatingAgent, targettedResource)"
                 ")"
+            );
+    }
+
+    if (dbSchemaVersion < "1.01") {
+        qDebug() << "Upgrading the database version to 1.01";
+
+        // Adding the firstUpdate field so that we can have
+        // a crude way of deleting the score caches when
+        // the user requests a partial history deletion
+
+        query.exec(Private::updateSchemaInfoQuery.arg("version", "1.01"));
+
+        query.exec(
+                "ALTER TABLE kext_ResourceScoreCache "
+                "ADD COLUMN firstUpdate INTEGER"
+            );
+
+        query.exec(
+                "UPDATE kext_ResourceScoreCache "
+                "SET firstUpdate = " + QString::number(QDateTime::currentDateTime().toTime_t())
             );
     }
 }

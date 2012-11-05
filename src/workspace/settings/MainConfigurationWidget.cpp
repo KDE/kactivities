@@ -23,6 +23,8 @@
 #include <QDeclarativeContext>
 #include <QDeclarativeEngine>
 #include <QDeclarativeComponent>
+#include <QDBusInterface>
+#include <QDBusPendingCall>
 
 #include <QGraphicsObject>
 
@@ -105,10 +107,22 @@ MainConfigurationWidget::MainConfigurationWidget(QWidget * parent, QVariantList 
 
     auto menu = new QMenu(this);
 
-    menu->addAction(i18n("Forget last hour"));
-    menu->addAction(i18n("Forget last two hours"));
-    menu->addAction(i18n("Forget a day"));
-    menu->addAction(i18n("Forget everything"));
+    connect(
+            menu->addAction(i18n("Forget the last hour")), SIGNAL(triggered()),
+            this, SLOT(forgetLastHour())
+        );
+    connect(
+            menu->addAction(i18n("Forget the last two hours")), SIGNAL(triggered()),
+            this, SLOT(forgetTwoHours())
+        );
+    connect(
+            menu->addAction(i18n("Forget a day")), SIGNAL(triggered()),
+            this, SLOT(forgetDay())
+        );
+    connect(
+            menu->addAction(i18n("Forget everything")), SIGNAL(triggered()),
+            this, SLOT(forgetAll())
+        );
 
     d->buttonClearRecentHistory->setMenu(menu);
 
@@ -232,6 +246,39 @@ void MainConfigurationWidget::save()
 
     statisticsConfig.sync();
     pluginListConfig.sync();
+}
+
+void MainConfigurationWidget::forget(int count, const QString & what)
+{
+    QDBusInterface rankingsservice(
+            "org.kde.ActivityManager",
+            "/ActivityManager/Resources/Scoring",
+            "org.kde.ActivityManager.Resources.Scoring"
+        );
+
+    rankingsservice.asyncCall(
+            "deleteRecentStats", QString(), count, what
+        );
+}
+
+void MainConfigurationWidget::forgetLastHour()
+{
+    forget(1, "h");
+}
+
+void MainConfigurationWidget::forgetTwoHours()
+{
+    forget(2, "h");
+}
+
+void MainConfigurationWidget::forgetDay()
+{
+    forget(1, "d");
+}
+
+void MainConfigurationWidget::forgetAll()
+{
+    forget(0, "everything");
 }
 
 #include "MainConfigurationWidget.moc"
