@@ -27,8 +27,6 @@
 
 #ifdef HAVE_NEPOMUK
 
-#define NEPOMUK_DBUS_SERVICE "org.kde.nepomuk.services.nepomukstorage"
-
 #include "kao.h"
 #include <KConfigGroup>
 #include <KDebug>
@@ -76,17 +74,11 @@ NepomukActivityManager * NepomukActivityManager::self()
 NepomukActivityManager::NepomukActivityManager()
     : m_nepomukPresent(false), m_activities(nullptr)
 {
-    QDBusServiceWatcher * watcher = new QDBusServiceWatcher(
-            NEPOMUK_DBUS_SERVICE,
-            QDBusConnection::sessionBus(),
-            QDBusServiceWatcher::WatchForOwnerChange,
-            this);
+    connect(Nepomuk::ResourceManager::instance(), SIGNAL(nepomukSystemStarted()), this, SLOT(nepomukServiceStarted()));
+    connect(Nepomuk::ResourceManager::instance(), SIGNAL(nepomukSystemStopped()), this, SLOT(nepomukServiceStopped()));
 
-    connect(watcher, SIGNAL(serviceOwnerChanged(QString, QString, QString)),
-            this, SLOT(nepomukServiceOwnerChanged(QString, QString, QString)));
-
-    if (QDBusConnection::sessionBus().interface()->isServiceRegistered(NEPOMUK_DBUS_SERVICE)) {
-        nepomukServiceOwnerChanged(NEPOMUK_DBUS_SERVICE, QString(), "something");
+    if (Nepomuk::ResourceManager::instance()->initialized()) {
+        nepomukServiceStarted();
     }
 }
 
@@ -400,6 +392,24 @@ void NepomukActivityManager::toRealUri(KUrl & kuri)
 
 #ifdef HAVE_NEPOMUK
 
+void NepomukActivityManager::nepomukServiceStarted()
+{
+    kDebug() << "Nepomuk was started";
+    m_nepomukPresent = true;
+    init(nullptr);
+
+    if (!m_cache_activityIds.isEmpty()) {
+        syncActivities(m_cache_activityIds);
+    }
+
+}
+
+void NepomukActivityManager::nepomukServiceStopped()
+{
+    kDebug() << "Nepomuk was stopped";
+    m_nepomukPresent = false;
+}
+
 void NepomukActivityManager::setCurrentActivity(const QString & id)
 {
     m_currentActivity = id;
@@ -443,23 +453,4 @@ void NepomukActivityManager::reinit()
 }
 
 #endif // HAVE_NEPOMUK
-
-
-void NepomukActivityManager::nepomukServiceOwnerChanged(const QString & service, const QString & oldOwner, const QString & newOwner)
-{
-    Q_UNUSED(service)
-    Q_UNUSED(oldOwner)
-#ifdef HAVE_NEPOMUK
-    m_nepomukPresent = !newOwner.isEmpty();
-    init(nullptr);
-
-    if (m_nepomukPresent) {
-        if (!m_cache_activityIds.isEmpty()) {
-            syncActivities(m_cache_activityIds);
-        }
-    }
-
-    kDebug() << "Is Nepomuk here?" << m_nepomukPresent;
-#endif // HAVE_NEPOMUK
-}
 

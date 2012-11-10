@@ -43,8 +43,11 @@ class Activities;
 class NepomukActivityManager: public QObject {
     Q_OBJECT
 
+#ifdef HAVE_NEPOMUK
 private Q_SLOTS:
-    void nepomukServiceOwnerChanged(const QString & service, const QString & oldOwner, const QString & newOwner);
+    void nepomukServiceStarted();
+    void nepomukServiceStopped();
+#endif
 
 #ifdef HAVE_NEPOMUK
 public:
