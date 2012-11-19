@@ -7,6 +7,6 @@ Name: libkkactivities-models
 Description: libkkactivities is a C++ library that provides KDE activity-related item models
 URL: http://www.kde.org
 Requires:
-Version: ${KACTIVITIES_LIB_VERSION_STRING}
+Version: ${KACTIVITIES_MODELS_LIB_VERSION_STRING}
 Libs: -L${LIB_INSTALL_DIR} -lkactivities-models
 Cflags: -I${INCLUDE_INSTALL_DIR}
