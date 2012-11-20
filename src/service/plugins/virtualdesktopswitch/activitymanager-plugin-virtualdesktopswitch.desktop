@@ -1,6 +1,7 @@
 [Desktop Entry]
 Name=Virtual desktop switcher
 Name[ca]=Commutador d'escriptoris virtuals
+Name[da]=Skift mellem virtuelle skriveborde
 Name[el]=Εναλλάκτης εικονικής επιφάνειας εργασίας
 Name[es]=Selector de escritorio virtual
 Name[et]=Virtuaalsete töölaudade vahetaja
@@ -26,6 +27,7 @@ Name[zh_CN]=虚拟桌面切换器
 Name[zh_TW]=虛擬桌面切換器
 Comment=When switching to an activity, opens the virtual desktop last used with that activity
 Comment[ca]=En canviar a una activitat, obre el darrer escriptori virtual utilitzat amb aquesta activitat
+Comment[da]=Når der skiftes til en aktivitet, åbnes det virtuelle skrivebord der senest blev brugt med den aktivitet
 Comment[el]=Όταν γίνεται εναλλαγή δραστηριότητας, ανοίγει την εικονική επιφάνεια εργασίας που χρησιμοποιήθηκε τελευταία με τη δραστηριότητα αυτή
 Comment[es]=Cuando se cambia a una actividad, abre el escritorio virtual usado por última vez con dicha actividad
 Comment[et]=Avab tegevuse vahetamisel uues tegevuses viimati kasutatud virtuaalse töölaua

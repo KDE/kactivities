@@ -2,6 +2,7 @@
 Name=Global Shortcuts
 Name[ca]=Dreceres globals
 Name[cs]=Globální zkratky
+Name[da]=Globale genveje
 Name[de]=Globale Kurzbefehle
 Name[el]=Καθολικές συντομεύσεις
 Name[es]=Accesos rápidos de teclado globales
@@ -28,6 +29,7 @@ Name[zh_CN]=全局快捷键
 Name[zh_TW]=全域捷徑
 Comment=Adds global keyboard shortcuts for activity switching
 Comment[ca]=Afegeix les dreceres de teclat globals per canvi d'activitats
+Comment[da]=Tilføjer globale tastaturgenveje til skift af aktivitet
 Comment[el]=Προσθέτει καθολικές συντομεύσεις πληκτρολογίου για εναλλαγή δραστηριοτήτων
 Comment[es]=Añade accesos rápidos de teclado globales para el cambio de actividad
 Comment[et]=Globaalsete kiirklahvide lisamine tegevuste vahetamiseks
