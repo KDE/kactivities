@@ -375,7 +375,7 @@ void Resources::LinkResourceToActivity(const QString & uri, const QString & acti
     return doWithNepomukForActivity(activity, [&uri,this] (const QString & activity)
         {
             EXEC_NEPOMUK( linkResourceToActivity(KUrl(uri), activity) );
-            emit UnlinkedResourceFromActivity(uri, activity);
+            emit LinkedResourceToActivity(uri, activity);
         }
     );
 }
