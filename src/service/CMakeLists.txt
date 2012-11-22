@@ -12,6 +12,8 @@ endif ()
 
 # General
 
+find_package(KDeclarative)
+
 set (ADDITIONAL_LINK_LIBS)
 
 set (sdo_SRCS)
@@ -129,6 +131,7 @@ target_link_libraries (activity-manager
     ${KDE4_KDECORE_LIBS}
     ${KDE4_KDEUI_LIBS} # TODO: Remove kdeui
     ${KDE4_KIO_LIBS}   # TODO: Remove kio
+    ${KDECLARATIVE_LIBRARIES} # TODO: Can this be avoided?
     ${ADDITIONAL_LINK_LIBS}
     )
 

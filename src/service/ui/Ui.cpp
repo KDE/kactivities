@@ -27,6 +27,7 @@
 
 #include <KDebug>
 #include <KConfigGroup>
+#include <kdeclarative.h>
 
 #include <Plugin.h>
 
@@ -61,14 +62,10 @@ Ui::Ui(QObject * parent)
 {
     QString handlerLibrary = KDIALOG_UI_HANDLER;
 
-    QString platform = getenv("KDE_PLASMA_COMPONENTS_PLATFORM"); // krazy:exclude=syscalls
-    if (platform.isEmpty()) {
-        KConfigGroup cg(KSharedConfig::openConfig("kdeclarativerc"), "Components-platform");
-        platform = cg.readEntry("name", "desktop");
-    }
-
-    if (platform != "desktop")
+    const QString target = KDeclarative::componentsTarget();
+    if (target != KDeclarative::defaultComponentsTarget()) {
         handlerLibrary = DECLARATIVE_UI_HANDLER;
+    }
 
     KPluginFactory * factory = KPluginLoader(handlerLibrary).factory();
 
