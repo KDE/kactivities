@@ -511,6 +511,8 @@ QVariant ResourceModel::data(const QModelIndex & index, int role) const
 
 QVariant ResourceModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
+    Q_UNUSED(orientation)
+
     if (section == 0 && role == Qt::DisplayRole) {
         return i18nc("Header title for resource data model", "Resource");
     }

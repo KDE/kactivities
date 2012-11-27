@@ -101,6 +101,8 @@ public:
 
 void ActivityModel::Private::servicePresenceChanged(bool present)
 {
+    Q_UNUSED(present)
+
     model_reset m(q);
 
     valid = false;
@@ -285,6 +287,8 @@ QVariant ActivityModel::data(const QModelIndex & index, int role) const
 
 QVariant ActivityModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
+    Q_UNUSED(orientation)
+
     if (section == 0 && role == Qt::DisplayRole) {
         return i18nc("Header title for activity data model", "Activity");
     }

@@ -171,9 +171,9 @@ QString Info::id() const
 }
 
 KAMD_REMOTE_VALUE_GETTER(QString, Info, name,
-        i18nc("The name of the main activity - when the activity manager is not running", "Main"));
+        i18nc("The name of the main activity - when the activity manager is not running", "Main"))
 
-KAMD_REMOTE_VALUE_GETTER(QString, Info, icon, "preferences-activities");
+KAMD_REMOTE_VALUE_GETTER(QString, Info, icon, "preferences-activities")
 
 Info::State Info::state() const
 {
