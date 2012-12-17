@@ -37,6 +37,8 @@ public:
     Application();
     virtual ~Application();
 
+    virtual int newInstance();
+
     static Application * self();
     static void quit();
 

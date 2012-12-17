@@ -186,6 +186,12 @@ Application::~Application()
     Private::s_instance = nullptr;
 }
 
+int Application::newInstance()
+{
+    //We don't want to show the mainWindow()
+    return 0;
+}
+
 Activities & Application::activities() const
 {
     return *d->activities;
