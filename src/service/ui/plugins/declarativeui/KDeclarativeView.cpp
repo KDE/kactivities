@@ -69,8 +69,6 @@ KDeclarativeView::KDeclarativeView(QWidget *parent)
     registerDataEngineMetaTypes(scriptEngine);
 
     d->structure = Plasma::PackageStructure::load("Plasma/Generic");
-
-    show();
 }
 
 KDeclarativeView::~KDeclarativeView()
