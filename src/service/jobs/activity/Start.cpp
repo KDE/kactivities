@@ -55,8 +55,8 @@ void Change::start()
 {
     if (m_receiver) {
         kDebug() << ">>> Calling the method to set activity" << m_activity << "slot" << m_slot;
-        kDebug() <<
-        QMetaObject::invokeMethod(m_receiver, m_slot.toAscii(), Qt::QueuedConnection, Q_ARG(QString, m_activity));
+        bool ret = QMetaObject::invokeMethod(m_receiver, m_slot.toAscii(), Qt::QueuedConnection, Q_ARG(QString, m_activity));
+        kDebug() << ret;
 
     } else {
         kDebug() << ">>> Receiver is nullptr, failing";
