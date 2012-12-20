@@ -179,8 +179,8 @@ void ResourceModel::Private::servicePresenceChanged(bool present)
     if (showCurrentActivity && currentActivity.isEmpty()) {
         // we need to show the current activity, but don't know which it is
 
-        kDebug() << "CALLING" <<
-        Manager::activities()->callWithCallback("CurrentActivity", QVariantList(), q, SLOT(setCurrentActivity(QString)));
+        bool res = Manager::activities()->callWithCallback("CurrentActivity", QVariantList(), q, SLOT(setCurrentActivity(QString)));
+        kDebug() << "CALLING" << res;
 
         connect(Manager::activities(), SIGNAL(CurrentActivityChanged(QString)),
                 q, SLOT(setCurrentActivity(QString)));
