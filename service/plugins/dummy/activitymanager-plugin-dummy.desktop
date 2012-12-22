@@ -1,5 +1,6 @@
 [Desktop Entry]
 Name=Dummy plugin
+Name[bs]=Prazan priključak
 Name[ca]=Connector fals
 Name[cs]=Prázdný modul
 Name[da]=Attrap-plugin
@@ -42,6 +43,7 @@ Name[x-test]=xxDummy pluginxx
 Name[zh_CN]=虚拟插件
 Name[zh_TW]=空白外掛程式
 Comment=Just testing
+Comment[bs]=Samo testiram
 Comment[ca]=Per a les proves
 Comment[cs]=Pouze testovací
 Comment[da]=Tester lige

@@ -1,5 +1,6 @@
 [Desktop Entry]
 Name=Nepomuk Feeder Plugin
+Name[bs]=Priključak za Nepomuk
 Name[ca]=Connector de l'alimentador del Nepomuk
 Name[da]=Nepomuk-feeder-plugin
 Name[el]=Πρόσθετο τροφοδότη του Nepomuk
@@ -39,6 +40,7 @@ Name[x-test]=xxNepomuk Feeder Pluginxx
 Name[zh_CN]=Nepomuk 采集器插件
 Name[zh_TW]=Nepomuk Feeder 外掛程式
 Comment=Plugin to store and score events in Nepomuk
+Comment[bs]=Priključak za Nepomuk
 Comment[ca]=Connector per emmagatzemar i classificar esdeveniments en el Nepomuk
 Comment[da]=Plugin til at gemme og bedømme begivenheder i Nepomuk
 Comment[de]=Modul zum Speichern und Bewerten von Ereignissen in Nepomuk

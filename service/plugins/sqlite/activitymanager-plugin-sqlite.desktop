@@ -1,5 +1,6 @@
 [Desktop Entry]
 Name=Sqlite Feeder Plugin
+Name[bs]=Dodatak za punjenje Sqlite
 Name[ca]=Connector de l'alimentador del Sqlite
 Name[da]=Sqlite-feeder-plugin
 Name[el]=Πρόσθετο τροφοδότη Sqlite
@@ -38,6 +39,7 @@ Name[x-test]=xxSqlite Feeder Pluginxx
 Name[zh_CN]=Sqlite 采集器插件
 Name[zh_TW]=Sqlite Feeder 外掛程式
 Comment=Plugin to store and score events in Sqlite
+Comment[bs]=Dodatak za smiještanje i evidentiranje događaja u Sqlite
 Comment[ca]=Connector per emmagatzemar i classificar esdeveniments en el Sqlite
 Comment[da]=Plugin til at gemme og bedømme begivenheder i Sqlite
 Comment[de]=Modul zum Speichern und Bewerten von Ereignissen in SQLite
