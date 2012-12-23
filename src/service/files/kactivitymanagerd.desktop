@@ -7,7 +7,6 @@ X-KDE-StartupNotify=false
 Exec=kactivitymanagerd
 
 Name=Activity Manager
-Name[bs]=Menadžer aktivnosti
 Name[ca]=Gestor d'activitats
 Name[cs]=Správce aktivit
 Name[da]=Aktivitetshåndtering
@@ -52,7 +51,6 @@ Name[zh_CN]=活动管理器
 Name[zh_TW]=活動管理員
 
 Comment=The activity management backend
-Comment[bs]=Pozadina za upravljanje aktivnostima
 Comment[ca]=Dorsal de gestió d'activitats
 Comment[cs]=Podpůrná vrstva pro správu aktivit
 Comment[da]=Motor til aktivitetshåndtering
