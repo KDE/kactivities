@@ -31,6 +31,7 @@ Name[x-test]=xxActivity rankingxx
 Name[zh_CN]=活动评分
 Name[zh_TW]=活動排序
 Comment=Plugin to rank activities based on usage
+Comment[bs]=Dodatak za rangiranje aktivnosti prema njihovoj uoptrebi
 Comment[ca]=Connector per ordenar les activitats segons l'ús
 Comment[da]=Plugin til at rangere aktiviteter baseret på brug
 Comment[de]=Modul, das Aktivitäten anhand der Benutzung bewertet
