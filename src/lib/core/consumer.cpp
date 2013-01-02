@@ -125,6 +125,11 @@ void ConsumerPrivate::removeActivity(const QString & activity)
 
 void ConsumerPrivate::setActivityState(const QString & activity, int state)
 {
+    if (!listActivities.contains(activity)) {
+         qWarning("trying to alter state of unknown activity!!");
+         return; // denied
+    }
+
     if (state == Info::Running) {
         if (!runningActivities.contains(activity))
             runningActivities << activity;
