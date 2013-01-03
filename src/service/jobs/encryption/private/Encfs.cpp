@@ -22,9 +22,9 @@
 
 #include <QDir>
 #include <QStringList>
+#include <QDebug>
 
 #include <KLocale>
-#include <KDebug>
 #include <kmountpoint.h>
 
 #include <utils/d_ptr_implementation.h>
@@ -69,14 +69,14 @@ bool Encfs::isMounted(const QString & path) const
     KMountPoint::Ptr ptr = KMountPoint::currentMountPoints().findByPath(path);
 
     if (ptr)
-        kDebug() << ptr.data()->mountPoint() << path;
+        qDebug() << ptr.data()->mountPoint() << path;
 
     return (ptr && ptr.data()->mountPoint() == path);
 }
 
 void Encfs::unmountAllExcept(const QString & path)
 {
-    kDebug() << "Unmounting everything except " << path;
+    qDebug() << "Unmounting everything except " << path;
 
     foreach (const QString & mount, d->mounts) {
         if (path != mount) {
@@ -87,7 +87,7 @@ void Encfs::unmountAllExcept(const QString & path)
 
 void Encfs::unmountAll()
 {
-    kDebug() << "Unmounting everything";
+    qDebug() << "Unmounting everything";
 
     // TODO: Maybe we should umount all directories, not only
     // what is in d->mounts
@@ -103,10 +103,10 @@ void Encfs::unmountAll()
 
 QProcess * Encfs::mount(const QString & what, const QString & mountPoint, const QString & password)
 {
-    kDebug() << "mounting" << what << mountPoint;
+    qDebug() << "mounting" << what << mountPoint;
 
     if (isMounted(mountPoint)) {
-        kDebug() << mountPoint << "already mounted";
+        qDebug() << mountPoint << "already mounted";
         d->mounts << mountPoint;
 
         return nullptr;
@@ -114,7 +114,7 @@ QProcess * Encfs::mount(const QString & what, const QString & mountPoint, const 
 
     bool init = !isEncryptionInitialized(what);
 
-    kDebug() << "Executing" << ENCFS_PATH << " -S"
+    qDebug() << "Executing" << ENCFS_PATH << " -S"
             << what
             << mountPoint;
 
@@ -147,11 +147,11 @@ QProcess * Encfs::mount(const QString & what, const QString & mountPoint, const 
 
 QProcess * Encfs::unmount(const QString & mountPoint)
 {
-    kDebug() << mountPoint;
+    qDebug() << mountPoint;
 
     if (!isMounted(mountPoint)) return nullptr;
 
-    kDebug() << "it is mounted";
+    qDebug() << "it is mounted";
 
     d->mounts.remove(mountPoint);
 

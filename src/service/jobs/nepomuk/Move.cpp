@@ -22,9 +22,9 @@
 #ifdef HAVE_NEPOMUK
 #include "../../ui/Ui.h"
 
-#include <KDebug>
 #include <QThread>
 #include <QFile>
+#include <QDebug>
 
 #include <Soprano/QueryResultIterator>
 #include <Soprano/Node>
@@ -64,11 +64,11 @@ namespace Private {
 
     void replaceUrl(File & file, const QString & destination)
     {
-        kDebug();
+        qDebug();
         // Remove some properties
 
         QString path = destination + '/' + file.url().fileName();
-        kDebug() << "Future location: " << path;
+        qDebug() << "Future location: " << path;
 
         file.setProperty(KAO::originalUrlBeforeEncryption(), file.url());
         file.setProperty(NIE::url(), KUrl(path));
@@ -76,7 +76,7 @@ namespace Private {
 
     void unlinkOtherActivities(Resource & resource, const QString & activity)
     {
-        kDebug();
+        qDebug();
         // Find all activities that this resource are linked to
         // and remove the links for all except for the current
 
@@ -102,7 +102,7 @@ namespace Private {
 
     void removeSensitiveData(Resource & resource)
     {
-        kDebug();
+        qDebug();
         // Remove some properties
 
         resource.removeProperty(NAO::hasSubResource());
@@ -120,14 +120,14 @@ namespace Private {
 CollectFilesToMove::CollectFilesToMove(const QString & activity, const QString & destination)
     : m_activity(activity), m_destination(destination)
 {
-    kDebug();
+    qDebug();
 
 }
 
 
 void CollectFilesToMove::scheduleMoveDir(File & dir)
 {
-    kDebug();
+    qDebug();
     QString path = dir.url().toLocalFile();
     if (!path.endsWith('/')) {
         path += '/';
@@ -139,7 +139,7 @@ void CollectFilesToMove::scheduleMoveDir(File & dir)
 
 void CollectFilesToMove::scheduleMoveFile(File & file)
 {
-    kDebug();
+    qDebug();
     QString path = file.url().toLocalFile();
     foreach (const QString & dir, m_movedDirs) {
         if (path.startsWith(dir)) return;
@@ -150,7 +150,7 @@ void CollectFilesToMove::scheduleMoveFile(File & file)
 
 void CollectFilesToMove::scheduleMove(File & item)
 {
-    kDebug() << item.url().toLocalFile();
+    qDebug() << item.url().toLocalFile();
 
     m_scheduledForMoving << item.url().toLocalFile();
 
@@ -158,7 +158,7 @@ void CollectFilesToMove::scheduleMove(File & item)
 
 void CollectFilesToMove::run()
 {
-    kDebug();
+    qDebug();
     // We need to get only the stuff that are related to our activity
     Resource activity(m_activity, KAO::Activity());
     ComparisonTerm related = ComparisonTerm(NAO::isRelated(), ResourceTerm(activity));
@@ -248,7 +248,7 @@ void Move::setFiles(const QStringList & files)
 
 void Move::start()
 {
-    kDebug() << ">>> Move" << m_activity;
+    qDebug() << ">>> Move" << m_activity;
 
     if (m_files.isEmpty()) {
         CollectFilesToMove * job = new CollectFilesToMove(m_activity, destination());

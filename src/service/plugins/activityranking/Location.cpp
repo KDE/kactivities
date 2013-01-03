@@ -21,7 +21,7 @@
 #include "LocationManagerInterface.h"
 
 #include <QDBusServiceWatcher>
-#include <KDebug>
+#include <QDebug>
 
 #include <config-features.h>
 #include <utils/nullptr.h>
@@ -53,7 +53,7 @@ Location * Location::Private::s_instance = nullptr;
 Location::Location(QObject * parent)
     : QObject(parent), d()
 {
-    kDebug() << "Location object initializing";
+    qDebug() << "Location object initializing";
 
     d->watcher = new QDBusServiceWatcher(
             LOCATION_MANAGER_SERVICE,

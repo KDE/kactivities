@@ -24,7 +24,7 @@
 #include "resourcemodel.h"
 #include "activitymodel.h"
 
-#include <KDebug>
+#include <QDebug>
 
 #define REGISTER_MODEL(Title, Icon, Type)                           \
     QML_REGISTER_TYPE(Type);                                        \
@@ -33,7 +33,7 @@
 
 void LancelotComponentDataPlugin::registerTypes(const char * uri)
 {
-    kDebug() << "###########";
+    qDebug() << "###########";
     Q_ASSERT(uri == QLatin1String("org.kde.activities.models"));
 
     qmlRegisterType < KActivities::Models::ResourceModel > (uri, 0, 1, "ResourceModel");

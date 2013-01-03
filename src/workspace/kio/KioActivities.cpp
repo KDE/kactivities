@@ -268,14 +268,14 @@ private:
 ActivitiesProtocol::ActivitiesProtocol(const QByteArray & poolSocket, const QByteArray & appSocket)
     : KIO::ForwardingSlaveBase("activities", poolSocket, appSocket), d(new Private(this))
 {
-    // kDebug();
+    // qDebug();
     kioDebug() << "ActivitiesProtocol constructor" << '\n';
 }
 
 
 ActivitiesProtocol::~ActivitiesProtocol()
 {
-    // kDebug();
+    // qDebug();
     kioDebug() << "ActivitiesProtocol destr" << '\n';
     delete d;
 }
@@ -319,7 +319,7 @@ void ActivitiesProtocol::mkdir(const KUrl & url, int permissions)
 
 void ActivitiesProtocol::get(const KUrl & url)
 {
-    // kDebug() << url;
+    // qDebug() << url;
     kioDebug() << "ActivitiesProtocol get" << url << '\n';
 
     if (d->parseUrl(url)) {
@@ -334,7 +334,7 @@ void ActivitiesProtocol::get(const KUrl & url)
 
 void ActivitiesProtocol::put(const KUrl & url, int permissions, KIO::JobFlags flags)
 {
-    // kDebug() << url;
+    // qDebug() << url;
     kioDebug() << "ActivitiesProtocol put" << url << '\n';
 
     if (d->parseUrl(url)) {
@@ -371,7 +371,7 @@ void ActivitiesProtocol::del(const KUrl & url, bool isfile)
 {
     Q_UNUSED(url);
     Q_UNUSED(isfile);
-    // kDebug() << url;
+    // qDebug() << url;
     // ForwardingSlaveBase::del(url, isfile);
 
     error(ERR_UNSUPPORTED_ACTION, url.prettyUrl());
@@ -380,7 +380,7 @@ void ActivitiesProtocol::del(const KUrl & url, bool isfile)
 
 void ActivitiesProtocol::mimetype(const KUrl & url)
 {
-    // kDebug() << url;
+    // qDebug() << url;
     ForwardingSlaveBase::mimetype(url);
 }
 
@@ -478,7 +478,7 @@ extern "C"
         KComponentData("kio_activities");
         QCoreApplication app(argc, argv);
 
-        // kDebug() << "Starting activities slave " << getpid();
+        // qDebug() << "Starting activities slave " << getpid();
 
         if (argc != 4) {
             // kError() << "Usage: kio_activities protocol domain-socket1 domain-socket2";
@@ -488,7 +488,7 @@ extern "C"
         ActivitiesProtocol slave(argv[2], argv[3]);
         slave.dispatchLoop();
 
-        // kDebug() << "activities slave Done";
+        // qDebug() << "activities slave Done";
 
         return 0;
     }

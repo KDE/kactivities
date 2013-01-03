@@ -21,8 +21,7 @@
 #include "manager_p.h"
 
 #include <QObject>
-
-#include <kdebug.h>
+#include <QDebug>
 
 namespace KActivities {
 

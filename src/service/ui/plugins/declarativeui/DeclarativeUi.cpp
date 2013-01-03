@@ -24,8 +24,8 @@
 #include <QDeclarativeContext>
 #include <QApplication>
 #include <QX11Info>
+#include <QDebug>
 
-#include <KDebug>
 #include <KWindowSystem>
 
 #ifdef Q_WS_X11
@@ -44,13 +44,13 @@ void DeclarativeUiHandler::Private::onCurrentActivityChanged(const QString & act
 {
     Q_UNUSED(activity);
 
-    kDebug() << activity;
+    qDebug() << activity;
     // close();
 }
 
 void DeclarativeUiHandler::Private::showWindow()
 {
-    kDebug() << "showing input window";
+    qDebug() << "showing input window";
 
     window->show();
     showingSomething = true;
@@ -92,7 +92,7 @@ bool DeclarativeUiHandler::Private::isWindowVisible() const
 
 void DeclarativeUiHandler::Private::cancel()
 {
-    kDebug();
+    qDebug();
 
     returnPassword(QString());
     returnChoice(0);
@@ -103,7 +103,7 @@ void DeclarativeUiHandler::Private::cancel()
 
 void DeclarativeUiHandler::Private::close()
 {
-    kDebug();
+    qDebug();
 
     hideAll();
 }
@@ -113,7 +113,7 @@ void DeclarativeUiHandler::Private::returnPassword(const QString & password)
     if (currentAction != PasswordAction) return;
 
     if (receiver && slot) {
-        kDebug() << "receiver" << receiver->metaObject()->className() << slot;
+        qDebug() << "receiver" << receiver->metaObject()->className() << slot;
 
         QMetaObject::invokeMethod(receiver, slot, Qt::QueuedConnection,
                     Q_ARG(QString, password));
@@ -131,7 +131,7 @@ void DeclarativeUiHandler::Private::returnChoice(int index)
     if (currentAction != ChoiceAction) return;
 
     if (receiver && slot) {
-        kDebug() << "receiver" << receiver->metaObject()->className() << slot;
+        qDebug() << "receiver" << receiver->metaObject()->className() << slot;
 
         QMetaObject::invokeMethod(receiver, slot, Qt::QueuedConnection,
                     Q_ARG(int, index));
@@ -164,7 +164,7 @@ DeclarativeUiHandler::~DeclarativeUiHandler()
 void DeclarativeUiHandler::askPassword(const QString & title, const QString & message,
             bool newPassword, bool unlockMode, QObject * receiver, const char * slot)
 {
-    kDebug() << title << message;
+    qDebug() << title << message;
 
     d->currentAction = Private::PasswordAction;
     d->receiver = receiver;
@@ -177,7 +177,7 @@ void DeclarativeUiHandler::askPassword(const QString & title, const QString & me
 void DeclarativeUiHandler::ask(const QString & title, const QString & message,
         const QStringList & choices, QObject * receiver, const char * slot)
 {
-    kDebug() << title << message;
+    qDebug() << title << message;
 
     d->currentAction = Private::ChoiceAction;
     d->receiver = receiver;
@@ -189,7 +189,7 @@ void DeclarativeUiHandler::ask(const QString & title, const QString & message,
 
 void DeclarativeUiHandler::message(const QString & title, const QString & message)
 {
-    kDebug() << title << message;
+    qDebug() << title << message;
 
     d->showWindow();
     emit d->message(message);
@@ -197,7 +197,7 @@ void DeclarativeUiHandler::message(const QString & title, const QString & messag
 
 void DeclarativeUiHandler::setBusy(bool value)
 {
-    kDebug() << value << d->showingSomething;
+    qDebug() << value << d->showingSomething;
     d->showingBusy = value;
 
     if (!value && !d->showingSomething) {

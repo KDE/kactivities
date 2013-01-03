@@ -20,7 +20,7 @@
 #include "Ask.h"
 #include "../../ui/Ui.h"
 
-#include <KDebug>
+#include <QDebug>
 
 namespace Jobs {
 namespace Ui {
@@ -64,7 +64,7 @@ void Ask::setChoices(const QStringList & choices)
 
 void Ask::start()
 {
-    kDebug() << ">>> Ask" << m_message << m_choices;
+    qDebug() << ">>> Ask" << m_message << m_choices;
 
     // Needed due to namespace collision with Jobs::Ui
     ::Ui::ask(m_title, m_message, m_choices,

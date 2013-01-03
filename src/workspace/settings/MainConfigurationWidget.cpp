@@ -19,6 +19,7 @@
 
 #include "MainConfigurationWidget.h"
 
+#include <QDebug>
 #include <QMenu>
 #include <QDeclarativeContext>
 #include <QDeclarativeEngine>
@@ -34,7 +35,6 @@
 #include <KPluginInfo>
 #include <KService>
 #include <KServiceTypeTrader>
-#include <KDebug>
 #include <kdeclarative.h>
 
 #include <Plasma/PackageStructure>

@@ -22,11 +22,11 @@
 #include <unistd.h>
 
 #include <QDir>
+#include <QDebug>
 
 #include <KLocale>
 #include <KConfig>
 #include <KConfigGroup>
-#include <KDebug>
 #include <KStandardDirs>
 
 #include "private/Encfs.h"
@@ -60,7 +60,7 @@ Private::Private()
     d->enabled = (permissions == 0);
 
     if (!d->enabled) {
-        kDebug() << "Encryption is not enabled";
+        qDebug() << "Encryption is not enabled";
         return;
     }
 

@@ -21,8 +21,7 @@
 #include <QDBusConnection>
 #include <QVariantList>
 #include <QSqlQuery>
-
-#include <KDebug>
+#include <QDebug>
 
 #include "ResourceScoreCache.h"
 #include "DatabaseConnection.h"
@@ -53,7 +52,7 @@ RankingsUpdateThread::~RankingsUpdateThread()
 }
 
 void RankingsUpdateThread::run() {
-    kDebug() << "This is the activity we want the results for:" << m_activity;
+    qDebug() << "This is the activity we want the results for:" << m_activity;
 
     val & query = QString::fromLatin1(
             "SELECT targettedResource, cachedScore "
@@ -63,7 +62,7 @@ void RankingsUpdateThread::run() {
             "ORDER BY cachedScore DESC LIMIT 30"
         ).arg(m_activity);
 
-    kDebug() << query;
+    qDebug() << query;
 
     auto result = DatabaseConnection::self()->database().exec(query);
 

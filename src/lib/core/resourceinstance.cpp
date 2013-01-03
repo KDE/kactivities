@@ -21,7 +21,7 @@
 #include "manager_p.h"
 
 #include <QCoreApplication>
-#include <KDebug>
+#include <QDebug>
 
 namespace KActivities {
 
@@ -78,7 +78,7 @@ void ResourceInstancePrivate::openResource()
 ResourceInstance::ResourceInstance(WId wid, QObject *parent)
     : QObject(parent), d(new ResourceInstancePrivate())
 {
-    kDebug(1000) << "Creating ResourceInstance: empty for now";
+    qDebug() << "Creating ResourceInstance: empty for now";
     d->wid = wid;
     d->reason = User;
     d->application = QCoreApplication::instance()->applicationName();
@@ -87,7 +87,7 @@ ResourceInstance::ResourceInstance(WId wid, QObject *parent)
 ResourceInstance::ResourceInstance(WId wid, AccessReason reason, const QString &application, QObject *parent)
     : QObject(parent), d(new ResourceInstancePrivate())
 {
-    kDebug(1000) << "Creating ResourceInstance: empty for now";
+    qDebug() << "Creating ResourceInstance: empty for now";
     d->wid = wid;
     d->reason = reason;
     d->application = application.isEmpty() ? QCoreApplication::instance()->applicationName() : application;
@@ -97,7 +97,7 @@ ResourceInstance::ResourceInstance(WId wid, QUrl resourceUri, const QString &mim
         const QString &title, AccessReason reason, const QString &application, QObject *parent)
     : QObject(parent), d(new ResourceInstancePrivate())
 {
-    kDebug(1000) << "Creating ResourceInstance: " << resourceUri;
+    qDebug() << "Creating ResourceInstance: " << resourceUri;
     d->wid = wid;
     d->reason = reason;
     d->uri = resourceUri;
@@ -155,7 +155,7 @@ void ResourceInstance::setMimetype(const QString &mimetype)
 
 void ResourceInstance::setTitle(const QString &title)
 {
-    kDebug() << "Setting the title: " << title;
+    qDebug() << "Setting the title: " << title;
     if (title.isEmpty()) return;
 
     d->title = title;

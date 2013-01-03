@@ -23,12 +23,12 @@
 #include <jobs/ui/AskPassword.h>
 
 #include <QDir>
+#include <QDebug>
 
 #include <KIO/DeleteJob>
 #include <KIO/CopyJob>
 #include <KJob>
 #include <KUrl>
-#include <KDebug>
 
 namespace Jobs {
 namespace Encryption {
@@ -61,7 +61,7 @@ void InitializeStructure::setAction(int value)
 
 void InitializeStructure::start()
 {
-    kDebug() << m_activity << m_action;
+    qDebug() << m_activity << m_action;
 
     switch (m_action) {
         case InitializeStructure::InitializeInEncrypted:
@@ -110,7 +110,7 @@ void InitializeStructure::del(const QStringList & items)
 
     foreach (const QString & item, items) {
         if (dir.exists(item)) {
-            kDebug() << item;
+            qDebug() << item;
             toDelete << item;
         }
     }

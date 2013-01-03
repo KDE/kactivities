@@ -19,7 +19,7 @@
 
 #include "Test.h"
 
-#include <KDebug>
+#include <QDebug>
 
 namespace Jobs {
 namespace Schedulers {
@@ -36,7 +36,7 @@ Test::~Test()
 
 void Test::jobFinished(int result)
 {
-    kDebug() << "Returned" << result << "expected" << m_expectedResult;
+    qDebug() << "Returned" << result << "expected" << m_expectedResult;
 
     returnResult(m_expectedResult == result ? 0 : 1);
 }

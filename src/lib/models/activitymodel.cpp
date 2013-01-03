@@ -25,9 +25,9 @@
 #include <QHash>
 #include <QList>
 #include <QModelIndex>
+#include <QDebug>
 
 #include <KIcon>
-#include <KDebug>
 #include <KLocalizedString>
 
 #include <common/dbus/org.kde.ActivityManager.Activities.h>
@@ -53,7 +53,7 @@ public:
     Private(ActivityModel * parent)
         : q(parent), valid(false)
     {
-        kDebug() << "Manager isServicePresent" << Manager::isServicePresent();
+        qDebug() << "Manager isServicePresent" << Manager::isServicePresent();
         if (Manager::isServicePresent())
             fetchActivityList();
 
@@ -112,27 +112,27 @@ void ActivityModel::Private::servicePresenceChanged(bool present)
 
 void ActivityModel::Private::fetchActivityList()
 {
-    kDebug() << "getting the list of activities";
+    qDebug() << "getting the list of activities";
     KAMD_RETRIEVE_REMOTE_VALUE(listActivities, ListActivitiesWithInformation(), q);
 }
 
 void ActivityModel::Private::fetchActivityInfo(const QString & activity)
 {
     QDBusPendingCallWatcher * activityInfoCallWatcher;
-    kDebug() << "getting info for " << activity;
+    qDebug() << "getting info for " << activity;
     KAMD_RETRIEVE_REMOTE_VALUE(activityInfo, ActivityInformation(activity), q);
 }
 
 void ActivityModel::Private::listActivitiesCallFinished(QDBusPendingCallWatcher * watcher)
 {
-    kDebug() << "got the activities";
+    qDebug() << "got the activities";
     model_reset m(q);
 
     QDBusPendingReply <ActivityInfoList> reply = * watcher;
 
     if (reply.isError()) {
         valid = false;
-        kDebug() << "we got some kind of error" << reply.error();
+        qDebug() << "we got some kind of error" << reply.error();
         return;
     }
 
@@ -146,20 +146,20 @@ void ActivityModel::Private::listActivitiesCallFinished(QDBusPendingCallWatcher 
 
     valid = true;
 
-    kDebug() << activities.size();
+    qDebug() << activities.size();
 
     watcher->deleteLater();
 }
 
 void ActivityModel::Private::activityInfoCallFinished(QDBusPendingCallWatcher * watcher)
 {
-    kDebug() << "got the activities";
+    qDebug() << "got the activities";
 
     QDBusPendingReply <ActivityInfo> reply = * watcher;
 
     if (reply.isError()) {
         valid = false;
-        kDebug() << "we got some kind of error" << reply.error();
+        qDebug() << "we got some kind of error" << reply.error();
         return;
     }
 
@@ -234,7 +234,7 @@ void ActivityModel::Private::activityRemoved(const QString & activity)
 ActivityModel::ActivityModel(QObject * parent)
     : QAbstractListModel(parent), d(new Private(this))
 {
-    kDebug() << "################";
+    qDebug() << "################";
     d->valid = false;
 
     QHash<int, QByteArray> roles;

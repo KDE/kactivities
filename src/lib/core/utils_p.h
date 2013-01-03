@@ -20,14 +20,14 @@
 #include <QDBusPendingCallWatcher>
 
 #include <QMutex>
+#include <QDebug>
 
-#include <KDebug>
 #include <KLocalizedString>
 
 // Creates an async call to retrieve a value from the dbus service
 // and initializes the call watcher
 #define KAMD_RETRIEVE_REMOTE_VALUE(Variable, MethodToCall, Target)                      \
-    kDebug() << "Locking mutex for" << #Variable;                                       \
+    qDebug() << "Locking mutex for" << #Variable;                                       \
     Variable##Mutex.lock();                                                             \
     const QDBusPendingCall & Variable##Call = Manager::activities()->MethodToCall;      \
     Variable##CallWatcher = new QDBusPendingCallWatcher(Variable##Call, Target);        \
@@ -58,7 +58,7 @@
     if (dbusReply.isValid()) {                                     \
         return dbusReply.value();                                  \
     } else {                                                       \
-        kDebug() << "d-bus reply was invalid"                      \
+        qDebug() << "d-bus reply was invalid"                      \
                  << dbusReply.value()                              \
                  << dbusReply.error();                             \
         return DEFAULT;                                            \
@@ -77,7 +77,7 @@
         Variable##CallWatcher = 0;                                               \
         Variable##Mutex.unlock();                                                \
         call->deleteLater();                                                     \
-        kDebug() << "Unlocked mutex";                                            \
+        qDebug() << "Unlocked mutex";                                            \
     }
 
 // Implements a value getter
@@ -86,7 +86,7 @@
     {                                                                 \
         if (!Manager::isServicePresent()) return Default;             \
         waitForCallFinished(d->Variable##CallWatcher, &d->Variable##Mutex); \
-        kDebug() << "Returning" << #Variable << d->Variable;          \
+        qDebug() << "Returning" << #Variable << d->Variable;          \
         return d->Variable;                                           \
     }
 
@@ -95,7 +95,7 @@ static inline void waitForCallFinished(QDBusPendingCallWatcher * watcher, QMutex
     if (watcher) {
         watcher->waitForFinished();
 
-        kDebug() << "Trying to lock mutex";
+        qDebug() << "Trying to lock mutex";
         mutex->lock();
         mutex->unlock();
     }

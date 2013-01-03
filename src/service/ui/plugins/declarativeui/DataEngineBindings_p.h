@@ -27,7 +27,7 @@
 #include <Plasma/Service>
 #include <Plasma/ServiceJob>
 
-#include <KDebug>
+#include <QDebug>
 
 #include <config-features.h>
 #include <utils/nullptr.h>
@@ -40,7 +40,7 @@ Q_DECLARE_METATYPE(DataEngine::Data)
 template <typename M>
 QScriptValue qScriptValueFromMap(QScriptEngine *eng, const M &map)
 {
-    //kDebug() << "qScriptValueFromMap called";
+    //qDebug() << "qScriptValueFromMap called";
     QScriptValue obj = eng->newObject();
     typename M::const_iterator begin = map.constBegin();
     typename M::const_iterator end = map.constEnd();
@@ -61,7 +61,7 @@ QScriptValue qScriptValueFromMap(QScriptEngine *eng, const M &map)
 template <typename M>
 void qScriptValueToMap(const QScriptValue &value, M &map)
 {
-    //kDebug() << "qScriptValueToMap called";
+    //qDebug() << "qScriptValueToMap called";
     QScriptValueIterator it(value);
     while (it.hasNext()) {
         it.next();

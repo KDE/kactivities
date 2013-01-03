@@ -20,9 +20,9 @@
 #include "manager_p.h"
 
 #include <QDBusConnection>
+#include <QDebug>
 
 #include <ktoolinvocation.h>
-#include <kdebug.h>
 
 namespace KActivities {
 
@@ -70,13 +70,13 @@ Manager * Manager::self()
 
             int ret = KToolInvocation::startServiceByDesktopPath("kactivitymanagerd.desktop", QStringList(), &error);
             if (ret > 0) {
-                kDebug() << "Activity: Couldn't start kactivitymanagerd: " << error << endl;
+                qDebug() << "Activity: Couldn't start kactivitymanagerd: " << error << endl;
             }
 
             if (!QDBusConnection::sessionBus().interface()->isServiceRegistered(ACTIVITY_MANAGER_DBUS_PATH)) {
-                kDebug() << "Activity: The kactivitymanagerd service is still not registered";
+                qDebug() << "Activity: The kactivitymanagerd service is still not registered";
             } else {
-                kDebug() << "Activity: The kactivitymanagerd service has been registered";
+                qDebug() << "Activity: The kactivitymanagerd service has been registered";
             }
         }
 

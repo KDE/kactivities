@@ -19,7 +19,7 @@
 
 #include "Call.h"
 
-#include <KDebug>
+#include <QDebug>
 
 namespace Jobs {
 namespace General {
@@ -75,14 +75,14 @@ void Call::setWaitFinished(bool value)
 void Call::start()
 {
     if (m_receiver) {
-        kDebug() << ">>> Calling the method" << m_slot << "with" << m_argument;
+        qDebug() << ">>> Calling the method" << m_slot << "with" << m_argument;
 
         QMetaObject::invokeMethod(m_receiver, m_slot.toAscii(),
                 (m_waitFinished ? Qt::QueuedConnection : Qt::DirectConnection),
                 Q_ARG(QString, m_argument));
 
     } else {
-        kDebug() << ">>> Receiver is nullptr, failing";
+        qDebug() << ">>> Receiver is nullptr, failing";
         setError(1);
         setErrorText("There is no receiver registered to call");
 

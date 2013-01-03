@@ -25,9 +25,9 @@
 #include <QHash>
 #include <QList>
 #include <QModelIndex>
+#include <QDebug>
 
 #include <KIcon>
-#include <KDebug>
 #include <KLocalizedString>
 #include <KFileItem>
 
@@ -156,12 +156,12 @@ void ResourceModel::Private::reload()
 
 void ResourceModel::Private::resourceScoreUpdated(const QString & activity, const QString & client, const QString & resource, double score)
 {
-    kDebug() << activity << client << resource << score;
+    qDebug() << activity << client << resource << score;
 }
 
 void ResourceModel::Private::servicePresenceChanged(bool present)
 {
-    kDebug() << present;
+    qDebug() << present;
     model_reset m(q);
 
     resources.clear();
@@ -180,7 +180,7 @@ void ResourceModel::Private::servicePresenceChanged(bool present)
         // we need to show the current activity, but don't know which it is
 
         bool res = Manager::activities()->callWithCallback("CurrentActivity", QVariantList(), q, SLOT(setCurrentActivity(QString)));
-        kDebug() << "CALLING" << res;
+        qDebug() << "CALLING" << res;
 
         connect(Manager::activities(), SIGNAL(CurrentActivityChanged(QString)),
                 q, SLOT(setCurrentActivity(QString)));
@@ -224,7 +224,7 @@ void ResourceModel::Private::servicePresenceChanged(bool present)
 
 void ResourceModel::Private::loadFromQuery(const QString & query)
 {
-    kDebug() << query;
+    qDebug() << query;
 
     NQuery::QueryServiceClient * queryClient = new NQuery::QueryServiceClient(q);
 
@@ -300,7 +300,7 @@ void ResourceModel::Private::loadRecent()
             "?agent nao:identifier %1 ."
         );
 
-    kDebug() << Soprano::Node::literalToN3(QDate(1970,1,1));
+    qDebug() << Soprano::Node::literalToN3(QDate(1970,1,1));
 
     loadFromQuery(_query.arg(
             activityToShowN3(),
@@ -364,7 +364,7 @@ ResourceInfo ResourceModel::Private::infoFromResult(const NQuery::Result & resul
     info.icon  = props[NAO::iconName()].toString();
     info.score = props[NAO::numericRating()].toString().toDouble();
 
-    kDebug()
+    qDebug()
         << info.url
         << info.title
         << info.icon
@@ -377,7 +377,7 @@ ResourceInfo ResourceModel::Private::infoFromResult(const NQuery::Result & resul
             info.title = fileItem.text();
             info.icon  = fileItem.iconName();
 
-            kDebug() << "## 1 ##" << info.title << info.icon;
+            qDebug() << "## 1 ##" << info.title << info.icon;
 
         } else {
             info.title = info.url;
@@ -418,7 +418,7 @@ void ResourceModel::Private::entriesRemoved(const QList < QUrl > & entries)
     model_reset m(q);
 
     foreach (const QUrl & entry, entries) {
-        kDebug() << "Removing: " << entry;
+        qDebug() << "Removing: " << entry;
 
         ResourceInfoList::iterator start = resources.begin();
         ResourceInfoList::iterator end = resources.end();
@@ -447,7 +447,7 @@ void ResourceModel::Private::setCurrentActivity(const QString & activity)
 
 void ResourceModel::Private::error(const QString & errorMessage)
 {
-    kDebug() << errorMessage;
+    qDebug() << errorMessage;
 }
 
 ResourceModel::ResourceModel(QObject * parent)
@@ -542,7 +542,7 @@ void ResourceModel::setApplication(const QString & application)
 {
     if (d->application == application) return;
 
-    kDebug() << "Setting the application to:" << application;
+    qDebug() << "Setting the application to:" << application;
 
     d->application = application;
 

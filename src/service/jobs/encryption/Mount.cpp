@@ -22,7 +22,7 @@
 
 #include <jobs/ui/AskPassword.h>
 
-#include <KDebug>
+#include <QDebug>
 
 namespace Jobs {
 namespace Encryption {
@@ -55,7 +55,7 @@ void Mount::setAction(int value)
 
 void Mount::start()
 {
-    kDebug() << m_activity << m_action;
+    qDebug() << m_activity << m_action;
 
     m_process = nullptr;
 
@@ -86,12 +86,12 @@ void Mount::start()
     }
 
     if (m_process) {
-        kDebug() << "Connecting the process";
+        qDebug() << "Connecting the process";
         connect(m_process, SIGNAL(finished(int, QProcess::ExitStatus)),
                 this, SLOT(processFinished(int, QProcess::ExitStatus)));
 
     } else {
-        kDebug() << "No process. Saying that we are done.";
+        qDebug() << "No process. Saying that we are done.";
         emit emitResult();
 
     }

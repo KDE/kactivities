@@ -26,9 +26,9 @@
 #include <QThread>
 #include <QMutex>
 #include <QMutexLocker>
+#include <QDebug>
 
 #include <KUrl>
-#include <KDebug>
 #include <KWindowSystem>
 
 #include <Application.h>
@@ -102,7 +102,7 @@ void Resources::Private::run()
             QMutexLocker locker(& events_mutex);
 
             if (events.count() == 0) {
-                // kDebug() << "No more events to process, exiting.";
+                // qDebug() << "No more events to process, exiting.";
                 return;
             }
 

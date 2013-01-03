@@ -23,10 +23,9 @@
 #include <QSqlQuery>
 #include <QSqlError>
 #include <QVariant>
+#include <QDebug>
 
 #include <KStandardDirs>
-
-#include <KDebug>
 
 #include <cmath>
 

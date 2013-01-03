@@ -20,7 +20,7 @@
 #include "consumer_p.h"
 #include "manager_p.h"
 
-#include <kdebug.h>
+#include <QDebug>
 
 namespace KActivities {
 
@@ -69,7 +69,7 @@ ConsumerPrivate::ConsumerPrivate()
     connect(Manager::self(), SIGNAL(servicePresenceChanged(bool)),
             this, SLOT(setServicePresent(bool)));
 
-    kDebug() << "We are checking whether the service is present" <<
+    qDebug() << "We are checking whether the service is present" <<
         Manager::isServicePresent();
 
     if (Manager::isServicePresent()) {
@@ -97,7 +97,7 @@ void ConsumerPrivate::initializeCachedData()
 
 void ConsumerPrivate::setCurrentActivity(const QString & activity)
 {
-    kDebug() << "current activity is" << activity;
+    qDebug() << "current activity is" << activity;
     currentActivity = activity;
 
     emit currentActivityChanged(activity);
@@ -105,7 +105,7 @@ void ConsumerPrivate::setCurrentActivity(const QString & activity)
 
 void ConsumerPrivate::addActivity(const QString & activity)
 {
-    kDebug() << "new activity added" << activity;
+    qDebug() << "new activity added" << activity;
     if (!listActivities.contains(activity)) {
         listActivities << activity;
         runningActivities << activity;
@@ -116,7 +116,7 @@ void ConsumerPrivate::addActivity(const QString & activity)
 
 void ConsumerPrivate::removeActivity(const QString & activity)
 {
-    kDebug() << "activity removed added" << activity;
+    qDebug() << "activity removed added" << activity;
     listActivities.removeAll(activity);
     runningActivities.removeAll(activity);
 
@@ -168,7 +168,7 @@ QStringList Consumer::listActivities(Info::State state) const
 
         waitForCallFinished(d->runningActivitiesCallWatcher, &d->runningActivitiesMutex);
 
-        kDebug() << "Returning the running activities" << d->runningActivities;
+        qDebug() << "Returning the running activities" << d->runningActivities;
 
         return d->runningActivities;
     }

@@ -24,8 +24,8 @@
 #include <QThread>
 #include <QCoreApplication>
 #include <QMetaObject>
+#include <QDebug>
 
-#include <KDebug>
 #include <KConfigGroup>
 #include <kdeclarative.h>
 

@@ -27,9 +27,9 @@
 #include <QSqlError>
 #include <QSqlRecord>
 #include <QSqlTableModel>
+#include <QDebug>
 
 #include <KStandardDirs>
-#include <KDebug>
 
 #include "Plugin.h"
 #include "Location.h"
@@ -38,7 +38,7 @@
 #include <utils/d_ptr_implementation.h>
 #include <utils/val.h>
 
-#define PRINT_LAST_ERROR(A) if (A.lastError().isValid()) kDebug() << "DATABASE ERROR" << A.lastError();
+#define PRINT_LAST_ERROR(A) if (A.lastError().isValid()) qDebug() << "DATABASE ERROR" << A.lastError();
 
 class ActivityRanking::Private {
 public:
@@ -132,10 +132,10 @@ void ActivityRanking::Private::ensureMonthScoreExists(const QString & activity, 
 
 void ActivityRanking::Private::processActivityInterval(const QString & activity, const QString & location, qint64 start, qint64 end)
 {
-    kDebug() << activity << location << start << end;
+    qDebug() << activity << location << start << end;
 
     if (activity.isEmpty()) {
-        kDebug() << "empty activity id. Not processing.";
+        qDebug() << "empty activity id. Not processing.";
         return;
     }
 
@@ -158,7 +158,7 @@ void ActivityRanking::Private::processWeekData(const QString & activity, const Q
     // This can be a bit more efficient
     fordate(year, startDateTime, endDateTime) {
         fordate(weekNumber, startDateTime, endDateTime) {
-            kDebug() << activity << year << weekNumber;
+            qDebug() << activity << year << weekNumber;
 
             ensureWeekScoreExists(activity, year, weekNumber, location);
 
@@ -248,7 +248,7 @@ void ActivityRanking::Private::processMonthData(const QString & activity, const 
     // This can be a bit more efficient
     fordate(year, startDateTime, endDateTime) {
         fordate(month, startDateTime, endDateTime) {
-            kDebug() << activity << year << month;
+            qDebug() << activity << year << month;
 
             ensureMonthScoreExists(activity, year, month, location);
 
@@ -312,7 +312,7 @@ void ActivityRanking::Private::processMonthData(const QString & activity, const 
 
 void ActivityRanking::Private::closeDanglingActivityRecords()
 {
-    kDebug() << "closing...";
+    qDebug() << "closing...";
 
     // TODO: A possible problem is that theoretically the dangling ones can be
     // before a non dangling one which will produce overlapping
@@ -324,7 +324,7 @@ void ActivityRanking::Private::closeDanglingActivityRecords()
 
     // Setting the current time as the end of the last dangling event
     val i = tableActivityEvents.rowCount() - 1;
-    kDebug() << "dangling count:" << i+1;
+    qDebug() << "dangling count:" << i+1;
 
     if (i < 0) return;
 
@@ -468,7 +468,7 @@ void ActivityRanking::activityChanged(const QString & activity)
 
     qint64 currentTime = QDateTime::currentMSecsSinceEpoch();
 
-    kDebug() << ">>>> we have the new activity" << activity;
+    qDebug() << ">>>> we have the new activity" << activity;
 
     if (!d->activity.isEmpty()) {
         d->database.exec(
@@ -499,7 +499,7 @@ void ActivityRanking::locationChanged(const QString &location)
 {
     qint64 currentTime = QDateTime::currentMSecsSinceEpoch();
 
-    kDebug() << ">>>> we have the new location" << location;
+    qDebug() << ">>>> we have the new location" << location;
 
     if (!d->activity.isEmpty()) {
         d->database.exec(

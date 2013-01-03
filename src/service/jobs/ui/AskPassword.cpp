@@ -20,7 +20,7 @@
 #include "AskPassword.h"
 #include "../../ui/Ui.h"
 
-#include <KDebug>
+#include <QDebug>
 
 namespace Jobs {
 namespace Ui {
@@ -75,7 +75,7 @@ void AskPassword::setUnlockMode(bool value)
 
 void AskPassword::start()
 {
-    kDebug() << ">>> AskPasswording for the password" << m_message;
+    qDebug() << ">>> AskPasswording for the password" << m_message;
 
     // Needed due to namespace collision with Jobs::Ui
     ::Ui::askPassword(m_title, m_message, m_shouldVerify, m_unlockMode,
@@ -84,7 +84,7 @@ void AskPassword::start()
 
 void AskPassword::passwordReturned(const QString & password)
 {
-    kDebug() << "returned password";
+    qDebug() << "returned password";
     global()->setProperty(passwordField(), password);
 
     if (password.isEmpty()) {

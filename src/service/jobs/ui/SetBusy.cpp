@@ -20,7 +20,7 @@
 #include "SetBusy.h"
 #include "../../ui/Ui.h"
 
-#include <KDebug>
+#include <QDebug>
 
 namespace Jobs {
 namespace Ui {

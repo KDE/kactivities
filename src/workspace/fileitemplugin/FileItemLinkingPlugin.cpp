@@ -23,10 +23,10 @@
 #include <kfileitemlistproperties.h>
 
 #include <QMenu>
+#include <QDebug>
 
 #include <KLocale>
 #include <KPluginFactory>
-#include <KDebug>
 
 void FileItemLinkingPlugin::Private::actionTriggered()
 {
@@ -37,7 +37,7 @@ void FileItemLinkingPlugin::Private::actionTriggered()
     bool    link     = action->property("link").toBool();
     QString activity = action->property("activity").toString();
 
-    kDebug() << activity << link;
+    qDebug() << activity << link;
 
     foreach (const KUrl & item, items) {
         if (link) {

@@ -27,7 +27,7 @@
 #include <QDeclarativeItem>
 #include <QGLWidget>
 
-#include <KDebug>
+#include <QDebug>
 
 #include  <kdeclarative.h>
 

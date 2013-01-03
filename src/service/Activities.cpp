@@ -27,9 +27,9 @@
 #include <QDBusConnection>
 #include <QDBusInterface>
 #include <QUuid>
-#include <KLocalizedString>
+#include <QDebug>
 
-#include <KDebug>
+#include <KLocalizedString>
 
 #include <config-features.h>
 
@@ -74,9 +74,9 @@ Activities::Private::~Private()
 Activities::Activities(QObject * parent)
     : Module("activities", parent), d(this)
 {
-    kDebug() << "\n\n-------------------------------------------------------";
-    kDebug() << "Starting the KDE Activity Manager daemon" << QDateTime::currentDateTime();
-    kDebug() << "-------------------------------------------------------";
+    qDebug() << "\n\n-------------------------------------------------------";
+    qDebug() << "Starting the KDE Activity Manager daemon" << QDateTime::currentDateTime();
+    qDebug() << "-------------------------------------------------------";
 
     // Basic initialization //////////////////////////////////////////////////////////////////////////////////
 
@@ -370,7 +370,7 @@ void Activities::Private::loadLastPublicActivity()
 
     if (!lastPublicActivity.isEmpty()) {
         // Setting the found public activity to be the current one
-        kDebug() << "Setting the activity to be the last public activity" << lastPublicActivity;
+        qDebug() << "Setting the activity to be the last public activity" << lastPublicActivity;
         setCurrentActivity(lastPublicActivity);
 
     } else {
@@ -719,7 +719,7 @@ void Activities::Private::ensureCurrentActivityIsRunning()
 
     if (!runningActivities.contains(currentActivity)) {
         if (runningActivities.size() > 0) {
-            kDebug() << "Somebody called ensureCurrentActivityIsRunning?";
+            qDebug() << "Somebody called ensureCurrentActivityIsRunning?";
             setCurrentActivity(runningActivities.first());
         }
     }
@@ -729,30 +729,30 @@ void Activities::Private::ensureCurrentActivityIsRunning()
 
 void Activities::StartActivity(const QString & id)
 {
-    kDebug() << "Starting activity" << id;
+    qDebug() << "Starting activity" << id;
 
     if (!d->activities.contains(id) ||
             d->activities[id] != Stopped) {
-        kDebug() << "Activity is not stopped..." << d->activities[id];
+        qDebug() << "Activity is not stopped..." << d->activities[id];
         return;
     }
 
-    kDebug() << "Starting the session";
+    qDebug() << "Starting the session";
     d->setActivityState(id, Starting);
     d->ksmserver->startActivitySession(id);
 }
 
 void Activities::StopActivity(const QString & id)
 {
-    kDebug() << "Stopping activity" << id;
+    qDebug() << "Stopping activity" << id;
 
     if (!d->activities.contains(id) ||
             d->activities[id] == Stopped) {
-        kDebug() << "Already stopped";
+        qDebug() << "Already stopped";
         return;
     }
 
-    kDebug() << "Stopping the session";
+    qDebug() << "Stopping the session";
     d->setActivityState(id, Stopping);
     d->ksmserver->stopActivitySession(id);
 }

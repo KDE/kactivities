@@ -20,7 +20,7 @@
 #include "Message.h"
 #include "../../ui/Ui.h"
 
-#include <KDebug>
+#include <QDebug>
 
 namespace Jobs {
 namespace Ui {
@@ -56,7 +56,7 @@ void Message::setTitle(const QString & title)
 
 void Message::start()
 {
-    kDebug() << ">>> Writing the message out" << m_message;
+    qDebug() << ">>> Writing the message out" << m_message;
     Ui::message(m_title, m_message);
     emit emitResult();
 }

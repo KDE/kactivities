@@ -27,7 +27,7 @@
 #include <QLabel>
 #include <QSignalMapper>
 
-#include <KDebug>
+#include <QDebug>
 
 #include <utils/d_ptr_implementation.h>
 
@@ -68,7 +68,7 @@ public:
         void run() {
             const QString & password = askPassword(title, message, newPassword, unlockMode);
 
-            kDebug() << "Got password .... sending it to" << receiver << slot;
+            qDebug() << "Got password .... sending it to" << receiver << slot;
 
             QMetaObject::invokeMethod(receiver, slot, Qt::QueuedConnection,
                     Q_ARG(QString, password));
@@ -98,7 +98,7 @@ public:
         }
 
         void run() {
-            kDebug();
+            qDebug();
 
             KDialog dialog;
             dialog.setWindowFlags(Qt::WindowStaysOnTopHint | dialog.windowFlags());

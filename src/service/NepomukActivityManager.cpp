@@ -29,7 +29,6 @@
 
 #include "kao.h"
 #include <KConfigGroup>
-#include <KDebug>
 
 #include <Soprano/Vocabulary/NAO>
 #include <Soprano/QueryResultIterator>
@@ -44,6 +43,7 @@
 #include <QDBusServiceWatcher>
 #include <QDBusConnection>
 #include <QDBusConnectionInterface>
+#include <QDebug>
 
 #include <Activities.h>
 
@@ -394,7 +394,7 @@ void NepomukActivityManager::toRealUri(KUrl & kuri)
 
 void NepomukActivityManager::nepomukServiceStarted()
 {
-    kDebug() << "Nepomuk was started";
+    qDebug() << "Nepomuk was started";
     m_nepomukPresent = true;
     init(nullptr);
 
@@ -406,7 +406,7 @@ void NepomukActivityManager::nepomukServiceStarted()
 
 void NepomukActivityManager::nepomukServiceStopped()
 {
-    kDebug() << "Nepomuk was stopped";
+    qDebug() << "Nepomuk was stopped";
     m_nepomukPresent = false;
 }
 

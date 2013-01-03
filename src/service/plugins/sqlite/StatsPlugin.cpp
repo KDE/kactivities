@@ -32,8 +32,8 @@
 #include <QFileSystemWatcher>
 #include <QSqlDatabase>
 #include <QSqlQuery>
+#include <QDebug>
 
-#include <KDebug>
 #include <KStandardDirs>
 
 // #include "Rankings.h"
