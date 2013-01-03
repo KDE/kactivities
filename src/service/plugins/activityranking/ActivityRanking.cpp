@@ -374,7 +374,7 @@ void ActivityRanking::init(QObject * activities)
     d->database.setDatabaseName(path);
 
     if (!d->database.open()) {
-        qWarning() << "Can't open sqlite database" << d->database.lastError() << path;
+        qDebug() << "Can't open sqlite database" << d->database.lastError() << path;
         return;
     }
 
