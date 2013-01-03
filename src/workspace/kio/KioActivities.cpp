@@ -37,33 +37,6 @@
 #include <Soprano/Model>
 #include <Soprano/Node>
 
-// #define KIO_ACTIVITIES_DEBUG
-
-#ifdef KIO_ACTIVITIES_DEBUG
-class KioDebug {
-public:
-    QDebug & kioDebug() {
-        static QFile log_file("/tmp/kio_activities");
-        log_file.flush();
-        log_file.close();
-        log_file.open(QIODevice::WriteOnly | QIODevice::Append);
-
-        static QDebug log_stream(&log_file);
-        return log_stream;
-    }
-} _kiodebug;
-
-QDebug & kioDebug()
-{
-    return _kiodebug.kioDebug();
-}
-#else
-QDebug kioDebug()
-{
-    return qDebug();
-}
-#endif
-
 #include <KUrl>
 #include <KUser>
 #include <KComponentData>
@@ -107,7 +80,6 @@ public:
     {
         KIO::UDSEntry uds;
         QDateTime dt(date, QTime(0, 0, 0));
-        kioDebug() << "ActivitiesProtocol createFolderUDSEntry" << name << displayName << date << '\n';
         uds.insert(KIO::UDSEntry::UDS_NAME, name);
         uds.insert(KIO::UDSEntry::UDS_DISPLAY_NAME, displayName);
         uds.insert(KIO::UDSEntry::UDS_FILE_TYPE, S_IFDIR);
@@ -126,10 +98,6 @@ public:
         KFileItem fileItem(KFileItem::Unknown, KFileItem::Unknown, url, false);
 
         QByteArray encodedPath = QUrl::toPercentEncoding(url.url());
-
-        kioDebug() << ">>>"
-            << fileItem.name() << fileItem.mimetype()
-            << '\n';
 
         uds.insert(KIO::UDSEntry::UDS_NAME, QString::fromUtf8(encodedPath));
         uds.insert(KIO::UDSEntry::UDS_DISPLAY_NAME, fileItem.name());
@@ -150,7 +118,6 @@ public:
 
     Nepomuk::Query::Query buildQuery(const QString & activityId) const
     {
-        kioDebug() << "ActivitiesProtocol building query for" << activityId << '\n';
         Nepomuk::Resource activityResource(activityId, KAO::Activity());
 
         Nepomuk::Query::FileQuery query;
@@ -159,9 +126,6 @@ public:
         usedActivity.setInverted(true);
 
         query.setTerm(usedActivity);
-
-        kioDebug() << "ActivitiesProtocol query: " << query.toSearchUrl();
-        kioDebug() << "ActivitiesProtocol query: " << query.toSparqlQuery();
 
         return query;
     }
@@ -235,8 +199,6 @@ public:
         activityId.clear();
         filename.clear();
 
-        kioDebug() << "parsing ... " << url << '\n';
-
         if (url.path().length() <= 1) {
             return RootItem;
         }
@@ -268,15 +230,11 @@ private:
 ActivitiesProtocol::ActivitiesProtocol(const QByteArray & poolSocket, const QByteArray & appSocket)
     : KIO::ForwardingSlaveBase("activities", poolSocket, appSocket), d(new Private(this))
 {
-    // qDebug();
-    kioDebug() << "ActivitiesProtocol constructor" << '\n';
 }
 
 
 ActivitiesProtocol::~ActivitiesProtocol()
 {
-    // qDebug();
-    kioDebug() << "ActivitiesProtocol destr" << '\n';
     delete d;
 }
 
@@ -319,9 +277,6 @@ void ActivitiesProtocol::mkdir(const KUrl & url, int permissions)
 
 void ActivitiesProtocol::get(const KUrl & url)
 {
-    // qDebug() << url;
-    kioDebug() << "ActivitiesProtocol get" << url << '\n';
-
     if (d->parseUrl(url)) {
         ForwardingSlaveBase::get(url);
 
@@ -334,9 +289,6 @@ void ActivitiesProtocol::get(const KUrl & url)
 
 void ActivitiesProtocol::put(const KUrl & url, int permissions, KIO::JobFlags flags)
 {
-    // qDebug() << url;
-    kioDebug() << "ActivitiesProtocol put" << url << '\n';
-
     if (d->parseUrl(url)) {
         ForwardingSlaveBase::put(url, permissions, flags);
     }
@@ -387,8 +339,6 @@ void ActivitiesProtocol::mimetype(const KUrl & url)
 
 void ActivitiesProtocol::stat(const KUrl & url)
 {
-    kioDebug() << "ActivitiesProtocol stat for" << url << '\n';
-
     switch (d->parseUrl(url)) {
         case Private::RootItem:
         {
@@ -416,8 +366,6 @@ void ActivitiesProtocol::stat(const KUrl & url)
         case Private::ActivityPathItem:
         case Private::PrivateActivityPathItem:
         {
-            // kioDebug() << "stat for ActivityPathItem" << d->filename << '\n';
-
             // QString path = QUrl::fromPercentEncoding(d->filename.toUtf8());
             // statEntry(d->createUDSEntryForUrl(KUrl(path)));
             // finished();
@@ -437,19 +385,13 @@ void ActivitiesProtocol::stat(const KUrl & url)
 // only used for the queries
 bool ActivitiesProtocol::rewriteUrl(const KUrl & url, KUrl & newURL)
 {
-    kioDebug() << "REWRITE URL ----------------------------------\n";
-    kioDebug() << "original url" << url.url() << '\n';
     Private::Path pathType = d->parseUrl(url);
 
     if (pathType == Private::ActivityPathItem) {
-        kioDebug() << "Activity path item for" << d->activityId << " " << d->filename << '\n';
-
         QString path = QUrl::fromPercentEncoding(d->filename.toUtf8());
         newURL = KUrl(path);
 
-        kioDebug() << "NEW:" << newURL << "-------------\n";
         return true;
-
     }
 
     if (pathType == Private::PrivateActivityPathItem) {

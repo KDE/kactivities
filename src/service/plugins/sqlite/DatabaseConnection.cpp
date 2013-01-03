@@ -256,7 +256,7 @@ DatabaseConnection::DatabaseConnection()
     d->initialized = d->database.open();
 
     if (!d->initialized) {
-        qWarning() << "Failed to open the database" << path
+        qDebug() << "Failed to open the database" << path
             << d->database.lastError();
     }
 

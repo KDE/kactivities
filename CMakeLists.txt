@@ -7,6 +7,15 @@ include (MacroLibrary)
 include (MacroOptionalAddSubdirectory)
 include (FindPackageHandleStandardArgs)
 
+# Until this is set by FindQt, we are defining the
+# QT_NO_DEBUG_OUTPUT if this is not a debug build
+
+string (TOLOWER ${CMAKE_BUILD_TYPE} CMAKE_BUILD_TYPE_TOLOWER)
+if (NOT CMAKE_BUILD_TYPE_TOLOWER MATCHES "debug")
+    add_definitions(-DQT_NO_DEBUG_OUTPUT)
+endif()
+
+
 set (
     CMAKE_MODULE_PATH
     ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules
