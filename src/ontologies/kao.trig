@@ -102,14 +102,6 @@ kao: {
           rdfs:label "calculated score" ;
           rdfs:range xsd:float ;
           nrl:maxCardinality "1" .
-
-    kao:originalUrlBeforeEncryption
-          a rdf:Property ;
-          rdfs:comment "URL of a FileDataObject before it was moved into the encrypted activity folder" ;
-          rdfs:domain nfo:FileDataObject ;
-          rdfs:label "Original URL" ;
-          rdfs:range rdfs:Resource ;
-          nrl:maxCardinality "1" .
 }
 
 <http://nepomuk.kde.org/ontologies/2012/02/29/kao/metadata> {

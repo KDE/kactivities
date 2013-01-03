@@ -28,7 +28,6 @@ kde4_add_plugin (
 target_link_libraries (
     activitymanager_plugin_slc
     ${KDE4_KDECORE_LIBS}
-    ${KDE4_KDEUI_LIBS}
     )
 
 install (TARGETS activitymanager_plugin_slc DESTINATION ${PLUGIN_INSTALL_DIR})
