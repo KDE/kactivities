@@ -36,9 +36,6 @@
 
 #include <NepomukActivityManager.h>
 
-#include "jobs/encryption/all.h"
-#include "jobs/nepomuk/all.h"
-
 #include <time.h>
 
 #include "common.h"
@@ -362,15 +359,6 @@ void Resources::RegisterResourceTitle(const QString & uri, const QString & title
 
 void Resources::LinkResourceToActivity(const QString & uri, const QString & activity)
 {
-    #ifdef HAVE_NEPOMUK
-    // Moves the files related to the activity to
-    // the private encrypted folder
-    if (Jobs::Encryption::Common::isActivityEncrypted(activity)) {
-        Jobs::Nepomuk::move(activity, true, QStringList() << uri)
-            ->create(this)->start();
-    }
-    #endif
-
     // Links the resource to the activity
     return doWithNepomukForActivity(activity, [&uri,this] (const QString & activity)
         {
@@ -383,15 +371,6 @@ void Resources::LinkResourceToActivity(const QString & uri, const QString & acti
 
 void Resources::UnlinkResourceFromActivity(const QString & uri, const QString & activity)
 {
-    #ifdef HAVE_NEPOMUK
-    // Moves the files related to the activity from
-    // the private encrypted folder
-    if (Jobs::Encryption::Common::isActivityEncrypted(activity)) {
-        Jobs::Nepomuk::move(activity, true, QStringList() << uri)
-            ->create(this)->start();
-    }
-    #endif
-
     // Unlinks the resource to the activity
     return doWithNepomukForActivity(activity, [&uri,this] (const QString & activity)
         {

@@ -126,7 +126,6 @@ set_target_properties (
 target_link_libraries (
     kactivities-models
     ${KDE4_KDECORE_LIBS}
-    ${KDE4_KDEUI_LIBS}
     ${KDE4_KIO_LIBS}
     ${NEPOMUK_CORE_LIBRARY}
     ${SOPRANO_LIBRARIES}
@@ -136,7 +135,6 @@ target_link_libraries (
     kactivities-models-component-plugin
     kactivities-models
     ${KDE4_KDECORE_LIBS}
-    ${KDE4_KDEUI_LIBS}
     ${KDE4_KIO_LIBS}
     ${NEPOMUK_CORE_LIBRARY}
     ${SOPRANO_LIBRARIES}

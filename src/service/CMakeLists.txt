@@ -52,7 +52,6 @@ set (plugin_implementation_SRCS
     )
 
 add_subdirectory (plugins)
-add_subdirectory (ui/plugins)
 
 set (activity_manager_SRCS
     Application.cpp
@@ -81,31 +80,10 @@ set (activity_manager_SRCS
 
     jobs/general/Call.cpp
 
-    jobs/ui/Message.cpp
-    jobs/ui/AskPassword.cpp
-    jobs/ui/Ask.cpp
-    jobs/ui/SetBusy.cpp
-
-    jobs/encryption/private/Encfs.cpp
-    jobs/encryption/Common.cpp
-    jobs/encryption/Mount.cpp
-    jobs/encryption/InitializeStructure.cpp
-
     jobs/ksmserver/KSMServer.cpp
-
-    ui/UiHandler.cpp
-    ui/Ui.cpp
 
     ${sdo_SRCS}
     )
-
-if (NepomukCore_FOUND)
-    set (
-        activity_manager_SRCS
-        ${activity_manager_SRCS}
-        jobs/nepomuk/Move.cpp
-        )
-endif ()
 
 qt4_add_dbus_adaptor (
     activity_manager_SRCS
@@ -129,9 +107,7 @@ kde4_add_executable (activity-manager ${activity_manager_SRCS})
 
 target_link_libraries (activity-manager
     ${KDE4_KDECORE_LIBS}
-    ${KDE4_KDEUI_LIBS} # TODO: Remove kdeui
     ${KDE4_KIO_LIBS}   # TODO: Remove kio
-    ${KDECLARATIVE_LIBRARIES} # TODO: Can this be avoided?
     ${ADDITIONAL_LINK_LIBS}
     )
 

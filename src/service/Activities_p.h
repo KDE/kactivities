@@ -40,9 +40,9 @@ public:
     Private(Activities * parent);
     ~Private();
 
-    // Loads the last non-private activity
+    // Loads the last activity
     // the user has used
-    void loadLastPublicActivity();
+    void loadLastActivity();
 
     // If the current activity is not running,
     // make some other activity current
@@ -64,10 +64,6 @@ public:
 
     // Interface to the session management
     KSMServer * ksmserver;
-
-    // Encryption
-    void setActivityEncrypted(const QString & activity, bool encrypted);
-    bool isActivityEncrypted(const QString & activity) const;
 
 public:
     KConfigGroup activitiesConfig();
@@ -92,17 +88,8 @@ public Q_SLOTS:
 
     void emitCurrentActivityChanged(const QString & activity);
 
-    void screensaverServiceRegistered();
-
-public Q_SLOTS:
-    void screenLockStateChanged(const bool locked);
-    void checkForSetCurrentActivityError(KJob * job);
-
 private:
     Activities * const q;
-
-    QDBusInterface * screensaverInterface; // just keeping it for the signals
-    QString currentActivityBeforeScreenLock;
 };
 
 #endif // ACTIVITY_MANAGER_P_H

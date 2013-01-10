@@ -20,12 +20,4 @@ service.
 .SH SERVICE
 
 .TP
-.B Activity encryption
-For the encryption to work, FUSE needs to be properly set up and encfs
-installed. If the locations of fusermount and encfs are not standard
-(/bin/fusermount and /usr/bin/encfs) you can set the custom ones by
-supplying cmake with a few additional parameters:
-
-    -DFUSERMOUNT_PATH="/path/to/fusermount"
-    -DENCFS_PATH="/path/to/encfs"
 

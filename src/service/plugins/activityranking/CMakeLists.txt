@@ -37,7 +37,6 @@ target_link_libraries (
     activitymanager_plugin_activityranking
     ${QT_QTSQL_LIBRARIES}
     ${KDE4_KDECORE_LIBS}
-    ${KDE4_KDEUI_LIBS}
     )
 
 install (TARGETS activitymanager_plugin_activityranking DESTINATION ${PLUGIN_INSTALL_DIR})

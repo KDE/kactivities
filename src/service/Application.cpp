@@ -39,8 +39,6 @@
 #include <stdlib.h>
 #include <memory>
 
-#include "jobs/encryption/Common.h"
-
 #include <utils/nullptr.h>
 #include <utils/override.h>
 #include <utils/d_ptr_implementation.h>
@@ -220,11 +218,7 @@ void Application::quit()
 }
 
 
-
 // Leaving object oriented world :)
-
-static void initSignalCatching();
-
 
 int main(int argc, char ** argv)
 {
@@ -236,50 +230,6 @@ int main(int argc, char ** argv)
 
     KCmdLineArgs::init(argc, argv, &about);
 
-    if (!KCmdLineArgs::allArguments().contains("--nofork"))
-        initSignalCatching();
-
     return Application::self()->exec();
 }
 
-// Signal handling
-static void signalHandler(int sig)
-{
-    Jobs::Encryption::Common::unmountAll();
-
-    Application::quit();
-
-    // something (probably ksmserver) has asked us to terminate.
-    // If it is really ksmserver then the user is probably logging out, so we
-    // had better gently stop now than be killed.
-    if (sig == SIGTERM) {
-        //qDebug() << "signalHandler(SIGTERM): stopping ActivityManager\n";
-
-        // ActivityManager::self()->Stop();
-    }
-
-    // If we have crashed, then restart
-    if (sig == SIGSEGV) {
-        qDebug() << "Calling the crash handler...";
-        KCrash::defaultCrashHandler(SIGSEGV);
-    }
-
-    ::exit(EXIT_SUCCESS);
-}
-
-static void initSignalCatching() {
-#ifndef Q_OS_WIN32 // krazy:skip
-    struct sigaction action;
-
-    ::sigemptyset(&action.sa_mask);
-    action.sa_flags = 0;
-
-    /* Use the sa_sigaction field because the handles has two additional parameters */
-    action.sa_handler = signalHandler;
-
-    ::sigaction(SIGINT,  &action, nullptr);
-    ::sigaction(SIGHUP,  &action, nullptr);
-    ::sigaction(SIGTERM, &action, nullptr);
-    ::sigaction(SIGSEGV, &action, nullptr);
-#endif
-}

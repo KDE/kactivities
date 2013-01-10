@@ -34,19 +34,9 @@
 #include <config-features.h>
 
 #include "jobs/activity/all.h"
-#include "jobs/encryption/all.h"
 #include "jobs/general/all.h"
-#include "jobs/nepomuk/all.h"
 #include "jobs/schedulers/all.h"
-#include "jobs/ui/all.h"
 #include "jobs/ksmserver/KSMServer.h"
-
-#ifdef HAVE_NEPOMUK
-#include "jobs/encryption/Common.h"
-#include "jobs/nepomuk/Move.h"
-#endif
-
-#include "ui/Ui.h"
 
 #include "common.h"
 
@@ -59,8 +49,7 @@
 
 Activities::Private::Private(Activities * parent)
     : config("activitymanagerrc"),
-      q(parent),
-      screensaverInterface(nullptr)
+      q(parent)
 {
 }
 
@@ -97,15 +86,6 @@ Activities::Activities(QObject * parent)
     connect(d->ksmserver, SIGNAL(activitySessionStateChanged(QString, int)),
             d.get(), SLOT(activitySessionStateChanged(QString, int)));
 
-    // Listen to screensaver for starting/stopping
-
-    val screensaverWatcher = new QDBusServiceWatcher("org.kde.screensaver",
-            QDBusConnection::sessionBus(),
-            QDBusServiceWatcher::WatchForRegistration,
-            this);
-    connect(screensaverWatcher, SIGNAL(serviceRegistered(QString)), d.get(), SLOT(screensaverServiceRegistered()));
-    d->screensaverServiceRegistered();
-
     // Activity initialization ///////////////////////////////////////////////////////////////////////////////
 
     // Reading activities from the config file
@@ -135,110 +115,11 @@ Activities::Activities(QObject * parent)
             NepomukActivityManager::self(), SLOT(removeActivity(QString)));
 #endif
 
-    d->loadLastPublicActivity();
+    d->loadLastActivity();
 }
 
 Activities::~Activities()
 {
-}
-
-void Activities::Private::setActivityEncrypted(const QString & activity, bool encrypted)
-{
-    using namespace Jobs;
-    using namespace Jobs::Ui;
-    using namespace Jobs::Encryption;
-    using namespace Jobs::Encryption::Common;
-
-    // Is the encryption enabled?
-    if (!Encryption::Common::isEnabled()) return;
-
-    // check whether the previous state was the same
-    if (encrypted == isActivityEncrypted(activity)) return;
-
-    DEFINE_ORDERED_SCHEDULER(setActivityEncryptedJob);
-
-    if (encrypted) {
-        //   - ask for password
-        //   - initialize mount
-        //   - move the files, nepomuk stuff (TODO)
-
-        setActivityEncryptedJob
-
-        <<  // Ask for the password
-            askPassword(i18n("Activity Password"), i18n("Enter the password to use for encryption"), true)
-
-        <<  // Try to mount, or die trying :)
-            DO_OR_DIE(
-                mount(activity),
-                message(i18n("Error"), i18n("Error setting up the activity encryption")))
-
-        <<  // Initialize the directories, move previous activity data from non-private folders
-            initializeStructure(activity, InitializeStructure::InitializeInEncrypted)
-
-        #ifdef HAVE_NEPOMUK
-        <<  // Move the files that are linked to the activity to the encrypted folder
-            Jobs::Nepomuk::move(activity, true)
-        #endif
-
-        <<  // Delete the old activity folder
-            initializeStructure(activity, InitializeStructure::DeinitializeNormal)
-
-        ;
-
-    } else {
-        //   - unmount
-        //   - ask for password
-        //   - mount
-        //   - move the files, nepomuk stuff (TODO)
-        //   - unmount
-        //   - delete encryption directories
-
-        setActivityEncryptedJob
-
-        <<  // Unmount the activity
-            unmount(activity)
-
-        <<  // Mask the Ui as busy
-            setBusy()
-
-        <<  // Retrying to get the password until it succeeds or the user cancels password entry
-            RETRY_JOB(
-                askPassword(i18n("Unprotect Activity"), i18n("You are cancelling the protection of this activity. Its content will become public again and be accessed without a password.")),
-                mount(activity),
-                message(i18n("Error"), i18n("Error unlocking the activity.\nYou've probably entered a wrong password."))
-            )
-
-        #ifdef HAVE_NEPOMUK
-        <<  // Move the files that are linked to the activity to the encrypted folder
-            Jobs::Nepomuk::move(activity, false)
-        #endif
-
-        <<  // Initialize the directories for the normal
-            initializeStructure(activity, InitializeStructure::InitializeInNormal)
-
-        <<  // Unmount the activity yet again
-            FALLIBLE_JOB(unmount(activity))
-
-        <<  // This will remove encrypted folder
-            initializeStructure(activity, InitializeStructure::DeinitializeEncrypted)
-
-        ;
-    }
-
-    setActivityEncryptedJob
-
-    <<  // Signal the change
-        General::call(this, "ActivityChanged", activity);
-
-    connect(&setActivityEncryptedJob, SIGNAL(finished(KJob*)),
-            ::Ui::self(), SLOT(unsetBusy()));
-
-    setActivityEncryptedJob.start();
-}
-
-bool Activities::Private::isActivityEncrypted(const QString & activity) const
-{
-    return Jobs::Encryption::Common::isActivityEncrypted(activity);
 }
 
 QString Activities::CurrentActivity() const
@@ -258,25 +139,12 @@ bool Activities::SetCurrentActivity(const QString & id)
 bool Activities::Private::setCurrentActivity(const QString & activity)
 {
     using namespace Jobs;
-    using namespace Jobs::Ui;
-    using namespace Jobs::Encryption;
-    using namespace Jobs::Encryption::Common;
     using namespace Jobs::General;
 
     DEFINE_ORDERED_SCHEDULER(setCurrentActivityJob);
 
     // If the activity is empty, this means we are entering a limbo state
     if (activity.isEmpty()) {
-        // If the current activity is private, unmount it
-        if (isActivityEncrypted(currentActivity)) {
-            setCurrentActivityJob
-
-            <<  // Unmounting the activity, ignore the potential failure
-                FALLIBLE_JOB(unmount(currentActivity));
-
-            setCurrentActivityJob.start();
-        }
-
         currentActivity.clear();
         emit q->CurrentActivityChanged(currentActivity);
         return true;
@@ -290,114 +158,29 @@ bool Activities::Private::setCurrentActivity(const QString & activity)
     // TODO: Move this to job-based execution
     q->StartActivity(activity);
 
-    // If encrypted:
-    //   - ask for password
-    //   - try to unlock, cancel on fail
-    //   continue like it is not encrypted
-    //
-    // If not encrypted
     //   - unmount private activities
     //   - change the current activity and signal the change
 
-    // If the new activity is private
-    if (isActivityEncrypted(activity)) {
-
-        setCurrentActivityJob
-
-        <<  // Mask the Ui as busy
-            setBusy()
-
-        <<  // Retrying to get the password until it succeeds or the user cancels password entry
-            RETRY_JOB(
-                askPassword(i18n("Unlock Activity"), i18n("Enter the password to unlock the activity"),
-                            false, !currentActivityBeforeScreenLock.isEmpty()),
-                mount(activity),
-                message(i18n("Error"), i18n("Error unlocking the activity.\nYou've probably entered a wrong password."))
-            )
-
-        ;
-
-        connect(&setCurrentActivityJob, SIGNAL(finished(KJob*)),
-                                  this, SLOT(checkForSetCurrentActivityError(KJob*)));
-    }
-
-    // If the current activity is private, unmount it
-    if (isActivityEncrypted(currentActivity)) {
-        setCurrentActivityJob
-
-        <<  // Unmounting the activity, ignore the potential failure
-            FALLIBLE_JOB(unmount(currentActivity));
-    }
-
     setCurrentActivityJob
-
-    <<  // JIC, unmount everything apart from the new activity
-        unmountExcept(activity)
 
     <<  // Change the activity
         General::call(this, "emitCurrentActivityChanged", activity);
 
     setCurrentActivityJob.start();
 
-    connect(&setCurrentActivityJob, SIGNAL(finished(KJob*)),
-            ::Ui::self(), SLOT(unsetBusy()));
-
     return true;
 }
 
-void Activities::Private::loadLastPublicActivity()
+void Activities::Private::loadLastActivity()
 {
-    // Try to load the last used public (non-private) activity
+    // If there are no public activities, try to load the last used activity
+    val & lastUsedActivity = mainConfig().readEntry("currentActivity", QString());
 
-    auto lastPublicActivity = mainConfig().readEntry("lastUnlockedActivity", QString());
-
-    // If the last one turns out to be encrypted, try to load any public activity
-    if (lastPublicActivity.isEmpty() || isActivityEncrypted(lastPublicActivity)) {
-        lastPublicActivity.clear();
-
-        kamd::utils::find_if_assoc(activities,
-            [&lastPublicActivity] (const QString & activity, Activities::State) -> bool {
-                if (!Jobs::Encryption::Common::isActivityEncrypted(activity)) {
-                    lastPublicActivity = activity;
-                    return true;
-
-                } else {
-                    return false;
-                }
-            }
+    setCurrentActivity(
+        (lastUsedActivity.isEmpty() && activities.size() > 0)
+            ? activities.keys().at(0)
+            : lastUsedActivity
         );
-    }
-
-    if (!lastPublicActivity.isEmpty()) {
-        // Setting the found public activity to be the current one
-        qDebug() << "Setting the activity to be the last public activity" << lastPublicActivity;
-        setCurrentActivity(lastPublicActivity);
-
-    } else {
-        // First, lets notify everybody that there is no current activity
-        // Needs to be present so that until the activity gets unlocked,
-        // the environment knows we are in a kind of limbo state
-        setCurrentActivity(QString());
-
-        // If there are no public activities, try to load the last used activity
-        val & lastUsedActivity = mainConfig().readEntry("currentActivity", QString());
-
-        setCurrentActivity(
-            (lastUsedActivity.isEmpty() && activities.size() > 0)
-                ? activities.keys().at(0)
-                : lastUsedActivity
-            );
-    }
-}
-
-void Activities::Private::checkForSetCurrentActivityError(KJob * job)
-{
-    // If we have failed switching the activity, load the last used
-    // non-private activity
-
-    if (job->error()) {
-        loadLastPublicActivity();
-    }
 }
 
 void Activities::Private::emitCurrentActivityChanged(const QString & id)
@@ -409,10 +192,6 @@ void Activities::Private::emitCurrentActivityChanged(const QString & id)
     mainConfig().writeEntry("currentActivity", id);
 
     EXEC_NEPOMUK( setCurrentActivity(id) );
-
-    if (!isActivityEncrypted(id)) {
-        mainConfig().writeEntry("lastUnlockedActivity", id);
-    }
 
     scheduleConfigSync();
 
@@ -451,58 +230,15 @@ void Activities::RemoveActivity(const QString & activity)
 
     DEFINE_ORDERED_SCHEDULER(removeActivityJob);
 
-    // If encrypted:
-    //   - unmount if current (hmh, we can't delete the current activity?)
-    //   - ask for the password, and warn the user
-    //   - delete files (TODO)
-    //   - delete encryption directories (TODO)
-
     using namespace Jobs;
-    using namespace Jobs::Ui;
-    using namespace Jobs::Encryption;
-    using namespace Jobs::Encryption::Common;
     using namespace Jobs::General;
 
-    if (isActivityEncrypted(activity)) {
-
-        removeActivityJob
-
-        <<  // We need to ask the user whether he really wants to delete the
-            // activity once more since it implies removing the data as well
-            // in the case of private activities
-            TEST_JOB(
-                ask(i18n("Confirmation"),
-                    i18n("If you delete a private activity, all the documents and files that belong to it will also be deleted."),
-                    QStringList()
-                        << "Delete the activity"
-                        << "Cancel"
-                ), -1 // Expecting the first choice
-            )
-
-        <<  // unmount the activity
-            unmount(activity)
-
-        <<  // Retrying to get the password until it succeeds or the user cancels password entry
-            RETRY_JOB(
-                askPassword(i18n("Delete Activity"), i18n("Enter the password to delete this protected activity.")),
-                mount(activity),
-                message(i18n("Error"), i18n("Error unlocking the activity.\nYou've probably entered a wrong password."))
-            )
-
-        <<  // Unmount the activity yet again, and deinitialize
-            unmount(activity);
-    }
-
-    // If not encrypted:
     //   - stop
     //   - if it was current, switch to a running activity
     //   - remove from configs
     //   - signal the event
 
     removeActivityJob
-
-    <<  // Delete the activity data
-        initializeStructure(activity, InitializeStructure::DeinitializeBoth)
 
     <<  // Remove
         General::call(d.get(), "removeActivity", activity, true /* wait finished */);
@@ -660,23 +396,6 @@ void Activities::SetActivityIcon(const QString & id, const QString & icon)
     emit ActivityChanged(id);
 }
 
-void Activities::Private::screensaverServiceRegistered()
-{
-    delete screensaverInterface;
-
-    screensaverInterface = new QDBusInterface("org.freedesktop.ScreenSaver", "/ScreenSaver", "org.freedesktop.ScreenSaver");
-
-    if (screensaverInterface->isValid()) {
-        screensaverInterface->setParent(this);
-        connect(screensaverInterface, SIGNAL(ActiveChanged(bool)), this, SLOT(screenLockStateChanged(bool)));
-
-    } else {
-        delete screensaverInterface;
-        screensaverInterface = nullptr;
-
-    }
-}
-
 void Activities::Private::setActivityState(const QString & id, Activities::State state)
 {
     if (activities[id] == state) return;
@@ -783,34 +502,13 @@ int Activities::ActivityState(const QString & id) const
     return d->activities.contains(id) ? d->activities[id] : Invalid;
 }
 
-void Activities::Private::screenLockStateChanged(const bool locked)
-{
-    // Going into limbo state if the current activity
-    // is private, and the screen has been locked
-
-    if (locked) {
-        // already in limbo state.
-        if (currentActivity.isEmpty()) {
-            return;
-        }
-
-        if (isActivityEncrypted(currentActivity)) {
-            currentActivityBeforeScreenLock = currentActivity;
-            setCurrentActivity(QString());
-        }
-
-    } else if (!currentActivityBeforeScreenLock.isEmpty()) {
-        setCurrentActivity(currentActivityBeforeScreenLock);
-        currentActivityBeforeScreenLock.clear();
-
-    }
-}
-
 bool Activities::isFeatureOperational(const QStringList & feature) const
 {
-    if (feature.first() == "encryption") {
-        return Jobs::Encryption::Common::isEnabled();
-    }
+    Q_UNUSED(feature)
+
+    // if (feature.first() == "encryption") {
+    //     return Jobs::Encryption::Common::isEnabled();
+    // }
 
     return false;
 }
@@ -819,23 +517,25 @@ bool Activities::isFeatureEnabled(const QStringList & feature) const
 {
     return
         (feature.size() != 2)         ? false :
-        (feature[0] == "encryption")  ? d->isActivityEncrypted(feature[1]) :
+        // (feature[0] == "encryption")  ? d->isActivityEncrypted(feature[1]) :
         /* otherwise */                false;
 }
 
 void Activities::setFeatureEnabled(const QStringList & feature, bool value)
 {
+    Q_UNUSED(value)
+
     if (feature.size() != 2) return;
 
-    if (feature[0] == "encryption") {
-         d->setActivityEncrypted(feature[1], value);
-    }
+    // if (feature[0] == "encryption") {
+    //      d->setActivityEncrypted(feature[1], value);
+    // }
 }
 
 QStringList Activities::listFeatures(const QStringList & feature) const
 {
     Q_UNUSED(feature)
-    static QStringList features("encryption");
+    static QStringList features/* ("encryption") */;
 
     return features;
 }

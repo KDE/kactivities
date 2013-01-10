@@ -98,7 +98,6 @@ void StatsPlugin::loadConfiguration()
                 this, SLOT(loadConfiguration()));
     }
 
-    // TODO: Ignore encrypted
     m_blockedByDefault = config().readEntry("blocked-by-default", false);
     m_blockAll = false;
     m_whatToRemember = (WhatToRemember)config().readEntry("what-to-remember", (int)AllApplications);
