@@ -224,25 +224,28 @@ KUrl::List Info::linkedResources() const
 {
     KUrl::List result;
 
-    QDBusReply < QStringList > dbusReply = Manager::resources()->ResourcesLinkedToActivity(d->id);
+    // TODO: BLOCKER
+    // QDBusReply < QStringList > dbusReply = Manager::resources()->ResourcesLinkedToActivity(d->id);
 
-    if (dbusReply.isValid()) {
-        foreach (const QString & uri, dbusReply.value()) {
-            result << KUrl(uri);
-        }
-    }
+    // if (dbusReply.isValid()) {
+    //     foreach (const QString & uri, dbusReply.value()) {
+    //         result << KUrl(uri);
+    //     }
+    // }
 
     return result;
 }
 
 void Info::linkResource(const KUrl & resourceUri)
 {
-    Manager::resources()->LinkResourceToActivity(resourceUri.url(), d->id);
+    // TODO: BLOCKER
+    // Manager::resources()->LinkResourceToActivity(resourceUri.url(), d->id);
 }
 
 void Info::unlinkResource(const KUrl & resourceUri)
 {
-    Manager::resources()->UnlinkResourceFromActivity(resourceUri.url(), d->id);
+    // TODO: BLOCKER
+    // Manager::resources()->UnlinkResourceFromActivity(resourceUri.url(), d->id);
 }
 
 } // namespace KActivities

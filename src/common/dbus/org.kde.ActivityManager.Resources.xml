@@ -20,6 +20,7 @@
       <arg name="title" type="s" direction="in"/>
     </method>
 
+    <!--
     <method name="LinkResourceToActivity">
       <arg name="uri" type="s" direction="in"/>
       <arg name="activity" type="s" direction="in"/>
@@ -57,6 +58,7 @@
     <method name="ResourcesLinkedToActivity">
       <arg type="as" direction="out"/>
     </method>
+    -->
 
   </interface>
 </node>

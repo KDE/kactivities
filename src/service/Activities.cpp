@@ -20,8 +20,6 @@
 #include "Activities.h"
 #include "Activities_p.h"
 
-#include "NepomukActivityManager.h"
-
 #include "activitiesadaptor.h"
 
 #include <QDBusConnection>
@@ -102,19 +100,6 @@ Activities::Activities(QObject * parent)
         }
     }
 
-    // Synchronizing with nepomuk
-
-#ifdef HAVE_NEPOMUK
-    EXEC_NEPOMUK( init(this) );
-
-    connect(this, SIGNAL(CurrentActivityChanged(QString)),
-            NepomukActivityManager::self(), SLOT(setCurrentActivity(QString)));
-    connect(this, SIGNAL(ActivityAdded(QString)),
-            NepomukActivityManager::self(), SLOT(addActivity(QString)));
-    connect(this, SIGNAL(ActivityRemoved(QString)),
-            NepomukActivityManager::self(), SLOT(removeActivity(QString)));
-#endif
-
     d->loadLastActivity();
 }
 
@@ -190,8 +175,6 @@ void Activities::Private::emitCurrentActivityChanged(const QString & id)
 
     currentActivity = id;
     mainConfig().writeEntry("currentActivity", id);
-
-    EXEC_NEPOMUK( setCurrentActivity(id) );
 
     scheduleConfigSync();
 
@@ -369,8 +352,6 @@ void Activities::SetActivityName(const QString & id, const QString & name)
 
     d->activitiesConfig().writeEntry(id, name);
 
-    EXEC_NEPOMUK( setActivityName(id, name) );
-
     d->scheduleConfigSync();
 
     emit ActivityNameChanged(id, name);
@@ -387,8 +368,6 @@ void Activities::SetActivityIcon(const QString & id, const QString & icon)
     if (!d->activities.contains(id)) return;
 
     d->activityIconsConfig().writeEntry(id, icon);
-
-    EXEC_NEPOMUK( setActivityIcon(id, icon) );
 
     d->scheduleConfigSync();
 

@@ -22,56 +22,43 @@
 #include <QSet>
 
 #include <Plugin.h>
-#include "Rankings.h"
 
 #include <utils/nullptr.h>
 #include <utils/override.h>
 
 class QFileSystemWatcher;
 
-class StatsPlugin: public Plugin {
+class NepomukPlugin: public Plugin {
     Q_OBJECT
-    Q_CLASSINFO("D-Bus Interface", "org.kde.ActivityManager.Resources.Scoring")
 
 public:
-    explicit StatsPlugin(QObject *parent = nullptr, const QVariantList & args = QVariantList());
+    explicit NepomukPlugin(QObject *parent = nullptr, const QVariantList & args = QVariantList());
 
-    static StatsPlugin * self();
+    static NepomukPlugin * self();
 
     virtual bool init(const QHash < QString, QObject * > & modules) _override;
 
     QString currentActivity() const;
 
-Q_SIGNALS:
-    void resourceScoreUpdated(const QString & activity, const QString & client, const QString & resource, double score);
-
-public Q_SLOTS:
-    void deleteRecentStats(const QString & activity, int count, const QString & what);
-    void deleteEarlierStats(const QString & activity, int months);
-
 private Q_SLOTS:
-    void addEvents(const EventList & events);
-    void loadConfiguration();
+    void setActivityName(const QString & activity, const QString & name);
+    void setActivityIcon(const QString & activity, const QString & icon);
+    void setCurrentActivity(const QString & activity);
+    void addActivity(const QString & activity);
+    void removeActivity(const QString & activity);
+
+    void nepomukServiceStarted();
+    void nepomukServiceStopped();
+
+    // setResourceMimeType
+    // setResourceTitle
 
 private:
-    enum WhatToRemember {
-        AllApplications      = 0,
-        SpecificApplications = 1,
-        NoApplications       = 2
-    };
+    void syncActivities(const QStringList & activities);
 
-    Rankings * m_rankings;
     QObject * m_activities;
-    QObject * m_resources;
-    QFileSystemWatcher * m_configWatcher;
 
-    QSet <QString> m_apps;
-
-    bool m_blockedByDefault : 1;
-    bool m_blockAll : 1;
-    WhatToRemember m_whatToRemember : 2;
-
-    static StatsPlugin * s_instance;
+    static NepomukPlugin * s_instance;
 };
 
 #endif // PLUGINS_SQLITE_STATS_PLUGIN_H

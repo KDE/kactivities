@@ -20,8 +20,6 @@
 #include <Features.h>
 #include "featuresadaptor.h"
 
-#include <NepomukActivityManager.h>
-
 #include "common.h"
 
 #include <utils/d_ptr_implementation.h>
