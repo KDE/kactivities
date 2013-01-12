@@ -87,5 +87,4 @@ X-KDE-PluginInfo-Depends=
 X-KDE-PluginInfo-License=GPL
 X-KDE-PluginInfo-EnabledByDefault=true
 
-X-ActivityManager-PluginType=lazyeventhandler
-X-ActivityManager-PluginOverrides=activitymanager_plugin_dummy,activitymanager_plugin_nepomuk
+X-ActivityManager-PluginOverrides=activitymanager_plugin_dummy

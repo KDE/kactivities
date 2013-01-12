@@ -79,4 +79,3 @@ X-KDE-PluginInfo-Depends=
 X-KDE-PluginInfo-License=GPL
 X-KDE-PluginInfo-EnabledByDefault=true
 
-X-ActivityManager-PluginType=synceventhandler
