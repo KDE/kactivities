@@ -30,8 +30,8 @@ kde4_add_plugin (
 
 target_link_libraries (
     activitymanager_plugin_nepomuk
-    ${QT_QTSQL_LIBRARIES}
     ${KDE4_KDECORE_LIBS}
+    ${KDE4_KIO_LIBS}
     ${NEPOMUK_CORE_LIBRARY}
     ${SOPRANO_LIBRARIES}
     )

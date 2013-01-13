@@ -87,7 +87,7 @@ kde4_add_executable (activity-manager ${activity_manager_SRCS})
 
 target_link_libraries (activity-manager
     ${KDE4_KDECORE_LIBS}
-    ${KDE4_KIO_LIBS}   # TODO: Remove kio
+    ${KDE4_KDEUI_LIBS}   # KUniqueApplication
     ${ADDITIONAL_LINK_LIBS}
     )
 

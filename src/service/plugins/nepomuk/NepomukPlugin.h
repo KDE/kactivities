@@ -23,6 +23,9 @@
 
 #include <Plugin.h>
 
+#include <memory>
+
+#include <utils/d_ptr.h>
 #include <utils/nullptr.h>
 #include <utils/override.h>
 
@@ -33,12 +36,11 @@ class NepomukPlugin: public Plugin {
 
 public:
     explicit NepomukPlugin(QObject *parent = nullptr, const QVariantList & args = QVariantList());
+    ~NepomukPlugin();
 
     static NepomukPlugin * self();
 
     virtual bool init(const QHash < QString, QObject * > & modules) _override;
-
-    QString currentActivity() const;
 
 private Q_SLOTS:
     void setActivityName(const QString & activity, const QString & name);
@@ -47,18 +49,20 @@ private Q_SLOTS:
     void addActivity(const QString & activity);
     void removeActivity(const QString & activity);
 
-    void nepomukServiceStarted();
-    void nepomukServiceStopped();
+    void nepomukSystemStarted();
+    void nepomukSystemStopped();
 
     // setResourceMimeType
     // setResourceTitle
 
+public:
+    virtual bool isFeatureOperational(const QStringList & feature) const _override;
+    virtual bool isFeatureEnabled(const QStringList & feature) const _override;
+    virtual void setFeatureEnabled(const QStringList & feature, bool value) _override;
+    virtual QStringList listFeatures(const QStringList & feature) const _override;
+
 private:
-    void syncActivities(const QStringList & activities);
-
-    QObject * m_activities;
-
-    static NepomukPlugin * s_instance;
+    D_PTR;
 };
 
 #endif // PLUGINS_SQLITE_STATS_PLUGIN_H
