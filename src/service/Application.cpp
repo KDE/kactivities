@@ -145,7 +145,6 @@ void Application::loadPlugins()
     qDebug() << "These are the disabled plugins:" << disabledPlugins;
 
     // Loading plugins and initializing them
-
     foreach (val & service, offers) {
         if (disabledPlugins.contains(service->library()) ||
                 disabledPlugins.contains(service->property("X-KDE-PluginInfo-Name").toString() + "Enabled")) {
@@ -161,10 +160,13 @@ void Application::loadPlugins()
         val plugin = factory->create < Plugin > (this);
 
         if (plugin) {
-            qDebug() << "Initializing plugin:" << service->library();
-            plugin->init(Module::get());
+            qDebug() << "Got the plugin: " << service->library();
             d->plugins << plugin;
         }
+    }
+
+    foreach (Plugin * plugin, d->plugins) {
+        plugin->init(Module::get());
     }
 }
 

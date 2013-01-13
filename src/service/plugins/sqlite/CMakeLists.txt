@@ -6,7 +6,6 @@ set (
     StatsPlugin.cpp
     ResourceScoreCache.cpp
     ResourceScoreMaintainer.cpp
-    NepomukCommon.cpp
     ${plugin_implementation_SRCS}
     )
 
@@ -15,14 +14,6 @@ qt4_add_dbus_adaptor (
     org.kde.ActivityManager.Resources.Scoring.xml
     StatsPlugin.h StatsPlugin
     )
-
-if (NepomukCore_FOUND)
-    soprano_add_ontology (
-        sqliteplugin_SRCS
-        ${CMAKE_SOURCE_DIR}/src/ontologies/kao.trig
-        "KAO" "KDE::Vocabulary" "trig"
-        )
-endif ()
 
 include_directories (
     ${CMAKE_SOURCE_DIR}/src
@@ -43,8 +34,6 @@ target_link_libraries (
     activitymanager_plugin_sqlite
     ${QT_QTSQL_LIBRARIES}
     ${KDE4_KDECORE_LIBS}
-    ${NEPOMUK_CORE_LIBRARY}
-    ${SOPRANO_LIBRARIES}
     )
 
 install (TARGETS activitymanager_plugin_sqlite DESTINATION ${PLUGIN_INSTALL_DIR})

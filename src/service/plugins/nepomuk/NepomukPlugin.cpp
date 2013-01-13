@@ -20,6 +20,7 @@
 #include <config-features.h>
 
 #include "NepomukPlugin.h"
+#include "NepomukCommon.h"
 
 #include "../../Event.h"
 
@@ -41,8 +42,6 @@
 #include <utils/d_ptr_implementation.h>
 #include <utils/val.h>
 
-#include "kao.h"
-
 namespace Nepomuk = Nepomuk2;
 using namespace KDE::Vocabulary;
 
@@ -51,22 +50,16 @@ public:
     Private()
       : nepomuk(nullptr),
         activities(nullptr),
+        resourceScoring(nullptr),
         nepomukPresent(false)
     {
-    }
-
-    inline static
-    Nepomuk::Resource activityResource(const QString & id)
-    {
-        Q_ASSERT(!id.isEmpty());
-
-        return Nepomuk::Resource(id, KAO::Activity());
     }
 
     void syncActivities(const QStringList & activities = QStringList());
 
     Nepomuk::ResourceManager * nepomuk;
     QObject * activities;
+    QObject * resourceScoring;
     bool nepomukPresent;
 
     static NepomukPlugin * s_instance;
@@ -81,6 +74,8 @@ NepomukPlugin::NepomukPlugin(QObject *parent, const QVariantList & args)
 {
     Q_UNUSED(args)
     Private::s_instance = this;
+
+    setName("org.kde.ActivityManager.Nepomuk");
 }
 
 NepomukPlugin::~NepomukPlugin()
@@ -90,9 +85,8 @@ NepomukPlugin::~NepomukPlugin()
 
 bool NepomukPlugin::init(const QHash < QString, QObject * > & modules)
 {
+    // Listening to changes in activities
     d->activities = modules["activities"];
-
-    setName("org.kde.ActivityManager.Nepomuk");
 
     connect(d->activities, SIGNAL(ActivityAdded(QString)),
             this, SLOT(addActivity(QString)));
@@ -109,6 +103,17 @@ bool NepomukPlugin::init(const QHash < QString, QObject * > & modules)
     connect(d->activities, SIGNAL(CurrentActivityChanged(QString)),
             this, SLOT(setCurrentActivity(QString)));
 
+    // Listening to resource score changes
+    d->resourceScoring = modules["org.kde.ActivityManager.Resources.Scoring"];
+
+    connect(d->resourceScoring, SIGNAL(resourceScoreUpdated(QString, QString, QString, double)),
+            this, SLOT(resourceScoreUpdated(QString, QString, QString, double)));
+    connect(d->resourceScoring, SIGNAL(recentStatsDeleted(QString, int, QString)),
+            this, SLOT(deleteRecentStats(QString, int, QString)));
+    connect(d->resourceScoring, SIGNAL(earlierStatsDeleted(QString, int, QString)),
+            this, SLOT(deleteEarlierStats(QString, int, QString)));
+
+    // Initializing nepomuk
     d->nepomuk = Nepomuk::ResourceManager::instance();
     d->nepomuk->init();
 
@@ -135,7 +140,7 @@ void NepomukPlugin::setActivityName(const QString & activity, const QString & na
     Q_ASSERT(!name.isEmpty());
 
     if (d->nepomukPresent)
-        d->activityResource(activity).setLabel(name);
+        activityResource(activity).setLabel(name);
 }
 
 void NepomukPlugin::setActivityIcon(const QString & activity, const QString & icon)
@@ -143,7 +148,7 @@ void NepomukPlugin::setActivityIcon(const QString & activity, const QString & ic
     Q_ASSERT(!activity.isEmpty());
 
     if (d->nepomukPresent && !icon.isEmpty())
-        d->activityResource(activity).setSymbols(QStringList() << icon);
+        activityResource(activity).setSymbols(QStringList() << icon);
 }
 
 void NepomukPlugin::setCurrentActivity(const QString & activity)
@@ -168,7 +173,7 @@ void NepomukPlugin::removeActivity(const QString & activity)
     Q_ASSERT(!activity.isEmpty());
 
     if (d->nepomukPresent)
-        d->activityResource(activity).remove();
+        activityResource(activity).remove();
 
     org::kde::KDirNotify::emitFilesAdded(Private::protocol);
 }
@@ -218,6 +223,8 @@ void NepomukPlugin::Private::syncActivities(const QStringList & activityIds)
 {
     if (!nepomukPresent) return;
 
+    // If we got an empty list, it means we should synchronize
+    // all the activities known by the service
     foreach (val & activityId,
         (
             activityIds.isEmpty()
@@ -256,6 +263,22 @@ void NepomukPlugin::Private::syncActivities(const QStringList & activityIds)
         }
     }
 }
+
+void NepomukPlugin::resourceScoreUpdated(const QString & activity, const QString & client, const QString & resource, double score)
+{
+    if (!d->nepomukPresent) return;
+
+    updateNepomukScore(activity, client, resource, score);
+}
+
+void NepomukPlugin::deleteRecentStats(const QString & activity, int count, const QString & what)
+{
+}
+
+void NepomukPlugin::deleteEarlierStats(const QString & activity, int months)
+{
+}
+
 
 KAMD_EXPORT_PLUGIN(NepomukPlugin, "activitymanger_plugin_nepomuk")
 

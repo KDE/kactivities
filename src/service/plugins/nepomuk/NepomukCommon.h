@@ -22,8 +22,6 @@
 
 #include <config-features.h>
 
-#ifdef HAVE_NEPOMUK
-
 #include <Soprano/Vocabulary/NAO>
 #include <Soprano/QueryResultIterator>
 #include <Soprano/Node>
@@ -36,113 +34,28 @@
 
 #include "kao.h"
 
-#include <utils/val.h>
-
 namespace Nepomuk = Nepomuk2;
 using namespace KDE::Vocabulary;
 using namespace Nepomuk::Vocabulary;
 using namespace Soprano::Vocabulary;
 
-inline QUrl resourceForUrl(const QUrl & url)
-{
-    static val & query = QString::fromLatin1(
-            "select ?r where { "
-                "?r nie:url %1 . "
-            "} LIMIT 1");
+void updateNepomukScore(const QString & activity, const QString & application, const QUrl & resource, qreal score);
 
-    Soprano::QueryResultIterator it =
-        Nepomuk::ResourceManager::instance()->mainModel()->executeQuery(
-            query.arg(Soprano::Node::resourceToN3(url)), Soprano::Query::QueryLanguageSparql);
+QUrl resourceForUrl(const QUrl & url);
 
-    if (it.next()) {
-        return it[0].uri();
-
-    } else {
-        Nepomuk::Resource resource(url);
-        resource.setProperty(NIE::url(), url);
-
-        // Add more data to
-
-        return resource.uri();
-    }
-}
-
-inline QUrl resourceForId(const QString & id, const QUrl & type)
-{
-    static val & _query = QString::fromLatin1(
-            "select ?r where { "
-                "?r a %1 . "
-                "?r nao:identifier %2 . "
-            "} LIMIT 1");
-
-    val & query = _query.arg(
-            /* %1 */ Soprano::Node::resourceToN3(type),
-            /* %2 */ Soprano::Node::literalToN3(id)
-        );
-
-    Soprano::QueryResultIterator it =
-        Nepomuk::ResourceManager::instance()->mainModel()->executeQuery(
-            query, Soprano::Query::QueryLanguageSparql);
-
-    if (it.next()) {
-        return it[0].uri();
-
-    } else {
-        Nepomuk::Resource agent(QUrl(), type);
-        agent.setProperty(NAO::identifier(), id);
-
-        return agent.uri();
-    }
-}
-
+QUrl resourceForId(const QString & id, const QUrl & type);
 
 inline QString resN3(const QUrl & uri)
 {
     return Soprano::Node::resourceToN3(uri);
 }
 
-inline void updateNepomukScore(const QString & activity, const QString & application, const QUrl & resource, qreal score)
+inline Nepomuk::Resource activityResource(const QString & id)
 {
-    Nepomuk::Resource scoreCache;
+    Q_ASSERT(!id.isEmpty());
 
-    static val & _query = QString::fromLatin1("select ?r where { "
-                                    "?r a %1 . "
-                                    "?r kao:usedActivity %2 . "
-                                    "?r kao:initiatingAgent %3 . "
-                                    "?r kao:targettedResource %4 . "
-                                    "} LIMIT 1"
-            );
-
-    val query = _query.arg(
-                /* %1 */ resN3(KAO::ResourceScoreCache()),
-                /* %2 */ resN3(resourceForId(activity, KAO::Activity())),
-                /* %3 */ resN3(resourceForId(application, NAO::Agent())),
-                /* %4 */ resN3(resourceForUrl(resource))
-            );
-
-    auto it = Nepomuk::ResourceManager::instance()->mainModel()->executeQuery(query, Soprano::Query::QueryLanguageSparql);
-
-    if (it.next()) {
-        Nepomuk::Resource result(it[0].uri());
-        it.close();
-
-        scoreCache = result;
-
-    } else {
-        Nepomuk::Resource result(QUrl(), KAO::ResourceScoreCache());
-
-        result.setProperty(KAO::targettedResource(), resourceForUrl(resource));
-        result.setProperty(KAO::initiatingAgent(),   resourceForId(application, NAO::Agent()));
-        result.setProperty(KAO::usedActivity(),      resourceForId(activity, KAO::Activity()));
-
-        scoreCache = result;
-    }
-
-    scoreCache.removeProperty(NAO::score());
-    scoreCache.removeProperty(KAO::cachedScore());
-    scoreCache.setProperty(KAO::cachedScore(), score);
+    return Nepomuk::Resource(id, KAO::Activity());
 }
 
-#endif // HAVE_NEPOMUK
 #endif // PLUGINS_SQLITE_NEPOMUK_COMMON_H
 

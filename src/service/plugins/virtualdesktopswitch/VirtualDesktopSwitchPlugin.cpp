@@ -33,6 +33,8 @@ VirtualDesktopSwitchPlugin::VirtualDesktopSwitchPlugin(QObject * parent, const Q
       m_activitiesService(nullptr)
 {
     Q_UNUSED(args)
+
+    setName("org.kde.ActivityManager.VirtualDesktopSwitch");
 }
 
 VirtualDesktopSwitchPlugin::~VirtualDesktopSwitchPlugin()
@@ -42,8 +44,6 @@ VirtualDesktopSwitchPlugin::~VirtualDesktopSwitchPlugin()
 bool VirtualDesktopSwitchPlugin::init(const QHash < QString, QObject * > & modules)
 {
     qDebug() << "VirtualDesktopSwitch::init";
-
-    setName("org.kde.ActivityManager.VirtualDesktopSwitch");
 
     m_activitiesService = modules["activities"];
 

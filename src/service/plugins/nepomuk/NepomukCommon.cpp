@@ -19,6 +19,114 @@
 
 #include "NepomukCommon.h"
 
-#ifdef HAVE_NEPOMUK
+#include <utils/val.h>
 
-#endif // HAVE_NEPOMUK
+QUrl resourceForUrl(const QUrl & url)
+{
+    static val & query = QString::fromLatin1(
+            "select ?r where { "
+                "?r nie:url %1 . "
+            "} LIMIT 1");
+
+    Soprano::QueryResultIterator it =
+        Nepomuk::ResourceManager::instance()->mainModel()->executeQuery(
+            query.arg(Soprano::Node::resourceToN3(url)), Soprano::Query::QueryLanguageSparql);
+
+    if (it.next()) {
+        return it[0].uri();
+
+    } else {
+        Nepomuk::Resource resource(url);
+        resource.setProperty(NIE::url(), url);
+
+        // Add more data to
+
+        return resource.uri();
+    }
+}
+
+QUrl resourceForId(const QString & id, const QUrl & type)
+{
+    static val & _query = QString::fromLatin1(
+            "select ?r where { "
+                "?r a %1 . "
+                "?r nao:identifier %2 . "
+            "} LIMIT 1");
+
+    val & query = _query.arg(
+            /* %1 */ Soprano::Node::resourceToN3(type),
+            /* %2 */ Soprano::Node::literalToN3(id)
+        );
+
+    Soprano::QueryResultIterator it =
+        Nepomuk::ResourceManager::instance()->mainModel()->executeQuery(
+            query, Soprano::Query::QueryLanguageSparql);
+
+    if (it.next()) {
+        return it[0].uri();
+
+    } else {
+        Nepomuk::Resource agent(QUrl(), type);
+        agent.setProperty(NAO::identifier(), id);
+
+        return agent.uri();
+    }
+}
+
+void updateNepomukScore(const QString & activity, const QString & application, const QUrl & resource, qreal score)
+{
+    Nepomuk::Resource scoreCache;
+
+    // Selecting a ResourceScoreCache object that is assigned to the specified
+    // (activity, application, resource) triple
+    static val & _query = QString::fromLatin1("select ?r where { "
+                                    "?r a %1 . "
+                                    "?r kao:usedActivity %2 . "
+                                    "?r kao:initiatingAgent %3 . "
+                                    "?r kao:targettedResource %4 . "
+                                    "} LIMIT 1"
+            );
+
+    val query = _query.arg(
+                /* %1 */ resN3(KAO::ResourceScoreCache()),
+                /* %2 */ resN3(resourceForId(activity, KAO::Activity())),
+                /* %3 */ resN3(resourceForId(application, NAO::Agent())),
+                /* %4 */ resN3(resourceForUrl(resource))
+            );
+
+    auto it = Nepomuk::ResourceManager::instance()->mainModel()->executeQuery(query, Soprano::Query::QueryLanguageSparql);
+
+    // If it already exists - lucky us
+    // If it does not - we need to create a new one
+    if (it.next()) {
+        Nepomuk::Resource result(it[0].uri());
+        it.close();
+
+        scoreCache = result;
+
+    } else {
+        Nepomuk::Resource result(QUrl(), KAO::ResourceScoreCache());
+
+        result.setProperty(KAO::targettedResource(), resourceForUrl(resource));
+        result.setProperty(KAO::initiatingAgent(),   resourceForId(application, NAO::Agent()));
+        result.setProperty(KAO::usedActivity(),      resourceForId(activity, KAO::Activity()));
+
+        scoreCache = result;
+    }
+
+    // If the score is strictly positive, we are saving it in nepomuk,
+    // otherwise we are deleting the score cache since the negative
+    // and zero scores have no use.
+    // This is (mis)used when clearing the usage history - the
+    // Scoring object will send us a score smaller than zero
+    if (score > 0) {
+        scoreCache.removeProperty(NAO::score());
+        scoreCache.removeProperty(KAO::cachedScore());
+        scoreCache.setProperty(KAO::cachedScore(), score);
+
+    } else {
+        scoreCache.remove();
+
+    }
+}
+

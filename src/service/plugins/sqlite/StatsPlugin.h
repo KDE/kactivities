@@ -44,6 +44,8 @@ public:
 
 Q_SIGNALS:
     void resourceScoreUpdated(const QString & activity, const QString & client, const QString & resource, double score);
+    void recentStatsDeleted(const QString & activity, int count, const QString & what);
+    void earlierStatsDeleted(const QString & activity, int months);
 
 public Q_SLOTS:
     void deleteRecentStats(const QString & activity, int count, const QString & what);

@@ -66,6 +66,7 @@ KConfigGroup Plugin::config()
 void Plugin::setName(const QString & name)
 {
     Q_ASSERT(d->name.isEmpty());
+    Q_ASSERT(!name.isEmpty());
 
     d->name = name;
     registerModule(name, this);

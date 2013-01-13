@@ -43,12 +43,19 @@ public:
     virtual bool init(const QHash < QString, QObject * > & modules) _override;
 
 private Q_SLOTS:
+    // Activity slots
     void setActivityName(const QString & activity, const QString & name);
     void setActivityIcon(const QString & activity, const QString & icon);
     void setCurrentActivity(const QString & activity);
     void addActivity(const QString & activity);
     void removeActivity(const QString & activity);
 
+    // Resource score slots
+    void resourceScoreUpdated(const QString & activity, const QString & client, const QString & resource, double score);
+    void deleteRecentStats(const QString & activity, int count, const QString & what);
+    void deleteEarlierStats(const QString & activity, int months);
+
+    // Nepomuk slots
     void nepomukSystemStarted();
     void nepomukSystemStopped();
 
