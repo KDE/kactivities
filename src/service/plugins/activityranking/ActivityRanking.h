@@ -21,7 +21,6 @@
 #include <QObject>
 #include <QList>
 #include <QString>
-#include <QThread>
 
 #include "ActivityData.h"
 

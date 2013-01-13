@@ -26,13 +26,11 @@
 #include "../../Event.h"
 
 #include <QFileSystemWatcher>
-#include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QDebug>
 
 #include <KStandardDirs>
 
-// #include "Rankings.h"
 #include "DatabaseConnection.h"
 
 #include <utils/nullptr.h>

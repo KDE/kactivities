@@ -26,16 +26,12 @@
 
 #include "kao.h"
 
-#include <QFileSystemWatcher>
-#include <QSqlDatabase>
-#include <QSqlQuery>
 #include <QDebug>
 
 #include <Nepomuk2/Resource>
 #include <Nepomuk2/ResourceManager>
 #include <Nepomuk2/Variant>
 
-#include <KStandardDirs>
 #include <KDirNotify>
 
 #include <utils/nullptr.h>

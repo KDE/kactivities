@@ -20,8 +20,11 @@
 
 #include <QStringList>
 #include <QString>
+#include <QSignalMapper>
 
 #include <KAction>
+#include <KActionCollection>
+#include <KLocalizedString>
 
 #include <utils/nullptr.h>
 #include <utils/val.h>

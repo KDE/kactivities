@@ -19,7 +19,6 @@
 
 #include "ActivityData.h"
 
-#include <QMetaType>
 #include <QDBusMetaType>
 
 class ActivityDataStaticInit {
@@ -41,9 +40,9 @@ ActivityData::ActivityData()
 }
 
 ActivityData::ActivityData(const ActivityData & source)
+  : score(source.score),
+    id(source.id)
 {
-    score       = source.score;
-    id          = source.id;
 }
 
 ActivityData & ActivityData::operator = (const ActivityData & source)

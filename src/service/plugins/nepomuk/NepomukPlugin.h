@@ -18,9 +18,6 @@
 #ifndef PLUGINS_SQLITE_STATS_PLUGIN_H
 #define PLUGINS_SQLITE_STATS_PLUGIN_H
 
-#include <QObject>
-#include <QSet>
-
 #include <Plugin.h>
 
 #include <memory>

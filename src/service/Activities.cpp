@@ -23,11 +23,8 @@
 #include "activitiesadaptor.h"
 
 #include <QDBusConnection>
-#include <QDBusInterface>
 #include <QUuid>
 #include <QDebug>
-
-#include <KLocalizedString>
 
 #include <config-features.h>
 

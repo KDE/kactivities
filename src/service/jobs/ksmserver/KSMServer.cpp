@@ -23,7 +23,6 @@
 #include <QDBusConnection>
 #include <QDBusServiceWatcher>
 #include <QDBusInterface>
-#include <QDBusPendingCall>
 #include <QDBusPendingReply>
 #include <QDBusPendingCallWatcher>
 #include <QDebug>

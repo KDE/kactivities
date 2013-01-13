@@ -28,7 +28,6 @@
 #include <KCmdLineArgs>
 #include <KServiceTypeTrader>
 #include <KSharedConfig>
-#include <KConfigGroup>
 
 #include <Activities.h>
 #include <Resources.h>

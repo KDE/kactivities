@@ -19,15 +19,12 @@
 #ifndef PLUGINS_GLOBAL_SHORTCUTS_GLOBAL_SHORTCUTS_H
 #define PLUGINS_GLOBAL_SHORTCUTS_GLOBAL_SHORTCUTS_H
 
-#include <QSignalMapper>
-
-#include <KActionCollection>
-#include <KGlobalSettings>
-#include <KLocalizedString>
-
 #include <Plugin.h>
 
 #include <utils/override.h>
+
+class QSignalMapper;
+class KActionCollection;
 
 class GlobalShortcutsPlugin: public Plugin
 {

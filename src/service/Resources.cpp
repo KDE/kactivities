@@ -22,7 +22,6 @@
 #include "resourcesadaptor.h"
 
 #include <QDBusConnection>
-#include <QList>
 #include <QThread>
 #include <QMutex>
 #include <QMutexLocker>

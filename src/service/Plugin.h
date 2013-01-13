@@ -26,7 +26,6 @@
 #include <QMetaObject>
 
 #include <KPluginFactory>
-#include <KPluginLoader>
 #include <KConfigGroup>
 
 #include "Event.h"

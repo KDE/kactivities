@@ -20,13 +20,15 @@
 #ifndef PLUGINS_SQLITE_DATABASE_CONNECTION_H
 #define PLUGINS_SQLITE_DATABASE_CONNECTION_H
 
-#include <QDateTime>
 #include <QObject>
 #include <QUrl>
-
-#include <QSqlDatabase>
+#include <QDateTime>
 
 #include <utils/d_ptr.h>
+
+class QDateTime;
+class OUrl;
+class QSqlDatabase;
 
 class DatabaseConnection: public QObject {
     Q_OBJECT
