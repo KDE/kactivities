@@ -31,7 +31,7 @@
     AvailableModels::addModel(Title, QIcon::fromTheme(Icon), #Type)
 
 
-void LancelotComponentDataPlugin::registerTypes(const char * uri)
+void ActivitiesComponentDataPlugin::registerTypes(const char * uri)
 {
     qDebug() << "###########";
     Q_ASSERT(uri == QLatin1String("org.kde.activities.models"));

@@ -400,7 +400,7 @@ void ResourceModel::Private::newEntries(const QList < NQuery::Result > & entries
 
         if (entry.title.isEmpty()
             || resourceSet.contains(entry.url)
-            || entry.url.startsWith("filex://"))
+            || entry.url.startsWith(QLatin1String("filex://")))
                 continue;
 
         resourceSet << entry.url;

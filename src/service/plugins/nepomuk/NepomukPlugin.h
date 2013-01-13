@@ -15,8 +15,8 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef PLUGINS_SQLITE_STATS_PLUGIN_H
-#define PLUGINS_SQLITE_STATS_PLUGIN_H
+#ifndef PLUGINS_NEPOMUK_PLUGIN_H
+#define PLUGINS_NEPOMUK_PLUGIN_H
 
 #include <Plugin.h>
 
@@ -69,4 +69,4 @@ private:
     D_PTR;
 };
 
-#endif // PLUGINS_SQLITE_STATS_PLUGIN_H
+#endif // PLUGINS_NEPOMUK_PLUGIN_H

@@ -17,8 +17,8 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef KACTIVITIES_MODELS_ACTIVITIES_H_
-#define KACTIVITIES_MODELS_ACTIVITIES_H_
+#ifndef KACTIVITIES_MODELS_ACTIVITY_MODEL_H
+#define KACTIVITIES_MODELS_ACTIVITY_MODEL_H
 
 #include <QAbstractListModel>
 
@@ -80,5 +80,5 @@ private:
 } // namespace Models
 } // namespace KActivities
 
-#endif // KACTIVITIES_MODELS_ACTIVITIES_H_
+#endif // KACTIVITIES_MODELS_ACTIVITY_MODEL_H
 

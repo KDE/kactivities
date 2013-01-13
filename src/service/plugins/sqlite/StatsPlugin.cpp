@@ -130,7 +130,7 @@ void StatsPlugin::addEvents(const EventList & events)
     for (int i = 0; i < events.size(); i++) {
         val & event = events[i];
 
-        if (event.uri.startsWith("about")) continue;
+        if (event.uri.startsWith(QLatin1String("about"))) continue;
 
         val currentActivity = Plugin::callOn <QString, Qt::DirectConnection> (m_activities, "CurrentActivity", "QString");
 

@@ -43,8 +43,9 @@
 #include <utils/d_ptr_implementation.h>
 #include <utils/val.h>
 
-static QList < QThread * > s_moduleThreads;
-
+namespace {
+    QList < QThread * > s_moduleThreads;
+}
 
 // Runs a QObject inside a QThread
 
@@ -131,7 +132,7 @@ void Application::loadPlugins()
             disabledPlugins << plugin;
     }
 
-    // Adding overriden plugins into the list of disabled ones
+    // Adding overridden plugins into the list of disabled ones
 
     foreach (val & service, offers) {
         if (!disabledPlugins.contains(service->library())) {

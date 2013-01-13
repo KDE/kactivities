@@ -17,6 +17,9 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+#ifndef UTILS_P_H
+#define UTILS_P_H
+
 #include <QDBusPendingCallWatcher>
 
 #include <QMutex>
@@ -100,3 +103,6 @@ static inline void waitForCallFinished(QDBusPendingCallWatcher * watcher, QMutex
         mutex->unlock();
     }
 }
+
+#endif // UTILS_P_H
+

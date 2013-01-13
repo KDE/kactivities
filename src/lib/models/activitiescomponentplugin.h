@@ -17,18 +17,19 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef LANCELOT_DATA_PLUGIN_H
-#define LANCELOT_DATA_PLUGIN_H
+#ifndef ACTIVITIES_COMPONENT_PLUGIN_H
+#define ACTIVITIES_COMPONENT_PLUGIN_H
 
 #include <QDeclarativeExtensionPlugin>
 
-class LancelotComponentDataPlugin: public QDeclarativeExtensionPlugin {
+class ActivitiesComponentDataPlugin: public QDeclarativeExtensionPlugin {
     Q_OBJECT
 
 public:
     void registerTypes(const char * uri);
 };
 
-Q_EXPORT_PLUGIN2(lancelotcomponentdataplugin, LancelotComponentDataPlugin)
+Q_EXPORT_PLUGIN2(activitiescomponentdataplugin, ActivitiesComponentDataPlugin)
 
-#endif // LANCELOT_DATA_PLUGIN_H
+#endif // ACTIVITIES_COMPONENT_DATA_PLUGIN_H
+

@@ -64,7 +64,7 @@ bool GlobalShortcutsPlugin::init(const QHash < QString, QObject * > & modules)
 
     m_actionCollection->readSettings();
 
-    foreach (val action, m_actionCollection->actions()) {
+    foreach (val & action, m_actionCollection->actions()) {
         if (!activitiesList.contains(action->objectName().mid(objectNamePatternLength))) {
             m_actionCollection->removeAction(action);
         }
@@ -92,7 +92,7 @@ void GlobalShortcutsPlugin::activityAdded(const QString & activityId)
 
 void GlobalShortcutsPlugin::activityRemoved(const QString & activityId)
 {
-    foreach (val action, m_actionCollection->actions()) {
+    foreach (val & action, m_actionCollection->actions()) {
         if (activityId == action->objectName().mid(objectNamePatternLength)) {
             m_actionCollection->removeAction(action);
         }
@@ -103,7 +103,7 @@ void GlobalShortcutsPlugin::activityRemoved(const QString & activityId)
 
 void GlobalShortcutsPlugin::activityChanged(const QString & activityId)
 {
-    foreach (val action, m_actionCollection->actions()) {
+    foreach (val & action, m_actionCollection->actions()) {
         if (activityId == action->objectName().mid(objectNamePatternLength)) {
             action->setText(i18nc("@action", "Switch to activity \"%1\"", activityName(activityId)));
         }

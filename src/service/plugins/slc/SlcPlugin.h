@@ -15,8 +15,8 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef PLUGINS_SLC_SLC_H
-#define PLUGINS_SLC_SLC_H
+#ifndef PLUGINS_SLC_PLUGIN_H
+#define PLUGINS_SLC_PLUGIN_H
 
 #include <Plugin.h>
 
@@ -57,5 +57,5 @@ private:
     QString m_focussedResource;
 };
 
-#endif // PLUGINS_SLC_SLC_H
+#endif // PLUGINS_SLC_PLUGIN_H
 

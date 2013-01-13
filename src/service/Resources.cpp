@@ -81,8 +81,10 @@ Resources::Private::Private(Resources * parent)
 {
 }
 
-static EventList events;
-static QMutex events_mutex;
+namespace {
+    EventList events;
+    QMutex events_mutex;
+}
 
 void Resources::Private::run()
 {
@@ -162,8 +164,8 @@ void Resources::Private::addEvent(const Event & newEvent)
                     insertEvent(newEvent);
 
                     if (data.focussedResource.isEmpty()) {
-                        // This window haven't had anything focussed,
-                        // assuming the new document is focussed
+                        // This window haven't had anything focused,
+                        // assuming the new document is focused
 
                         data.focussedResource = newEvent.uri;
                         insertEvent(newEvent.deriveWithType(Event::FocussedIn));
@@ -256,7 +258,7 @@ void Resources::Private::windowClosed(WId windowId)
 
 void Resources::Private::activeWindowChanged(WId windowId)
 {
-    // If the focussed window has changed, we need to create a
+    // If the focused window has changed, we need to create a
     // FocussedOut event for the resource it contains,
     // and FocussedIn for the resource of the new active window.
     // The windows can do this manually, but if they are
