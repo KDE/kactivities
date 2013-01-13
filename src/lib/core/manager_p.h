@@ -24,6 +24,7 @@
 
 #include "activities_interface.h"
 #include "resources_interface.h"
+#include "resources_linking_interface.h"
 #include "features_interface.h"
 
 #include <QDBusServiceWatcher>
@@ -40,9 +41,10 @@ public:
 
     static bool isServicePresent();
 
-    static Service::Activities * activities();
-    static Service::Resources  * resources();
-    static Service::Features   * features();
+    static Service::Activities       * activities();
+    static Service::Resources        * resources();
+    static Service::ResourcesLinking * resourcesLinking();
+    static Service::Features         * features();
 
 public Q_SLOTS:
     void serviceOwnerChanged(const QString & serviceName, const QString & oldOwner, const QString & newOwner);
@@ -57,9 +59,10 @@ private:
 
     static Manager * s_instance;
 
-    Service::Activities * const m_activities;
-    Service::Resources  * const m_resources;
-    Service::Features   * const m_features;
+    Service::Activities        * const m_activities;
+    Service::Resources         * const m_resources;
+    Service::ResourcesLinking  * const m_resourcesLinking;
+    Service::Features          * const m_features;
 };
 
 } // namespace KActivities

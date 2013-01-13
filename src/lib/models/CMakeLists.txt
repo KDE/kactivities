@@ -106,6 +106,13 @@ qt4_add_dbus_interface (
     features_interface
     )
 
+qt4_add_dbus_interface (
+    kactivities-models_LIB_SRCS
+
+    ${CMAKE_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.ResourcesLinking.xml
+    resources_linking_interface
+    )
+
 kde4_add_library (
     kactivities-models SHARED
     ${kactivities-models_LIB_SRCS}

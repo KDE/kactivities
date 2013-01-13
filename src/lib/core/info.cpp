@@ -212,7 +212,7 @@ Info::Availability Info::availability() const
     if (Manager::activities()->ListActivities().value().contains(d->id)) {
         result = BasicInfo;
 
-        if (Manager::features()->IsFeatureOperational("resource-linking")) {
+        if (Manager::features()->IsFeatureOperational("org.kde.ActivityManager.Nepomuk/linking")) {
             result = Everything;
         }
     }
@@ -238,14 +238,17 @@ KUrl::List Info::linkedResources() const
 
 void Info::linkResource(const KUrl & resourceUri)
 {
-    // TODO: BLOCKER
-    // Manager::resources()->LinkResourceToActivity(resourceUri.url(), d->id);
+    Manager::resourcesLinking()->LinkResourceToActivity(resourceUri.url(), d->id);
 }
 
 void Info::unlinkResource(const KUrl & resourceUri)
 {
-    // TODO: BLOCKER
-    // Manager::resources()->UnlinkResourceFromActivity(resourceUri.url(), d->id);
+    Manager::resourcesLinking()->UnlinkResourceFromActivity(resourceUri.url(), d->id);
+}
+
+bool Info::isResourceLinked(const KUrl & resourceUri)
+{
+    return Manager::resourcesLinking()->IsResourceLinkedToActivity(resourceUri.url(), d->id);
 }
 
 } // namespace KActivities

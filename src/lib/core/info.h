@@ -181,6 +181,14 @@ public:
     KDE_DEPRECATED
     KUrl::List linkedResources() const;
 
+
+    /**
+     * @returns whether a resource is linked to this activity
+     * @note this method is <b>blocking</b>
+     * @since 4.11
+     */
+    bool isResourceLinked(const KUrl & resourceUri);
+
 Q_SIGNALS:
     /**
      * Emitted when the activity's name, icon or some custom property is changed

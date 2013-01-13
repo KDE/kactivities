@@ -7,6 +7,12 @@ set (
     ${plugin_implementation_SRCS}
     )
 
+qt4_add_dbus_adaptor (
+    nepomukplugin_SRCS
+    ${CMAKE_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.ResourcesLinking.xml
+    NepomukPlugin.h NepomukPlugin
+    )
+
 soprano_add_ontology (
     nepomukplugin_SRCS
     ${CMAKE_SOURCE_DIR}/src/ontologies/kao.trig

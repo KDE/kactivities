@@ -21,12 +21,14 @@
 
 #include "NepomukPlugin.h"
 #include "NepomukCommon.h"
+#include "resourceslinkingadaptor.h"
 
 #include "../../Event.h"
 
 #include "kao.h"
 
 #include <QDebug>
+#include <QDBusConnection>
 
 #include <Nepomuk2/Resource>
 #include <Nepomuk2/ResourceManager>
@@ -53,6 +55,30 @@ public:
 
     void syncActivities(const QStringList & activities = QStringList());
 
+    template < typename Fn >
+    void doWithActivity(const QString & _activity, Fn fn)
+    {
+        qDebug() << "Doing something sinister with nepomuk, is it here? " << nepomukPresent;
+
+        if (!nepomukPresent) return;
+
+        val currentActivity = Plugin::callOn <QString, Qt::DirectConnection> (activities, "CurrentActivity", "QString");
+        val activity = _activity.isEmpty() ? currentActivity : _activity;
+
+        qDebug() << "The current activity is: " << currentActivity
+                 << "We need to set the linking for: " << activity;
+
+        // JIC checking that the service hasn't returned an empty activity
+        if (activity.isEmpty()) return;
+
+        fn(activity);
+
+        if (currentActivity == activity)
+            org::kde::KDirNotify::emitFilesAdded("activities:/current");
+
+        org::kde::KDirNotify::emitFilesAdded("activities:/" + activity);
+    }
+
     Nepomuk::ResourceManager * nepomuk;
     QObject * activities;
     QObject * resourceScoring;
@@ -72,6 +98,11 @@ NepomukPlugin::NepomukPlugin(QObject *parent, const QVariantList & args)
     Private::s_instance = this;
 
     setName("org.kde.ActivityManager.Nepomuk");
+
+    new ResourcesLinkingAdaptor(this);
+
+    QDBusConnection::sessionBus().registerObject("/ActivityManager/Resources/Linking", this);
+    QDBusConnection::sessionBus().registerObject("/ActivityManager/Nepomuk", this);
 }
 
 NepomukPlugin::~NepomukPlugin()
@@ -106,8 +137,8 @@ bool NepomukPlugin::init(const QHash < QString, QObject * > & modules)
             this, SLOT(resourceScoreUpdated(QString, QString, QString, double)));
     connect(d->resourceScoring, SIGNAL(recentStatsDeleted(QString, int, QString)),
             this, SLOT(deleteRecentStats(QString, int, QString)));
-    connect(d->resourceScoring, SIGNAL(earlierStatsDeleted(QString, int, QString)),
-            this, SLOT(deleteEarlierStats(QString, int, QString)));
+    connect(d->resourceScoring, SIGNAL(earlierStatsDeleted(QString, int)),
+            this, SLOT(deleteEarlierStats(QString, int)));
 
     // Initializing nepomuk
     d->nepomuk = Nepomuk::ResourceManager::instance();
@@ -188,7 +219,7 @@ void NepomukPlugin::nepomukSystemStopped()
 
 bool NepomukPlugin::isFeatureOperational(const QStringList & feature) const
 {
-    if (feature.first() == "linking")
+    if (feature.size() && feature.first() == "linking")
         return d->nepomukPresent;
 
     return false;
@@ -196,10 +227,7 @@ bool NepomukPlugin::isFeatureOperational(const QStringList & feature) const
 
 bool NepomukPlugin::isFeatureEnabled(const QStringList & feature) const
 {
-    if (feature.first() == "linking")
-        return d->nepomukPresent;
-
-    return true;
+    return false;
 }
 
 void NepomukPlugin::setFeatureEnabled(const QStringList & feature, bool value)
@@ -269,12 +297,70 @@ void NepomukPlugin::resourceScoreUpdated(const QString & activity, const QString
 
 void NepomukPlugin::deleteRecentStats(const QString & activity, int count, const QString & what)
 {
+    // TODO: BLOCKER - implement deleting statistics from nepomuk
 }
 
 void NepomukPlugin::deleteEarlierStats(const QString & activity, int months)
 {
+    // TODO: BLOCKER - implement deleting statistics from nepomuk
 }
 
+void NepomukPlugin::LinkResourceToActivity(const QString & uri, const QString & activity)
+{
+    Q_ASSERT(!uri.isEmpty());
+
+    d->doWithActivity(activity,
+        [uri] (const QString & activity) {
+            // linking the resource to the specified activity
+            qDebug() << "Adding the triple " << activity << " isRelated " << uri;
+            activityResource(activity).addIsRelated(Nepomuk::Resource(uri));
+        });
+}
+
+void NepomukPlugin::UnlinkResourceFromActivity(const QString & uri, const QString & activity)
+{
+    Q_ASSERT(!uri.isEmpty());
+
+    d->doWithActivity(activity,
+        [uri] (const QString & activity) {
+            // unlinking the resource from the specified activity
+            qDebug() << "Removing the triple " << activity << " isRelated " << uri;
+            activityResource(activity).removeProperty(NAO::isRelated(), Nepomuk::Resource(uri));
+        });
+}
+
+bool NepomukPlugin::IsResourceLinkedToActivity(const QString & uri, const QString & _activity)
+{
+    Q_ASSERT(!uri.isEmpty());
+
+    if (!d->nepomukPresent) return false;
+
+    val activity = _activity.isEmpty()
+            ? Plugin::callOn <QString, Qt::DirectConnection> (d->activities, "CurrentActivity", "QString")
+            : _activity;
+
+    static val _query = QString::fromLatin1(
+            "select ?r where { "
+                " ?a a kao:Activity . "
+                " ?a nao:isRelated ?r . "
+                " ?r nie:url %1 . "
+                " ?a kao:activityIdentifier %2 "
+            "}");
+
+    val query = _query.arg(Soprano::Node::resourceToN3(uri))
+                      .arg(Soprano::Node::literalToN3(activity));
+
+    qDebug() << "So, this is the query that should get the linked resource " << query;
+
+    Soprano::QueryResultIterator it
+        = Nepomuk::ResourceManager::instance()->mainModel()->executeQuery(
+                query, Soprano::Query::QueryLanguageSparql);
+
+    val hasResults = it.next();
+    it.close();
+
+    return hasResults;
+}
 
 KAMD_EXPORT_PLUGIN(NepomukPlugin, "activitymanger_plugin_nepomuk")
 

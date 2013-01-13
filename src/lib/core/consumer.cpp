@@ -181,24 +181,24 @@ QStringList Consumer::listActivities(Info::State state) const
 void Consumer::linkResourceToActivity(const QUrl & uri, const QString & activityId)
 {
     // TODO: BLOCKER
-    // if (Manager::isServicePresent())
-    //     Manager::resources()->LinkResourceToActivity(uri.toString(), activityId);
+    if (Manager::isServicePresent())
+        Manager::resourcesLinking()->LinkResourceToActivity(uri.toString(), activityId);
 }
 
 void Consumer::unlinkResourceFromActivity(const QUrl & uri, const QString & activityId)
 {
     // TODO: BLOCKER
-    // if (Manager::isServicePresent())
-    //     Manager::resources()->UnlinkResourceFromActivity(uri.toString(), activityId);
+    if (Manager::isServicePresent())
+        Manager::resourcesLinking()->UnlinkResourceFromActivity(uri.toString(), activityId);
 }
 
 bool Consumer::isResourceLinkedToActivity(const QUrl & uri, const QString & activityId) const
 {
     return false;
     // TODO: BLOCKER
-    // KAMD_RETRIEVE_REMOTE_VALUE_SYNC(
-    //         bool, resources, IsResourceLinkedToActivity(uri.toString(), activityId), false
-    //     );
+    KAMD_RETRIEVE_REMOTE_VALUE_SYNC(
+            bool, resourcesLinking, IsResourceLinkedToActivity(uri.toString(), activityId), false
+        );
 }
 
 Consumer::ServiceStatus Consumer::serviceStatus()

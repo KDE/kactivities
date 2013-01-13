@@ -45,37 +45,6 @@ static QString CurrentActivity()
     return Application::self()->activities().CurrentActivity();
 }
 
-// // Convenience functions that check whether the proper activity id is passed
-// // and invokes the desired lambda/functor on that value is nepomuk is present
-// template <typename Result, typename Function>
-// static Result doWithNepomukForActivity(const QString & _activity, Function doWhat, Result noNepomukResult)
-// {
-//     #ifdef HAVE_NEPOMUK
-//         if (NEPOMUK_PRESENT) {
-//             const QString & activity = _activity.isEmpty() ? CurrentActivity() : _activity;
-//             return doWhat(activity);
-//
-//         } else return noNepomukResult;
-//
-//     #else
-//         Q_UNUSED(_activity)
-//         Q_UNUSED(doWhat)
-//         return noNepomukResult;
-//
-//     #endif
-// }
-
-// template <typename Function>
-// static void doWithNepomukForActivity(const QString & _activity, Function doWhat)
-// {
-//     #ifdef HAVE_NEPOMUK
-//         if (NEPOMUK_PRESENT) {
-//             const QString & activity = _activity.isEmpty() ? CurrentActivity() : _activity;
-//             doWhat(activity);
-//         }
-//     #endif
-// }
-
 Resources::Private::Private(Resources * parent)
     : QThread(parent), focussedWindow(0), q(parent)
 {
@@ -224,16 +193,6 @@ void Resources::Private::addEvent(const Event & newEvent)
     start();
 }
 
-// QList <KUrl> Resources::Private::resourcesLinkedToActivity(const QString & activity) const
-// {
-//     return doWithNepomukForActivity(activity, [] (const QString & activity)
-//         {
-//             return EXEC_NEPOMUK(resourcesLinkedToActivity(activity));
-//         },
-//         QList<KUrl>()
-//     );
-// }
-
 void Resources::Private::windowClosed(WId windowId)
 {
     // Testing whether the window is a registered one
@@ -326,8 +285,6 @@ void Resources::RegisterResourceEvent(QString application, uint _windowId,
     KUrl kuri(uri);
     WId windowId = (WId) _windowId;
 
-    // EXEC_NEPOMUK( toRealUri(kuri) );
-
     d->addEvent(application, windowId,
             kuri.url(), (Event::Type) event, (Event::Reason) reason);
 }
@@ -338,8 +295,6 @@ void Resources::RegisterResourceMimeType(const QString & uri, const QString & mi
     if (!mimetype.isEmpty()) return;
 
     KUrl kuri(uri);
-
-    // EXEC_NEPOMUK( setResourceMimeType(KUrl(uri), mimetype) );
 
     emit RegisteredResourceMimeType(uri, mimetype);
 }
@@ -352,66 +307,11 @@ void Resources::RegisterResourceTitle(const QString & uri, const QString & title
 
     KUrl kuri(uri);
 
-    // EXEC_NEPOMUK( setResourceTitle(KUrl(uri), title) );
-
     emit RegisteredResourceTitle(uri, title);
 }
 
-
-// void Resources::LinkResourceToActivity(const QString & uri, const QString & activity)
-// {
-//     // Links the resource to the activity
-//     return doWithNepomukForActivity(activity, [&uri,this] (const QString & activity)
-//         {
-//             EXEC_NEPOMUK( linkResourceToActivity(KUrl(uri), activity) );
-//             emit LinkedResourceToActivity(uri, activity);
-//         }
-//     );
-// }
-
-
-// void Resources::UnlinkResourceFromActivity(const QString & uri, const QString & activity)
-// {
-//     // Unlinks the resource to the activity
-//     return doWithNepomukForActivity(activity, [&uri,this] (const QString & activity)
-//         {
-//             EXEC_NEPOMUK( unlinkResourceFromActivity(KUrl(uri), activity) );
-//             emit UnlinkedResourceFromActivity(uri, activity);
-//         }
-//     );
-// }
-
-
-// bool Resources::IsResourceLinkedToActivity(const QString & uri, const QString & activity) const
-// {
-//     return doWithNepomukForActivity(activity, [&uri] (const QString & activity)
-//         {
-//             return EXEC_NEPOMUK( isResourceLinkedToActivity(KUrl(uri), activity) );
-//         },
-//         /* default */ false
-//     );
-//
-//     return false;
-// }
-
-
-// QStringList Resources::ResourcesLinkedToActivity(const QString & activity) const
-// {
-//     QStringList result;
-//
-//     foreach (const KUrl & uri, d->resourcesLinkedToActivity(activity)) {
-//         result << uri.url();
-//     }
-//
-//     return result;
-// }
-
 bool Resources::isFeatureOperational(const QStringList & feature) const
 {
-    // if (feature.first() == "linking") {
-    //     return NEPOMUK_PRESENT;
-    // }
-
     return false;
 }
 
@@ -431,7 +331,7 @@ void Resources::setFeatureEnabled(const QStringList & feature, bool value)
 QStringList Resources::listFeatures(const QStringList & feature) const
 {
     Q_UNUSED(feature)
-    static QStringList features; // ("linking");
+    static QStringList features;
 
     return features;
 }

@@ -30,6 +30,7 @@ class QFileSystemWatcher;
 
 class NepomukPlugin: public Plugin {
     Q_OBJECT
+    Q_CLASSINFO("D-Bus Interface", "org.kde.ActivityManager.ResourcesLinking")
 
 public:
     explicit NepomukPlugin(QObject *parent = nullptr, const QVariantList & args = QVariantList());
@@ -38,6 +39,12 @@ public:
     static NepomukPlugin * self();
 
     virtual bool init(const QHash < QString, QObject * > & modules) _override;
+
+public Q_SLOTS:
+    // Resource linking slots
+    void LinkResourceToActivity(const QString & uri, const QString & activity = QString());
+    void UnlinkResourceFromActivity(const QString & uri, const QString & activity = QString());
+    bool IsResourceLinkedToActivity(const QString & uri, const QString & activity = QString());
 
 private Q_SLOTS:
     // Activity slots
