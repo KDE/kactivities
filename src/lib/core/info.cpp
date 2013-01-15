@@ -47,12 +47,12 @@ InfoPrivateCommon::~InfoPrivateCommon()
 
 // Private
 
-InfoPrivate::InfoPrivate(Info *info, const QString &activityId)
+InfoPrivate::InfoPrivate(Info *info, const QString &activity)
     : q(info),
       state(Info::Invalid),
       nameCallWatcher(0),
       iconCallWatcher(0),
-      id(activityId)
+      id(activity)
 {
     if (Manager::isServicePresent()) {
         initializeCachedData();
@@ -116,9 +116,9 @@ void InfoPrivate::initializeCachedData()
 }
 
 // Info
-Info::Info(const QString &activityId, QObject *parent)
+Info::Info(const QString &activity, QObject *parent)
     : QObject(parent),
-      d(new InfoPrivate(this, activityId))
+      d(new InfoPrivate(this, activity))
 {
     connect(Manager::activities(), SIGNAL(ActivityStateChanged(QString, int)),
             this, SLOT(activityStateChanged(QString, int)));

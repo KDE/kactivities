@@ -38,7 +38,7 @@ public Q_SLOTS:
     void actionTriggered();
 
 public:
-    QAction * addAction(QMenu * menu, const QString & activityId, const QString & title = QString(), const QString & icon = QString());
+    QAction * addAction(QMenu * menu, const QString & activity, const QString & title = QString(), const QString & icon = QString());
 
 };
 

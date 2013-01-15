@@ -45,7 +45,7 @@ QUrl resourceForUrl(const QUrl & url)
     }
 }
 
-QUrl resourceForId(const QString & id, const QUrl & type)
+QUrl resourceForId(const QString & resourceId, const QUrl & type)
 {
     static val & _query = QString::fromLatin1(
             "select ?r where { "
@@ -55,7 +55,7 @@ QUrl resourceForId(const QString & id, const QUrl & type)
 
     val & query = _query.arg(
             /* %1 */ Soprano::Node::resourceToN3(type),
-            /* %2 */ Soprano::Node::literalToN3(id)
+            /* %2 */ Soprano::Node::literalToN3(resourceId)
         );
 
     Soprano::QueryResultIterator it =
@@ -67,7 +67,7 @@ QUrl resourceForId(const QString & id, const QUrl & type)
 
     } else {
         Nepomuk::Resource agent(QUrl(), type);
-        agent.setProperty(NAO::identifier(), id);
+        agent.setProperty(NAO::identifier(), resourceId);
 
         return agent.uri();
     }

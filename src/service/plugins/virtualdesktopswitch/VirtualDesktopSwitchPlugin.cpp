@@ -52,16 +52,16 @@ bool VirtualDesktopSwitchPlugin::init(const QHash < QString, QObject * > & modul
     return true;
 }
 
-void VirtualDesktopSwitchPlugin::currentActivityChanged(const QString & activityId)
+void VirtualDesktopSwitchPlugin::currentActivityChanged(const QString & activity)
 {
-    if (m_currentActivity == activityId) return;
+    if (m_currentActivity == activity) return;
 
     config().writeEntry(
             configPattern.arg(m_currentActivity),
             QString::number(KWindowSystem::currentDesktop())
         );
 
-    m_currentActivity = activityId;
+    m_currentActivity = activity;
 
     val desktopId = config().readEntry(configPattern.arg(m_currentActivity), -1);
 

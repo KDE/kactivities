@@ -33,7 +33,7 @@ public:
     virtual bool init(const QHash < QString, QObject * > & modules) _override;
 
 private Q_SLOTS:
-    void currentActivityChanged(const QString & activityId);
+    void currentActivityChanged(const QString & activity);
 
 private:
     QString m_currentActivity;

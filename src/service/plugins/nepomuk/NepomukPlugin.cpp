@@ -62,10 +62,10 @@ public:
 
         if (!nepomukPresent) return;
 
-        val currentActivity = Plugin::callOn <QString, Qt::DirectConnection> (activities, "CurrentActivity", "QString");
-        val activity = _activity.isEmpty() ? currentActivity : _activity;
+        val currentActivityId = Plugin::callOn <QString, Qt::DirectConnection> (activities, "CurrentActivity", "QString");
+        val activity = _activity.isEmpty() ? currentActivityId : _activity;
 
-        qDebug() << "The current activity is: " << currentActivity
+        qDebug() << "The current activity is: " << currentActivityId
                  << "We need to set the linking for: " << activity;
 
         // JIC checking that the service hasn't returned an empty activity
@@ -73,7 +73,7 @@ public:
 
         fn(activity);
 
-        if (currentActivity == activity)
+        if (currentActivityId == activity)
             org::kde::KDirNotify::emitFilesAdded("activities:/current");
 
         org::kde::KDirNotify::emitFilesAdded("activities:/" + activity);
@@ -247,31 +247,31 @@ QStringList NepomukPlugin::listFeatures(const QStringList & feature) const
     return QStringList() << "linking";
 }
 
-void NepomukPlugin::Private::syncActivities(const QStringList & activityIds)
+void NepomukPlugin::Private::syncActivities(const QStringList & activitys)
 {
     if (!nepomukPresent) return;
 
     // If we got an empty list, it means we should synchronize
     // all the activities known by the service
-    foreach (val & activityId,
+    foreach (val & activity,
         (
-            activityIds.isEmpty()
+            activitys.isEmpty()
                 ? Plugin::callOn <QStringList, Qt::DirectConnection> (activities, "ListActivities", "QStringList")
-                : activityIds
+                : activitys
         )
     ) {
         // Notifying KIO of the update
-        org::kde::KDirNotify::emitFilesAdded("activities:/" + activityId);
+        org::kde::KDirNotify::emitFilesAdded("activities:/" + activity);
 
         // Getting the activity info from the service
         val name = Plugin::callOnWithArgs <QString, Qt::DirectConnection>
-                (activities, "ActivityName", "QString", Q_ARG(QString, activityId));
+                (activities, "ActivityName", "QString", Q_ARG(QString, activity));
         val icon = Plugin::callOnWithArgs <QString, Qt::DirectConnection>
-                (activities, "ActivityIcon", "QString", Q_ARG(QString, activityId));
+                (activities, "ActivityIcon", "QString", Q_ARG(QString, activity));
 
         // Setting the nepomuk resource properties - id, name, icon
-        auto resource = activityResource(activityId);
-        resource.setProperty(KAO::activityIdentifier(), activityId);
+        auto resource = activityResource(activity);
+        resource.setProperty(KAO::activityIdentifier(), activity);
 
         if (!name.isEmpty()) {
             resource.setLabel(name);
@@ -286,7 +286,7 @@ void NepomukPlugin::Private::syncActivities(const QStringList & activityIds)
             val & symbols = resource.symbols();
             if (symbols.size() > 0) {
                 Plugin::callOnWithArgs <QString, Qt::DirectConnection>
-                    (activities, "SetActivityIcon", "QString", Q_ARG(QString, activityId), Q_ARG(QString, symbols.at(0)));
+                    (activities, "SetActivityIcon", "QString", Q_ARG(QString, activity), Q_ARG(QString, symbols.at(0)));
             }
         }
     }
@@ -311,7 +311,7 @@ void NepomukPlugin::deleteEarlierStats(const QString & activity, int months)
 
 void NepomukPlugin::LinkResourceToActivity(const QString & uri, const QString & activity)
 {
-    Q_ASSERT(!uri.isEmpty());
+    Q_ASSERT_X(!uri.isEmpty(), "NepomukPlugin::LinkResourceToActivity", "URI of the resource can not be empty");
 
     d->doWithActivity(activity,
         [uri] (const QString & activity) {

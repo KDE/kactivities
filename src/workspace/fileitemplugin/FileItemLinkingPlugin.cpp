@@ -52,17 +52,17 @@ void FileItemLinkingPlugin::Private::actionTriggered()
 }
 
 QAction * FileItemLinkingPlugin::Private::addAction(QMenu * menu,
-        const QString & activityId, const QString & title, const QString & icon)
+        const QString & activity, const QString & title, const QString & icon)
 {
     QAction * action = menu->addAction(
-            title.isEmpty() ? KActivities::Info::name(activityId) : title
+            title.isEmpty() ? KActivities::Info::name(activity) : title
         );
 
     if (!icon.isEmpty()) {
         action->setIcon(QIcon::fromTheme(icon));
     }
 
-    action->setProperty("activity", activityId);
+    action->setProperty("activity", activity);
 
     connect(action, SIGNAL(triggered()),
             this, SLOT(actionTriggered()));

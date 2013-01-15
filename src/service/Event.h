@@ -68,7 +68,9 @@ public:
         UserEventReason = 32
     };
 
-    explicit Event(const QString & application = QString(), WId wid = 0, const QString & uri = QString(),
+    Event();
+
+    explicit Event(const QString & application, WId wid, const QString & uri,
             int type = Accessed, int reason = User);
 
     Event deriveWithType(Type type) const;

@@ -109,13 +109,13 @@ QString Activities::CurrentActivity() const
     return d->currentActivity;
 }
 
-bool Activities::SetCurrentActivity(const QString & id)
+bool Activities::SetCurrentActivity(const QString & activity)
 {
-    if (id.isEmpty()) {
+    if (activity.isEmpty()) {
         return false;
     }
 
-    return d->setCurrentActivity(id);
+    return d->setCurrentActivity(activity);
 }
 
 bool Activities::Private::setCurrentActivity(const QString & activity)
@@ -140,7 +140,6 @@ bool Activities::Private::setCurrentActivity(const QString & activity)
     // TODO: Move this to job-based execution
     q->StartActivity(activity);
 
-    //   - unmount private activities
     //   - change the current activity and signal the change
 
     setCurrentActivityJob
@@ -165,42 +164,47 @@ void Activities::Private::loadLastActivity()
         );
 }
 
-void Activities::Private::emitCurrentActivityChanged(const QString & id)
+void Activities::Private::emitCurrentActivityChanged(const QString & activity)
 {
     // Saving the current activity, and notifying
     // clients of the change
 
-    currentActivity = id;
-    mainConfig().writeEntry("currentActivity", id);
+    currentActivity = activity;
+    mainConfig().writeEntry("currentActivity", activity);
 
     scheduleConfigSync();
 
-    emit q->CurrentActivityChanged(id);
+    emit q->CurrentActivityChanged(activity);
 }
 
 QString Activities::AddActivity(const QString & name)
 {
-    QString id;
+    if (name.isEmpty()) {
+        Q_ASSERT(!name.isEmpty());
+        return QString();
+    }
+
+    QString activity;
 
     // Ensuring a new Uuid. The loop should usually end after only
     // one iteration
 
     val & existingActivities = d->activities.keys();
-    while (id.isEmpty() || existingActivities.contains(id)) {
-        id = QUuid::createUuid();
-        id.replace(QRegExp("[{}]"), QString());
+    while (activity.isEmpty() || existingActivities.contains(activity)) {
+        activity = QUuid::createUuid();
+        activity.replace(QRegExp("[{}]"), QString());
     }
 
     // Saves the activity info to the config
 
-    d->setActivityState(id, Running);
+    d->setActivityState(activity, Running);
 
-    SetActivityName(id, name);
+    SetActivityName(activity, name);
 
-    emit ActivityAdded(id);
+    emit ActivityAdded(activity);
 
     d->scheduleConfigSync(true);
-    return id;
+    return activity;
 }
 
 void Activities::RemoveActivity(const QString & activity)
@@ -228,9 +232,8 @@ void Activities::RemoveActivity(const QString & activity)
 
 void Activities::Private::removeActivity(const QString & activity)
 {
-    // TODO: transitioningActivity should be removed,
-    // we need to check whether the activity is in a
-    // proper state to be deleted
+    Q_ASSERT(!activity.isEmpty());
+    Q_ASSERT(activities.contains(activity));
 
     // If the activity is running, stash it
     q->StopActivity(activity);
@@ -267,14 +270,14 @@ KConfigGroup Activities::Private::mainConfig()
     return KConfigGroup(&config, "main");
 }
 
-QString Activities::Private::activityName(const QString & id)
+QString Activities::Private::activityName(const QString & activity)
 {
-    return activitiesConfig().readEntry(id, QString());
+    return activitiesConfig().readEntry(activity, QString());
 }
 
-QString Activities::Private::activityIcon(const QString & id)
+QString Activities::Private::activityIcon(const QString & activity)
 {
-    return activityIconsConfig().readEntry(id, QString());
+    return activityIconsConfig().readEntry(activity, QString());
 }
 
 void Activities::Private::scheduleConfigSync(const bool soon)
@@ -319,83 +322,89 @@ QList<ActivityInfo> Activities::ListActivitiesWithInformation() const
 {
     QList<ActivityInfo> result;
 
-    foreach (const QString & activityId, ListActivities()) {
-        result << ActivityInformation(activityId);
+    foreach (const QString & activity, ListActivities()) {
+        result << ActivityInformation(activity);
     }
 
     return result;
 }
 
-ActivityInfo Activities::ActivityInformation(const QString & activityId) const
+ActivityInfo Activities::ActivityInformation(const QString & activity) const
 {
+    Q_ASSERT(d->activities.contains(activity));
+
     ActivityInfo activityInfo;
-    activityInfo.id    = activityId;
-    activityInfo.name  = ActivityName(activityId);
-    activityInfo.icon  = ActivityIcon(activityId);
-    activityInfo.state = ActivityState(activityId);
+    activityInfo.id    = activity;
+    activityInfo.name  = ActivityName(activity);
+    activityInfo.icon  = ActivityIcon(activity);
+    activityInfo.state = ActivityState(activity);
     return activityInfo;
 }
 
-QString Activities::ActivityName(const QString & id) const
+QString Activities::ActivityName(const QString & activity) const
 {
-    return d->activityName(id);
+    Q_ASSERT(d->activities.contains(activity));
+
+    return d->activityName(activity);
 }
 
-void Activities::SetActivityName(const QString & id, const QString & name)
+void Activities::SetActivityName(const QString & activity, const QString & name)
 {
-    if (!d->activities.contains(id)) return;
+    if (!d->activities.contains(activity)) return;
 
-    if (name == d->activityName(id)) return;
+    if (name == d->activityName(activity)) return;
 
-    d->activitiesConfig().writeEntry(id, name);
+    d->activitiesConfig().writeEntry(activity, name);
 
     d->scheduleConfigSync();
 
-    emit ActivityNameChanged(id, name);
-    emit ActivityChanged(id);
+    emit ActivityNameChanged(activity, name);
+    emit ActivityChanged(activity);
 }
 
-QString Activities::ActivityIcon(const QString & id) const
+QString Activities::ActivityIcon(const QString & activity) const
 {
-    return d->activityIcon(id);
+    return d->activityIcon(activity);
 }
 
-void Activities::SetActivityIcon(const QString & id, const QString & icon)
+void Activities::SetActivityIcon(const QString & activity, const QString & icon)
 {
-    if (!d->activities.contains(id)) return;
+    if (!d->activities.contains(activity)) return;
 
-    d->activityIconsConfig().writeEntry(id, icon);
+    d->activityIconsConfig().writeEntry(activity, icon);
 
     d->scheduleConfigSync();
 
-    emit ActivityIconChanged(id, icon);
-    emit ActivityChanged(id);
+    emit ActivityIconChanged(activity, icon);
+    emit ActivityChanged(activity);
 }
 
-void Activities::Private::setActivityState(const QString & id, Activities::State state)
+void Activities::Private::setActivityState(const QString & activity, Activities::State state)
 {
-    if (activities[id] == state) return;
+    Q_ASSERT(activities.contains(activity));
+
+    if (activities.value(activity) == state) return;
 
     // Treating 'Starting' as 'Running', and 'Stopping' as 'Stopped'
     // as far as the config file is concerned
-    bool configNeedsUpdating = ((activities[id] & 4) != (state & 4));
+    bool configNeedsUpdating = ((activities[activity] & 4) != (state & 4));
 
-    activities[id] = state;
+    activities[activity] = state;
 
     switch (state) {
         case Activities::Running:
-            emit q->ActivityStarted(id);
+            emit q->ActivityStarted(activity);
             break;
 
         case Activities::Stopped:
-            emit q->ActivityStopped(id);
+            emit q->ActivityStopped(activity);
             break;
 
         default:
             break;
     }
 
-    emit q->ActivityStateChanged(id, state);
+    emit q->ActivityStateChanged(activity, state);
 
     if (configNeedsUpdating) {
         mainConfig().writeEntry("runningActivities",
@@ -422,34 +431,28 @@ void Activities::Private::ensureCurrentActivityIsRunning()
 
 // Main
 
-void Activities::StartActivity(const QString & id)
+void Activities::StartActivity(const QString & activity)
 {
-    qDebug() << "Starting activity" << id;
-
-    if (!d->activities.contains(id) ||
-            d->activities[id] != Stopped) {
-        qDebug() << "Activity is not stopped..." << d->activities[id];
+    if (!d->activities.contains(activity) ||
+            d->activities[activity] != Stopped) {
         return;
     }
 
     qDebug() << "Starting the session";
-    d->setActivityState(id, Starting);
-    d->ksmserver->startActivitySession(id);
+    d->setActivityState(activity, Starting);
+    d->ksmserver->startActivitySession(activity);
 }
 
-void Activities::StopActivity(const QString & id)
+void Activities::StopActivity(const QString & activity)
 {
-    qDebug() << "Stopping activity" << id;
-
-    if (!d->activities.contains(id) ||
-            d->activities[id] == Stopped) {
-        qDebug() << "Already stopped";
+    if (!d->activities.contains(activity) ||
+            d->activities[activity] == Stopped) {
         return;
     }
 
     qDebug() << "Stopping the session";
-    d->setActivityState(id, Stopping);
-    d->ksmserver->stopActivitySession(id);
+    d->setActivityState(activity, Stopping);
+    d->ksmserver->stopActivitySession(activity);
 }
 
 void Activities::Private::activitySessionStateChanged(const QString & activity, int status)
@@ -473,46 +476,35 @@ void Activities::Private::activitySessionStateChanged(const QString & activity, 
     configSync();
 }
 
-int Activities::ActivityState(const QString & id) const
+int Activities::ActivityState(const QString & activity) const
 {
-    return d->activities.contains(id) ? d->activities[id] : Invalid;
+    return d->activities.contains(activity) ? d->activities[activity] : Invalid;
 }
 
 bool Activities::isFeatureOperational(const QStringList & feature) const
 {
     Q_UNUSED(feature)
 
-    // if (feature.first() == "encryption") {
-    //     return Jobs::Encryption::Common::isEnabled();
-    // }
-
     return false;
 }
 
 bool Activities::isFeatureEnabled(const QStringList & feature) const
 {
-    return
-        (feature.size() != 2)         ? false :
-        // (feature[0] == "encryption")  ? d->isActivityEncrypted(feature[1]) :
-        /* otherwise */                false;
+    Q_UNUSED(feature)
+
+    return false;
 }
 
 void Activities::setFeatureEnabled(const QStringList & feature, bool value)
 {
+    Q_UNUSED(feature)
     Q_UNUSED(value)
-
-    if (feature.size() != 2) return;
-
-    // if (feature[0] == "encryption") {
-    //      d->setActivityEncrypted(feature[1], value);
-    // }
 }
 
 QStringList Activities::listFeatures(const QStringList & feature) const
 {
     Q_UNUSED(feature)
-    static QStringList features/* ("encryption") */;
 
-    return features;
+    return QStringList();
 }
 

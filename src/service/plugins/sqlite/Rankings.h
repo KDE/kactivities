@@ -67,7 +67,7 @@ public Q_SLOTS:
     void requestScoreUpdate(const QString & activity, const QString & application, const QString & resource);
 
 private Q_SLOTS:
-    void setCurrentActivity(const QString & activityId);
+    void setCurrentActivity(const QString & activity);
 
 private:
     Rankings(QObject * parent = nullptr);

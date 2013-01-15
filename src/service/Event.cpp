@@ -23,9 +23,16 @@
 #include <common.h>
 
 
+Event::Event()
+    : wid(0), type(Accessed), reason(User), timestamp(QDateTime::currentDateTime())
+{
+}
+
 Event::Event(const QString & vApplication, WId vWid, const QString & vUri, int vType, int vReason)
     : application(vApplication), wid(vWid), uri(vUri), type(vType), reason(vReason), timestamp(QDateTime::currentDateTime())
 {
+    Q_ASSERT(!vApplication.isEmpty());
+    Q_ASSERT(!vUri.isEmpty());
 }
 
 Event Event::deriveWithType(Type type) const

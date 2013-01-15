@@ -2,7 +2,7 @@
 <node>
   <interface name="org.kde.LocationManager">
     <signal name="currentLocationChanged">
-      <arg name="id" type="s" direction="out"/>
+      <arg name="locationId" type="s" direction="out"/>
       <arg name="name" type="s" direction="out"/>
     </signal>
     <method name="knownLocations">
@@ -14,7 +14,7 @@
     </method>
     <method name="setCurrentLocation">
       <arg type="s" direction="out"/>
-      <arg name="id" type="s" direction="in"/>
+      <arg name="locationId" type="s" direction="in"/>
     </method>
     <method name="resetCurrentLocation">
     </method>

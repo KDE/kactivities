@@ -65,8 +65,8 @@ KConfigGroup Plugin::config()
 
 void Plugin::setName(const QString & name)
 {
-    Q_ASSERT(d->name.isEmpty());
-    Q_ASSERT(!name.isEmpty());
+    Q_ASSERT_X(d->name.isEmpty(), "Plugin::setName", "The name can not be set twice");
+    Q_ASSERT_X(!name.isEmpty(), "Plugin::setName", "The name can not be empty");
 
     d->name = name;
     registerModule(name, this);

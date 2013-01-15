@@ -43,18 +43,18 @@ void updateNepomukScore(const QString & activity, const QString & application, c
 
 QUrl resourceForUrl(const QUrl & url);
 
-QUrl resourceForId(const QString & id, const QUrl & type);
+QUrl resourceForId(const QString & resourceId, const QUrl & type);
 
 inline QString resN3(const QUrl & uri)
 {
     return Soprano::Node::resourceToN3(uri);
 }
 
-inline Nepomuk::Resource activityResource(const QString & id)
+inline Nepomuk::Resource activityResource(const QString & activity)
 {
-    Q_ASSERT(!id.isEmpty());
+    Q_ASSERT(!activity.isEmpty());
 
-    return Nepomuk::Resource(id, KAO::Activity());
+    return Nepomuk::Resource(activity, KAO::Activity());
 }
 
 #endif // PLUGINS_SQLITE_NEPOMUK_COMMON_H

@@ -49,10 +49,10 @@ public:
     void ensureCurrentActivityIsRunning();
 
 public Q_SLOTS:
-    bool setCurrentActivity(const QString & id);
+    bool setCurrentActivity(const QString & activity);
 
 public:
-    void setActivityState(const QString & id, Activities::State state);
+    void setActivityState(const QString & activity, Activities::State state);
     QHash < QString, Activities::State > activities;
 
     // Current activity
@@ -69,8 +69,8 @@ public:
     KConfigGroup activitiesConfig();
     KConfigGroup activityIconsConfig();
     KConfigGroup mainConfig();
-    QString activityName(const QString & id);
-    QString activityIcon(const QString & id);
+    QString activityName(const QString & activity);
+    QString activityIcon(const QString & activity);
 
 
 public Q_SLOTS:

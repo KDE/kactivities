@@ -7,7 +7,7 @@
     </method>
     <method name="SetCurrentActivity">
       <arg type="b" direction="out"/>
-      <arg name="id" type="s" direction="in"/>
+      <arg name="activity" type="s" direction="in"/>
     </method>
 
     <method name="AddActivity">
@@ -15,17 +15,17 @@
       <arg name="name" type="s" direction="in"/>
     </method>
     <method name="StartActivity">
-      <arg name="id" type="s" direction="in"/>
+      <arg name="activity" type="s" direction="in"/>
     </method>
     <method name="StopActivity">
-      <arg name="id" type="s" direction="in"/>
+      <arg name="activity" type="s" direction="in"/>
     </method>
     <method name="ActivityState">
       <arg type="i" direction="out"/>
-      <arg name="id" type="s" direction="in"/>
+      <arg name="activity" type="s" direction="in"/>
     </method>
     <method name="RemoveActivity">
-      <arg name="id" type="s" direction="in"/>
+      <arg name="activity" type="s" direction="in"/>
     </method>
 
     <method name="ListActivities">
@@ -45,56 +45,56 @@
       <arg type="(sssd)" direction="out"/>
       <annotation name="com.trolltech.QtDBus.QtTypeName.Out0" value="ActivityInfo" />
       <annotation name="org.qtproject.QtDBus.QtTypeName.Out0" value="ActivityInfo" />
-      <arg name="id" type="s" direction="in"/>
+      <arg name="activity" type="s" direction="in"/>
     </method>
 
     <method name="ActivityName">
       <arg type="s" direction="out"/>
-      <arg name="id" type="s" direction="in"/>
+      <arg name="activity" type="s" direction="in"/>
     </method>
     <method name="SetActivityName">
-      <arg name="id" type="s" direction="in"/>
+      <arg name="activity" type="s" direction="in"/>
       <arg name="name" type="s" direction="in"/>
     </method>
 
     <method name="ActivityIcon">
       <arg type="s" direction="out"/>
-      <arg name="id" type="s" direction="in"/>
+      <arg name="activity" type="s" direction="in"/>
     </method>
     <method name="SetActivityIcon">
-      <arg name="id" type="s" direction="in"/>
+      <arg name="activity" type="s" direction="in"/>
       <arg name="icon" type="s" direction="in"/>
     </method>
 
     <signal name="CurrentActivityChanged">
-      <arg name="id" type="s" direction="out"/>
+      <arg name="activity" type="s" direction="out"/>
     </signal>
 
     <signal name="ActivityAdded">
-      <arg name="id" type="s" direction="out"/>
+      <arg name="activity" type="s" direction="out"/>
     </signal>
     <signal name="ActivityStarted">
-      <arg name="id" type="s" direction="out"/>
+      <arg name="activity" type="s" direction="out"/>
     </signal>
     <signal name="ActivityStopped">
-      <arg name="id" type="s" direction="out"/>
+      <arg name="activity" type="s" direction="out"/>
     </signal>
     <signal name="ActivityRemoved">
-      <arg name="id" type="s" direction="out"/>
+      <arg name="activity" type="s" direction="out"/>
     </signal>
     <signal name="ActivityChanged">
-      <arg name="id" type="s" direction="out"/>
+      <arg name="activity" type="s" direction="out"/>
     </signal>
     <signal name="ActivityNameChanged">
-      <arg name="id" type="s" direction="out"/>
+      <arg name="activity" type="s" direction="out"/>
       <arg name="name" type="s" direction="out"/>
     </signal>
     <signal name="ActivityIconChanged">
-      <arg name="id" type="s" direction="out"/>
+      <arg name="activity" type="s" direction="out"/>
       <arg name="icon" type="s" direction="out"/>
     </signal>
     <signal name="ActivityStateChanged">
-      <arg name="id" type="s" direction="out"/>
+      <arg name="activity" type="s" direction="out"/>
       <arg name="state" type="i" direction="out"/>
     </signal>
 

@@ -37,12 +37,12 @@ public:
     virtual bool init(const QHash < QString, QObject * > & modules) _override;
 
 private Q_SLOTS:
-    void activityAdded(const QString & activityId);
-    void activityRemoved(const QString & activityId);
-    void activityChanged(const QString & activityId);
+    void activityAdded(const QString & activity);
+    void activityRemoved(const QString & activity);
+    void activityChanged(const QString & activity);
 
 private:
-    inline QString activityName(const QString & activityId) const;
+    inline QString activityName(const QString & activity) const;
 
     QObject * m_activitiesService;
     QSignalMapper * m_signalMapper;
