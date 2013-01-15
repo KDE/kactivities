@@ -33,6 +33,7 @@
 #include <Nepomuk2/Resource>
 #include <Nepomuk2/ResourceManager>
 #include <Nepomuk2/Variant>
+#include <Nepomuk2/DataManagement>
 
 #include <KDirNotify>
 
@@ -77,6 +78,23 @@ public:
             org::kde::KDirNotify::emitFilesAdded("activities:/current");
 
         org::kde::KDirNotify::emitFilesAdded("activities:/" + activity);
+    }
+
+    void deleteFromQuery(const QString & query)
+    {
+        Soprano::QueryResultIterator it
+            = Nepomuk::ResourceManager::instance()->mainModel()->executeQuery(query,
+                    Soprano::Query::QueryLanguageSparql);
+
+        QList<QUrl> toDelete;
+
+        while (it.next()) {
+            toDelete << it[0].uri();
+        }
+
+        it.close();
+
+        Nepomuk::removeResources(toDelete);
     }
 
     Nepomuk::ResourceManager * nepomuk;
@@ -301,12 +319,103 @@ void NepomukPlugin::resourceScoreUpdated(const QString & activity, const QString
 
 void NepomukPlugin::deleteRecentStats(const QString & activity, int count, const QString & what)
 {
-    // TODO: BLOCKER - implement deleting statistics from nepomuk
+    val activityCheck = activity.isEmpty()
+            ? QString()
+            : "?cache kao:usedActivity "
+                + Soprano::Node::resourceToN3(activityResource(activity).uri())
+                + " .";
+
+    static val _query = QString(
+        "select ?cache where { "
+            "?cache a kao:ResourceScoreCache . "
+            " %1 " // "?cache kao:usedActivity %activity . "
+            " %2 " // "?cache nao:created ?created . "
+                   // "FILTER ( ?create > %date ) . "
+        "}"
+    );
+
+    // If we need to delete everything,
+    // no need to bother with the count and the date
+
+    if (what == "everything") {
+        val query = _query
+                .arg(activityCheck)
+                .arg(QString())
+            ;
+
+        qDebug() << "This are the results we need to delete: " << query;
+
+        d->deleteFromQuery(query);
+
+    } else {
+
+        // Deleting a specified length of time
+        // Getting the time based on params
+
+        auto now = QDateTime::currentDateTime();
+
+        if (what == "h") {
+            now = now.addSecs(-count * 60 * 60);
+
+        } else if (what == "d") {
+            now = now.addDays(-count);
+
+        } else if (what == "m") {
+            now = now.addMonths(-count);
+        }
+
+        static val timeChecking = QString(
+                " ?cache nao:created ?created . "
+                " FILTER ( ?created > %1 ) . "
+            );
+
+        val query = _query
+                .arg(activityCheck)
+                .arg(
+                    timeChecking.arg(Soprano::Node::literalToN3(now))
+                );
+
+        qDebug() << "This are the results we need to delete: " << query;
+
+        d->deleteFromQuery(query);
+    }
 }
 
 void NepomukPlugin::deleteEarlierStats(const QString & activity, int months)
 {
-    // TODO: BLOCKER - implement deleting statistics from nepomuk
+    if (months == 0) return;
+
+    val activityCheck = activity.isEmpty()
+            ? QString()
+            : "?cache kao:usedActivity "
+                + Soprano::Node::resourceToN3(activityResource(activity).uri())
+                + " .";
+
+    static val _query = QString(
+        "select ?cache where { "
+            "?cache a kao:ResourceScoreCache . "
+            " %1 " // "?cache kao:usedActivity %activity . "
+            " %2 " // "?cache nao:modified ?modified . "
+                   // "FILTER ( ?modified < %date ) . "
+        "}"
+    );
+
+    val time = QDateTime::currentDateTime().addMonths(-months);
+
+    static val timeChecking = QString(
+            " ?cache nao:created ?created . "
+            " FILTER ( ?modified < %1 ) . "
+        );
+
+    val query = _query
+            .arg(activityCheck)
+            .arg(
+                timeChecking.arg(Soprano::Node::literalToN3(time))
+            );
+
+    qDebug() << "This are the results we need to delete: " << query;
+
+    d->deleteFromQuery(query);
 }
 
 void NepomukPlugin::LinkResourceToActivity(const QString & uri, const QString & activity)
