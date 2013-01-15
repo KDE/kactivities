@@ -17,8 +17,8 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef RESOURCE_MANAGER_H_
-#define RESOURCE_MANAGER_H_
+#ifndef RESOURCES_H
+#define RESOURCES_H
 
 #include <QString>
 #include <QStringList>
@@ -69,41 +69,11 @@ public Q_SLOTS:
      */
     void RegisterResourceTitle(const QString & uri, const QString & title);
 
-    /**
-     * Links the specified resource to the activity
-     * @param uri URI of the resource
-     * @param uri activity id of the activity to link to. If empty, the resource
-     *     is linked to the current activity
-     */
-    void LinkResourceToActivity(const QString & uri, const QString & activity = QString());
-
-    /**
-     * Unlinks the specified resource from the activity
-     * @param uri URI of the resource
-     * @param uri activity id of the activity to unlink from. If empty, the resource
-     *     is unlinked from the current activity
-     */
-    void UnlinkResourceFromActivity(const QString & uri, const QString & activity = QString());
-
-    /**
-     * @returns whether the resource is linked to the activity
-     * @param uri URI of the resource
-     * @param uri activity id
-     */
-    bool IsResourceLinkedToActivity(const QString & uri, const QString & activity = QString()) const;
-
-    /**
-     * @returns the list of resources linked to the specified activity
-     */
-    QStringList ResourcesLinkedToActivity(const QString & activity = QString()) const;
-
 Q_SIGNALS:
     void RegisteredResourceEvent(const Event & event);
     void ProcessedResourceEvents(const EventList & events);
     void RegisteredResourceMimeType(const QString & uri, const QString & mimetype);
     void RegisteredResourceTitle(const QString & uri, const QString & title);
-    void LinkedResourceToActivity(const QString & uri, const QString & activity);
-    void UnlinkedResourceFromActivity(const QString & uri, const QString & activity);
 
 public:
     virtual bool isFeatureOperational(const QStringList & feature) const _override;
@@ -115,5 +85,5 @@ private:
     D_PTR;
 };
 
-#endif // RESOURCE_MANAGER_H_
+#endif // RESOURCES_H
 

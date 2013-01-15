@@ -131,28 +131,34 @@ public:
     /**
      * Links a resource to the activity
      * @param uri URI of the resource
-     * @param activityId id of the activity to link to. If empty, the
+     * @param activity id of the activity to link to. If empty, the
      *    resource is linked to the current activity.
      * @note This method is <b>asynchronous</b>
+     * @deprecated use Info::linkResource
      */
-    void linkResourceToActivity(const QUrl & uri, const QString & activityId = QString());
+    KDE_DEPRECATED
+    void linkResourceToActivity(const QUrl & uri, const QString & activity = QString());
 
     /**
      * Unlinks a resource from the activity
      * @param uri URI of the resource
-     * @param activityId id of the activity to unlink from. If empty, the
+     * @param activity id of the activity to unlink from. If empty, the
      *    resource is unlinked from the current activity.
      * @note This method is <b>asynchronous</b>
+     * @deprecated use Info::unlinkResource
      */
-    void unlinkResourceFromActivity(const QUrl & uri, const QString & activityId = QString());
+    KDE_DEPRECATED
+    void unlinkResourceFromActivity(const QUrl & uri, const QString & activity = QString());
 
     /**
      * @returns whether the resource is linket to the specified activity
      * @param uri URI of the resource
-     * @param activityId id of the activity. If empty, the current activity is used.
+     * @param activity id of the activity. If empty, the current activity is used.
      * @note This method is <b>blocking</b>
+     * @deprecated use Info::isResourceLinked
      */
-    bool isResourceLinkedToActivity(const QUrl & uri, const QString & activityId = QString()) const;
+    KDE_DEPRECATED
+    bool isResourceLinkedToActivity(const QUrl & uri, const QString & activity = QString()) const;
 
 Q_SIGNALS:
     /**

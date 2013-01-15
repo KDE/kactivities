@@ -73,7 +73,7 @@ public:
     };
 
     KActivities::Consumer activities;
-    QString activityId;
+    QString activity;
     QString filename;
 
     KIO::UDSEntry createFolderUDSEntry(const QString & name, const QString & displayName, const QDate & date) const
@@ -116,9 +116,9 @@ public:
         return uds;
     }
 
-    Nepomuk::Query::Query buildQuery(const QString & activityId) const
+    Nepomuk::Query::Query buildQuery(const QString & activity) const
     {
-        Nepomuk::Resource activityResource(activityId, KAO::Activity());
+        Nepomuk::Resource activityResource(activity, KAO::Activity());
 
         Nepomuk::Query::FileQuery query;
 
@@ -138,10 +138,10 @@ public:
                 QDate::currentDate()), false
             );
 
-        foreach (const QString & activityId, activities.listActivities()) {
+        foreach (const QString & activity, activities.listActivities()) {
             kio->listEntry(createFolderUDSEntry(
-                    activityId,
-                    KActivities::Info::name(activityId),
+                    activity,
+                    KActivities::Info::name(activity),
                     QDate::currentDate()), false
                 );
         }
@@ -152,7 +152,8 @@ public:
 
     void listActivity() const
     {
-        QString activity = activityId;
+        // We need this to be changeable in a const method
+        QString activity = this->activity;
 
         if (activity == "current") {
             activity = activities.currentActivity();
@@ -196,7 +197,7 @@ public:
 
     Path parseUrl(const KUrl & url)
     {
-        activityId.clear();
+        activity.clear();
         filename.clear();
 
         if (url.path().length() <= 1) {
@@ -209,16 +210,16 @@ public:
             return RootItem;
         }
 
-        activityId = path.takeFirst();
+        activity = path.takeFirst();
 
         if (path.isEmpty()) {
-            return (KActivities::Info(activityId).isEncrypted())
+            return (KActivities::Info(activity).isEncrypted())
                 ? PrivateActivityPathItem : ActivityRootItem;
         }
 
         filename = path.join("/");
 
-        return (KActivities::Info(activityId).isEncrypted())
+        return (KActivities::Info(activity).isEncrypted())
             ? PrivateActivityPathItem : ActivityRootItem;
     }
 
@@ -355,7 +356,7 @@ void ActivitiesProtocol::stat(const KUrl & url)
         case Private::ActivityRootItem:
         {
             KIO::UDSEntry uds;
-            uds.insert(KIO::UDSEntry::UDS_NAME, d->activityId);
+            uds.insert(KIO::UDSEntry::UDS_NAME, d->activity);
             uds.insert(KIO::UDSEntry::UDS_FILE_TYPE, S_IFDIR);
             uds.insert(KIO::UDSEntry::UDS_MIME_TYPE, QString::fromLatin1("inode/directory"));
             statEntry(uds);
@@ -397,7 +398,7 @@ bool ActivitiesProtocol::rewriteUrl(const KUrl & url, KUrl & newURL)
     if (pathType == Private::PrivateActivityPathItem) {
         static QDir activitiesDataFolder = QDir(KStandardDirs::locateLocal("data", "activitymanager/activities"));
 
-        newURL = KUrl("file://" + activitiesDataFolder.filePath("crypt-" + d->activityId + "/user/" + d->filename));
+        newURL = KUrl("file://" + activitiesDataFolder.filePath("crypt-" + d->activity + "/user/" + d->filename));
 
         return true;
     }

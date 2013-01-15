@@ -12,7 +12,7 @@ Name[fi]=Työpöydänlaajuiset pikanäppäimet
 Name[gl]=Atallos globais
 Name[he]=קישורים גלובאלים
 Name[hu]=Globális billentyűparancsok
-Name[ia]=Vias breve Global 
+Name[ia]=Vias breve Global
 Name[it]=Scorciatoie globali
 Name[kk]=Жалпы жүйелік тіркесімдер
 Name[km]=​ផ្លូវកាត់​សកល
@@ -86,4 +86,3 @@ X-KDE-PluginInfo-Depends=
 X-KDE-PluginInfo-License=GPL
 X-KDE-PluginInfo-EnabledByDefault=true
 
-X-ActivityManager-PluginType=normal

@@ -47,9 +47,6 @@ Comment[x-test]=xxActivity manager pluginxx
 Comment[zh_CN]=活动管理器插件
 Comment[zh_TW]=活動管理員外掛程式
 
-[PropertyDef::X-ActivityManager-PluginType]
-Type=QString
-
 [PropertyDef::X-ActivityManager-PluginOverrides]
 Type=QString
 

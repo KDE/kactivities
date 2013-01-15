@@ -30,6 +30,7 @@
 #include <cmath>
 
 #include <config-features.h>
+
 #include <utils/nullptr.h>
 #include <utils/d_ptr_implementation.h>
 #include <utils/val.h>

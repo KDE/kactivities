@@ -44,16 +44,12 @@ public:
 
 Q_SIGNALS:
     void resourceScoreUpdated(const QString & activity, const QString & client, const QString & resource, double score);
+    void recentStatsDeleted(const QString & activity, int count, const QString & what);
+    void earlierStatsDeleted(const QString & activity, int months);
 
 public Q_SLOTS:
     void deleteRecentStats(const QString & activity, int count, const QString & what);
     void deleteEarlierStats(const QString & activity, int months);
-
-public:
-    virtual bool isFeatureOperational(const QStringList & feature) const _override;
-    virtual bool isFeatureEnabled(const QStringList & feature) const _override;
-    virtual void setFeatureEnabled(const QStringList & feature, bool value) _override;
-    virtual QStringList listFeatures(const QStringList & feature) const _override;
 
 private Q_SLOTS:
     void addEvents(const EventList & events);

@@ -25,18 +25,12 @@
 
 #include "../../Event.h"
 
-#ifdef HAVE_NEPOMUK
-#include "kao.h"
-#endif
-
 #include <QFileSystemWatcher>
-#include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QDebug>
 
 #include <KStandardDirs>
 
-// #include "Rankings.h"
 #include "DatabaseConnection.h"
 
 #include <utils/nullptr.h>
@@ -56,14 +50,16 @@ StatsPlugin::StatsPlugin(QObject *parent, const QVariantList & args)
 
     new ScoringAdaptor(this);
     QDBusConnection::sessionBus().registerObject("/ActivityManager/Resources/Scoring", this);
+
+    setName("org.kde.ActivityManager.Resources.Scoring");
 }
 
 bool StatsPlugin::init(const QHash < QString, QObject * > & modules)
 {
+    qDebug() << "These are the registered modules: " << modules.keys();
+
     m_activities = modules["activities"];
     m_resources = modules["resources"];
-
-    setName("org.kde.ActivityManager.Resources.Scoring");
 
     DatabaseConnection::self();
     // Rankings::init(this);
@@ -134,7 +130,7 @@ void StatsPlugin::addEvents(const EventList & events)
     for (int i = 0; i < events.size(); i++) {
         val & event = events[i];
 
-        if (event.uri.startsWith("about")) continue;
+        if (event.uri.startsWith(QLatin1String("about"))) continue;
 
         val currentActivity = Plugin::callOn <QString, Qt::DirectConnection> (m_activities, "CurrentActivity", "QString");
 
@@ -183,33 +179,6 @@ void StatsPlugin::addEvents(const EventList & events)
     }
 }
 
-bool StatsPlugin::isFeatureOperational(const QStringList & feature) const
-{
-    Q_UNUSED(feature)
-    return false;
-}
-
-bool StatsPlugin::isFeatureEnabled(const QStringList & feature) const
-{
-    Q_UNUSED(feature)
-    return false;
-
-}
-
-void StatsPlugin::setFeatureEnabled(const QStringList & feature, bool value)
-{
-    Q_UNUSED(feature)
-    Q_UNUSED(value)
-}
-
-QStringList StatsPlugin::listFeatures(const QStringList & feature) const
-{
-    Q_UNUSED(feature)
-    static val features = (QStringList() << "scoring" << "more");
-
-    return features;
-}
-
 void StatsPlugin::deleteRecentStats(const QString & activity, int count, const QString & what)
 {
     val activityCheck = activity.isEmpty() ?
@@ -226,50 +195,51 @@ void StatsPlugin::deleteRecentStats(const QString & activity, int count, const Q
         DatabaseConnection::self()->database().exec(
                 "DELETE FROM nuao_DesktopEvent WHERE " + activityCheck
             );
-        // TODO: Remove from Nepomuk as well
 
-        return;
+    } else {
+
+        // Deleting a specified length of time
+
+        auto now = QDateTime::currentDateTime();
+
+        if (what == "h") {
+            now = now.addSecs(-count * 60 * 60);
+
+        } else if (what == "d") {
+            now = now.addDays(-count);
+
+        } else if (what == "m") {
+            now = now.addMonths(-count);
+        }
+
+        // Maybe we should decrease the scores for the previosuly
+        // cached items. Thkinking it is not that important -
+        // if something was accessed before, it is not really a secret
+
+        static val queryRSC = QString(
+                "DELETE FROM kext_ResourceScoreCache "
+                " WHERE %1 "
+                " AND firstUpdate > %2 "
+            );
+        static val queryDE = QString(
+                "DELETE FROM nuao_DesktopEvent "
+                " WHERE %1 "
+                " AND end > %2 "
+            );
+
+        DatabaseConnection::self()->database().exec(
+            queryRSC
+                .arg(activityCheck)
+                .arg(now.toTime_t())
+            );
+        DatabaseConnection::self()->database().exec(
+            queryDE
+                .arg(activityCheck)
+                .arg(now.toTime_t())
+            );
     }
 
-    // Deleting a specified length of time
-
-    auto now = QDateTime::currentDateTime();
-
-    if (what == "h") {
-        now = now.addSecs(-count * 60 * 60);
-
-    } else if (what == "d") {
-        now = now.addDays(-count);
-
-    } else if (what == "m") {
-        now = now.addMonths(-count);
-    }
-
-    // Maybe we should decrease the scores for the previosuly
-    // cached items. Thkinking it is not that important.
-
-    static val queryRSC = QString(
-            "DELETE FROM kext_ResourceScoreCache "
-            " WHERE %1 "
-            " AND firstUpdate > %2 "
-        );
-    static val queryDE = QString(
-            "DELETE FROM nuao_DesktopEvent "
-            " WHERE %1 "
-            " AND end > %2 "
-        );
-
-    DatabaseConnection::self()->database().exec(
-        queryRSC
-            .arg(activityCheck)
-            .arg(now.toTime_t())
-        );
-    DatabaseConnection::self()->database().exec(
-        queryDE
-            .arg(activityCheck)
-            .arg(now.toTime_t())
-        );
-    // TODO: Remove from Nepomuk as well
+    emit recentStatsDeleted(activity, count, what);
 }
 
 void StatsPlugin::deleteEarlierStats(const QString & activity, int months)
@@ -284,6 +254,11 @@ void StatsPlugin::deleteEarlierStats(const QString & activity, int months)
 
     val time = QDateTime::currentDateTime().addMonths(-months);
 
+    static val queryRSC = QString(
+            "DELETE FROM kext_ResourceScoreCache "
+            " WHERE %1 "
+            " AND lastUpdate < %2 "
+        );
     static val queryDE = QString(
             "DELETE FROM nuao_DesktopEvent "
             " WHERE %1 "
@@ -291,10 +266,18 @@ void StatsPlugin::deleteEarlierStats(const QString & activity, int months)
         );
 
     DatabaseConnection::self()->database().exec(
+        queryRSC
+            .arg(activityCheck)
+            .arg(time.toTime_t())
+        );
+
+    DatabaseConnection::self()->database().exec(
         queryDE
             .arg(activityCheck)
             .arg(time.toTime_t())
         );
+
+    emit earlierStatsDeleted(activity, months);
 }
 
 KAMD_EXPORT_PLUGIN(StatsPlugin, "activitymanger_plugin_sqlite")

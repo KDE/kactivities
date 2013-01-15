@@ -15,8 +15,8 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef PLUGINS_VD_SWITCH_VD_SWITCH_H
-#define PLUGINS_VD_SWITCH_VD_SWITCH_H
+#ifndef PLUGINS_VIRTUAL_DESKTOP_SWITCH_PLUGIN_H
+#define PLUGINS_VIRTUAL_DESKTOP_SWITCH_PLUGIN_H
 
 #include <Plugin.h>
 
@@ -33,11 +33,11 @@ public:
     virtual bool init(const QHash < QString, QObject * > & modules) _override;
 
 private Q_SLOTS:
-    void currentActivityChanged(const QString & activityId);
+    void currentActivityChanged(const QString & activity);
 
 private:
     QString m_currentActivity;
     QObject * m_activitiesService;
 };
 
-#endif // PLUGINS_VD_SWITCH_VD_SWITCH_H
+#endif // PLUGINS_VIRTUAL_DESKTOP_SWITCH_PLUGIN_H

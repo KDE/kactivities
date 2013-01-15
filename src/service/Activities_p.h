@@ -17,8 +17,8 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef ACTIVITY_MANAGER_P_H
-#define ACTIVITY_MANAGER_P_H
+#ifndef ACTIVITIES_P_H
+#define ACTIVITIES_P_H
 
 #include <QString>
 #include <QTimer>
@@ -49,10 +49,10 @@ public:
     void ensureCurrentActivityIsRunning();
 
 public Q_SLOTS:
-    bool setCurrentActivity(const QString & id);
+    bool setCurrentActivity(const QString & activity);
 
 public:
-    void setActivityState(const QString & id, Activities::State state);
+    void setActivityState(const QString & activity, Activities::State state);
     QHash < QString, Activities::State > activities;
 
     // Current activity
@@ -69,8 +69,8 @@ public:
     KConfigGroup activitiesConfig();
     KConfigGroup activityIconsConfig();
     KConfigGroup mainConfig();
-    QString activityName(const QString & id);
-    QString activityIcon(const QString & id);
+    QString activityName(const QString & activity);
+    QString activityIcon(const QString & activity);
 
 
 public Q_SLOTS:
@@ -92,5 +92,5 @@ private:
     Activities * const q;
 };
 
-#endif // ACTIVITY_MANAGER_P_H
+#endif // ACTIVITIES_P_H
 

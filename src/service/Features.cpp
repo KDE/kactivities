@@ -20,8 +20,6 @@
 #include <Features.h>
 #include "featuresadaptor.h"
 
-#include <NepomukActivityManager.h>
-
 #include "common.h"
 
 #include <utils/d_ptr_implementation.h>
@@ -65,6 +63,8 @@ static RetType passToModule(const QString & feature, RetType defaultResult, Func
 
 bool Features::IsFeatureOperational(const QString & feature) const
 {
+    if (feature.isEmpty()) return false;
+
     return FEATURES_PASS_TO_MODULE(bool, false,
         return module->isFeatureOperational(params);
     );
@@ -72,6 +72,8 @@ bool Features::IsFeatureOperational(const QString & feature) const
 
 bool Features::IsFeatureEnabled(const QString & feature) const
 {
+    if (feature.isEmpty()) return false;
+
     return FEATURES_PASS_TO_MODULE(bool, false,
         return module->isFeatureEnabled(params);
     );
@@ -79,6 +81,8 @@ bool Features::IsFeatureEnabled(const QString & feature) const
 
 void Features::SetFeatureEnabled(const QString & feature, bool value)
 {
+    if (feature.isEmpty()) return;
+
     FEATURES_PASS_TO_MODULE(bool, false,
         module->setFeatureEnabled(params, value);
         return true;
@@ -90,6 +94,7 @@ QStringList Features::ListFeatures(const QString & feature) const
     if (feature.isEmpty()) {
         return Module::get().keys();
     }
+
     return FEATURES_PASS_TO_MODULE(QStringList, QStringList(),
         return module->listFeatures(params);
     );

@@ -18,7 +18,6 @@
 #include "ActivityRanking.h"
 #include "activityrankingadaptor.h"
 
-#include <QFile>
 #include <QDBusConnection>
 
 #include <QSqlDatabase>

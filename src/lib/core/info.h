@@ -48,8 +48,8 @@ class InfoPrivate;
  *
  * For example, this is wrong (works, but blocks):
  * @code
- * void someMethod(const QString & activityId) {
- *     Info info(activityId);
+ * void someMethod(const QString & activity) {
+ *     Info info(activity);
  *     doSomethingWith(info.name());
  * }
  * @endcode
@@ -69,7 +69,7 @@ class KACTIVITIES_EXPORT Info: public QObject
     Q_PROPERTY(QString icon READ icon NOTIFY iconChanged)
 
 public:
-    explicit Info(const QString & activityId, QObject * parent = 0 /*nullptr*/);
+    explicit Info(const QString & activity, QObject * parent = 0 /*nullptr*/);
     ~Info();
 
     /**
@@ -180,6 +180,14 @@ public:
      */
     KDE_DEPRECATED
     KUrl::List linkedResources() const;
+
+
+    /**
+     * @returns whether a resource is linked to this activity
+     * @note this method is <b>blocking</b>
+     * @since 4.11
+     */
+    bool isResourceLinked(const KUrl & resourceUri);
 
 Q_SIGNALS:
     /**

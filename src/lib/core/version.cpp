@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2011, 2012 by Ivan Cukic <ivan.cukic(at)kde.org>
+ *   Copyright 2008 by Aaron Seigo <aseigo@kde.org>
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU Library General Public License as
@@ -17,19 +17,35 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef ACTIVITIES_COMPONENT_PLUGIN_H
-#define ACTIVITIES_COMPONENT_PLUGIN_H
+#include <kactivities/version.h>
 
-#include <QDeclarativeExtensionPlugin>
+namespace KActivities
+{
 
-class ActivitiesComponentDataPlugin: public QDeclarativeExtensionPlugin {
-    Q_OBJECT
+unsigned int version()
+{
+    return KACTIVITIES_VERSION;
+}
 
-public:
-    void registerTypes(const char * uri);
-};
+unsigned int versionMajor()
+{
+    return KACTIVITIES_VERSION_MAJOR;
+}
 
-Q_EXPORT_PLUGIN2(activitiescomponentdataplugin, ActivitiesComponentDataPlugin)
+unsigned int versionMinor()
+{
+    return KACTIVITIES_VERSION_MINOR;
+}
 
-#endif // ACTIVITIES_COMPONENT_DATA_PLUGIN_H
+unsigned int versionRelease()
+{
+    return KACTIVITIES_VERSION_RELEASE;
+}
+
+const char *versionString()
+{
+    return KACTIVITIES_VERSION_STRING;
+}
+
+} // KActivities namespace
 

@@ -15,10 +15,12 @@ include (FindPackageHandleStandardArgs)
 # 0.1.0 => 0.1.0
 # 0.1.1 => 0.1.1
 # 0.2.0 => 0.2.0
+# 6.1.0 => 6.1.0
+# 6.2.0 => 6.2.0
 
 # Library API version
 set (KACTIVITIES_LIB_MAJOR_VERSION "6")
-set (KACTIVITIES_LIB_MINOR_VERSION "1")
+set (KACTIVITIES_LIB_MINOR_VERSION "2")
 set (KACTIVITIES_LIB_PATCH_VERSION "0")
 
 # Suffix to add at end of version string. Usual values are:
@@ -33,7 +35,7 @@ set (KACTIVITIES_LIB_SUFFIX_VERSION "")
 # Library ABI version used by linker.
 # For details : http://www.gnu.org/software/libtool/manual/libtool.html#Updating-version-info
 set (KACTIVITIES_LIB_SO_CUR_VERSION "6")
-set (KACTIVITIES_LIB_SO_REV_VERSION "1")
+set (KACTIVITIES_LIB_SO_REV_VERSION "2")
 set (KACTIVITIES_LIB_SO_AGE_VERSION "0")
 
 # =======================================================
@@ -72,6 +74,7 @@ set (
     info.cpp
     manager_p.cpp
     resourceinstance.cpp
+    version.cpp
     )
 
 set_source_files_properties (
@@ -101,6 +104,13 @@ qt4_add_dbus_interface (
     features_interface
     )
 
+qt4_add_dbus_interface (
+    kactivities_LIB_SRCS
+
+    ${CMAKE_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.ResourcesLinking.xml
+    resources_linking_interface
+    )
+
 kde4_add_library (
     kactivities SHARED
     ${kactivities_LIB_SRCS}
@@ -126,6 +136,7 @@ set (
     controller.h
     info.h
     resourceinstance.h
+    version.h
     kactivities_export.h
     )
 
@@ -135,6 +146,7 @@ set (
     includes/KActivities/Controller
     includes/KActivities/Info
     includes/KActivities/ResourceInstance
+    includes/KActivities/Version
     )
 
 install (

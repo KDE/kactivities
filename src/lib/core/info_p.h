@@ -40,7 +40,7 @@ private:
 
 class InfoPrivate {
 public:
-    InfoPrivate(Info * info, const QString & activityId);
+    InfoPrivate(Info * info, const QString & activity);
 
     void activityStateChanged(const QString &, int);
 

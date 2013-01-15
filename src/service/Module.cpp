@@ -53,6 +53,8 @@ Module::~Module()
 
 QObject * Module::get(const QString & name)
 {
+    Q_ASSERT(!name.isEmpty());
+
     if (Private::s_modules.contains(name)) {
         qDebug() << "Returning a valid module object for:" << name;
         return Private::s_modules[name];

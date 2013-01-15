@@ -10,8 +10,10 @@ DIRS=$1
 
 if [ ! -n "$1" ];
 then
-    DIRS="lib service workspace"
+    DIRS="lib service utils workspace"
 fi
+
+
 
 echo $DIRS
 CURRENT_DIRECTORY=$PWD
@@ -19,5 +21,5 @@ CURRENT_DIRECTORY=$PWD
 for dir in $DIRS;
 do
     echo "Running krazy2 on $dir ..."
-    cd $CURRENT_DIRECTORY/$dir && krazy2all --exclude license > /tmp/$dir.krazy
+    cd $CURRENT_DIRECTORY/src/$dir && krazy2all --exclude license > /tmp/$dir.krazy
 done

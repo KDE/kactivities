@@ -55,7 +55,7 @@ void SlcPlugin::registeredResourceEvent(const Event & event)
     switch (event.type) {
         case Event::FocussedIn:
 
-            if (!event.uri.startsWith("about")) {
+            if (!event.uri.startsWith(QLatin1String("about"))) {
                 if (m_focussedResource != event.uri) {
                     m_focussedResource = event.uri;
                     val & info = m_resources[m_focussedResource];

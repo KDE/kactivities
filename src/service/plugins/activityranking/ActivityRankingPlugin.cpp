@@ -18,6 +18,8 @@
 #include "ActivityRankingPlugin.h"
 #include "ActivityRanking.h"
 
+#include <QThread>
+
 #include <memory>
 
 #include <utils/d_ptr_implementation.h>

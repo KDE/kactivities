@@ -47,12 +47,12 @@ InfoPrivateCommon::~InfoPrivateCommon()
 
 // Private
 
-InfoPrivate::InfoPrivate(Info *info, const QString &activityId)
+InfoPrivate::InfoPrivate(Info *info, const QString &activity)
     : q(info),
       state(Info::Invalid),
       nameCallWatcher(0),
       iconCallWatcher(0),
-      id(activityId)
+      id(activity)
 {
     if (Manager::isServicePresent()) {
         initializeCachedData();
@@ -116,9 +116,9 @@ void InfoPrivate::initializeCachedData()
 }
 
 // Info
-Info::Info(const QString &activityId, QObject *parent)
+Info::Info(const QString &activity, QObject *parent)
     : QObject(parent),
-      d(new InfoPrivate(this, activityId))
+      d(new InfoPrivate(this, activity))
 {
     connect(Manager::activities(), SIGNAL(ActivityStateChanged(QString, int)),
             this, SLOT(activityStateChanged(QString, int)));
@@ -212,7 +212,7 @@ Info::Availability Info::availability() const
     if (Manager::activities()->ListActivities().value().contains(d->id)) {
         result = BasicInfo;
 
-        if (Manager::features()->IsFeatureOperational("resource-linking")) {
+        if (Manager::features()->IsFeatureOperational("org.kde.ActivityManager.Nepomuk/linking")) {
             result = Everything;
         }
     }
@@ -224,7 +224,7 @@ KUrl::List Info::linkedResources() const
 {
     KUrl::List result;
 
-    QDBusReply < QStringList > dbusReply = Manager::resources()->ResourcesLinkedToActivity(d->id);
+    QDBusReply < QStringList > dbusReply = Manager::resourcesLinking()->ResourcesLinkedToActivity(d->id);
 
     if (dbusReply.isValid()) {
         foreach (const QString & uri, dbusReply.value()) {
@@ -237,12 +237,17 @@ KUrl::List Info::linkedResources() const
 
 void Info::linkResource(const KUrl & resourceUri)
 {
-    Manager::resources()->LinkResourceToActivity(resourceUri.url(), d->id);
+    Manager::resourcesLinking()->LinkResourceToActivity(resourceUri.url(), d->id);
 }
 
 void Info::unlinkResource(const KUrl & resourceUri)
 {
-    Manager::resources()->UnlinkResourceFromActivity(resourceUri.url(), d->id);
+    Manager::resourcesLinking()->UnlinkResourceFromActivity(resourceUri.url(), d->id);
+}
+
+bool Info::isResourceLinked(const KUrl & resourceUri)
+{
+    return Manager::resourcesLinking()->IsResourceLinkedToActivity(resourceUri.url(), d->id);
 }
 
 } // namespace KActivities

@@ -17,8 +17,8 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef ACTIVITY_MANAGER_H
-#define ACTIVITY_MANAGER_H
+#ifndef ACTIVITIES_H
+#define ACTIVITIES_H
 
 #include <QString>
 #include <QStringList>
@@ -83,9 +83,9 @@ public Q_SLOTS:
 
     /**
      * Sets the current activity
-     * @param id id of the activity to make current
+     * @param activity id of the activity to make current
      */
-    bool SetCurrentActivity(const QString & id);
+    bool SetCurrentActivity(const QString & activity);
 
     /**
      * Adds a new activity
@@ -96,27 +96,27 @@ public Q_SLOTS:
 
     /**
      * Starts the specified activity
-     * @param id id of the activity to stash
+     * @param activity id of the activity to stash
      */
-    void StartActivity(const QString & id);
+    void StartActivity(const QString & activity);
 
     /**
      * Stops the specified activity
-     * @param id id of the activity to stash
+     * @param activity id of the activity to stash
      */
-    void StopActivity(const QString & id);
+    void StopActivity(const QString & activity);
 
     /**
      * @returns the state of the activity
-     * @param id id of the activity
+     * @param activity id of the activity
      */
-    int ActivityState(const QString & id) const;
+    int ActivityState(const QString & activity) const;
 
     /**
      * Removes the specified activity
-     * @param id id of the activity to delete
+     * @param activity id of the activity to delete
      */
-    void RemoveActivity(const QString & id);
+    void RemoveActivity(const QString & activity);
 
     /**
      * @returns the list of all existing activities
@@ -131,29 +131,29 @@ public Q_SLOTS:
 
     /**
      * @returns the name of the specified activity
-     * @param id id of the activity
+     * @param activity id of the activity
      */
-    QString ActivityName(const QString & id) const;
+    QString ActivityName(const QString & activity) const;
 
     /**
      * Sets the name of the specified activity
-     * @param id id of the activity
+     * @param activity id of the activity
      * @param name name to be set
      */
-    void SetActivityName(const QString & id, const QString & name);
+    void SetActivityName(const QString & activity, const QString & name);
 
     /**
      * @returns the icon of the specified activity
-     * @param id id of the activity
+     * @param activity id of the activity
      */
-    QString ActivityIcon(const QString & id) const;
+    QString ActivityIcon(const QString & activity) const;
 
     /**
      * Sets the icon of the specified activity
-     * @param id id of the activity
+     * @param activity id of the activity
      * @param icon icon to be set
      */
-    void SetActivityIcon(const QString & id, const QString & icon);
+    void SetActivityIcon(const QString & activity, const QString & icon);
 
 public Q_SLOTS:
     /**
@@ -164,64 +164,64 @@ public Q_SLOTS:
     /**
      * @returns the info about an activity
      */
-    ActivityInfo ActivityInformation(const QString & id) const;
+    ActivityInfo ActivityInformation(const QString & activity) const;
 
 Q_SIGNALS:
     /**
      * This signal is emitted when the global
      * activity is changed
-     * @param id id of the new current activity
+     * @param activity id of the new current activity
      */
-    void CurrentActivityChanged(const QString & id);
+    void CurrentActivityChanged(const QString & activity);
 
     /**
      * This signal is emitted when a new activity is created
-     * @param id id of the activity
+     * @param activity id of the activity
      */
-    void ActivityAdded(const QString & id);
+    void ActivityAdded(const QString & activity);
 
     /**
      * This signal is emitted when an activity is started
-     * @param id id of the activity
+     * @param activity id of the activity
      */
-    void ActivityStarted(const QString & id);
+    void ActivityStarted(const QString & activity);
 
     /**
      * This signal is emitted when an activity is stashed
-     * @param id id of the activity
+     * @param activity id of the activity
      */
-    void ActivityStopped(const QString & id);
+    void ActivityStopped(const QString & activity);
 
     /**
      * This signal is emitted when an activity is deleted
-     * @param id id of the activity
+     * @param activity id of the activity
      */
-    void ActivityRemoved(const QString & id);
+    void ActivityRemoved(const QString & activity);
 
     /**
      * Emitted when an activity name is changed
-     * @param id id of the changed activity
+     * @param activity id of the changed activity
      * @param name name of the changed activity
      */
-    void ActivityNameChanged(const QString & id, const QString & name);
+    void ActivityNameChanged(const QString & activity, const QString & name);
 
     /**
      * Emitted when an activity icon is changed
-     * @param id id of the changed activity
+     * @param activity id of the changed activity
      * @param icon name of the changed activity
      */
-    void ActivityIconChanged(const QString & id, const QString & icon);
+    void ActivityIconChanged(const QString & activity, const QString & icon);
 
     /**
      * Emitted when an activity is changed (name, icon, or some other property)
-     * @param id id of the changed activity
+     * @param activity id of the changed activity
      */
-    void ActivityChanged(const QString & id);
+    void ActivityChanged(const QString & activity);
 
     /**
      * Emitted when the state of activity is changed
      */
-    void ActivityStateChanged(const QString & id, int state);
+    void ActivityStateChanged(const QString & activity, int state);
 
 
 public:
@@ -235,4 +235,4 @@ private:
 };
 
 
-#endif // ACTIVITY_MANAGER_H
+#endif // ACTIVITIES_H

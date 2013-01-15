@@ -26,7 +26,6 @@
 #include <QMetaObject>
 
 #include <KPluginFactory>
-#include <KPluginLoader>
 #include <KConfigGroup>
 
 #include "Event.h"
@@ -65,7 +64,7 @@ public:
     QString name() const;
 
     /**
-     * Convinience meta-method to provide prettier invocation of QMetaObject::invokeMethod
+     * Convenience meta-method to provide prettier invocation of QMetaObject::invokeMethod
      */
     template <typename ReturnType, Qt::ConnectionType connection>
     static ReturnType callOn(QObject * object, const char * method, const char * returnTypeName)

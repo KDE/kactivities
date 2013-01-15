@@ -47,6 +47,13 @@ Manager::Manager()
             QDBusConnection::sessionBus(),
             this
             )),
+      m_resourcesLinking(
+          new org::kde::ActivityManager::ResourcesLinking(
+            ACTIVITY_MANAGER_DBUS_PATH,
+            ACTIVITY_MANAGER_DBUS_OBJECT "/Resources/Linking",
+            QDBusConnection::sessionBus(),
+            this
+            )),
       m_features(
           new org::kde::ActivityManager::Features(
             ACTIVITY_MANAGER_DBUS_PATH,
@@ -109,6 +116,11 @@ Service::Activities * Manager::activities()
 Service::Resources * Manager::resources()
 {
     return self()->m_resources;
+}
+
+Service::ResourcesLinking * Manager::resourcesLinking()
+{
+    return self()->m_resourcesLinking;
 }
 
 Service::Features * Manager::features()

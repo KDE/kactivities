@@ -17,8 +17,8 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef MODULE_H_
-#define MODULE_H_
+#ifndef MODULE_H
+#define MODULE_H
 
 #include <QObject>
 #include <QString>
@@ -32,8 +32,10 @@
  * Module
  */
 class Module: public QObject {
+    Q_OBJECT
+
 public:
-    Module(const QString & name, QObject * parent = nullptr);
+    explicit Module(const QString & name, QObject * parent = nullptr);
     virtual ~Module();
 
     static QObject * get(const QString & name);
@@ -51,5 +53,5 @@ private:
     D_PTR;
 };
 
-#endif // MODULE_H_
+#endif // MODULE_H
 

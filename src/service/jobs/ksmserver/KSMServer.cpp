@@ -23,7 +23,6 @@
 #include <QDBusConnection>
 #include <QDBusServiceWatcher>
 #include <QDBusInterface>
-#include <QDBusPendingCall>
 #include <QDBusPendingReply>
 #include <QDBusPendingCallWatcher>
 #include <QDebug>
@@ -137,7 +136,7 @@ void KSMServer::Private::processLater(const QString & activity, bool start)
 {
     qDebug() << "Scheduling" << activity << "to be" << (start ? "started" : "stopped");
 
-    foreach (auto & item, queue) {
+    foreach (val & item, queue) {
         if (item.first == activity) {
             return;
         }

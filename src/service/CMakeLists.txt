@@ -18,24 +18,6 @@ set (ADDITIONAL_LINK_LIBS)
 
 set (sdo_SRCS)
 
-if (NepomukCore_FOUND AND Soprano_FOUND)
-    include_directories (${NEPOMUK_CORE_INCLUDE_DIR} ${SOPRANO_INCLUDE_DIR})
-
-    set (
-        ADDITIONAL_LINK_LIBS
-        ${ADDITIONAL_LINK_LIBS}
-        ${NEPOMUK_CORE_LIBRARY}
-        ${SOPRANO_LIBRARIES}
-        )
-
-    soprano_add_ontology (
-        sdo_SRCS
-        ${CMAKE_SOURCE_DIR}/src/ontologies/kao.trig
-        "KAO" "KDE::Vocabulary" "trig"
-        )
-
-endif ()
-
 # Standard stuff
 
 include_directories (
@@ -62,8 +44,6 @@ set (activity_manager_SRCS
     Features.cpp
 
     ${plugin_implementation_SRCS}
-
-    NepomukActivityManager.cpp
 
     Event.cpp
 
@@ -107,7 +87,7 @@ kde4_add_executable (activity-manager ${activity_manager_SRCS})
 
 target_link_libraries (activity-manager
     ${KDE4_KDECORE_LIBS}
-    ${KDE4_KIO_LIBS}   # TODO: Remove kio
+    ${KDE4_KDEUI_LIBS}   # KUniqueApplication
     ${ADDITIONAL_LINK_LIBS}
     )
 

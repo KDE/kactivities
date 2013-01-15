@@ -17,7 +17,6 @@
 
 #include "VirtualDesktopSwitchPlugin.h"
 
-#include <QStringList>
 #include <QString>
 #include <QDebug>
 
@@ -33,6 +32,8 @@ VirtualDesktopSwitchPlugin::VirtualDesktopSwitchPlugin(QObject * parent, const Q
       m_activitiesService(nullptr)
 {
     Q_UNUSED(args)
+
+    setName("org.kde.ActivityManager.VirtualDesktopSwitch");
 }
 
 VirtualDesktopSwitchPlugin::~VirtualDesktopSwitchPlugin()
@@ -41,10 +42,6 @@ VirtualDesktopSwitchPlugin::~VirtualDesktopSwitchPlugin()
 
 bool VirtualDesktopSwitchPlugin::init(const QHash < QString, QObject * > & modules)
 {
-    qDebug() << "VirtualDesktopSwitch::init";
-
-    setName("org.kde.ActivityManager.VirtualDesktopSwitch");
-
     m_activitiesService = modules["activities"];
 
     m_currentActivity = Plugin::callOn <QString, Qt::DirectConnection> (m_activitiesService, "CurrentActivity", "QString");
@@ -55,25 +52,22 @@ bool VirtualDesktopSwitchPlugin::init(const QHash < QString, QObject * > & modul
     return true;
 }
 
-void VirtualDesktopSwitchPlugin::currentActivityChanged(const QString & activityId)
+void VirtualDesktopSwitchPlugin::currentActivityChanged(const QString & activity)
 {
-    qDebug() << "VirtualDesktopSwitch::currentActivityChanged";
-
-    if (m_currentActivity == activityId) return;
+    if (m_currentActivity == activity) return;
 
     config().writeEntry(
             configPattern.arg(m_currentActivity),
             QString::number(KWindowSystem::currentDesktop())
         );
 
-    m_currentActivity = activityId;
+    m_currentActivity = activity;
 
     val desktopId = config().readEntry(configPattern.arg(m_currentActivity), -1);
 
     if (desktopId <= KWindowSystem::numberOfDesktops() && desktopId >= 0) {
         KWindowSystem::setCurrentDesktop(desktopId);
     }
-
 }
 
 KAMD_EXPORT_PLUGIN(VirtualDesktopSwitchPlugin, "activitymanger_plugin_virtualdesktopswitch")
