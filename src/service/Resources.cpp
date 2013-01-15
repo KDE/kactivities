@@ -40,11 +40,6 @@
 #include <utils/d_ptr_implementation.h>
 #include <utils/remove_if.h>
 
-static QString CurrentActivity()
-{
-    return Application::self()->activities().CurrentActivity();
-}
-
 Resources::Private::Private(Resources * parent)
     : QThread(parent), focussedWindow(0), q(parent)
 {
