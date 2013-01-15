@@ -180,22 +180,18 @@ QStringList Consumer::listActivities(Info::State state) const
 
 void Consumer::linkResourceToActivity(const QUrl & uri, const QString & activity)
 {
-    // TODO: BLOCKER
     if (Manager::isServicePresent())
         Manager::resourcesLinking()->LinkResourceToActivity(uri.toString(), activity);
 }
 
 void Consumer::unlinkResourceFromActivity(const QUrl & uri, const QString & activity)
 {
-    // TODO: BLOCKER
     if (Manager::isServicePresent())
         Manager::resourcesLinking()->UnlinkResourceFromActivity(uri.toString(), activity);
 }
 
 bool Consumer::isResourceLinkedToActivity(const QUrl & uri, const QString & activity) const
 {
-    return false;
-    // TODO: BLOCKER
     KAMD_RETRIEVE_REMOTE_VALUE_SYNC(
             bool, resourcesLinking, IsResourceLinkedToActivity(uri.toString(), activity), false
         );

@@ -224,7 +224,6 @@ KUrl::List Info::linkedResources() const
 {
     KUrl::List result;
 
-    // TODO: BLOCKER
     QDBusReply < QStringList > dbusReply = Manager::resourcesLinking()->ResourcesLinkedToActivity(d->id);
 
     if (dbusReply.isValid()) {
