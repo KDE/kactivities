@@ -225,13 +225,13 @@ KUrl::List Info::linkedResources() const
     KUrl::List result;
 
     // TODO: BLOCKER
-    // QDBusReply < QStringList > dbusReply = Manager::resources()->ResourcesLinkedToActivity(d->id);
+    QDBusReply < QStringList > dbusReply = Manager::resourcesLinking()->ResourcesLinkedToActivity(d->id);
 
-    // if (dbusReply.isValid()) {
-    //     foreach (const QString & uri, dbusReply.value()) {
-    //         result << KUrl(uri);
-    //     }
-    // }
+    if (dbusReply.isValid()) {
+        foreach (const QString & uri, dbusReply.value()) {
+            result << KUrl(uri);
+        }
+    }
 
     return result;
 }

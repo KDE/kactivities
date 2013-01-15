@@ -44,7 +44,9 @@ public Q_SLOTS:
     // Resource linking slots
     void LinkResourceToActivity(const QString & uri, const QString & activity = QString());
     void UnlinkResourceFromActivity(const QString & uri, const QString & activity = QString());
-    bool IsResourceLinkedToActivity(const QString & uri, const QString & activity = QString());
+    bool IsResourceLinkedToActivity(const QString & uri, const QString & activity = QString()) const;
+
+    QStringList ResourcesLinkedToActivity(const QString & activity = QString()) const;
 
 private Q_SLOTS:
     // Activity slots

@@ -135,8 +135,10 @@ bool NepomukPlugin::init(const QHash < QString, QObject * > & modules)
 
     connect(d->resourceScoring, SIGNAL(resourceScoreUpdated(QString, QString, QString, double)),
             this, SLOT(resourceScoreUpdated(QString, QString, QString, double)));
+
     connect(d->resourceScoring, SIGNAL(recentStatsDeleted(QString, int, QString)),
             this, SLOT(deleteRecentStats(QString, int, QString)));
+
     connect(d->resourceScoring, SIGNAL(earlierStatsDeleted(QString, int)),
             this, SLOT(deleteEarlierStats(QString, int)));
 
@@ -227,6 +229,8 @@ bool NepomukPlugin::isFeatureOperational(const QStringList & feature) const
 
 bool NepomukPlugin::isFeatureEnabled(const QStringList & feature) const
 {
+    Q_UNUSED(feature)
+
     return false;
 }
 
@@ -329,7 +333,7 @@ void NepomukPlugin::UnlinkResourceFromActivity(const QString & uri, const QStrin
         });
 }
 
-bool NepomukPlugin::IsResourceLinkedToActivity(const QString & uri, const QString & _activity)
+bool NepomukPlugin::IsResourceLinkedToActivity(const QString & uri, const QString & _activity) const
 {
     Q_ASSERT(!uri.isEmpty());
 
@@ -361,6 +365,30 @@ bool NepomukPlugin::IsResourceLinkedToActivity(const QString & uri, const QStrin
 
     return hasResults;
 }
+
+// TODO: This should be removed as soon as we get rid of the ResourcesLinkedToActivity method
+// BEGIN
+
+QStringList NepomukPlugin::ResourcesLinkedToActivity(const QString & activity) const
+{
+    if (!d->nepomukPresent) return QStringList();
+
+    QStringList result;
+
+    foreach (const Nepomuk::Resource & resource, activityResource(activity).isRelateds()) {
+        if (resource.hasProperty(NIE::url())) {
+            result << resource.property(NIE::url()).toUrl().toString();
+
+        } else {
+            result << resource.uri().toString();
+
+        }
+    }
+
+    return result;
+}
+
+// END
 
 KAMD_EXPORT_PLUGIN(NepomukPlugin, "activitymanger_plugin_nepomuk")
 

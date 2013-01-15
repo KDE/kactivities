@@ -31,5 +31,16 @@
       <arg type="b" direction="out"/>
     </method>
 
+    <!-- KDE_DEPRECATED -->
+    <method name="ResourcesLinkedToActivity">
+      <arg type="as" direction="out"/>
+      <arg name="activity" type="s" direction="in"/>
+    </method>
+
+    <!-- KDE_DEPRECATED -->
+    <method name="ResourcesLinkedToActivity">
+      <arg type="as" direction="out"/>
+    </method>
+
   </interface>
 </node>
