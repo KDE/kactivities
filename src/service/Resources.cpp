@@ -308,6 +308,7 @@ void Resources::RegisterResourceTitle(const QString & uri, const QString & title
 
 bool Resources::isFeatureOperational(const QStringList & feature) const
 {
+    Q_UNUSED(feature)
     return false;
 }
 
