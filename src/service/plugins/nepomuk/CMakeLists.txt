@@ -27,6 +27,8 @@ include_directories (
     ${CMAKE_CURRENT_BINARY_DIR}
     ${CMAKE_CURRENT_BINARY_DIR}/../..
     ${KDE4_INCLUDES}
+    ${SOPRANO_INCLUDE_DIR}
+    ${NEPOMUK_CORE_INCLUDE_DIR}
     )
 
 kde4_add_plugin (
