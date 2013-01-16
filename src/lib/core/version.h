@@ -20,9 +20,9 @@
 #ifndef KACTIVITIES_VERSION_H
 #define KACTIVITIES_VERSION_H
 
-/** @file kactivities/version.h <KActivities/Version> */
+/** @file version.h <KActivities/Version> */
 
-#include <kactivities/kactivities_export.h>
+#include "kactivities_export.h"
 
 /**
  * String version of libkactivities version, suitable for use in
