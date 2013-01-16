@@ -244,6 +244,8 @@ void NepomukActivityManager::syncActivities(const QStringList & activityIds)
         }
     }
 
+    org::kde::KDirNotify::emitFilesAdded("activities:/current");
+
     m_cache_activityIds.clear();
 }
 
