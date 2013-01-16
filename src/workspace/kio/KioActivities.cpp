@@ -78,6 +78,11 @@ QDebug kioDebug()
 
 #include "lib/core/info.h"
 
+#include "activities_interface.h"
+#include "resources_interface.h"
+#define ACTIVITY_MANAGER_DBUS_PATH   "org.kde.ActivityManager"
+#define ACTIVITY_MANAGER_DBUS_OBJECT "/ActivityManager"
+
 #include <Soprano/Vocabulary/NAO>
 
 namespace Nepomuk = Nepomuk2;
@@ -90,6 +95,8 @@ public:
     Private(ActivitiesProtocol * parent)
         : kio(parent)
     {
+        activityManagerIface = new org::kde::ActivityManager::Activities(ACTIVITY_MANAGER_DBUS_PATH, ACTIVITY_MANAGER_DBUS_OBJECT"/Activities", QDBusConnection::sessionBus(), parent);
+        activityResourcesIface = new org::kde::ActivityManager::Resources(ACTIVITY_MANAGER_DBUS_PATH, ACTIVITY_MANAGER_DBUS_OBJECT"/Resources", QDBusConnection::sessionBus(), parent);
     }
 
     enum Path {
@@ -99,7 +106,9 @@ public:
         PrivateActivityPathItem
     };
 
-    KActivities::Consumer activities;
+//     KActivities::Consumer activities;
+    OrgKdeActivityManagerActivitiesInterface * activityManagerIface;
+    OrgKdeActivityManagerResourcesInterface * activityResourcesIface;
     QString activityId;
     QString filename;
 
@@ -174,7 +183,7 @@ public:
                 QDate::currentDate()), false
             );
 
-        foreach (const QString & activityId, activities.listActivities()) {
+        foreach (const QString & activityId, activityManagerIface->ListActivities().value()) {
             kio->listEntry(createFolderUDSEntry(
                     activityId,
                     KActivities::Info::name(activityId),
@@ -191,38 +200,14 @@ public:
         QString activity = activityId;
 
         if (activity == "current") {
-            activity = activities.currentActivity();
+            activity = activityManagerIface->CurrentActivity().value();
         }
 
         if (!activity.isEmpty()) {
-            Nepomuk::Resource activityResource(activity, KAO::Activity());
-
-            const QString query = QString::fromLatin1(
-                    "select distinct ?r, ?url where { "
-                    "     ?r a nfo:FileDataObject . "
-                    "     ?r nie:url ?url . "
-                    "     %1 nao:isRelated ?r . "
-                    "} "
-                );
-
-            Soprano::QueryResultIterator it
-                = Nepomuk::ResourceManager::instance()->mainModel()->executeQuery(
-                    query.arg(Soprano::Node::resourceToN3(activityResource.uri())),
-                    Soprano::Query::QueryLanguageSparql);
-
-            while (it.next()) {
-                QUrl resource = it[0].uri();
-                QUrl file = it[1].uri();
-
-
-                kio->listEntry(createUDSEntryForUrl(it[1].uri()), false);
-
+            foreach(const QString & uri, activityResourcesIface->ResourcesLinkedToActivity(activity).value()) {
+                kio->listEntry(createUDSEntryForUrl(KUrl(uri)), false);   
             }
-
-            it.close();
-
         }
-
 
         // kio->listEntry(createFolderUDSEntry(
         //             "_test", "_Test", QDate::currentDate()), false);

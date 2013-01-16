@@ -22,6 +22,23 @@ soprano_add_ontology (
     "KAO" "KDE::Vocabulary" "trig"
     )
 
+set_source_files_properties (
+    ${CMAKE_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.Activities.xml
+    PROPERTIES
+    INCLUDE ${CMAKE_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.Activities.h
+    )
+
+qt4_add_dbus_interface (
+    kio_activities_PART_SRCS
+    ${CMAKE_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.Activities.xml
+    activities_interface
+    )
+
+qt4_add_dbus_interface (
+    kio_activities_PART_SRCS
+    ${CMAKE_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.Resources.xml
+    resources_interface
+    )
 
 kde4_add_plugin (
     kio_activities

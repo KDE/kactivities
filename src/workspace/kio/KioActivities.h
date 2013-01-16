@@ -25,7 +25,7 @@
 
 #include <QtCore/QDate>
 
-#include "lib/core/consumer.h"
+// #include "lib/core/consumer.h"
 
 class ActivitiesProtocol: public KIO::ForwardingSlaveBase {
     Q_OBJECT
