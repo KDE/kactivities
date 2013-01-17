@@ -1,6 +1,23 @@
 [Desktop Entry]
 Name=Nepomuk Feeder
+Name[es]=Aprovisionamiento de Nepomuk
+Name[nl]=Nepomuk-feeder
+Name[pt]=Fonte do Nepomuk
+Name[pt_BR]=Alimentador do Nepomuk
+Name[sk]=Podávač Nepomuk
+Name[sv]=Nepomuk-inmatning
+Name[uk]=Додаток передавання даних Nepomuk
+Name[x-test]=xxNepomuk Feederxx
 Comment=Plugin to synchronize data with Nepomuk
+Comment[de]=Modul zum Abgleichen von Daten in Nepomuk
+Comment[es]=Complemento para sincronizar datos con Nepomuk
+Comment[nl]=Plug-in om gegevens met Nepomuk te synchroniseren
+Comment[pt]='Plugin' para sincronizar os dados com o Nepomuk
+Comment[pt_BR]=Plugin para sincronizar os dados com o Nepomuk
+Comment[sk]=Plugin na synchronizáciu dát s Nepomukom
+Comment[sv]=Insticksprogram för att synkronisera data med Nepomuk
+Comment[uk]=Додаток для синхронізації даних з Nepomuk
+Comment[x-test]=xxPlugin to synchronize data with Nepomukxx
 Type=Service
 Icon=nepomuk
 
