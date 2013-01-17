@@ -95,7 +95,7 @@ public:
     Private(ActivitiesProtocol * parent)
         : kio(parent)
     {
-        activityManagerIface = new org::kde::ActivityManager::Activities(ACTIVITY_MANAGER_DBUS_PATH, ACTIVITY_MANAGER_DBUS_OBJECT"/Activities", QDBusConnection::sessionBus(), parent);
+        activityManager = new org::kde::ActivityManager::Activities(ACTIVITY_MANAGER_DBUS_PATH, ACTIVITY_MANAGER_DBUS_OBJECT"/Activities", QDBusConnection::sessionBus(), parent);
         activityResourcesIface = new org::kde::ActivityManager::Resources(ACTIVITY_MANAGER_DBUS_PATH, ACTIVITY_MANAGER_DBUS_OBJECT"/Resources", QDBusConnection::sessionBus(), parent);
     }
 
@@ -107,7 +107,7 @@ public:
     };
 
 //     KActivities::Consumer activities;
-    OrgKdeActivityManagerActivitiesInterface * activityManagerIface;
+    OrgKdeActivityManagerActivitiesInterface * activityManager;
     OrgKdeActivityManagerResourcesInterface * activityResourcesIface;
     QString activityId;
     QString filename;
@@ -183,7 +183,7 @@ public:
                 QDate::currentDate()), false
             );
 
-        foreach (const QString & activityId, activityManagerIface->ListActivities().value()) {
+        foreach (const QString & activityId, activityManager->ListActivities().value()) {
             kio->listEntry(createFolderUDSEntry(
                     activityId,
                     KActivities::Info::name(activityId),
@@ -200,7 +200,7 @@ public:
         QString activity = activityId;
 
         if (activity == "current") {
-            activity = activityManagerIface->CurrentActivity().value();
+            activity = activityManager->CurrentActivity().value();
         }
 
         if (!activity.isEmpty()) {
