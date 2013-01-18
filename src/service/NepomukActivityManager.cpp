@@ -103,24 +103,11 @@ void NepomukActivityManager::init(Activities * parent)
 void NepomukActivityManager::reinit()
 {
     val activitiesList = m_activities->ListActivities();
-
     static val prefix = QLatin1String("activities:/");
 
-    if (m_nepomukPresent) {
-        // If nepomuk is online, syncing the activities
-        // and updates activities kio paths
+    syncActivities(activitiesList);
 
-        syncActivities(activitiesList);
-        Nepomuk::ResourceManager::instance()->init();
-
-        org::kde::KDirNotify::emitFilesAdded(prefix);
-        org::kde::KDirNotify::emitFilesAdded(prefix + "current");
-
-        foreach (const QString & activity, activitiesList) {
-            org::kde::KDirNotify::emitFilesAdded(prefix + activity);
-        }
-
-    } else {
+    if (!m_nepomukPresent) {
         // If nepomuk is offline, removes items from activities kio
 
         QStringList removed;
