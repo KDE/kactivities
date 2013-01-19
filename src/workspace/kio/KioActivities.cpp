@@ -76,6 +76,15 @@ public:
     QString activity;
     QString filename;
 
+    inline QString realActivityId(const QString & activity) const
+    {
+        if (activity == "current") {
+            return activities.currentActivity();
+        }
+
+        return activity;
+    }
+
     KIO::UDSEntry createFolderUDSEntry(const QString & name, const QString & displayName, const QDate & date) const
     {
         KIO::UDSEntry uds;
@@ -141,7 +150,7 @@ public:
         foreach (const QString & activity, activities.listActivities()) {
             kio->listEntry(createFolderUDSEntry(
                     activity,
-                    KActivities::Info::name(activity),
+                    KActivities::Info::name(realActivityId(activity)),
                     QDate::currentDate()), false
                 );
         }
@@ -153,11 +162,7 @@ public:
     void listActivity() const
     {
         // We need this to be changeable in a const method
-        QString activity = this->activity;
-
-        if (activity == "current") {
-            activity = activities.currentActivity();
-        }
+        QString activity = realActivityId(this->activity);
 
         if (!activity.isEmpty()) {
             Nepomuk::Resource activityResource(activity, KAO::Activity());
@@ -213,13 +218,13 @@ public:
         activity = path.takeFirst();
 
         if (path.isEmpty()) {
-            return (KActivities::Info(activity).isEncrypted())
+            return (KActivities::Info(realActivityId(activity)).isEncrypted())
                 ? PrivateActivityPathItem : ActivityRootItem;
         }
 
         filename = path.join("/");
 
-        return (KActivities::Info(activity).isEncrypted())
+        return (KActivities::Info(realActivityId(activity)).isEncrypted())
             ? PrivateActivityPathItem : ActivityRootItem;
     }
 

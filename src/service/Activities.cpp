@@ -232,6 +232,7 @@ void Activities::RemoveActivity(const QString & activity)
 
 void Activities::Private::removeActivity(const QString & activity)
 {
+    qDebug() << activities << activity;
     Q_ASSERT(!activity.isEmpty());
     Q_ASSERT(activities.contains(activity));
 
@@ -331,6 +332,7 @@ QList<ActivityInfo> Activities::ListActivitiesWithInformation() const
 
 ActivityInfo Activities::ActivityInformation(const QString & activity) const
 {
+    qDebug() << d->activities << activity;
     Q_ASSERT(d->activities.contains(activity));
 
     ActivityInfo activityInfo;
@@ -343,6 +345,7 @@ ActivityInfo Activities::ActivityInformation(const QString & activity) const
 
 QString Activities::ActivityName(const QString & activity) const
 {
+    qDebug() << d->activities << activity;
     Q_ASSERT(d->activities.contains(activity));
 
     return d->activityName(activity);
@@ -381,6 +384,7 @@ void Activities::SetActivityIcon(const QString & activity, const QString & icon)
 
 void Activities::Private::setActivityState(const QString & activity, Activities::State state)
 {
+    qDebug() << activities << activity;
     Q_ASSERT(activities.contains(activity));
 
     if (activities.value(activity) == state) return;
