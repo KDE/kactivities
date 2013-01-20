@@ -96,7 +96,7 @@ public:
         : kio(parent)
     {
         activityManager = new org::kde::ActivityManager::Activities(ACTIVITY_MANAGER_DBUS_PATH, ACTIVITY_MANAGER_DBUS_OBJECT"/Activities", QDBusConnection::sessionBus(), parent);
-        activityResourcesIface = new org::kde::ActivityManager::Resources(ACTIVITY_MANAGER_DBUS_PATH, ACTIVITY_MANAGER_DBUS_OBJECT"/Resources", QDBusConnection::sessionBus(), parent);
+        activityResources = new org::kde::ActivityManager::Resources(ACTIVITY_MANAGER_DBUS_PATH, ACTIVITY_MANAGER_DBUS_OBJECT"/Resources", QDBusConnection::sessionBus(), parent);
     }
 
     enum Path {
@@ -108,7 +108,7 @@ public:
 
 //     KActivities::Consumer activities;
     OrgKdeActivityManagerActivitiesInterface * activityManager;
-    OrgKdeActivityManagerResourcesInterface * activityResourcesIface;
+    OrgKdeActivityManagerResourcesInterface * activityResources;
     QString activityId;
     QString filename;
 
@@ -204,7 +204,7 @@ public:
         }
 
         if (!activity.isEmpty()) {
-            foreach(const QString & uri, activityResourcesIface->ResourcesLinkedToActivity(activity).value()) {
+            foreach(const QString & uri, activityResources->ResourcesLinkedToActivity(activity).value()) {
                 kio->listEntry(createUDSEntryForUrl(KUrl(uri)), false);   
             }
         }
