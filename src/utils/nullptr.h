@@ -22,7 +22,8 @@
 
 #include <config-features.h>
 
-#if !defined(HAVE_CXX11_NULLPTR) && !defined(nullptr)
+#if !HAVE_CXX11_NULLPTR && !defined(nullptr)
+    #warning "This compiler doesn't support nullptr"
     #define nullptr 0
 #endif
 

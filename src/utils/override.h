@@ -22,11 +22,13 @@
 
 #include <config-features.h>
 
-#if defined(HAVE_CXX11_OVERRIDE)
+#if HAVE_CXX11_OVERRIDE
     #define _override override
 #elif defined(HAVE_CXX_OVERRIDE_ATTR)
+    #warning "The override keyword is not supported by the compiler. Trying the override attribute."
     #define _override __attribute__((override))
 #else
+    #warning "This compiler can not check for overriden methods."
     #define _override // nothing
 #endif
 
