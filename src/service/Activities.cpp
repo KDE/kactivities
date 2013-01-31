@@ -197,6 +197,7 @@ QString Activities::AddActivity(const QString & name)
 
     // Saves the activity info to the config
 
+    d->activities[activity] = Invalid;
     d->setActivityState(activity, Running);
 
     SetActivityName(activity, name);
