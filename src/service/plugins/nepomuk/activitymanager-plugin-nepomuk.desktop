@@ -1,5 +1,6 @@
 [Desktop Entry]
 Name=Nepomuk Feeder
+Name[de]=Nepomuk Feeder
 Name[el]=Τροφοδότης του Nepomuk
 Name[es]=Aprovisionamiento de Nepomuk
 Name[fi]=Nepomuk-syötteistin
@@ -7,6 +8,7 @@ Name[fr]=Module d'alimentation pour Nepomuk
 Name[nl]=Nepomuk-feeder
 Name[pt]=Fonte do Nepomuk
 Name[pt_BR]=Alimentador do Nepomuk
+Name[ro]=Alimentare Nepomuk
 Name[sk]=Podávač Nepomuk
 Name[sr]=Непомуков уводник
 Name[sr@ijekavian]=Непомуков уводник
@@ -27,6 +29,7 @@ Comment[fr]=Module externe pour synchroniser des données avec Nepomuk
 Comment[nl]=Plug-in om gegevens met Nepomuk te synchroniseren
 Comment[pt]='Plugin' para sincronizar os dados com o Nepomuk
 Comment[pt_BR]=Plugin para sincronizar os dados com o Nepomuk
+Comment[ro]=Modul pentru sincronizarea datelor cu Nepomuk
 Comment[sk]=Plugin na synchronizáciu dát s Nepomukom
 Comment[sr]=Прикључак за синхронизовање података са Непомуком
 Comment[sr@ijekavian]=Прикључак за синхронизовање података са Непомуком
