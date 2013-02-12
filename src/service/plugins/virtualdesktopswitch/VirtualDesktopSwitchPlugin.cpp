@@ -48,6 +48,8 @@ bool VirtualDesktopSwitchPlugin::init(const QHash < QString, QObject * > & modul
 
     connect(m_activitiesService, SIGNAL(CurrentActivityChanged(QString)),
             this, SLOT(currentActivityChanged(QString)));
+    connect(m_activitiesService, SIGNAL(ActivityRemoved(QString)),
+            this, SLOT(activityRemoved(QString)));
 
     return true;
 }
@@ -68,6 +70,12 @@ void VirtualDesktopSwitchPlugin::currentActivityChanged(const QString & activity
     if (desktopId <= KWindowSystem::numberOfDesktops() && desktopId >= 0) {
         KWindowSystem::setCurrentDesktop(desktopId);
     }
+}
+
+void VirtualDesktopSwitchPlugin::activityRemoved(const QString & activity)
+{
+    config().deleteEntry(configPattern.arg(activity));
+    config().sync();
 }
 
 KAMD_EXPORT_PLUGIN(VirtualDesktopSwitchPlugin, "activitymanger_plugin_virtualdesktopswitch")

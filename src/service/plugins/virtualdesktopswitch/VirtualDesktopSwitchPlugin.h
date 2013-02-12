@@ -34,6 +34,7 @@ public:
 
 private Q_SLOTS:
     void currentActivityChanged(const QString & activity);
+    void activityRemoved(const QString & activity);
 
 private:
     QString m_currentActivity;
