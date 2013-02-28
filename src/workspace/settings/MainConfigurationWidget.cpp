@@ -172,6 +172,7 @@ MainConfigurationWidget::MainConfigurationWidget(QWidget * parent, QVariantList 
 
     d->checkBlacklistAllNotOnList->setEnabled(false);
     d->blacklistedApplicationsModel->setEnabled(false);
+    d->viewBlacklistedApplications->setEnabled(false);
 }
 
 void MainConfigurationWidget::updateLayout()
