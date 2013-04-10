@@ -111,6 +111,7 @@ QString Activities::CurrentActivity() const
 
 bool Activities::SetCurrentActivity(const QString & activity)
 {
+    // Public method can not put us in a limbo state
     if (activity.isEmpty()) {
         return false;
     }
@@ -333,8 +334,7 @@ QList<ActivityInfo> Activities::ListActivitiesWithInformation() const
 
 ActivityInfo Activities::ActivityInformation(const QString & activity) const
 {
-    qDebug() << d->activities << activity;
-    Q_ASSERT(d->activities.contains(activity));
+    if (!d->activities.contains(activity)) return ActivityInfo();
 
     ActivityInfo activityInfo;
     activityInfo.id    = activity;
@@ -346,8 +346,7 @@ ActivityInfo Activities::ActivityInformation(const QString & activity) const
 
 QString Activities::ActivityName(const QString & activity) const
 {
-    qDebug() << d->activities << activity;
-    Q_ASSERT(d->activities.contains(activity));
+    if (!d->activities.contains(activity)) return QString();
 
     return d->activityName(activity);
 }
@@ -368,6 +367,8 @@ void Activities::SetActivityName(const QString & activity, const QString & name)
 
 QString Activities::ActivityIcon(const QString & activity) const
 {
+    if (!d->activities.contains(activity)) return QString();
+
     return d->activityIcon(activity);
 }
 
@@ -462,6 +463,8 @@ void Activities::StopActivity(const QString & activity)
 
 void Activities::Private::activitySessionStateChanged(const QString & activity, int status)
 {
+    if (!activities.contains(activity)) return;
+
     switch (status) {
         case KSMServer::Started:
         case KSMServer::FailedToStop:
