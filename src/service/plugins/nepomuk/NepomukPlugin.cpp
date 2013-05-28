@@ -319,6 +319,7 @@ void NepomukPlugin::resourceScoreUpdated(const QString & activity, const QString
 
 void NepomukPlugin::deleteRecentStats(const QString & activity, int count, const QString & what)
 {
+#ifdef NEPOMUK_STORE_RESOURCE_SCORES
     val activityCheck = activity.isEmpty()
             ? QString()
             : "?cache kao:usedActivity "
@@ -379,10 +380,12 @@ void NepomukPlugin::deleteRecentStats(const QString & activity, int count, const
 
         d->deleteFromQuery(query);
     }
+#endif
 }
 
 void NepomukPlugin::deleteEarlierStats(const QString & activity, int months)
 {
+#ifdef NEPOMUK_STORE_RESOURCE_SCORES
     if (months == 0) return;
 
     val activityCheck = activity.isEmpty()
@@ -416,6 +419,7 @@ void NepomukPlugin::deleteEarlierStats(const QString & activity, int months)
     qDebug() << "This are the results we need to delete: " << query;
 
     d->deleteFromQuery(query);
+#endif
 }
 
 void NepomukPlugin::LinkResourceToActivity(const QString & uri, const QString & activity)

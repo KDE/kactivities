@@ -75,6 +75,7 @@ QUrl resourceForId(const QString & resourceId, const QUrl & type)
 
 void updateNepomukScore(const QString & activity, const QString & application, const QUrl & resource, qreal score)
 {
+#ifdef NEPOMUK_STORE_RESOURCE_SCORES
     Nepomuk::Resource scoreCache;
 
     // Selecting a ResourceScoreCache object that is assigned to the specified
@@ -128,5 +129,6 @@ void updateNepomukScore(const QString & activity, const QString & application, c
         scoreCache.remove();
 
     }
+#endif
 }
 
