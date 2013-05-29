@@ -73,6 +73,7 @@ QAction * FileItemLinkingPlugin::Private::addAction(QMenu * menu,
 FileItemLinkingPlugin::FileItemLinkingPlugin(QObject * parent, const QVariantList &)
     : KAbstractFileItemActionPlugin(parent), d(new Private())
 {
+    setEnabledByDefault(false);
 }
 
 FileItemLinkingPlugin::~FileItemLinkingPlugin()
