@@ -23,7 +23,7 @@
 #include <kfileitemlistproperties.h>
 
 #include <QMenu>
-#include <QDebug>
+#include <QCursor>
 
 #include <KLocale>
 #include <KPluginFactory>
@@ -37,8 +37,6 @@ void FileItemLinkingPlugin::Private::actionTriggered()
     bool    link     = action->property("link").toBool();
     QString activity = action->property("activity").toString();
 
-    qDebug() << activity << link;
-
     foreach (const KUrl & item, items) {
         if (link) {
             activities.linkResourceToActivity(item, activity);
@@ -48,13 +46,16 @@ void FileItemLinkingPlugin::Private::actionTriggered()
 
         }
     }
-
 }
 
-QAction * FileItemLinkingPlugin::Private::addAction(QMenu * menu,
-        const QString & activity, const QString & title, const QString & icon)
+void FileItemLinkingPlugin::Private::addAction(
+        const QString & activity,
+        bool link,
+        const QString & title,
+        const QString & icon
+    )
 {
-    QAction * action = menu->addAction(
+    QAction * action = rootMenu->addAction(
             title.isEmpty() ? KActivities::Info::name(activity) : title
         );
 
@@ -63,11 +64,20 @@ QAction * FileItemLinkingPlugin::Private::addAction(QMenu * menu,
     }
 
     action->setProperty("activity", activity);
+    action->setProperty("link", link);
 
     connect(action, SIGNAL(triggered()),
             this, SLOT(actionTriggered()));
 
-    return action;
+    action->setVisible(false);
+}
+
+void FileItemLinkingPlugin::Private::addSeparator(
+        const QString & title)
+{
+    QAction * separator = rootMenu->addSeparator();
+    separator->setText(title);
+    separator->setVisible(false);
 }
 
 FileItemLinkingPlugin::FileItemLinkingPlugin(QObject * parent, const QVariantList &)
@@ -78,48 +88,138 @@ FileItemLinkingPlugin::FileItemLinkingPlugin(QObject * parent, const QVariantLis
 
 FileItemLinkingPlugin::~FileItemLinkingPlugin()
 {
-    delete d;
+    if (!d->thread) delete d;
 }
 
 QList <QAction *> FileItemLinkingPlugin::actions(const KFileItemListProperties & fileItemInfos, QWidget * parentWidget)
 {
-    QList < QAction * > result;
+    QAction * root = new QAction(QIcon::fromTheme("preferences-activities"), i18n("Activities..."), parentWidget);
 
-    QAction * root = new QAction(QIcon::fromTheme("preferences-activities"), i18n("Activities"), parentWidget);
-    QMenu * rootMenu = new QMenu();
-    root->setMenu(rootMenu);
+    connect(root, SIGNAL(triggered()),
+            d, SLOT(showActions()));
 
     d->items = fileItemInfos.urlList();
-    const unsigned itemCount = d->items.size();
-    if (itemCount == 0) {
-        return result;
 
-    } else {
+    return QList < QAction * > () << root;
+}
+
+void FileItemLinkingPlugin::Private::showActions()
+{
+    thread = new FileItemLinkingPluginLoader(this, items);
+
+    connect(thread, SIGNAL(finished()),
+            thread, SLOT(deleteLater()));
+
+    connect(thread, SIGNAL(requestAction(QString, bool, QString, QString)),
+            this, SLOT(addAction(QString, bool, QString, QString)),
+            Qt::QueuedConnection
+        );
+    connect(thread, SIGNAL(requestSeparator(QString)),
+            this, SLOT(addSeparator(QString)),
+            Qt::QueuedConnection
+        );
+    connect(thread, SIGNAL(finishedLoading()),
+            this, SLOT(finishedLoading()),
+            Qt::QueuedConnection
+        );
+
+    rootMenu = new QMenu();
+
+    rootMenu->addAction("Loading...");
+
+    rootMenu->popup(QCursor::pos());
+
+    connect(rootMenu, SIGNAL(aboutToHide()),
+            this, SLOT(deleteLater()));
+
+    thread->start();
+}
+
+void FileItemLinkingPlugin::Private::finishedLoading()
+{
+    rootMenu->removeAction(rootMenu->actions()[0]);
+
+    foreach (QAction * action, rootMenu->actions()) {
+        action->setVisible(true);
+    }
+
+    rootMenu->popup(QCursor::pos());
+}
+
+FileItemLinkingPluginLoader::FileItemLinkingPluginLoader(
+        QObject * parent, const KUrl::List & items)
+    : QThread(/*parent*/), m_items(items)
+{
+
+}
+
+void FileItemLinkingPluginLoader::run()
+{
+    const unsigned itemCount = m_items.size();
+
+    if (itemCount > 10) {
+        // we are not going to check for this large number of files
+        emit requestAction(
+                QString(),
+                false,
+                i18n("Unlink from the current activity"),
+                "list-remove"
+            );
+        emit requestAction(
+                QString(),
+                true,
+                i18n("Link to the current activity"),
+                "list-add"
+            );
+
+        const QStringList activitiesList = activities.listActivities();
+
+        emit requestSeparator(i18n("Link to:"));
+
+        foreach (const QString & activity, activitiesList) {
+            emit requestAction(activity, true);
+        }
+
+        emit requestSeparator(i18n("Unlink from:"));
+
+        foreach (const QString & activity, activitiesList) {
+            emit requestAction(activity, false);
+        }
+
+    } else if (itemCount != 0) {
 
         bool haveLinked = false;
         bool haveUnlinked = false;
 
-        foreach (const KUrl & url, d->items) {
-            (d->activities.isResourceLinkedToActivity(url) ? haveLinked : haveUnlinked) = true;
+        foreach (const KUrl & url, m_items) {
+            (activities.isResourceLinkedToActivity(url) ? haveLinked : haveUnlinked) = true;
         }
 
         if (haveLinked) {
-            d->addAction(rootMenu, QString(), i18n("Unlink from the current activity"), "list-remove")
-                ->setProperty("link", false);
+            emit requestAction(
+                    QString(),
+                    false,
+                    i18n("Unlink from the current activity"),
+                    "list-remove"
+                );
         }
 
         if (haveUnlinked) {
-            d->addAction(rootMenu, QString(), i18n("Link to the current activity"), "list-add")
-                ->setProperty("link", true);
+            emit requestAction(
+                    QString(),
+                    true,
+                    i18n("Link to the current activity"),
+                    "list-add"
+                );
         }
 
         QStringList linkable, unlinkable;
 
-        foreach (const QString & activity, d->activities.listActivities()) {
+        foreach (const QString & activity, activities.listActivities()) {
             haveLinked = haveUnlinked = false;
 
-            foreach (const KUrl & url, d->items) {
-                (d->activities.isResourceLinkedToActivity(url, activity) ? haveLinked : haveUnlinked) = true;
+            foreach (const KUrl & url, m_items) {
+                (activities.isResourceLinkedToActivity(url, activity) ? haveLinked : haveUnlinked) = true;
             }
 
             if (haveLinked) {
@@ -131,21 +231,21 @@ QList <QAction *> FileItemLinkingPlugin::actions(const KFileItemListProperties &
             }
         }
 
-        rootMenu->addSeparator()->setText(i18n("Link to:"));
+        emit requestSeparator(i18n("Link to:"));
+
         foreach (const QString & activity, linkable) {
-            d->addAction(rootMenu, activity)
-                ->setProperty("link", true);
+            emit requestAction(activity, true);
         }
 
-        rootMenu->addSeparator()->setText(i18n("Unlink from:"));
+        emit requestSeparator(i18n("Unlink from:"));
+
         foreach (const QString & activity, unlinkable) {
-            d->addAction(rootMenu, activity)
-                ->setProperty("link", false);
+            emit requestAction(activity, false);
         }
 
     }
 
-    return result << root;
+    emit finishedLoading();
 }
 
 K_PLUGIN_FACTORY(FileItemLinkingPluginFactory, registerPlugin<FileItemLinkingPlugin>();)
