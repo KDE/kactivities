@@ -33,6 +33,7 @@ Name[zh_CN]=Nepomuk 采集器
 Name[zh_TW]=Nepomuk Feeder
 Comment=Plugin to synchronize data with Nepomuk
 Comment[ca]=Connector per sincronitzar dades amb el Nepomuk
+Comment[cs]=Modul pro synchronizaci dat s Nepomukem
 Comment[de]=Modul zum Abgleichen von Daten in Nepomuk
 Comment[el]=Πρόσθετο συγχρονισμού γεγονότων με το Nepomuk
 Comment[es]=Complemento para sincronizar datos con Nepomuk
