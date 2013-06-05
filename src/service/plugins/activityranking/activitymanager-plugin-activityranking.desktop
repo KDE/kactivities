@@ -2,6 +2,7 @@
 Name=Activity ranking
 Name[bs]=Rangiranje aktivnosti
 Name[ca]=Ordenació d'activitats
+Name[cs]=Hodnocení aktivit
 Name[da]=Aktivitetsrangering
 Name[de]=Aktivitätenbewertung
 Name[el]=Αξιολόγηση δραστηριοτήτων
@@ -43,6 +44,7 @@ Name[zh_TW]=活動排序
 Comment=Plugin to rank activities based on usage
 Comment[bs]=Dodatak za rangiranje aktivnosti prema njihovoj uoptrebi
 Comment[ca]=Connector per ordenar les activitats segons l'ús
+Comment[cs]=Modul pro hodnocení aktivit dle jejich používání
 Comment[da]=Plugin til at rangere aktiviteter baseret på brug
 Comment[de]=Modul, das Aktivitäten anhand der Benutzung bewertet
 Comment[el]=Πρόσθετο για την αξιολόγηση δραστηριοτήτων με βάση τη χρήση
