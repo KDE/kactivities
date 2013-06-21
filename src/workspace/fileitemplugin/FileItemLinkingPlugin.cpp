@@ -83,7 +83,6 @@ void FileItemLinkingPlugin::Private::addSeparator(
 FileItemLinkingPlugin::FileItemLinkingPlugin(QObject * parent, const QVariantList &)
     : KAbstractFileItemActionPlugin(parent), d(new Private())
 {
-    setEnabledByDefault(false);
 }
 
 FileItemLinkingPlugin::~FileItemLinkingPlugin()
