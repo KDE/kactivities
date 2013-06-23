@@ -79,7 +79,11 @@ void Resources::Private::insertEvent(const Event & newEvent)
     if (lastEvent == newEvent) return;
     lastEvent = newEvent;
 
-    events << newEvent;
+    {
+        QMutexLocker locker(& events_mutex);
+        events << newEvent;
+    }
+
     emit q->RegisteredResourceEvent(newEvent);
 }
 
@@ -107,81 +111,81 @@ void Resources::Private::addEvent(const Event & newEvent)
                 ;
             });
         }
+    }
 
-        // Process the windowing
-        // Essentially, this is the brain of SLC. We need to track the
-        // window focus changes to be able to generate the potential
-        // missing events like FocussedOut before Closed and similar.
-        // So, there is no point in having the same logic in SLC plugin
-        // as well.
+    // Process the windowing
+    // Essentially, this is the brain of SLC. We need to track the
+    // window focus changes to be able to generate the potential
+    // missing events like FocussedOut before Closed and similar.
+    // So, there is no point in having the same logic in SLC plugin
+    // as well.
 
-        if (newEvent.wid != 0) {
-            WindowData & data = windows[newEvent.wid];
-            const KUrl & kuri(newEvent.uri);
+    if (newEvent.wid != 0) {
+        WindowData & data = windows[newEvent.wid];
+        const KUrl & kuri(newEvent.uri);
 
-            qDebug() << kuri << data.focussedResource;
+        qDebug() << kuri << data.focussedResource;
 
-            data.application = newEvent.application;
+        data.application = newEvent.application;
 
-            switch (newEvent.type) {
-                case Event::Opened:
-                    insertEvent(newEvent);
+        switch (newEvent.type) {
+            case Event::Opened:
+                insertEvent(newEvent);
 
-                    if (data.focussedResource.isEmpty()) {
-                        // This window haven't had anything focused,
-                        // assuming the new document is focused
-
-                        data.focussedResource = newEvent.uri;
-                        insertEvent(newEvent.deriveWithType(Event::FocussedIn));
-                    }
-
-                    break;
-
-                case Event::FocussedIn:
-
-                    if (!data.resources.contains(kuri)) {
-                        // This window did not contain this resource before,
-                        // sending Opened event
-
-                        insertEvent(newEvent.deriveWithType(Event::Opened));
-                    }
+                if (data.focussedResource.isEmpty()) {
+                    // This window haven't had anything focused,
+                    // assuming the new document is focused
 
                     data.focussedResource = newEvent.uri;
-                    insertEvent(newEvent);
+                    insertEvent(newEvent.deriveWithType(Event::FocussedIn));
+                }
 
-                    break;
+                break;
 
-                case Event::Closed:
+            case Event::FocussedIn:
 
-                    qDebug() << data.focussedResource << kuri;
+                if (!data.resources.contains(kuri)) {
+                    // This window did not contain this resource before,
+                    // sending Opened event
 
-                    if (data.focussedResource == kuri) {
-                        // If we are closing a document that is in focus,
-                        // release focus first
+                    insertEvent(newEvent.deriveWithType(Event::Opened));
+                }
 
-                        insertEvent(newEvent.deriveWithType(Event::FocussedOut));
-                        data.focussedResource.clear();
-                    }
+                data.focussedResource = newEvent.uri;
+                insertEvent(newEvent);
 
-                    insertEvent(newEvent);
+                break;
 
-                    break;
+            case Event::Closed:
 
-                case Event::FocussedOut:
+                qDebug() << data.focussedResource << kuri;
 
-                    if (data.focussedResource == kuri) {
-                        data.focussedResource.clear();
-                    }
+                if (data.focussedResource == kuri) {
+                    // If we are closing a document that is in focus,
+                    // release focus first
 
-                    insertEvent(newEvent);
+                    insertEvent(newEvent.deriveWithType(Event::FocussedOut));
+                    data.focussedResource.clear();
+                }
 
-                    break;
+                insertEvent(newEvent);
 
-                default:
-                    insertEvent(newEvent);
-                    break;
+                break;
 
-            }
+            case Event::FocussedOut:
+
+                if (data.focussedResource == kuri) {
+                    data.focussedResource.clear();
+                }
+
+                insertEvent(newEvent);
+
+                break;
+
+            default:
+                insertEvent(newEvent);
+                break;
+
         }
     }
 

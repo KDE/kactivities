@@ -61,8 +61,8 @@ private:
     };
 
     Event lastEvent;
-    EventList events;
-    QMutex events_mutex;
+    // EventList events;
+    // QMutex events_mutex;
 
     QHash < WId, WindowData > windows;
     WId focussedWindow;
