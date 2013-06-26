@@ -23,7 +23,10 @@
 #include "FileItemLinkingPlugin.h"
 #include <kabstractfileitemactionplugin.h>
 
+#include <QThread>
+
 #include <KUrl>
+
 #include "lib/core/consumer.h"
 #include "lib/core/info.h"
 
@@ -33,14 +36,53 @@ class FileItemLinkingPlugin::Private: public QObject {
 public:
     KActivities::Consumer activities;
     KUrl::List items;
+    QMenu * rootMenu;
+    QThread * thread;
 
 public Q_SLOTS:
     void actionTriggered();
+    void showActions();
 
-public:
-    QAction * addAction(QMenu * menu, const QString & activityId, const QString & title = QString(), const QString & icon = QString());
+    void addAction(
+            const QString & activity,
+            bool link,
+            const QString & title = QString(),
+            const QString & icon = QString()
+            );
+
+    void addSeparator(const QString & title);
+
+    void finishedLoading();
 
 };
+
+class FileItemLinkingPluginLoader: public QThread {
+    Q_OBJECT
+
+public:
+    FileItemLinkingPluginLoader(
+            QObject * parent, const KUrl::List & items);
+
+Q_SIGNALS:
+    void requestAction(
+            const QString & activity,
+            bool link,
+            const QString & title = QString(),
+            const QString & icon = QString()
+        );
+
+    void requestSeparator(const QString & title);
+
+    void finishedLoading();
+
+protected:
+    void run(); //override
+
+public:
+    KActivities::Consumer activities;
+    KUrl::List m_items;
+};
+
 
 #endif // FILE_ITEM_LINKING_PLUGIN_P_H
 
