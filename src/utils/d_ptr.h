@@ -39,8 +39,6 @@ public:
     ~d_ptr();
 
     T * operator->() const;
-
-    T * get() const;
 };
 
 #define D_PTR \

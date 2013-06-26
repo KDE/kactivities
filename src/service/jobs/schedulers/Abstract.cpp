@@ -59,8 +59,8 @@ bool Abstract::startJob(int index)
     // Starting the job
     KJob * job = d->jobs[index]->create(this);
 
-    connect(job, SIGNAL(finished(KJob *)),
-            d.get(), SLOT(jobFinished(KJob *)));
+    d->connect(job, SIGNAL(finished(KJob *)),
+            SLOT(jobFinished(KJob *)));
 
     job->start();
 

@@ -72,14 +72,14 @@ Activities::Activities(QObject * parent)
 
     // Initializing config
 
-    connect(&d->configSyncTimer, SIGNAL(timeout()),
-             d.get(), SLOT(configSync()));
+    d->connect(&d->configSyncTimer, SIGNAL(timeout()),
+            SLOT(configSync()));
 
     d->configSyncTimer.setSingleShot(true);
 
     d->ksmserver = new KSMServer(this);
-    connect(d->ksmserver, SIGNAL(activitySessionStateChanged(QString, int)),
-            d.get(), SLOT(activitySessionStateChanged(QString, int)));
+    d->connect(d->ksmserver, SIGNAL(activitySessionStateChanged(QString, int)),
+            SLOT(activitySessionStateChanged(QString, int)));
 
     // Activity initialization ///////////////////////////////////////////////////////////////////////////////
 
@@ -226,8 +226,10 @@ void Activities::RemoveActivity(const QString & activity)
 
     removeActivityJob
 
-    <<  // Remove
-        General::call(d.get(), "removeActivity", activity, true /* wait finished */);
+    <<  // Remove activity
+        // TODO: Leaving the operator->() call so that no one is able to
+        // miss out the fact that we are passing a raw pointer to d!
+        General::call(d.operator->(), "removeActivity", activity, true /* wait finished */);
 
     removeActivityJob.start();
 }

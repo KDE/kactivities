@@ -255,10 +255,10 @@ Resources::Resources(QObject * parent)
     QDBusConnection::sessionBus().registerObject(
             ACTIVITY_MANAGER_OBJECT_PATH(Resources), this);
 
-    connect(KWindowSystem::self(), SIGNAL(windowRemoved(WId)),
-            d.get(), SLOT(windowClosed(WId)));
-    connect(KWindowSystem::self(), SIGNAL(activeWindowChanged(WId)),
-            d.get(), SLOT(activeWindowChanged(WId)));
+    d->connect(KWindowSystem::self(), SIGNAL(windowRemoved(WId)),
+            SLOT(windowClosed(WId)));
+    d->connect(KWindowSystem::self(), SIGNAL(activeWindowChanged(WId)),
+            SLOT(activeWindowChanged(WId)));
 
 }
 

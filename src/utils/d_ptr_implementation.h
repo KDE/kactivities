@@ -48,12 +48,6 @@ T * d_ptr<T>::operator->() const
     return d.get();
 }
 
-template<typename T>
-T * d_ptr<T>::get() const
-{
-    return d.get();
-}
-
 } // namespace utils
 } // namespace kamd
 
