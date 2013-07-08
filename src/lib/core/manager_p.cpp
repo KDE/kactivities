@@ -23,6 +23,7 @@
 #include <QDebug>
 
 #include <ktoolinvocation.h>
+#include <kdbusconnectionpool.h>
 
 namespace KActivities {
 
@@ -37,28 +38,28 @@ Manager::Manager()
           new org::kde::ActivityManager::Activities(
             ACTIVITY_MANAGER_DBUS_PATH,
             ACTIVITY_MANAGER_DBUS_OBJECT "/Activities",
-            QDBusConnection::sessionBus(),
+            KDBusConnectionPool::threadConnection(),
             this
             )),
       m_resources(
           new org::kde::ActivityManager::Resources(
             ACTIVITY_MANAGER_DBUS_PATH,
             ACTIVITY_MANAGER_DBUS_OBJECT "/Resources",
-            QDBusConnection::sessionBus(),
+            KDBusConnectionPool::threadConnection(),
             this
             )),
       m_resourcesLinking(
           new org::kde::ActivityManager::ResourcesLinking(
             ACTIVITY_MANAGER_DBUS_PATH,
             ACTIVITY_MANAGER_DBUS_OBJECT "/Resources/Linking",
-            QDBusConnection::sessionBus(),
+            KDBusConnectionPool::threadConnection(),
             this
             )),
       m_features(
           new org::kde::ActivityManager::Features(
             ACTIVITY_MANAGER_DBUS_PATH,
             ACTIVITY_MANAGER_DBUS_OBJECT "/Features",
-            QDBusConnection::sessionBus(),
+            KDBusConnectionPool::threadConnection(),
             this
             ))
 {
@@ -80,7 +81,7 @@ Manager * Manager::self()
                 qDebug() << "Activity: Couldn't start kactivitymanagerd: " << error << endl;
             }
 
-            if (!QDBusConnection::sessionBus().interface()->isServiceRegistered(ACTIVITY_MANAGER_DBUS_PATH)) {
+            if (!KDBusConnectionPool::threadConnection().interface()->isServiceRegistered(ACTIVITY_MANAGER_DBUS_PATH)) {
                 qDebug() << "Activity: The kactivitymanagerd service is still not registered";
             } else {
                 qDebug() << "Activity: The kactivitymanagerd service has been registered";
@@ -96,7 +97,7 @@ Manager * Manager::self()
 
 bool Manager::isServicePresent()
 {
-    return QDBusConnection::sessionBus().interface()->isServiceRegistered(ACTIVITY_MANAGER_DBUS_PATH);
+    return KDBusConnectionPool::threadConnection().interface()->isServiceRegistered(ACTIVITY_MANAGER_DBUS_PATH);
 }
 
 void Manager::serviceOwnerChanged(const QString & serviceName, const QString & oldOwner, const QString & newOwner)

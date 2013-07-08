@@ -29,6 +29,7 @@
 
 #include <KUrl>
 #include <KWindowSystem>
+#include <kdbusconnectionpool.h>
 
 #include <Application.h>
 #include <Activities.h>
@@ -252,7 +253,7 @@ Resources::Resources(QObject * parent)
     qRegisterMetaType < WId > ("WId");
 
     new ResourcesAdaptor(this);
-    QDBusConnection::sessionBus().registerObject(
+    KDBusConnectionPool::threadConnection().registerObject(
             ACTIVITY_MANAGER_OBJECT_PATH(Resources), this);
 
     d->connect(KWindowSystem::self(), SIGNAL(windowRemoved(WId)),

@@ -24,6 +24,7 @@
 #include "scoringadaptor.h"
 
 #include "../../Event.h"
+#include <kdbusconnectionpool.h>
 
 #include <QFileSystemWatcher>
 #include <QSqlQuery>
@@ -49,7 +50,7 @@ StatsPlugin::StatsPlugin(QObject *parent, const QVariantList & args)
     s_instance = this;
 
     new ScoringAdaptor(this);
-    QDBusConnection::sessionBus().registerObject("/ActivityManager/Resources/Scoring", this);
+    KDBusConnectionPool::threadConnection().registerObject("/ActivityManager/Resources/Scoring", this);
 
     setName("org.kde.ActivityManager.Resources.Scoring");
 }

@@ -94,7 +94,7 @@ Rankings::Rankings(QObject * parent)
     : QObject(parent)
 {
     new RankingsAdaptor(this);
-    QDBusConnection::sessionBus().registerObject("/Rankings", this);
+    KDBusConnectionPool::threadConnection().registerObject("/Rankings", this);
 
     initResults(QString());
 }

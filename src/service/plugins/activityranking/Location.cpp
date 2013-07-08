@@ -23,6 +23,8 @@
 #include <QDBusServiceWatcher>
 #include <QDebug>
 
+#include <kdbusconnectionpool.h>
+
 #include <config-features.h>
 #include <utils/nullptr.h>
 #include <utils/d_ptr_implementation.h>
@@ -57,7 +59,7 @@ Location::Location(QObject * parent)
 
     d->watcher = new QDBusServiceWatcher(
             LOCATION_MANAGER_SERVICE,
-            QDBusConnection::sessionBus(),
+            KDBusConnectionPool::threadConnection(),
             QDBusServiceWatcher::WatchForRegistration
                 | QDBusServiceWatcher::WatchForUnregistration,
             this);
@@ -67,7 +69,7 @@ Location::Location(QObject * parent)
     connect(d->watcher, SIGNAL(serviceUnregistered(QString)),
             this, SLOT(disable()));
 
-    if (QDBusConnection::sessionBus().interface()->isServiceRegistered(LOCATION_MANAGER_SERVICE)) {
+    if (KDBusConnectionPool::threadConnection().interface()->isServiceRegistered(LOCATION_MANAGER_SERVICE)) {
         enable();
     }
 }
@@ -101,7 +103,7 @@ void Location::enable()
     d->manager = new org::kde::LocationManager(
             LOCATION_MANAGER_SERVICE,
             LOCATION_MANAGER_OBJECT,
-            QDBusConnection::sessionBus()
+            KDBusConnectionPool::threadConnection()
         );
 
     connect(d->manager, SIGNAL(currentLocationChanged(QString, QString)),

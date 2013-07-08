@@ -36,6 +36,7 @@
 #include <Nepomuk2/DataManagement>
 
 #include <KDirNotify>
+#include <kdbusconnectionpool.h>
 
 #include <utils/nullptr.h>
 #include <utils/d_ptr_implementation.h>
@@ -119,8 +120,8 @@ NepomukPlugin::NepomukPlugin(QObject *parent, const QVariantList & args)
 
     new ResourcesLinkingAdaptor(this);
 
-    QDBusConnection::sessionBus().registerObject("/ActivityManager/Resources/Linking", this);
-    QDBusConnection::sessionBus().registerObject("/ActivityManager/Nepomuk", this);
+    KDBusConnectionPool::threadConnection().registerObject("/ActivityManager/Resources/Linking", this);
+    KDBusConnectionPool::threadConnection().registerObject("/ActivityManager/Nepomuk", this);
 }
 
 NepomukPlugin::~NepomukPlugin()

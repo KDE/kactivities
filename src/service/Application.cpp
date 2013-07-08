@@ -28,6 +28,7 @@
 #include <KCmdLineArgs>
 #include <KServiceTypeTrader>
 #include <KSharedConfig>
+#include <kdbusconnectionpool.h>
 
 #include <Activities.h>
 #include <Resources.h>
@@ -107,7 +108,7 @@ Application::Application()
     // TODO: We should move away from any GUI code
     setQuitOnLastWindowClosed(false);
 
-    if (!QDBusConnection::sessionBus().registerService("org.kde.ActivityManager")) {
+    if (!KDBusConnectionPool::threadConnection().registerService("org.kde.ActivityManager")) {
         exit(0);
     }
 

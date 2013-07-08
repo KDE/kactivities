@@ -19,6 +19,7 @@
 #include "slcadaptor.h"
 
 #include <QDBusConnection>
+#include <kdbusconnectionpool.h>
 
 #include <utils/val.h>
 
@@ -28,7 +29,7 @@ SlcPlugin::SlcPlugin(QObject * parent, const QVariantList & args)
     Q_UNUSED(args)
 
     new SLCAdaptor(this);
-    QDBusConnection::sessionBus().registerObject("/SLC", this);
+    KDBusConnectionPool::threadConnection().registerObject("/SLC", this);
 }
 
 SlcPlugin::~SlcPlugin()

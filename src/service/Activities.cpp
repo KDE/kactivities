@@ -26,6 +26,7 @@
 #include <QUuid>
 #include <QDebug>
 
+#include <kdbusconnectionpool.h>
 #include <config-features.h>
 
 #include "jobs/activity/all.h"
@@ -67,7 +68,7 @@ Activities::Activities(QObject * parent)
     // Initializing D-Bus service
 
     new ActivitiesAdaptor(this);
-    QDBusConnection::sessionBus().registerObject(
+    KDBusConnectionPool::threadConnection().registerObject(
             ACTIVITY_MANAGER_OBJECT_PATH(Activities), this);
 
     // Initializing config

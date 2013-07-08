@@ -27,6 +27,8 @@
 #include <QDBusPendingCallWatcher>
 #include <QDebug>
 
+#include <kdbusconnectionpool.h>
+
 #include <utils/d_ptr_implementation.h>
 #include <utils/val.h>
 
@@ -42,7 +44,7 @@ KSMServer::Private::Private(KSMServer * parent)
 {
     serviceWatcher = new QDBusServiceWatcher(this);
 
-    serviceWatcher->setConnection(QDBusConnection::sessionBus());
+    serviceWatcher->setConnection(KDBusConnectionPool::threadConnection());
     serviceWatcher->addWatchedService(KWIN_SERVICE);
     serviceWatcher->addWatchedService(KSMSERVER_SERVICE);
 

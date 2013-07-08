@@ -21,6 +21,7 @@
 #include "featuresadaptor.h"
 
 #include "common.h"
+#include <kdbusconnectionpool.h>
 
 #include <utils/d_ptr_implementation.h>
 #include <utils/val.h>
@@ -33,7 +34,7 @@ Features::Features(QObject * parent)
     : Module("features", parent), d()
 {
     new FeaturesAdaptor(this);
-    QDBusConnection::sessionBus().registerObject(
+    KDBusConnectionPool::threadConnection().registerObject(
             ACTIVITY_MANAGER_OBJECT_PATH(Features), this);
 }
 

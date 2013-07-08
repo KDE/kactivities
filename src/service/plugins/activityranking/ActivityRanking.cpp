@@ -29,6 +29,7 @@
 #include <QDebug>
 
 #include <KStandardDirs>
+#include <kdbusconnectionpool.h>
 
 #include "Plugin.h"
 #include "Location.h"
@@ -365,7 +366,7 @@ ActivityRanking::ActivityRanking(QObject * parent)
 void ActivityRanking::init(QObject * activities)
 {
     new ActivityRankingAdaptor(this);
-    QDBusConnection::sessionBus().registerObject("/ActivityRanking", this);
+    KDBusConnectionPool::threadConnection().registerObject("/ActivityRanking", this);
 
     val path = KStandardDirs::locateLocal("data", "activitymanager/activityranking/database", true);
 
