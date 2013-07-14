@@ -11,6 +11,7 @@ X-KDE-System-Settings-Parent-Category=workspace-behavior
 X-KDE-Weight=4
 
 Name=Activities
+Name[bs]=Aktivnosti
 Name[ca]=Activitats
 Name[ca@valencia]=Activitats
 Name[cs]=Aktivity
@@ -54,6 +55,7 @@ Name[x-test]=xxActivitiesxx
 Name[zh_CN]=活动
 Name[zh_TW]=活動
 Comment=Configure the activities system
+Comment[bs]=Konfiguriši sistem aktivnosti
 Comment[ca]=Configura el sistema d'activitats
 Comment[ca@valencia]=Configura el sistema d'activitats
 Comment[cs]=Nastavit systém aktivit
