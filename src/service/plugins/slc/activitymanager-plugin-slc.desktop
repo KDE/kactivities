@@ -1,5 +1,6 @@
 [Desktop Entry]
 Name=Share-Like-Connect
+Name[bs]=Povezivanje kao Share
 Name[ca]=«Share-Like-Connect»
 Name[ca@valencia]=«Share-Like-Connect»
 Name[da]=Share-Like-Connect
@@ -40,6 +41,7 @@ Name[x-test]=xxShare-Like-Connectxx
 Name[zh_CN]=分享-喜爱-连接
 Name[zh_TW]=Share-Like-Connect
 Comment=Provides data to Share-Like-Connect applet
+Comment[bs]=Pruža podatke za programčić Share-Like-Connect
 Comment[ca]=Proporciona dades a la miniaplicació «Share-Like-Connect»
 Comment[ca@valencia]=Proporciona dades a la miniaplicació «Share-Like-Connect»
 Comment[da]=Giver data til Share-Like-Connect-appletten
