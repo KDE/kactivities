@@ -1,5 +1,6 @@
 [Desktop Entry]
 Name=Nepomuk Feeder
+Name[bs]=Nepomuk Feeder
 Name[ca]=Alimentador del Nepomuk
 Name[da]=Nepomuk-feeder
 Name[de]=Nepomuk Feeder
@@ -37,6 +38,7 @@ Name[x-test]=xxNepomuk Feederxx
 Name[zh_CN]=Nepomuk 采集器
 Name[zh_TW]=Nepomuk Feeder
 Comment=Plugin to synchronize data with Nepomuk
+Comment[bs]=Dodatak za sinhronizaciju podataka s Nepomuk-om
 Comment[ca]=Connector per sincronitzar dades amb el Nepomuk
 Comment[cs]=Modul pro synchronizaci dat s Nepomukem
 Comment[da]=Plugin til at synkronisere data med Nepomuk
