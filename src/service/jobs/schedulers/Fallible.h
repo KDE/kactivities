@@ -36,7 +36,7 @@ class Fallible: public Abstract {
     Q_OBJECT
 
 public:
-    Fallible(QObject * parent = nullptr);
+    Fallible(QObject * parent = Q_NULLPTR);
     virtual ~Fallible();
 
     Fallible & operator << (JobFactory * other);

@@ -118,7 +118,7 @@ int Abstract::jobCount() const
 
 bool Abstract::hasJob(int index) const
 {
-    return (index >= 0 && index < d->jobs.size() && d->jobs[index] != nullptr);
+    return (index >= 0 && index < d->jobs.size() && d->jobs[index] != Q_NULLPTR);
 }
 
 void Abstract::returnResult(int result)

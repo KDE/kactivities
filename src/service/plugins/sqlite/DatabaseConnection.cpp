@@ -31,7 +31,6 @@
 
 #include <config-features.h>
 
-#include <utils/nullptr.h>
 #include <utils/d_ptr_implementation.h>
 #include <utils/val.h>
 
@@ -235,7 +234,7 @@ void DatabaseConnection::getResourceScoreCache(const QString & usedActivity, con
         );
 }
 
-DatabaseConnection * DatabaseConnection::s_instance = nullptr;
+DatabaseConnection * DatabaseConnection::s_instance = Q_NULLPTR;
 
 DatabaseConnection * DatabaseConnection::self()
 {

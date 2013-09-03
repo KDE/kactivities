@@ -46,7 +46,7 @@ class KACTIVITIES_EXPORT Controller: public Consumer
     Q_PROPERTY(QString currentActivity READ currentActivity WRITE setCurrentActivity)
 
 public:
-    explicit Controller(QObject * parent = 0 /*nullptr*/);
+    explicit Controller(QObject * parent = Q_NULLPTR);
 
     ~Controller();
 

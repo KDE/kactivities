@@ -20,19 +20,16 @@
 
 #include <Plugin.h>
 
-#include <utils/override.h>
-#include <utils/nullptr.h>
-
 class SlcPlugin: public Plugin
 {
     Q_OBJECT
     Q_CLASSINFO("D-Bus Interface", "org.kde.ActivityManager.SLC")
 
 public:
-    explicit SlcPlugin(QObject * parent = nullptr, const QVariantList & args = QVariantList());
+    explicit SlcPlugin(QObject * parent = Q_NULLPTR, const QVariantList & args = QVariantList());
     ~SlcPlugin();
 
-    virtual bool init(const QHash < QString, QObject * > & modules) _override;
+    virtual bool init(const QHash < QString, QObject * > & modules) Q_DECL_OVERRIDE;
 
 private Q_SLOTS:
     void registeredResourceEvent(const Event & event);

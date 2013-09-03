@@ -20,7 +20,7 @@
 #ifndef APPLICATION_H
 #define APPLICATION_H
 
-#include <KUniqueApplication>
+#include <QCoreApplication>
 #include <utils/d_ptr.h>
 
 class Resources;
@@ -30,16 +30,16 @@ class Features;
 /**
  * Main application object
  */
-class Application: public KUniqueApplication {
+class Application: public QCoreApplication {
     Q_OBJECT
 
 public:
-    Application();
+    Application(int & argc, char ** argv);
     virtual ~Application();
 
     virtual int newInstance();
 
-    static Application * self();
+    // static Application * self();
     static void quit();
 
     Resources  & resources()  const;

@@ -21,7 +21,6 @@
 #define UTILS_FOR_EACH_ASSOC_H
 
 #include <config-features.h>
-#include <utils/nullptr.h>
 
 /********************************************************************
  *  Associative container's for_each (for hash, map, and similar )  *
@@ -72,7 +71,7 @@ template <typename Container, typename Function>
 Function for_each_assoc(const Container & c, Function f)
 {
     return details::_for_each_assoc_helper_container
-        <Container, Function>(c, f, nullptr);
+        <Container, Function>(c, f, Q_NULLPTR);
 }
 
 } // namespace utils

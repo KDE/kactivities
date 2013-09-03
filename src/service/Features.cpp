@@ -31,7 +31,7 @@ class Features::Private {
 };
 
 Features::Features(QObject * parent)
-    : Module("features", parent), d()
+    : Module(QStringLiteral("features"), parent), d()
 {
     new FeaturesAdaptor(this);
     KDBusConnectionPool::threadConnection().registerObject(
@@ -48,7 +48,7 @@ Features::~Features()
 template <typename RetType, typename Function>
 static RetType passToModule(const QString & feature, RetType defaultResult, Function f)
 {
-    val params = feature.split('/');
+    val params = feature.split(QLatin1Char('/'));
     val module = Module::get(params.first());
 
     if (!module) return defaultResult;

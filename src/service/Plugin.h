@@ -25,8 +25,8 @@
 #include <QObject>
 #include <QMetaObject>
 
-#include <KPluginFactory>
-#include <KConfigGroup>
+// #include <KPluginFactory>
+#include <kconfiggroup.h>
 
 #include "Event.h"
 #include "Module.h"

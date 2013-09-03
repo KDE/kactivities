@@ -26,7 +26,6 @@
 #include <KActionCollection>
 #include <KLocalizedString>
 
-#include <utils/nullptr.h>
 #include <utils/val.h>
 
 val objectNamePattern       = QString::fromLatin1("switch-to-activity-%1");
@@ -34,7 +33,7 @@ val objectNamePatternLength = objectNamePattern.length() - 2;
 
 GlobalShortcutsPlugin::GlobalShortcutsPlugin(QObject * parent, const QVariantList & args)
     : Plugin(parent),
-      m_activitiesService(nullptr),
+      m_activitiesService(Q_NULLPTR),
       m_signalMapper(new QSignalMapper(this)),
       m_actionCollection(new KActionCollection(this))
 {

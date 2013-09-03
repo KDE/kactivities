@@ -65,7 +65,7 @@ class KACTIVITIES_EXPORT Info: public QObject
     Q_PROPERTY(QString icon READ icon NOTIFY iconChanged)
 
 public:
-    explicit Info(const QString & activity, QObject * parent = 0 /*nullptr*/);
+    explicit Info(const QString & activity, QObject * parent = Q_NULLPTR);
     ~Info();
 
     /**

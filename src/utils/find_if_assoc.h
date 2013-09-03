@@ -20,8 +20,7 @@
 #ifndef UTILS_FIND_IF_ASSOC_H
 #define UTILS_FIND_IF_ASSOC_H
 
-#include <config-features.h>
-#include <utils/nullptr.h>
+#include <kactivities-features.h>
 
 /********************************************************************
  *  Associative container's find_if (for hash, map, and similar )  *
@@ -76,7 +75,7 @@ template <typename Container, typename Function>
 Function find_if_assoc(const Container & c, Function f)
 {
     return details::_find_if_assoc_helper_container
-        <Container, Function>(c, f, nullptr);
+        <Container, Function>(c, f, Q_NULLPTR);
 }
 
 } // namespace utils

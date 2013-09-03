@@ -23,7 +23,6 @@
 #include <QObject>
 
 #include <utils/d_ptr.h>
-#include <utils/nullptr.h>
 
 /**
  * KSMServer
@@ -38,7 +37,7 @@ public:
         FailedToStop = 2
     };
 
-    KSMServer(QObject * parent = nullptr);
+    KSMServer(QObject * parent = Q_NULLPTR);
     virtual ~KSMServer();
 
 public Q_SLOTS:

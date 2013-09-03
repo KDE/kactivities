@@ -36,7 +36,7 @@ class Retry: public Abstract {
     Q_OBJECT
 
 public:
-    Retry(JobFactory * _input, JobFactory * _test, JobFactory * _error, QObject * parent = nullptr);
+    Retry(JobFactory * _input, JobFactory * _test, JobFactory * _error, QObject * parent = Q_NULLPTR);
     virtual ~Retry();
 
 protected:

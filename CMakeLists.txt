@@ -25,7 +25,11 @@ set (CMAKE_AUTOMOC ON)
 find_package(Qt5 REQUIRED NO_MODULE COMPONENTS Core DBus)
 
 # KDE Frameworks
-find_package(KF5 REQUIRED MODULE COMPONENTS CMake Compiler InstallDirs KDBusAddons)
+find_package(KF5 REQUIRED MODULE
+   COMPONENTS
+   CMake Compiler InstallDirs KDBusAddons
+   KConfig KCoreAddons KWindowSystem
+   )
 
 # Enable C++11
 if(UNIX)

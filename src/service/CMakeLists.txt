@@ -1,113 +1,102 @@
+# vim:set softtabstop=3 shiftwidth=3 tabstop=3 expandtab:
+
 project (ActivityManager)
 
-# C++11
-
-string (COMPARE EQUAL "${CMAKE_CXX_COMPILER_ID}" "Clang" CMAKE_COMPILER_IS_CLANG)
-
-if (CMAKE_COMPILER_IS_GNUCXX OR CMAKE_COMPILER_IS_CLANG)
-    message (STATUS "We have GNU or Clang, adding -std=c++0x flag")
-    add_definitions ("-std=c++0x")
-    set (ADDITIONAL_DEFINITIONS "-std=c++0x")
-endif ()
-
 # General
-
-find_package(KDeclarative)
-
-set (ADDITIONAL_LINK_LIBS)
-
-set (sdo_SRCS)
+# find_package(KDeclarative)
+# set (ADDITIONAL_LINK_LIBS)
+# set (sdo_SRCS)
 
 # Standard stuff
 
-include_directories (
-    ${CMAKE_SOURCE_DIR}/src
-    ${CMAKE_BINARY_DIR}/src
-    ${CMAKE_CURRENT_SOURCE_DIR}
-    ${CMAKE_CURRENT_BINARY_DIR}
-    ${KDE4_INCLUDES}
-    )
+set (CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set (plugin_implementation_SRCS
-    ${CMAKE_CURRENT_SOURCE_DIR}/Plugin.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/Module.cpp
-    )
+   ${CMAKE_CURRENT_SOURCE_DIR}/Plugin.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/Module.cpp
+   )
 
-add_subdirectory (plugins)
+# add_subdirectory (plugins)
+include_directories (
+   ${KDBusAddons_INCLUDE_DIR}
+   ${KConfig_INCLUDE_DIR}
+   ${KCoreAddons_INCLUDE_DIR}
+   ${KWindowSystem_INCLUDE_DIR}
+   )
 
 set (activity_manager_SRCS
-    Application.cpp
-    ${CMAKE_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.Activities.cpp
+   Application.cpp
+   ${CMAKE_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.Activities.cpp
 
-    Activities.cpp
-    Resources.cpp
-    Features.cpp
+   Activities.cpp
+   Resources.cpp
+   Features.cpp
 
-    ${plugin_implementation_SRCS}
+   ${plugin_implementation_SRCS}
 
-    Event.cpp
+   Event.cpp
 
-    jobs/Job.cpp
-    jobs/JobFactory.cpp
+   jobs/Job.cpp
+   jobs/JobFactory.cpp
 
-    jobs/schedulers/Abstract.cpp
-    jobs/schedulers/Ordered.cpp
-    jobs/schedulers/Fallible.cpp
-    jobs/schedulers/Given.cpp
-    jobs/schedulers/Retry.cpp
-    jobs/schedulers/Switch.cpp
-    jobs/schedulers/Test.cpp
+   jobs/schedulers/Abstract.cpp
+   jobs/schedulers/Ordered.cpp
+   jobs/schedulers/Fallible.cpp
+   jobs/schedulers/Given.cpp
+   jobs/schedulers/Retry.cpp
+   jobs/schedulers/Switch.cpp
+   jobs/schedulers/Test.cpp
 
-    jobs/general/Call.cpp
+   jobs/general/Call.cpp
 
-    jobs/ksmserver/KSMServer.cpp
+   jobs/ksmserver/KSMServer.cpp
+   )
 
-    ${sdo_SRCS}
-    )
+qt5_add_dbus_adaptor (
+   activity_manager_SRCS
+   ../common/dbus/org.kde.ActivityManager.Activities.xml
+   Activities.h Activities
+   )
 
-qt4_add_dbus_adaptor (
-    activity_manager_SRCS
-    ../common/dbus/org.kde.ActivityManager.Activities.xml
-    Activities.h Activities
-    )
+qt5_add_dbus_adaptor (
+   activity_manager_SRCS
+   ../common/dbus/org.kde.ActivityManager.Resources.xml
+   Resources.h Resources
+   )
 
-qt4_add_dbus_adaptor (
-    activity_manager_SRCS
-    ../common/dbus/org.kde.ActivityManager.Resources.xml
-    Resources.h Resources
-    )
+qt5_add_dbus_adaptor (
+   activity_manager_SRCS
+   ../common/dbus/org.kde.ActivityManager.Features.xml
+   Features.h Features
+   )
 
-qt4_add_dbus_adaptor (
-    activity_manager_SRCS
-    ../common/dbus/org.kde.ActivityManager.Features.xml
-    Features.h Features
-    )
-
-kde4_add_executable (activity-manager ${activity_manager_SRCS})
+add_executable (activity-manager ${activity_manager_SRCS})
 
 target_link_libraries (activity-manager
-    ${KDE4_KDECORE_LIBS}
-    ${KDE4_KDEUI_LIBS}   # KUniqueApplication
-    ${ADDITIONAL_LINK_LIBS}
-    )
+   Qt5::Core
+   Qt5::DBus
+   KF5::KDBusAddons
+   KF5::KCoreAddons
+   KF5::KConfigCore
+   )
 
 set_target_properties (activity-manager
-    PROPERTIES OUTPUT_NAME kactivitymanagerd
-    )
+   PROPERTIES OUTPUT_NAME kactivitymanagerd
+   )
 
 ########### install application ###############
 
 install (FILES
-    files/kactivitymanagerd.desktop
-    DESTINATION ${SERVICES_INSTALL_DIR}
-    )
+   files/kactivitymanagerd.desktop
+   DESTINATION ${SERVICES_INSTALL_DIR}
+   )
 
 install (TARGETS
-    activity-manager ${INSTALL_TARGETS_DEFAULT_ARGS}
-    )
+   activity-manager ${INSTALL_TARGETS_DEFAULT_ARGS}
+   )
 
 install (FILES
-    files/activitymanager-plugin.desktop
-    DESTINATION ${SERVICETYPES_INSTALL_DIR}
-    )
+   files/activitymanager-plugin.desktop
+   DESTINATION ${SERVICETYPES_INSTALL_DIR}
+   )
 

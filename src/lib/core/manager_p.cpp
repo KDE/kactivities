@@ -27,7 +27,7 @@
 
 namespace KActivities {
 
-Manager * Manager::s_instance = 0 /*nullptr*/;
+Manager * Manager::s_instance = Q_NULLPTR;
 
 #define ACTIVITY_MANAGER_DBUS_PATH      QStringLiteral("org.kde.ActivityManager")
 #define ACTIVITY_MANAGER_DBUS_OBJECT(A) QStringLiteral("/ActivityManager" A)

@@ -50,7 +50,7 @@ public:
     void setReceiver(QObject * receiver);
     void setSlot(const QString & slot);
 
-    virtual void start() _override;
+    virtual void start() Q_DECL_OVERRIDE;
 
 private:
     QObject * m_receiver;

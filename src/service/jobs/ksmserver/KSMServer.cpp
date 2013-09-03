@@ -32,13 +32,13 @@
 #include <utils/d_ptr_implementation.h>
 #include <utils/val.h>
 
-#define KWIN_SERVICE "org.kde.kwin"
-#define KSMSERVER_SERVICE "org.kde.ksmserver"
+#define KWIN_SERVICE QStringLiteral("org.kde.kwin")
+#define KSMSERVER_SERVICE QStringLiteral("org.kde.ksmserver")
 
 KSMServer::Private::Private(KSMServer * parent)
-  : serviceWatcher(nullptr),
-    kwin(nullptr),
-    ksmserver(nullptr),
+  : serviceWatcher(Q_NULLPTR),
+    kwin(Q_NULLPTR),
+    ksmserver(Q_NULLPTR),
     processing(false),
     q(parent)
 {
@@ -74,7 +74,7 @@ static void initializeInterface(QDBusInterface * & service,
 
     } else {
         delete service;
-        service = nullptr;
+        service = Q_NULLPTR;
 
     }
 
@@ -90,7 +90,9 @@ void KSMServer::Private::serviceOwnerChanged(const QString & service,
 
         initializeInterface(
             ksmserver,
-            KSMSERVER_SERVICE, "/KSMServer", "org.kde.KSMServerInterface",
+            KSMSERVER_SERVICE,
+            QStringLiteral("/KSMServer"),
+            QStringLiteral("org.kde.KSMServerInterface"),
             [this] (QObject * service) {
                 service->setParent(this);
                 connect(service, SIGNAL(subSessionOpened()),
@@ -106,7 +108,9 @@ void KSMServer::Private::serviceOwnerChanged(const QString & service,
 
         initializeInterface(
             kwin,
-            KWIN_SERVICE, "/KWin", "org.kde.KWin",
+            KWIN_SERVICE,
+            QStringLiteral("/KWin"),
+            QStringLiteral("org.kde.KWin"),
             [this] (QObject * service) {
                 service->setParent(this);
             }

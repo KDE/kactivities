@@ -23,8 +23,6 @@
 #include <memory>
 
 #include <utils/d_ptr.h>
-#include <utils/nullptr.h>
-#include <utils/override.h>
 
 class QFileSystemWatcher;
 
@@ -33,12 +31,12 @@ class NepomukPlugin: public Plugin {
     Q_CLASSINFO("D-Bus Interface", "org.kde.ActivityManager.ResourcesLinking")
 
 public:
-    explicit NepomukPlugin(QObject *parent = nullptr, const QVariantList & args = QVariantList());
+    explicit NepomukPlugin(QObject *parent = Q_NULLPTR, const QVariantList & args = QVariantList());
     ~NepomukPlugin();
 
     static NepomukPlugin * self();
 
-    virtual bool init(const QHash < QString, QObject * > & modules) _override;
+    virtual bool init(const QHash < QString, QObject * > & modules) Q_DECL_OVERRIDE;
 
 public Q_SLOTS:
     // Resource linking slots
@@ -69,10 +67,10 @@ private Q_SLOTS:
     // setResourceTitle
 
 public:
-    virtual bool isFeatureOperational(const QStringList & feature) const _override;
-    virtual bool isFeatureEnabled(const QStringList & feature) const _override;
-    virtual void setFeatureEnabled(const QStringList & feature, bool value) _override;
-    virtual QStringList listFeatures(const QStringList & feature) const _override;
+    virtual bool isFeatureOperational(const QStringList & feature) const Q_DECL_OVERRIDE;
+    virtual bool isFeatureEnabled(const QStringList & feature) const Q_DECL_OVERRIDE;
+    virtual void setFeatureEnabled(const QStringList & feature, bool value) Q_DECL_OVERRIDE;
+    virtual QStringList listFeatures(const QStringList & feature) const Q_DECL_OVERRIDE;
 
 private:
     D_PTR;

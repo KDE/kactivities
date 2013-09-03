@@ -90,7 +90,7 @@ public:
         Running
     };
 
-    explicit Consumer(QObject * parent = 0 /*nullptr*/);
+    explicit Consumer(QObject * parent = Q_NULLPTR);
 
     ~Consumer();
 

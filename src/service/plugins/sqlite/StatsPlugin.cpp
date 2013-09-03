@@ -34,17 +34,16 @@
 
 #include "DatabaseConnection.h"
 
-#include <utils/nullptr.h>
 #include <utils/val.h>
 
-StatsPlugin * StatsPlugin::s_instance = nullptr;
+StatsPlugin * StatsPlugin::s_instance = Q_NULLPTR;
 
 StatsPlugin::StatsPlugin(QObject *parent, const QVariantList & args)
     : Plugin(parent),
-      m_rankings(nullptr),
-      m_activities(nullptr),
-      m_resources(nullptr),
-      m_configWatcher(nullptr)
+      m_rankings(Q_NULLPTR),
+      m_activities(Q_NULLPTR),
+      m_resources(Q_NULLPTR),
+      m_configWatcher(Q_NULLPTR)
 {
     Q_UNUSED(args)
     s_instance = this;

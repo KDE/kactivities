@@ -25,15 +25,13 @@
 #include <QUrl>
 #include <QThread>
 
-#include <utils/nullptr.h>
-
 class Rankings: public QObject
 {
     Q_OBJECT
     Q_CLASSINFO("D-Bus Interface", "org.kde.ActivityManager.Rankings")
 
 public:
-    static void init(QObject * parent = nullptr);
+    static void init(QObject * parent = Q_NULLPTR);
     static Rankings * self();
 
     void resourceScoreUpdated(const QString & activity,
@@ -70,7 +68,7 @@ private Q_SLOTS:
     void setCurrentActivity(const QString & activity);
 
 private:
-    Rankings(QObject * parent = nullptr);
+    Rankings(QObject * parent = Q_NULLPTR);
     void updateScoreTrashold(const QString & activity);
 
     static Rankings * s_instance;

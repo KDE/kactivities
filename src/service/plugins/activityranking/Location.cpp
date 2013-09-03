@@ -26,7 +26,6 @@
 #include <kdbusconnectionpool.h>
 
 #include <config-features.h>
-#include <utils/nullptr.h>
 #include <utils/d_ptr_implementation.h>
 
 #define LOCATION_MANAGER_SERVICE "org.kde.LocationManager"
@@ -35,7 +34,7 @@
 class Location::Private {
 public:
     Private()
-        : manager(nullptr)
+        : manager(Q_NULLPTR)
     {
     }
 
@@ -50,7 +49,7 @@ public:
     static Location * s_instance;
 };
 
-Location * Location::Private::s_instance = nullptr;
+Location * Location::Private::s_instance = Q_NULLPTR;
 
 Location::Location(QObject * parent)
     : QObject(parent), d()

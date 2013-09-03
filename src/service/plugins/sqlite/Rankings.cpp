@@ -35,7 +35,7 @@
 #define COALESCE_ACTIVITY(Activity) ((Activity.isEmpty()) ? \
         (StatsPlugin::self()->currentActivity()) : (Activity))
 
-Rankings * Rankings::s_instance = nullptr;
+Rankings * Rankings::s_instance = Q_NULLPTR;
 
 /**
  *

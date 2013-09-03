@@ -26,7 +26,6 @@
 #include <Module.h>
 
 #include <utils/d_ptr.h>
-#include <utils/nullptr.h>
 
 #include <common/dbus/org.kde.ActivityManager.Activities.h>
 
@@ -67,7 +66,7 @@ public:
     /**
      * Creates new Activities object
      */
-    Activities(QObject * parent = nullptr);
+    Activities(QObject * parent = Q_NULLPTR);
 
     /**
      * Destroys this interface
@@ -225,10 +224,10 @@ Q_SIGNALS:
 
 
 public:
-    virtual bool isFeatureOperational(const QStringList & feature) const _override;
-    virtual bool isFeatureEnabled(const QStringList & feature) const _override;
-    virtual void setFeatureEnabled(const QStringList & feature, bool value) _override;
-    virtual QStringList listFeatures(const QStringList & feature) const _override;
+    virtual bool isFeatureOperational(const QStringList & feature) const Q_DECL_OVERRIDE;
+    virtual bool isFeatureEnabled(const QStringList & feature) const Q_DECL_OVERRIDE;
+    virtual void setFeatureEnabled(const QStringList & feature, bool value) Q_DECL_OVERRIDE;
+    virtual QStringList listFeatures(const QStringList & feature) const Q_DECL_OVERRIDE;
 
 private:
     D_PTR;

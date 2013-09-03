@@ -43,12 +43,12 @@ bool ActivityRankingPlugin::init(const QHash < QString, QObject * > & modules)
 
     class Thread: public QThread {
     public:
-        Thread(ActivityRanking * ptr = nullptr)
+        Thread(ActivityRanking * ptr = Q_NULLPTR)
             : QThread(), object(ptr)
         {
         }
 
-        void run() _override
+        void run() Q_DECL_OVERRIDE
         {
             std::unique_ptr<ActivityRanking> o(object);
             exec();

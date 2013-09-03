@@ -20,13 +20,14 @@
 #include "Plugin.h"
 #include <QDebug>
 
-#include <utils/nullptr.h>
+#include <ksharedconfig.h>
+
 #include <utils/d_ptr_implementation.h>
 
 class Plugin::Private {
 public:
     Private()
-        : config(nullptr)
+        : config(Q_NULLPTR)
     {
     }
 
@@ -57,10 +58,10 @@ KConfigGroup Plugin::config()
     }
 
     if (!d->config) {
-        d->config = KSharedConfig::openConfig("activitymanager-pluginsrc");
+        d->config = KSharedConfig::openConfig(QStringLiteral("activitymanager-pluginsrc"));
     }
 
-    return d->config->group("Plugin-" + d->name);
+    return d->config->group(QStringLiteral("Plugin-") + d->name);
 }
 
 void Plugin::setName(const QString & name)

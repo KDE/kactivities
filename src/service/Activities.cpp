@@ -27,7 +27,7 @@
 #include <QDebug>
 
 #include <kdbusconnectionpool.h>
-#include <config-features.h>
+#include <kactivities-features.h>
 
 #include "jobs/activity/all.h"
 #include "jobs/general/all.h"
@@ -36,7 +36,6 @@
 
 #include "common.h"
 
-#include <utils/nullptr.h>
 #include <utils/d_ptr_implementation.h>
 #include <utils/find_if_assoc.h>
 #include <utils/val.h>
@@ -44,7 +43,7 @@
 // Private
 
 Activities::Private::Private(Activities * parent)
-    : config("activitymanagerrc"),
+    : config(QStringLiteral("activitymanagerrc")),
       q(parent)
 {
 }
@@ -57,7 +56,7 @@ Activities::Private::~Private()
 // Main
 
 Activities::Activities(QObject * parent)
-    : Module("activities", parent), d(this)
+    : Module(QStringLiteral("activities"), parent), d(this)
 {
     qDebug() << "\n\n-------------------------------------------------------";
     qDebug() << "Starting the KDE Activity Manager daemon" << QDateTime::currentDateTime();
@@ -147,7 +146,10 @@ bool Activities::Private::setCurrentActivity(const QString & activity)
     setCurrentActivityJob
 
     <<  // Change the activity
-        General::call(this, "emitCurrentActivityChanged", activity);
+        General::call(this,
+                QStringLiteral("emitCurrentActivityChanged"),
+                activity
+            );
 
     setCurrentActivityJob.start();
 
@@ -193,8 +195,8 @@ QString Activities::AddActivity(const QString & name)
 
     val & existingActivities = d->activities.keys();
     while (activity.isEmpty() || existingActivities.contains(activity)) {
-        activity = QUuid::createUuid();
-        activity.replace(QRegExp("[{}]"), QString());
+        activity = QUuid::createUuid().toString();
+        activity.replace(QRegExp(QStringLiteral("[{}]")), QString());
     }
 
     // Saves the activity info to the config
@@ -230,7 +232,7 @@ void Activities::RemoveActivity(const QString & activity)
     <<  // Remove activity
         // TODO: Leaving the operator->() call so that no one is able to
         // miss out the fact that we are passing a raw pointer to d!
-        General::call(d.operator->(), "removeActivity", activity, true /* wait finished */);
+        General::call(d.operator->(), QStringLiteral("removeActivity"), activity, true /* wait finished */);
 
     removeActivityJob.start();
 }

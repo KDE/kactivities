@@ -24,9 +24,6 @@
 #include <Plugin.h>
 #include "Rankings.h"
 
-#include <utils/nullptr.h>
-#include <utils/override.h>
-
 class QFileSystemWatcher;
 
 class StatsPlugin: public Plugin {
@@ -34,11 +31,11 @@ class StatsPlugin: public Plugin {
     Q_CLASSINFO("D-Bus Interface", "org.kde.ActivityManager.Resources.Scoring")
 
 public:
-    explicit StatsPlugin(QObject *parent = nullptr, const QVariantList & args = QVariantList());
+    explicit StatsPlugin(QObject *parent = Q_NULLPTR, const QVariantList & args = QVariantList());
 
     static StatsPlugin * self();
 
-    virtual bool init(const QHash < QString, QObject * > & modules) _override;
+    virtual bool init(const QHash < QString, QObject * > & modules) Q_DECL_OVERRIDE;
 
     QString currentActivity() const;
 

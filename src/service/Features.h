@@ -26,7 +26,6 @@
 #include <Module.h>
 
 #include <utils/d_ptr.h>
-#include <utils/nullptr.h>
 
 /**
  * Features object provides one interface for clients
@@ -37,7 +36,7 @@ class Features: public Module {
     Q_CLASSINFO("D-Bus Interface", "org.kde.ActivityManager.Features")
 
 public:
-    Features(QObject * parent = nullptr);
+    Features(QObject * parent = Q_NULLPTR);
     virtual ~Features();
 
 public Q_SLOTS:

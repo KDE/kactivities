@@ -34,7 +34,7 @@ class Switch: public Abstract {
     Q_OBJECT
 
 public:
-    Switch(QObject * parent = nullptr);
+    Switch(QObject * parent = Q_NULLPTR);
     virtual ~Switch();
 
     Switch & operator << (JobFactory * other);

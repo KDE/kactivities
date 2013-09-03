@@ -55,7 +55,11 @@ add_subdirectory (lib)
 # Config file
 set (KAMD_DATA_DIR "${DATA_INSTALL_DIR}/activitymanager/")
 configure_file (kactivities-features.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/kactivities-features.h)
-include_directories(${CMAKE_CURRENT_BINARY_DIR})
+
+include_directories(
+   ${CMAKE_CURRENT_BINARY_DIR}
+   ${CMAKE_CURRENT_SOURCE_DIR}
+   )
 
 # Is the compiler modern enough to build the ActivityManager service
 # and accompanying workspace addons?
@@ -82,7 +86,7 @@ else ()
          )
    endif ()
 
-   # add_subdirectory (service)
+   add_subdirectory (service)
 
    # No point in having workspace addons without the service
    # add_subdirectory (workspace)

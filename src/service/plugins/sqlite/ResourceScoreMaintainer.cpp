@@ -51,7 +51,7 @@ public:
 
 };
 
-ResourceScoreMaintainer * ResourceScoreMaintainer::Private::s_instance = nullptr;
+ResourceScoreMaintainer * ResourceScoreMaintainer::Private::s_instance = Q_NULLPTR;
 
 void ResourceScoreMaintainer::Private::run()
 {

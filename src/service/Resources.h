@@ -27,7 +27,6 @@
 #include <Event.h>
 
 #include <utils/d_ptr.h>
-#include <utils/nullptr.h>
 
 /**
  * Resources
@@ -37,7 +36,7 @@ class Resources: public Module {
     Q_CLASSINFO("D-Bus Interface", "org.kde.ActivityManager.Resources")
 
 public:
-    Resources(QObject * parent = nullptr);
+    Resources(QObject * parent = Q_NULLPTR);
     virtual ~Resources();
 
 public Q_SLOTS:
@@ -76,10 +75,10 @@ Q_SIGNALS:
     void RegisteredResourceTitle(const QString & uri, const QString & title);
 
 public:
-    virtual bool isFeatureOperational(const QStringList & feature) const _override;
-    virtual bool isFeatureEnabled(const QStringList & feature) const _override;
-    virtual void setFeatureEnabled(const QStringList & feature, bool value) _override;
-    virtual QStringList listFeatures(const QStringList & feature) const _override;
+    virtual bool isFeatureOperational(const QStringList & feature) const Q_DECL_OVERRIDE;
+    virtual bool isFeatureEnabled(const QStringList & feature) const Q_DECL_OVERRIDE;
+    virtual void setFeatureEnabled(const QStringList & feature, bool value) Q_DECL_OVERRIDE;
+    virtual QStringList listFeatures(const QStringList & feature) const Q_DECL_OVERRIDE;
 
 private:
     D_PTR;

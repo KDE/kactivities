@@ -28,7 +28,7 @@ Event::Event()
 {
 }
 
-Event::Event(const QString & vApplication, WId vWid, const QString & vUri, int vType, int vReason)
+Event::Event(const QString & vApplication, quintptr vWid, const QString & vUri, int vType, int vReason)
     : application(vApplication), wid(vWid), uri(vUri), type(vType), reason(vReason), timestamp(QDateTime::currentDateTime())
 {
     Q_ASSERT(!vApplication.isEmpty());
@@ -56,13 +56,13 @@ bool Event::operator == (const Event & other) const
 QString Event::typeName() const
 {
     switch (type) {
-        case Accessed:    return "Accessed";
-        case Opened:      return "Opened";
-        case Modified:    return "Modified";
-        case Closed:      return "Closed";
-        case FocussedIn:  return "FocussedIn";
-        case FocussedOut: return "FocussedOut";
-        default:          return "Other";
+        case Accessed:    return QStringLiteral("Accessed");
+        case Opened:      return QStringLiteral("Opened");
+        case Modified:    return QStringLiteral("Modified");
+        case Closed:      return QStringLiteral("Closed");
+        case FocussedIn:  return QStringLiteral("FocussedIn");
+        case FocussedOut: return QStringLiteral("FocussedOut");
+        default:          return QStringLiteral("Other");
     }
 
 }

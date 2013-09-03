@@ -317,7 +317,7 @@ void ActivityRanking::Private::closeDanglingActivityRecords()
     // TODO: A possible problem is that theoretically the dangling ones can be
     // before a non dangling one which will produce overlapping
 
-    QSqlTableModel tableActivityEvents(nullptr, database);
+    QSqlTableModel tableActivityEvents(Q_NULLPTR, database);
     tableActivityEvents.setTable("ActivityEvents");
     tableActivityEvents.setFilter("end IS NULL");
     tableActivityEvents.select();

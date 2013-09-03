@@ -20,16 +20,15 @@
 #include <QString>
 #include <QDebug>
 
-#include <KWindowSystem>
+// #include <KWindowSystem>
 
-#include <utils/nullptr.h>
 #include <utils/val.h>
 
 val configPattern       = QString::fromLatin1("desktop-for-%1");
 
 VirtualDesktopSwitchPlugin::VirtualDesktopSwitchPlugin(QObject * parent, const QVariantList & args)
     : Plugin(parent),
-      m_activitiesService(nullptr)
+      m_activitiesService(Q_NULLPTR)
 {
     Q_UNUSED(args)
 

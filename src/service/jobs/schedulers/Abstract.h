@@ -35,10 +35,10 @@ class Abstract: public Job {
     Q_OBJECT
 
 public:
-    Abstract(QObject * parent = nullptr);
+    Abstract(QObject * parent = Q_NULLPTR);
     virtual ~Abstract();
 
-    virtual void start() _override;
+    virtual void start() Q_DECL_OVERRIDE;
 
 protected:
     bool startJob(int index);

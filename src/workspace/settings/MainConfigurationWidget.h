@@ -35,9 +35,9 @@ public:
     MainConfigurationWidget(QWidget * parent, QVariantList args);
 
 public Q_SLOTS:
-    virtual void defaults() _override;
-    virtual void load() _override;
-    virtual void save() _override;
+    virtual void defaults() Q_DECL_OVERRIDE;
+    virtual void load() Q_DECL_OVERRIDE;
+    virtual void save() Q_DECL_OVERRIDE;
 
 private Q_SLOTS:
     void updateLayout();

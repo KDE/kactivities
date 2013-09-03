@@ -36,7 +36,7 @@ class Test: public Abstract {
     Q_OBJECT
 
 public:
-    Test(JobFactory * job, int expectedResult, QObject * parent = nullptr);
+    Test(JobFactory * job, int expectedResult, QObject * parent = Q_NULLPTR);
     virtual ~Test();
 
 protected:

@@ -27,8 +27,7 @@
 #include <QMutexLocker>
 #include <QDebug>
 
-#include <KUrl>
-#include <KWindowSystem>
+// #include <kwindowsystem.h>
 #include <kdbusconnectionpool.h>
 
 #include <Application.h>
@@ -88,7 +87,7 @@ void Resources::Private::insertEvent(const Event & newEvent)
     emit q->RegisteredResourceEvent(newEvent);
 }
 
-void Resources::Private::addEvent(const QString & application, WId wid, const QString & uri,
+void Resources::Private::addEvent(const QString & application, quintptr wid, const QString & uri,
             int type, int reason)
 {
     Event newEvent(application, wid, uri, type, reason);
@@ -123,7 +122,7 @@ void Resources::Private::addEvent(const Event & newEvent)
 
     if (newEvent.wid != 0) {
         WindowData & data = windows[newEvent.wid];
-        const KUrl & kuri(newEvent.uri);
+        const QString & kuri(newEvent.uri);
 
         qDebug() << kuri << data.focussedResource;
 
@@ -193,7 +192,7 @@ void Resources::Private::addEvent(const Event & newEvent)
     start();
 }
 
-void Resources::Private::windowClosed(WId windowId)
+void Resources::Private::windowClosed(quintptr windowId)
 {
     // Testing whether the window is a registered one
 
@@ -207,15 +206,15 @@ void Resources::Private::windowClosed(WId windowId)
 
     // Closing all the resources that the window registered
 
-    foreach (const KUrl & uri, windows[windowId].resources) {
+    foreach (const QString & uri, windows[windowId].resources) {
         q->RegisterResourceEvent(windows[windowId].application,
-                toInt(windowId), uri.url(), Event::Closed, 0);
+                windowId, uri, Event::Closed, 0);
     }
 
     windows.remove(windowId);
 }
 
-void Resources::Private::activeWindowChanged(WId windowId)
+void Resources::Private::activeWindowChanged(quintptr windowId)
 {
     // If the focused window has changed, we need to create a
     // FocussedOut event for the resource it contains,
@@ -229,7 +228,7 @@ void Resources::Private::activeWindowChanged(WId windowId)
         const WindowData & data = windows[focussedWindow];
 
         if (!data.focussedResource.isEmpty()) {
-            insertEvent(Event(data.application, focussedWindow, data.focussedResource.url(), Event::FocussedOut));
+            insertEvent(Event(data.application, focussedWindow, data.focussedResource, Event::FocussedOut));
         }
     }
 
@@ -239,27 +238,28 @@ void Resources::Private::activeWindowChanged(WId windowId)
         const WindowData & data = windows[focussedWindow];
 
         if (!data.focussedResource.isEmpty()) {
-            insertEvent(Event(data.application, windowId, data.focussedResource.url(), Event::FocussedIn));
+            insertEvent(Event(data.application, windowId, data.focussedResource, Event::FocussedIn));
         }
     }
 }
 
 
 Resources::Resources(QObject * parent)
-    : Module("resources", parent), d(this)
+    : Module(QStringLiteral("resources"), parent), d(this)
 {
     qRegisterMetaType < Event > ("Event");
     qRegisterMetaType < EventList > ("EventList");
-    qRegisterMetaType < WId > ("WId");
+    qRegisterMetaType < quintptr > ("WId");
 
     new ResourcesAdaptor(this);
     KDBusConnectionPool::threadConnection().registerObject(
             ACTIVITY_MANAGER_OBJECT_PATH(Resources), this);
 
-    d->connect(KWindowSystem::self(), SIGNAL(windowRemoved(WId)),
-            SLOT(windowClosed(WId)));
-    d->connect(KWindowSystem::self(), SIGNAL(activeWindowChanged(WId)),
-            SLOT(activeWindowChanged(WId)));
+    // TODO:
+    // d->connect(KWindowSystem::self(), SIGNAL(windowRemoved(WId)),
+    //         SLOT(windowClosed(WId)));
+    // d->connect(KWindowSystem::self(), SIGNAL(activeWindowChanged(WId)),
+    //         SLOT(activeWindowChanged(WId)));
 
 }
 
@@ -283,11 +283,11 @@ void Resources::RegisterResourceEvent(QString application, uint _windowId,
         // || uri.startsWith(QLatin1String("about:"))
     ) return;
 
-    KUrl kuri(uri);
-    WId windowId = (WId) _windowId;
+    QString kuri(uri);
+    quintptr windowId = (quintptr) _windowId;
 
     d->addEvent(application, windowId,
-            kuri.url(), (Event::Type) event, (Event::Reason) reason);
+            kuri, (Event::Type) event, (Event::Reason) reason);
 }
 
 
@@ -295,7 +295,7 @@ void Resources::RegisterResourceMimeType(const QString & uri, const QString & mi
 {
     if (!mimetype.isEmpty()) return;
 
-    KUrl kuri(uri);
+    QString kuri(uri);
 
     emit RegisteredResourceMimeType(uri, mimetype);
 }
@@ -306,7 +306,7 @@ void Resources::RegisterResourceTitle(const QString & uri, const QString & title
     // A dirty saninty check for the title
     if (title.length() < 3) return;
 
-    KUrl kuri(uri);
+    QString kuri(uri);
 
     emit RegisteredResourceTitle(uri, title);
 }

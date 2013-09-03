@@ -28,7 +28,7 @@ public:
     static QObject * s_global;
 };
 
-QObject * Job::Private::s_global = nullptr;
+QObject * Job::Private::s_global = Q_NULLPTR;
 
 Job::Job(QObject * parent)
     :KJob(parent), d()

@@ -25,8 +25,6 @@
 #include <QStringList>
 
 #include <utils/d_ptr.h>
-#include <utils/nullptr.h>
-#include <utils/override.h>
 
 /**
  * Module
@@ -35,7 +33,7 @@ class Module: public QObject {
     Q_OBJECT
 
 public:
-    explicit Module(const QString & name, QObject * parent = nullptr);
+    explicit Module(const QString & name, QObject * parent = Q_NULLPTR);
     virtual ~Module();
 
     static QObject * get(const QString & name);

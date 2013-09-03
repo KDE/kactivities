@@ -21,7 +21,6 @@
 #define EVENT_H
 
 #include <QString>
-#include <QWidget>
 #include <QDateTime>
 #include <QMetaType>
 
@@ -70,7 +69,7 @@ public:
 
     Event();
 
-    explicit Event(const QString & application, WId wid, const QString & uri,
+    explicit Event(const QString & application, quintptr wid, const QString & uri,
             int type = Accessed, int reason = User);
 
     Event deriveWithType(Type type) const;
@@ -79,7 +78,7 @@ public:
 
 public:
     QString application;
-    WId     wid;
+    quintptr wid;
     QString uri;
     int     type;
     int     reason;

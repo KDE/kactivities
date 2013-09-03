@@ -20,10 +20,8 @@
 #ifndef JOBS_JOB_H
 #define JOBS_JOB_H
 
-#include <KJob>
+#include <kjob.h>
 
-#include <utils/override.h>
-#include <utils/nullptr.h>
 #include <utils/d_ptr.h>
 
 /**
@@ -33,7 +31,7 @@ class Job: public KJob {
     Q_OBJECT
 
 public:
-    Job(QObject * parent = nullptr);
+    Job(QObject * parent = Q_NULLPTR);
     virtual ~Job();
 
     virtual void init();

@@ -24,8 +24,6 @@
 
 #include "ActivityData.h"
 
-#include <utils/nullptr.h>
-#include <utils/override.h>
 #include <utils/d_ptr.h>
 
 class ActivityRanking: public QObject
@@ -34,7 +32,7 @@ class ActivityRanking: public QObject
     Q_CLASSINFO("D-Bus Interface", "org.kde.ActivityManager.ActivityRanking")
 
 public:
-    explicit ActivityRanking(QObject * parent = nullptr);
+    explicit ActivityRanking(QObject * parent = Q_NULLPTR);
     ~ActivityRanking();
 
     void init(QObject * activities);

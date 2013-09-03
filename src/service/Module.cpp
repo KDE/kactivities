@@ -61,7 +61,7 @@ QObject * Module::get(const QString & name)
     }
 
     qDebug() << "The requested module doesn't exist:" << name;
-    return nullptr;
+    return Q_NULLPTR;
 }
 
 const QHash < QString, QObject * > Module::get()

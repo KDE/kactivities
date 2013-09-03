@@ -23,12 +23,13 @@
 #include <QDBusConnection>
 #include <QThread>
 
-#include <KCrash>
-#include <KAboutData>
-#include <KCmdLineArgs>
-#include <KServiceTypeTrader>
-#include <KSharedConfig>
+// #include <KCrash>
+// #include <KAboutData>
+// #include <KCmdLineArgs>
+// #include <KServiceTypeTrader>
+// #include <KSharedConfig>
 #include <kdbusconnectionpool.h>
+#include <kdbusservice.h>
 
 #include <Activities.h>
 #include <Resources.h>
@@ -39,8 +40,6 @@
 #include <stdlib.h>
 #include <memory>
 
-#include <utils/nullptr.h>
-#include <utils/override.h>
 #include <utils/d_ptr_implementation.h>
 #include <utils/val.h>
 
@@ -57,12 +56,12 @@ T * runInQThread()
 
     class Thread: public QThread {
     public:
-        Thread(T * ptr = nullptr)
+        Thread(T * ptr = Q_NULLPTR)
             : QThread(), object(ptr)
         {
         }
 
-        void run() _override
+        void run() Q_DECL_OVERRIDE
         {
             std::unique_ptr<T> o(object);
             exec();
@@ -100,75 +99,76 @@ public:
 
 };
 
-Application * Application::Private::s_instance = nullptr;
+Application * Application::Private::s_instance = Q_NULLPTR;
 
-Application::Application()
-    : KUniqueApplication(), d()
+Application::Application(int & argc, char ** argv)
+    : QCoreApplication(argc, argv)
 {
     // TODO: We should move away from any GUI code
-    setQuitOnLastWindowClosed(false);
+    // setQuitOnLastWindowClosed(false);
 
-    if (!KDBusConnectionPool::threadConnection().registerService("org.kde.ActivityManager")) {
+    if (!KDBusConnectionPool::threadConnection().registerService(QStringLiteral("org.kde.ActivityManager"))) {
         exit(0);
     }
 
     // KAMD is a daemon, if it crashes it is not a problem as
     // long as it restarts properly
     // NOTE: We have a custom crash handler
-    KCrash::setFlags(KCrash::AutoRestart);
+    // KCrash::setFlags(KCrash::AutoRestart);
 
     QMetaObject::invokeMethod(this, "loadPlugins", Qt::QueuedConnection);
 }
 
 void Application::loadPlugins()
 {
-    val offers = KServiceTypeTrader::self()->query("ActivityManager/Plugin");
+    // TODO: Return the plugin system
+    // val offers = KServiceTypeTrader::self()->query("ActivityManager/Plugin");
 
-    val config = KSharedConfig::openConfig("activitymanagerrc");
-    auto disabledPlugins = config->group("Global").readEntry("disabledPlugins", QStringList());
+    // val config = KSharedConfig::openConfig("activitymanagerrc");
+    // auto disabledPlugins = config->group("Global").readEntry("disabledPlugins", QStringList());
 
-    val pluginsGroup = config->group("Plugins");
-    foreach (const QString & plugin, pluginsGroup.keyList()) {
-        if (!pluginsGroup.readEntry(plugin, true))
-            disabledPlugins << plugin;
-    }
+    // val pluginsGroup = config->group("Plugins");
+    // foreach (const QString & plugin, pluginsGroup.keyList()) {
+    //     if (!pluginsGroup.readEntry(plugin, true))
+    //         disabledPlugins << plugin;
+    // }
 
-    // Adding overridden plugins into the list of disabled ones
+    // // Adding overridden plugins into the list of disabled ones
 
-    foreach (val & service, offers) {
-        if (!disabledPlugins.contains(service->library())) {
-            disabledPlugins.append(
-                    service->property("X-ActivityManager-PluginOverrides", QVariant::StringList).toStringList()
-                );
-        }
-    }
+    // foreach (val & service, offers) {
+    //     if (!disabledPlugins.contains(service->library())) {
+    //         disabledPlugins.append(
+    //                 service->property("X-ActivityManager-PluginOverrides", QVariant::StringList).toStringList()
+    //             );
+    //     }
+    // }
 
-    qDebug() << "These are the disabled plugins:" << disabledPlugins;
+    // qDebug() << "These are the disabled plugins:" << disabledPlugins;
 
-    // Loading plugins and initializing them
-    foreach (val & service, offers) {
-        if (disabledPlugins.contains(service->library()) ||
-                disabledPlugins.contains(service->property("X-KDE-PluginInfo-Name").toString() + "Enabled")) {
-            continue;
-        }
+    // // Loading plugins and initializing them
+    // foreach (val & service, offers) {
+    //     if (disabledPlugins.contains(service->library()) ||
+    //             disabledPlugins.contains(service->property("X-KDE-PluginInfo-Name").toString() + "Enabled")) {
+    //         continue;
+    //     }
 
-        val factory = KPluginLoader(service->library()).factory();
+    //     val factory = KPluginLoader(service->library()).factory();
 
-        if (!factory) {
-            continue;
-        }
+    //     if (!factory) {
+    //         continue;
+    //     }
 
-        val plugin = factory->create < Plugin > (this);
+    //     val plugin = factory->create < Plugin > (this);
 
-        if (plugin) {
-            qDebug() << "Got the plugin: " << service->library();
-            d->plugins << plugin;
-        }
-    }
+    //     if (plugin) {
+    //         qDebug() << "Got the plugin: " << service->library();
+    //         d->plugins << plugin;
+    //     }
+    // }
 
-    foreach (Plugin * plugin, d->plugins) {
-        plugin->init(Module::get());
-    }
+    // foreach (Plugin * plugin, d->plugins) {
+    //     plugin->init(Module::get());
+    // }
 }
 
 Application::~Application()
@@ -184,7 +184,7 @@ Application::~Application()
         delete thread;
     }
 
-    Private::s_instance = nullptr;
+    Private::s_instance = Q_NULLPTR;
 }
 
 int Application::newInstance()
@@ -203,14 +203,14 @@ Resources & Application::resources()  const
     return *d->resources;
 }
 
-Application * Application::self()
-{
-    if (!Private::s_instance) {
-        Private::s_instance = new Application();
-    }
-
-    return Private::s_instance;
-}
+// Application * Application::self()
+// {
+//     if (!Private::s_instance) {
+//         Private::s_instance = new Application();
+//     }
+//
+//     return Private::s_instance;
+// }
 
 void Application::quit()
 {
@@ -225,14 +225,20 @@ void Application::quit()
 
 int main(int argc, char ** argv)
 {
-    KAboutData about("kactivitymanagerd", nullptr, ki18n("KDE Activity Manager"), "3.0",
-            ki18n("KDE Activity Management Service"),
-            KAboutData::License_GPL,
-            ki18n("(c) 2010, 2011, 2012 Ivan Cukic"), KLocalizedString(),
-            "http://www.kde.org/");
+    Application application(argc, argv);
+    application.setApplicationName(QStringLiteral("ActivityManager"));
+    application.setOrganizationDomain(QStringLiteral("kde.org"));
 
-    KCmdLineArgs::init(argc, argv, &about);
+    // KAboutData about("kactivitymanagerd", Q_NULLPTR, ki18n("KDE Activity Manager"), "3.0",
+    //         ki18n("KDE Activity Management Service"),
+    //         KAboutData::License_GPL,
+    //         ki18n("(c) 2010, 2011, 2012 Ivan Cukic"), KLocalizedString(),
+    //         "http://www.kde.org/");
 
-    return Application::self()->exec();
+    // KCmdLineArgs::init(argc, argv, &about);
+
+    KDBusService service(KDBusService::Unique);
+
+    return application.exec();
 }
 

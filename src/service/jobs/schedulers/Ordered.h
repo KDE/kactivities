@@ -37,7 +37,7 @@ class Ordered: public Abstract {
     Q_OBJECT
 
 public:
-    Ordered(QObject * parent = nullptr);
+    Ordered(QObject * parent = Q_NULLPTR);
     virtual ~Ordered();
 
     Ordered & operator << (JobFactory * other);

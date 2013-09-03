@@ -30,7 +30,7 @@ public:
     VirtualDesktopSwitchPlugin(QObject * parent, const QVariantList & args);
     virtual ~VirtualDesktopSwitchPlugin();
 
-    virtual bool init(const QHash < QString, QObject * > & modules) _override;
+    virtual bool init(const QHash < QString, QObject * > & modules) Q_DECL_OVERRIDE;
 
 private Q_SLOTS:
     void currentActivityChanged(const QString & activity);

@@ -23,8 +23,8 @@
 #include <QString>
 #include <QTimer>
 
-#include <KConfig>
-#include <KConfigGroup>
+#include <KDE/KConfig>
+#include <KDE/KConfigGroup>
 
 #include "Activities.h"
 

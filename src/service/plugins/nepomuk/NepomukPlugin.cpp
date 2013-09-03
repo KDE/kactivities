@@ -38,7 +38,6 @@
 #include <KDirNotify>
 #include <kdbusconnectionpool.h>
 
-#include <utils/nullptr.h>
 #include <utils/d_ptr_implementation.h>
 #include <utils/val.h>
 
@@ -48,9 +47,9 @@ using namespace KDE::Vocabulary;
 class NepomukPlugin::Private {
 public:
     Private()
-      : nepomuk(nullptr),
-        activities(nullptr),
-        resourceScoring(nullptr),
+      : nepomuk(Q_NULLPTR),
+        activities(Q_NULLPTR),
+        resourceScoring(Q_NULLPTR),
         nepomukPresent(false)
     {
     }
@@ -107,7 +106,7 @@ public:
     static QString protocol;
 };
 
-NepomukPlugin * NepomukPlugin::Private::s_instance = nullptr;
+NepomukPlugin * NepomukPlugin::Private::s_instance = Q_NULLPTR;
 QString NepomukPlugin::Private::protocol = QLatin1String("activities:/");
 
 NepomukPlugin::NepomukPlugin(QObject *parent, const QVariantList & args)
@@ -126,7 +125,7 @@ NepomukPlugin::NepomukPlugin(QObject *parent, const QVariantList & args)
 
 NepomukPlugin::~NepomukPlugin()
 {
-    Private::s_instance = nullptr;
+    Private::s_instance = Q_NULLPTR;
 }
 
 bool NepomukPlugin::init(const QHash < QString, QObject * > & modules)

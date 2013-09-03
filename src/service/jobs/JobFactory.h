@@ -40,7 +40,7 @@
 #define JOB_FACTORY Factory::Factory
 
 #define JOB_FACTORY_PROPERTY(PropertyName)              \
-    setProperty(#PropertyName, QVariant::fromValue(PropertyName))
+    setProperty(QStringLiteral(#PropertyName), QVariant::fromValue(PropertyName))
 
 /**
  * JobFactory

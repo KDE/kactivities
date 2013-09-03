@@ -62,7 +62,7 @@ Job * JobFactory::create(QObject * parent)
     QHashIterator < QString, QVariant > i(d->properties);
     while (i.hasNext()) {
         i.next();
-        result->setProperty(i.key().toAscii(), i.value());
+        result->setProperty(i.key().toLatin1().constData(), i.value());
     }
 
     return result;
@@ -76,7 +76,7 @@ public:
     }
 
 protected:
-    virtual Job * createJob(QObject * parent) _override
+    virtual Job * createJob(QObject * parent) Q_DECL_OVERRIDE
     {
         m_job->setParent(parent);
 
