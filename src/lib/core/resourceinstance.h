@@ -21,7 +21,6 @@
 #define ACTIVITIES_RESOURCEINSTANCE_H
 
 #include <QObject>
-#include <QWidget>
 #include <QUrl>
 
 #include "kactivities_export.h"
@@ -57,7 +56,7 @@ class KACTIVITIES_EXPORT ResourceInstance: public QObject
     Q_PROPERTY(QUrl uri READ uri WRITE setUri)
     Q_PROPERTY(QString mimetype READ mimetype WRITE setMimetype)
     Q_PROPERTY(QString title READ title WRITE setTitle)
-    Q_PROPERTY(WId winId READ winId)
+    Q_PROPERTY(quintptr winId READ winId)
     Q_PROPERTY(AccessReason accessReason READ accessReason)
 
 public:
@@ -79,7 +78,7 @@ public:
      * @param parent pointer to the parent object
      * @since 4.10
      */
-    explicit ResourceInstance(WId wid, QObject *parent = 0 /*nullptr*/);
+    explicit ResourceInstance(quintptr wid, QObject *parent = 0 /*nullptr*/);
 
     /**
      * Creates a new resource instance
@@ -89,7 +88,7 @@ public:
      *        If not specified, QCoreApplication::applicationName is used
      * @param parent pointer to the parent object
      */
-    explicit ResourceInstance(WId wid, AccessReason reason = User, const QString &application = QString(), QObject * parent = 0 /*nullptr*/);
+    explicit ResourceInstance(quintptr wid, AccessReason reason = User, const QString &application = QString(), QObject * parent = 0 /*nullptr*/);
 
     /**
      * Creates a new resource instance and automatically
@@ -114,7 +113,7 @@ public:
      *        If not specified, QCoreApplication::applicationName is used
      * @param parent pointer to the parent object
      */
-    ResourceInstance(WId wid, QUrl resourceUri, const QString &mimetype = QString(), const QString &title = QString(), AccessReason reason = User, const QString &application = QString(), QObject *parent = 0 /*nullptr*/);
+    ResourceInstance(quintptr wid, QUrl resourceUri, const QString &mimetype = QString(), const QString &title = QString(), AccessReason reason = User, const QString &application = QString(), QObject *parent = 0 /*nullptr*/);
 
     /**
      * Destroys the ResourceInstance and notifies the system
@@ -194,7 +193,7 @@ public:
     /**
      * @returns the window id
      */
-    WId winId() const;
+    quintptr winId() const;
 
     /**
      * @returns the reason for accessing the resource

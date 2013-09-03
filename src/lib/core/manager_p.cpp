@@ -22,43 +22,43 @@
 #include <QDBusConnection>
 #include <QDebug>
 
-#include <ktoolinvocation.h>
+// #include <ktoolinvocation.h>
 #include <kdbusconnectionpool.h>
 
 namespace KActivities {
 
 Manager * Manager::s_instance = 0 /*nullptr*/;
 
-#define ACTIVITY_MANAGER_DBUS_PATH   "org.kde.ActivityManager"
-#define ACTIVITY_MANAGER_DBUS_OBJECT "/ActivityManager"
+#define ACTIVITY_MANAGER_DBUS_PATH      QStringLiteral("org.kde.ActivityManager")
+#define ACTIVITY_MANAGER_DBUS_OBJECT(A) QStringLiteral("/ActivityManager" A)
 
 Manager::Manager()
     : QObject(),
       m_activities(
           new org::kde::ActivityManager::Activities(
             ACTIVITY_MANAGER_DBUS_PATH,
-            ACTIVITY_MANAGER_DBUS_OBJECT "/Activities",
+            ACTIVITY_MANAGER_DBUS_OBJECT("/Activities"),
             KDBusConnectionPool::threadConnection(),
             this
             )),
       m_resources(
           new org::kde::ActivityManager::Resources(
             ACTIVITY_MANAGER_DBUS_PATH,
-            ACTIVITY_MANAGER_DBUS_OBJECT "/Resources",
+            ACTIVITY_MANAGER_DBUS_OBJECT("/Resources"),
             KDBusConnectionPool::threadConnection(),
             this
             )),
       m_resourcesLinking(
           new org::kde::ActivityManager::ResourcesLinking(
             ACTIVITY_MANAGER_DBUS_PATH,
-            ACTIVITY_MANAGER_DBUS_OBJECT "/Resources/Linking",
+            ACTIVITY_MANAGER_DBUS_OBJECT("/Resources/Linking"),
             KDBusConnectionPool::threadConnection(),
             this
             )),
       m_features(
           new org::kde::ActivityManager::Features(
             ACTIVITY_MANAGER_DBUS_PATH,
-            ACTIVITY_MANAGER_DBUS_OBJECT "/Features",
+            ACTIVITY_MANAGER_DBUS_OBJECT("/Features"),
             KDBusConnectionPool::threadConnection(),
             this
             ))
@@ -74,18 +74,20 @@ Manager * Manager::self()
         if (!isServicePresent()) {
 
             // not running, trying to launch it
-            QString error;
+            // QString error;
 
-            int ret = KToolInvocation::startServiceByDesktopPath("kactivitymanagerd.desktop", QStringList(), &error);
-            if (ret > 0) {
-                qDebug() << "Activity: Couldn't start kactivitymanagerd: " << error << endl;
-            }
+            // int ret = KToolInvocation::startServiceByDesktopPath("kactivitymanagerd.desktop", QStringList(), &error);
+            // if (ret > 0) {
+            //     qDebug() << "Activity: Couldn't start kactivitymanagerd: " << error << endl;
+            // }
 
-            if (!KDBusConnectionPool::threadConnection().interface()->isServiceRegistered(ACTIVITY_MANAGER_DBUS_PATH)) {
-                qDebug() << "Activity: The kactivitymanagerd service is still not registered";
-            } else {
-                qDebug() << "Activity: The kactivitymanagerd service has been registered";
-            }
+            // if (!KDBusConnectionPool::threadConnection().interface()->isServiceRegistered(ACTIVITY_MANAGER_DBUS_PATH)) {
+            //     qDebug() << "Activity: The kactivitymanagerd service is still not registered";
+            // } else {
+            //     qDebug() << "Activity: The kactivitymanagerd service has been registered";
+            // }
+
+            QProcess::startDetached(QStringLiteral("kactivitymanagerd"));
         }
 
         // creating a new instance of the class

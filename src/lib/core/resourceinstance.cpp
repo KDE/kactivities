@@ -25,22 +25,9 @@
 
 namespace KActivities {
 
-#ifdef Q_OS_WIN64 // krazy:skip
-__inline int toInt(WId wid)
-{
-	return (int)((__int64)wid);
-}
-
-#else
-__inline int toInt(WId wid)
-{
-	return (int)wid;
-}
-#endif
-
 class ResourceInstancePrivate {
 public:
-    WId wid;
+    quintptr wid;
     ResourceInstance::AccessReason reason;
     QUrl uri;
     QString mimetype;
@@ -59,9 +46,9 @@ public:
         FocusedOut = 5
     };
 
-    static void registerResourceEvent(const QString &application, WId wid, const QUrl &uri, Type event, ResourceInstance::AccessReason reason)
+    static void registerResourceEvent(const QString &application, quintptr wid, const QUrl &uri, Type event, ResourceInstance::AccessReason reason)
     {
-        Manager::resources()->RegisterResourceEvent(application, toInt(wid), uri.toString(), uint(event), uint(reason));
+        Manager::resources()->RegisterResourceEvent(application, wid, uri.toString(), uint(event), uint(reason));
     }
 };
 
@@ -75,7 +62,7 @@ void ResourceInstancePrivate::openResource()
     registerResourceEvent(application, wid, uri, Opened, reason);
 }
 
-ResourceInstance::ResourceInstance(WId wid, QObject *parent)
+ResourceInstance::ResourceInstance(quintptr wid, QObject *parent)
     : QObject(parent), d(new ResourceInstancePrivate())
 {
     qDebug() << "Creating ResourceInstance: empty for now";
@@ -84,7 +71,7 @@ ResourceInstance::ResourceInstance(WId wid, QObject *parent)
     d->application = QCoreApplication::instance()->applicationName();
 }
 
-ResourceInstance::ResourceInstance(WId wid, AccessReason reason, const QString &application, QObject *parent)
+ResourceInstance::ResourceInstance(quintptr wid, AccessReason reason, const QString &application, QObject *parent)
     : QObject(parent), d(new ResourceInstancePrivate())
 {
     qDebug() << "Creating ResourceInstance: empty for now";
@@ -93,7 +80,7 @@ ResourceInstance::ResourceInstance(WId wid, AccessReason reason, const QString &
     d->application = application.isEmpty() ? QCoreApplication::instance()->applicationName() : application;
 }
 
-ResourceInstance::ResourceInstance(WId wid, QUrl resourceUri, const QString &mimetype,
+ResourceInstance::ResourceInstance(quintptr wid, QUrl resourceUri, const QString &mimetype,
         const QString &title, AccessReason reason, const QString &application, QObject *parent)
     : QObject(parent), d(new ResourceInstancePrivate())
 {
@@ -178,7 +165,7 @@ QString ResourceInstance::title() const
     return d->title;
 }
 
-WId ResourceInstance::winId() const
+quintptr ResourceInstance::winId() const
 {
     return d->wid;
 }

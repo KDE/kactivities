@@ -1,31 +1,47 @@
+# vim:set softtabstop=3 shiftwidth=3 tabstop=3 expandtab:
+
+cmake_minimum_required(VERSION 2.8.11)
+
 project (KACTIVITIES)
 
-find_package (KDE4 REQUIRED)
+# We don't build in-source
+if ("${CMAKE_SOURCE_DIR}" STREQUAL "${CMAKE_BINARY_DIR}")
+   message (
+      FATAL_ERROR
+      "kactivities require an out of source build. Please create a separate build directory and run 'cmake path_to_plasma [options]' there."
+   )
+endif ()
 
-include (KDE4Defaults)
-include (MacroLibrary)
-include (MacroOptionalAddSubdirectory)
-include (FindPackageHandleStandardArgs)
+# Basic includes
+include(CPack)
+include(FeatureSummary)
 
-# Until this is set by FindQt, we are defining the
-# QT_NO_DEBUG_OUTPUT if this is not a debug build
+# Extra CMake stuff
+find_package(ECM 0.0.8 REQUIRED NO_MODULE)
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH})
 
-string (TOLOWER ${CMAKE_BUILD_TYPE} CMAKE_BUILD_TYPE_TOLOWER)
-if (NOT CMAKE_BUILD_TYPE_TOLOWER MATCHES "debug")
-    add_definitions(-DQT_NO_DEBUG_OUTPUT)
+# Qt
+set (CMAKE_AUTOMOC ON)
+find_package(Qt5 REQUIRED NO_MODULE COMPONENTS Core DBus)
+
+# KDE Frameworks
+find_package(KF5 REQUIRED MODULE COMPONENTS CMake Compiler InstallDirs KDBusAddons)
+
+# Enable C++11
+if(UNIX)
+   add_definitions("-Wall -std=c++0x")
 endif()
 
-
+# Adding local CMake modules
 set (
-    CMAKE_MODULE_PATH
-    ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules
-    ${CMAKE_MODULE_PATH}
-    )
+   CMAKE_MODULE_PATH
+   ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules
+   ${CMAKE_MODULE_PATH}
+)
 
-if (KAMD_PEDANTIC_COMPILATION)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wno-long-long -pedantic")
-endif ()
 
 add_subdirectory (src)
 
-macro_display_feature_log ()
+# Write out the features
+feature_summary(WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)
+

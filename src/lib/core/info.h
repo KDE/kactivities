@@ -20,12 +20,8 @@
 #define ACTIVITIES_INFO_H
 
 #include <QObject>
-#include <QWidget>
 #include <QString>
 #include <QStringList>
-
-#include <kurl.h>
-#include <kdemacros.h>
 
 #include "kactivities_export.h"
 
@@ -106,15 +102,15 @@ public:
      * @returns the URI of this activity. The same URI is used by
      * activities KIO slave.
      */
-    KUrl uri() const;
+    QString uri() const;
 
     /**
      * @deprecated we don't guarantee that nepomuk is the backend
      * @returns the Nepomuk resource URI of this activity
      * @note Functional only when availability is Everything
      */
-    KDE_DEPRECATED
-    KUrl resourceUri() const;
+    KACTIVITIES_DEPRECATED
+    QString resourceUri() const;
 
     /**
      * @returns the id of the activity
@@ -147,7 +143,7 @@ public:
      * @returns true if encrypted
      * @since 4.8
      */
-    KDE_DEPRECATED
+    KACTIVITIES_DEPRECATED
     bool isEncrypted() const;
 
     /**
@@ -163,7 +159,7 @@ public:
      * @param resourceUri resource URI
      * @note This method is <b>asynchronous</b>
      */
-    void linkResource(const KUrl & resourceUri);
+    void linkResource(const QString & resourceUri);
 
 
     /**
@@ -171,15 +167,15 @@ public:
      * @param resourceUri resource URI
      * @note This method is <b>asynchronous</b>
      */
-    void unlinkResource(const KUrl & resourceUri);
+    void unlinkResource(const QString & resourceUri);
 
 
     /**
      * @returns the list of linked resources
      * @note This method is <b>blocking</b>
      */
-    KDE_DEPRECATED
-    KUrl::List linkedResources() const;
+    KACTIVITIES_DEPRECATED
+    QStringList linkedResources() const;
 
 
     /**
@@ -187,7 +183,7 @@ public:
      * @note this method is <b>blocking</b>
      * @since 4.11
      */
-    bool isResourceLinked(const KUrl & resourceUri);
+    bool isResourceLinked(const QString & resourceUri);
 
 Q_SIGNALS:
     /**

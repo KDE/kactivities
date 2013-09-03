@@ -155,14 +155,14 @@ bool Info::isValid() const
     return (state() != Invalid);
 }
 
-KUrl Info::uri() const
+QString Info::uri() const
 {
-    return KUrl("activities://" + d->id);
+    return QStringLiteral("activities://") + d->id;
 }
 
-KUrl Info::resourceUri() const
+QString Info::resourceUri() const
 {
-    return KUrl();
+    return QString();
 }
 
 QString Info::id() const
@@ -170,10 +170,10 @@ QString Info::id() const
     return d->id;
 }
 
-KAMD_REMOTE_VALUE_GETTER(QString, Info, name,
-        i18nc("The name of the main activity - when the activity manager is not running", "Main"))
+KAMD_REMOTE_VALUE_GETTER(QString, Info, name, QString());
+//        i18nc("The name of the main activity - when the activity manager is not running", "Main"))
 
-KAMD_REMOTE_VALUE_GETTER(QString, Info, icon, "preferences-activities")
+KAMD_REMOTE_VALUE_GETTER(QString, Info, icon, QString::fromLatin1("preferences-activities"))
 
 Info::State Info::state() const
 {
@@ -191,8 +191,8 @@ Info::State Info::state() const
 QString Info::name(const QString & id)
 {
     KAMD_RETRIEVE_REMOTE_VALUE_SYNC(
-            QString, activities, ActivityName(id),
-            i18nc("The name of the main activity - when the activity manager is not running", "Main")
+            QString, activities, ActivityName(id), QString()
+            // i18nc("The name of the main activity - when the activity manager is not running", "Main")
         );
 }
 
@@ -212,7 +212,7 @@ Info::Availability Info::availability() const
     if (Manager::activities()->ListActivities().value().contains(d->id)) {
         result = BasicInfo;
 
-        if (Manager::features()->IsFeatureOperational("org.kde.ActivityManager.Nepomuk/linking")) {
+        if (Manager::features()->IsFeatureOperational(QString::fromLatin1("org.kde.ActivityManager.Nepomuk/linking"))) {
             result = Everything;
         }
     }
@@ -220,38 +220,38 @@ Info::Availability Info::availability() const
     return result;
 }
 
-KUrl::List Info::linkedResources() const
+QStringList Info::linkedResources() const
 {
-    KUrl::List result;
+    QStringList result;
 
     QDBusReply < QStringList > dbusReply = Manager::resourcesLinking()->ResourcesLinkedToActivity(d->id);
 
     if (dbusReply.isValid()) {
         foreach (const QString & uri, dbusReply.value()) {
-            result << KUrl(uri);
+            result << QString(uri);
         }
     }
 
     return result;
 }
 
-void Info::linkResource(const KUrl & resourceUri)
+void Info::linkResource(const QString & resourceUri)
 {
-    Manager::resourcesLinking()->LinkResourceToActivity(resourceUri.url(), d->id);
+    Manager::resourcesLinking()->LinkResourceToActivity(resourceUri, d->id);
 }
 
-void Info::unlinkResource(const KUrl & resourceUri)
+void Info::unlinkResource(const QString & resourceUri)
 {
-    Manager::resourcesLinking()->UnlinkResourceFromActivity(resourceUri.url(), d->id);
+    Manager::resourcesLinking()->UnlinkResourceFromActivity(resourceUri, d->id);
 }
 
-bool Info::isResourceLinked(const KUrl & resourceUri)
+bool Info::isResourceLinked(const QString & resourceUri)
 {
-    return Manager::resourcesLinking()->IsResourceLinkedToActivity(resourceUri.url(), d->id);
+    return Manager::resourcesLinking()->IsResourceLinkedToActivity(resourceUri, d->id);
 }
 
 } // namespace KActivities
 
-#include "info_p.moc"
-#include "info.moc"
+#include "moc_info.cpp"
+#include "moc_info_p.cpp"
 

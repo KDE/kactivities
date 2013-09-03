@@ -20,13 +20,11 @@
 #define ACTIVITIES_CONTROLLER_H
 
 #include <QObject>
-#include <QWidget>
 #include <QString>
 #include <QStringList>
 
 #include "consumer.h"
 
-#include <kurl.h>
 #include "kactivities_export.h"
 
 namespace KActivities {
@@ -71,7 +69,7 @@ public:
      * @param id id of the activity
      * @param encrypted should the activity be encrypted
      */
-    KDE_DEPRECATED
+    KACTIVITIES_DEPRECATED
     void setActivityEncrypted(const QString & id, bool encrypted);
 
     /**

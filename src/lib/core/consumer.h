@@ -20,13 +20,11 @@
 #define ACTIVITIES_CONSUMER_H
 
 #include <QObject>
-#include <QWidget>
 #include <QString>
 #include <QStringList>
 
 #include "info.h"
 
-#include <kurl.h>
 #include "kactivities_export.h"
 
 namespace KActivities {
@@ -136,8 +134,8 @@ public:
      * @note This method is <b>asynchronous</b>
      * @deprecated use Info::linkResource
      */
-    KDE_DEPRECATED
-    void linkResourceToActivity(const QUrl & uri, const QString & activity = QString());
+    KACTIVITIES_DEPRECATED
+    void linkResourceToActivity(const QString & uri, const QString & activity = QString());
 
     /**
      * Unlinks a resource from the activity
@@ -147,8 +145,8 @@ public:
      * @note This method is <b>asynchronous</b>
      * @deprecated use Info::unlinkResource
      */
-    KDE_DEPRECATED
-    void unlinkResourceFromActivity(const QUrl & uri, const QString & activity = QString());
+    KACTIVITIES_DEPRECATED
+    void unlinkResourceFromActivity(const QString & uri, const QString & activity = QString());
 
     /**
      * @returns whether the resource is linket to the specified activity
@@ -157,8 +155,8 @@ public:
      * @note This method is <b>blocking</b>
      * @deprecated use Info::isResourceLinked
      */
-    KDE_DEPRECATED
-    bool isResourceLinkedToActivity(const QUrl & uri, const QString & activity = QString()) const;
+    KACTIVITIES_DEPRECATED
+    bool isResourceLinkedToActivity(const QString & uri, const QString & activity = QString()) const;
 
 Q_SIGNALS:
     /**

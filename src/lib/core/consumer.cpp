@@ -24,7 +24,7 @@
 
 namespace KActivities {
 
-static QString nulluuid = "00000000-0000-0000-0000-000000000000";
+static QString nulluuid = QStringLiteral("00000000-0000-0000-0000-000000000000");
 ConsumerPrivate * ConsumerPrivate::s_instance = 0;
 
 ConsumerPrivate * ConsumerPrivate::self(QObject * consumer)
@@ -178,22 +178,22 @@ QStringList Consumer::listActivities(Info::State state) const
         );
 }
 
-void Consumer::linkResourceToActivity(const QUrl & uri, const QString & activity)
+void Consumer::linkResourceToActivity(const QString & uri, const QString & activity)
 {
     if (Manager::isServicePresent())
-        Manager::resourcesLinking()->LinkResourceToActivity(uri.toString(), activity);
+        Manager::resourcesLinking()->LinkResourceToActivity(uri, activity);
 }
 
-void Consumer::unlinkResourceFromActivity(const QUrl & uri, const QString & activity)
+void Consumer::unlinkResourceFromActivity(const QString & uri, const QString & activity)
 {
     if (Manager::isServicePresent())
-        Manager::resourcesLinking()->UnlinkResourceFromActivity(uri.toString(), activity);
+        Manager::resourcesLinking()->UnlinkResourceFromActivity(uri, activity);
 }
 
-bool Consumer::isResourceLinkedToActivity(const QUrl & uri, const QString & activity) const
+bool Consumer::isResourceLinkedToActivity(const QString & uri, const QString & activity) const
 {
     KAMD_RETRIEVE_REMOTE_VALUE_SYNC(
-            bool, resourcesLinking, IsResourceLinkedToActivity(uri.toString(), activity), false
+            bool, resourcesLinking, IsResourceLinkedToActivity(uri, activity), false
         );
 }
 
