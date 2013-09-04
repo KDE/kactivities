@@ -147,7 +147,6 @@ Info::Info(const QString &activity, QObject *parent)
 
 Info::~Info()
 {
-    delete d;
 }
 
 bool Info::isValid() const

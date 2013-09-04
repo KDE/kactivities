@@ -105,7 +105,7 @@ public:
     void startActivity(const QString & id);
 
 private:
-    ControllerPrivate * const d;
+    const QScopedPointer<ControllerPrivate> d;
 };
 
 } // namespace KActivities

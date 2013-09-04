@@ -99,7 +99,6 @@ ResourceInstance::ResourceInstance(quintptr wid, QUrl resourceUri, const QString
 ResourceInstance::~ResourceInstance()
 {
     d->closeResource();
-    delete d;
 }
 
 void ResourceInstance::notifyModified()

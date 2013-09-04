@@ -37,19 +37,22 @@ as the content.
 
 .SH COMPILER COMPATIBILITY
 
-The library (src/lib) needs to be compilable with all compilers that the
-latest version of Qt (4.x) supports.
+The library (src/lib) needs to be compilable with these:
+    - GCC 4.5
+    - MSVC 2010
+    - Clang 3.1
+      (or newer)
+This is the same policy the KDE Frameworks have.
 
 Other parts require modern compilers. You can (and should) use more modern
 C++ coding practices. Including auto, lambdas, smart pointers etc. You can
-use anything that GCC 4.5 can compile.
+use anything that GCC 4.7 can compile.
 
 These are the compilers you need to test your patches against:
-    - GCC 4.5
     - GCC 4.7
     - LLVM/Clang 3.1
 
-When you set up different builds alongside the main one, you  can use
+When you set up different builds alongside the main one, you can use
 scripts/commit.sh to build them all before committing. The script
 calls git commit if all builds finished successfully. See the script
 for more info.
@@ -57,7 +60,7 @@ for more info.
 
 .SH FILE NAMING
 
-The library files are lower-case, apart from the pretty headers.
+The library files are lower-case, apart from the "pretty" headers.
 The service, and the rest of the repository should be in camel-case
 (with the exception of source files that don't have corresponding
 headers, or vice-versa).
@@ -67,17 +70,6 @@ headers, or vice-versa).
 
 There are some convenience macros and methods defined in the headers placed
 in the service/utils/ directory.
-
-.TP
-.B nullptr
-nullptr.h defines nullptr macro if the compiler doesn't support it. It is
-defined as 0 which is far from perfect, but works good enough on obsolete
-compilers.
-
-.TP
-.B _override
-override.h defines _override to express explicit virtual overrides. Will
-expand to nothing on obsolete compilers.
 
 .TP
 .B val

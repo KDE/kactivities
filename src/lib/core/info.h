@@ -228,7 +228,7 @@ Q_SIGNALS:
     void stateChanged(KActivities::Info::State state);
 
 private:
-    InfoPrivate * const d;
+    const QScopedPointer<InfoPrivate> d;
 
     Q_PRIVATE_SLOT(d, void activityStateChanged(const QString &, int))
     Q_PRIVATE_SLOT(d, void added(const QString &))

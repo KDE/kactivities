@@ -43,7 +43,6 @@ Controller::Controller(QObject * parent)
 
 Controller::~Controller()
 {
-    delete d;
 }
 
 void Controller::setActivityName(const QString & id, const QString & name)

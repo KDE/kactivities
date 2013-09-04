@@ -213,7 +213,7 @@ public:
     static void  notifyAccessed(const QUrl &uri, const QString &application = QString());
 
 private:
-    ResourceInstancePrivate * const d;
+    const QScopedPointer<ResourceInstancePrivate> d;
 };
 
 }
