@@ -35,7 +35,7 @@ class ResourceScoreMaintainer::Private: public QThread {
 public:
     typedef QString ApplicationName;
     typedef QString ActivityID;
-    typedef QList < QUrl > ResourceList;
+    typedef QList < QString > ResourceList;
 
     typedef QMap < ApplicationName, ResourceList > Applications;
     typedef QMap < ActivityID, Applications > ResourceTree;
@@ -88,7 +88,7 @@ void ResourceScoreMaintainer::Private::processActivity(const ActivityID & activi
 {
     kamd::utils::for_each_assoc(applications,
         [activity](const ApplicationName & application, const ResourceList & resources) {
-            foreach (const QUrl & resource, resources) {
+            foreach (const auto & resource, resources) {
                 ResourceScoreCache(activity, application, resource).updateScore();
             }
         }
@@ -113,7 +113,7 @@ ResourceScoreMaintainer::~ResourceScoreMaintainer()
 {
 }
 
-void ResourceScoreMaintainer::processResource(const KUrl & resource, const QString & application)
+void ResourceScoreMaintainer::processResource(const QString & resource, const QString & application)
 {
     QMutexLocker lock(&d->openResources_mutex);
 

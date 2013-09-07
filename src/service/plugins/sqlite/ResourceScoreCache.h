@@ -21,7 +21,6 @@
 #define PLUGINS_SQLITE_RESOURCE_SCORE_CACHE_H
 
 #include <QString>
-#include <QUrl>
 
 #include <utils/d_ptr.h>
 
@@ -32,7 +31,7 @@ class ResourceScoreCachePrivate;
  */
 class ResourceScoreCache {
 public:
-    ResourceScoreCache(const QString & activity, const QString & application, const QUrl & resource);
+    ResourceScoreCache(const QString & activity, const QString & application, const QString & resource);
     virtual ~ResourceScoreCache();
 
     void updateScore();

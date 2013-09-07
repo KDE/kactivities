@@ -23,7 +23,7 @@
 
 #include <QDebug>
 
-#include <config-features.h>
+#include <kactivities-features.h>
 
 #include <utils/d_ptr_implementation.h>
 
@@ -34,11 +34,11 @@ class ResourceScoreCache::Private {
 public:
     QString activity;
     QString application;
-    QUrl resource;
+    QString resource;
 
 };
 
-ResourceScoreCache::ResourceScoreCache(const QString & activity, const QString & application, const QUrl & resource)
+ResourceScoreCache::ResourceScoreCache(const QString & activity, const QString & application, const QString & resource)
     : d()
 {
     qDebug() << "Going to update score for"
@@ -66,7 +66,7 @@ void ResourceScoreCache::updateScore()
     QMetaObject::invokeMethod(StatsPlugin::self(), "resourceScoreUpdated",
             Q_ARG(QString, d->activity),
             Q_ARG(QString, d->application),
-            Q_ARG(QString, d->resource.toString()),
+            Q_ARG(QString, d->resource),
             Q_ARG(double, score)
         );
 }

@@ -21,13 +21,11 @@
 #define PLUGINS_SQLITE_DATABASE_CONNECTION_H
 
 #include <QObject>
-#include <QUrl>
 #include <QDateTime>
 
 #include <utils/d_ptr.h>
 
 class QDateTime;
-class OUrl;
 class QSqlDatabase;
 
 class DatabaseConnection: public QObject {
@@ -42,7 +40,7 @@ public:
             const QString & targettedResource, const QDateTime & end);
 
     void getResourceScoreCache(const QString & usedActivity, const QString & initiatingAgent,
-            const QUrl & targettedResource, qreal & score, QDateTime & lastUpdate);
+            const QString & targettedResource, qreal & score, QDateTime & lastUpdate);
 
     QSqlDatabase & database();
 

@@ -17,7 +17,7 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#include <config-features.h>
+#include <kactivities-features.h>
 
 #include "StatsPlugin.h"
 #include "ResourceScoreMaintainer.h"
@@ -30,7 +30,7 @@
 #include <QSqlQuery>
 #include <QDebug>
 
-#include <KStandardDirs>
+#include <kconfig.h>
 
 #include "DatabaseConnection.h"
 
@@ -47,17 +47,17 @@ StatsPlugin::StatsPlugin(QObject *parent, const QVariantList & args)
     s_instance = this;
 
     new ScoringAdaptor(this);
-    KDBusConnectionPool::threadConnection().registerObject("/ActivityManager/Resources/Scoring", this);
+    KDBusConnectionPool::threadConnection().registerObject(QStringLiteral("/ActivityManager/Resources/Scoring"), this);
 
-    setName("org.kde.ActivityManager.Resources.Scoring");
+    setName(QStringLiteral("org.kde.ActivityManager.Resources.Scoring"));
 }
 
 bool StatsPlugin::init(const QHash < QString, QObject * > & modules)
 {
     qDebug() << "These are the registered modules: " << modules.keys();
 
-    m_activities = modules["activities"];
-    m_resources = modules["resources"];
+    m_activities = modules[QStringLiteral("activities")];
+    m_resources = modules[QStringLiteral("resources")];
 
     DatabaseConnection::self();
     // Rankings::init(this);
@@ -76,7 +76,9 @@ bool StatsPlugin::init(const QHash < QString, QObject * > & modules)
 void StatsPlugin::loadConfiguration()
 {
     config().config()->reparseConfiguration();
-    static const auto configFile = KStandardDirs::locateLocal("config", "activitymanager-pluginsrc");
+
+    const QString configFile =
+        QStandardPaths::writableLocation(QStandardPaths::ConfigLocation) + QStringLiteral("activitymanager-pluginsrc");
 
     if (m_configWatcher) {
         // When saving a config file, KConfig deletes the old,
@@ -180,18 +182,18 @@ void StatsPlugin::addEvents(const EventList & events)
 void StatsPlugin::deleteRecentStats(const QString & activity, int count, const QString & what)
 {
     const auto activityCheck = activity.isEmpty() ?
-        QString(" 1 ") :
-        QString(" usedActivity = '" + activity + "' ");
+        QStringLiteral(" 1 ") :
+        QStringLiteral(" usedActivity = '") + activity + QStringLiteral("' ");
 
     // If we need to delete everything,
     // no need to bother with the count and the date
 
-    if (what == "everything") {
+    if (what == QStringLiteral("everything")) {
         DatabaseConnection::self()->database().exec(
-                "DELETE FROM kext_ResourceScoreCache WHERE " + activityCheck
+                QStringLiteral("DELETE FROM kext_ResourceScoreCache WHERE ") + activityCheck
             );
         DatabaseConnection::self()->database().exec(
-                "DELETE FROM nuao_DesktopEvent WHERE " + activityCheck
+                QStringLiteral("DELETE FROM nuao_DesktopEvent WHERE ") + activityCheck
             );
 
     } else {
@@ -200,13 +202,13 @@ void StatsPlugin::deleteRecentStats(const QString & activity, int count, const Q
 
         auto now = QDateTime::currentDateTime();
 
-        if (what == "h") {
+        if (what == QStringLiteral("h")) {
             now = now.addSecs(-count * 60 * 60);
 
-        } else if (what == "d") {
+        } else if (what == QStringLiteral("d")) {
             now = now.addDays(-count);
 
-        } else if (what == "m") {
+        } else if (what == QStringLiteral("m")) {
             now = now.addMonths(-count);
         }
 
@@ -214,12 +216,12 @@ void StatsPlugin::deleteRecentStats(const QString & activity, int count, const Q
         // cached items. Thkinking it is not that important -
         // if something was accessed before, it is not really a secret
 
-        static const auto queryRSC = QString(
+        static const auto queryRSC = QStringLiteral(
                 "DELETE FROM kext_ResourceScoreCache "
                 " WHERE %1 "
                 " AND firstUpdate > %2 "
             );
-        static const auto queryDE = QString(
+        static const auto queryDE = QStringLiteral(
                 "DELETE FROM nuao_DesktopEvent "
                 " WHERE %1 "
                 " AND end > %2 "
@@ -245,19 +247,19 @@ void StatsPlugin::deleteEarlierStats(const QString & activity, int months)
     if (months == 0) return;
 
     const auto activityCheck = activity.isEmpty() ?
-        QString(" 1 ") :
-        QString(" usedActivity = '" + activity + "' ");
+        QStringLiteral(" 1 ") :
+        QStringLiteral(" usedActivity = '") + activity + QStringLiteral("' ");
 
     // Deleting a specified length of time
 
     const auto time = QDateTime::currentDateTime().addMonths(-months);
 
-    static const auto queryRSC = QString(
+    static const auto queryRSC = QStringLiteral(
             "DELETE FROM kext_ResourceScoreCache "
             " WHERE %1 "
             " AND lastUpdate < %2 "
         );
-    static const auto queryDE = QString(
+    static const auto queryDE = QStringLiteral(
             "DELETE FROM nuao_DesktopEvent "
             " WHERE %1 "
             " AND start < %2 "
@@ -278,4 +280,4 @@ void StatsPlugin::deleteEarlierStats(const QString & activity, int months)
     emit earlierStatsDeleted(activity, months);
 }
 
-KAMD_EXPORT_PLUGIN(StatsPlugin, "activitymanger_plugin_sqlite")
+// KAMD_EXPORT_PLUGIN(StatsPlugin, "activitymanger_plugin_sqlite")

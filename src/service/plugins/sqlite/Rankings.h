@@ -22,7 +22,6 @@
 #include <QObject>
 #include <QString>
 #include <QStringList>
-#include <QUrl>
 #include <QThread>
 
 class Rankings: public QObject
@@ -35,7 +34,7 @@ public:
     static Rankings * self();
 
     void resourceScoreUpdated(const QString & activity,
-            const QString & application, const QUrl & uri, qreal score);
+            const QString & application, const QString & uri, qreal score);
 
     ~Rankings();
 
@@ -77,14 +76,14 @@ public:
     class ResultItem {
     public:
         ResultItem(
-                const QUrl & _uri,
+                const QString & _uri,
                 qreal _score
             )
             : uri(_uri), score(_score)
         {
         }
 
-        QUrl uri;
+        QString uri;
         qreal score;
 
     };

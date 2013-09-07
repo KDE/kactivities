@@ -162,7 +162,7 @@ void Rankings::initResults(const QString & _activity)
 }
 
 void Rankings::resourceScoreUpdated(const QString & activity,
-        const QString & application, const QUrl & uri, qreal score)
+        const QString & application, const QString & uri, qreal score)
 {
     Q_UNUSED(application);
 

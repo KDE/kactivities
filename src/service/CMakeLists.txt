@@ -3,9 +3,12 @@
 project (ActivityManager)
 
 # General
-# find_package(KDeclarative)
-# set (ADDITIONAL_LINK_LIBS)
-# set (sdo_SRCS)
+find_package (ECM 0.0.8 REQUIRED NO_MODULE)
+set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH})
+
+find_package (Qt5 REQUIRED NO_MODULE COMPONENTS Sql)
+
+find_package (KF5 REQUIRED MODULE COMPONENTS KWindowSystem KCoreAddons KConfig)
 
 # Standard stuff
 

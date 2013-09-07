@@ -1,6 +1,6 @@
 # vim:set softtabstop=3 shiftwidth=3 tabstop=3 expandtab:
 
-cmake_minimum_required(VERSION 2.8.11)
+cmake_minimum_required (VERSION 2.8.11)
 
 project (KACTIVITIES)
 
@@ -13,28 +13,27 @@ if ("${CMAKE_SOURCE_DIR}" STREQUAL "${CMAKE_BINARY_DIR}")
 endif ()
 
 # Basic includes
-include(CPack)
-include(FeatureSummary)
+include (CPack)
+include (FeatureSummary)
 
 # Extra CMake stuff
-find_package(ECM 0.0.8 REQUIRED NO_MODULE)
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH})
+find_package (ECM 0.0.8 REQUIRED NO_MODULE)
+set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH})
 
 # Qt
 set (CMAKE_AUTOMOC ON)
-find_package(Qt5 REQUIRED NO_MODULE COMPONENTS Core DBus)
+find_package (Qt5 REQUIRED NO_MODULE COMPONENTS Core DBus)
 
 # KDE Frameworks
-find_package(KF5 REQUIRED MODULE
+find_package (KF5 REQUIRED MODULE
    COMPONENTS
    CMake Compiler InstallDirs KDBusAddons
-   KConfig KCoreAddons KWindowSystem
    )
 
 # Enable C++11
-if(UNIX)
-   add_definitions("-Wall -std=c++0x")
-endif()
+if (UNIX)
+   add_definitions ("-Wall -std=c++0x")
+endif ()
 
 # Adding local CMake modules
 set (
@@ -47,5 +46,5 @@ set (
 add_subdirectory (src)
 
 # Write out the features
-feature_summary(WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)
+feature_summary (WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)
 
