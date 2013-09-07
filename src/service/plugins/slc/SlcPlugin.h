@@ -24,6 +24,8 @@ class SlcPlugin: public Plugin
 {
     Q_OBJECT
     Q_CLASSINFO("D-Bus Interface", "org.kde.ActivityManager.SLC")
+    // Q_PLUGIN_METADATA(IID "org.kde.ActivityManager.plugins.slc" FILE "activitymanager-plugin-slc.json")
+    Q_PLUGIN_METADATA(IID "org.kde.ActivityManager.plugins.slc")
 
 public:
     explicit SlcPlugin(QObject * parent = Q_NULLPTR, const QVariantList & args = QVariantList());

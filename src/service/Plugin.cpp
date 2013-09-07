@@ -44,12 +44,6 @@ Plugin::~Plugin()
 {
 }
 
-bool Plugin::init(const QHash < QString, QObject * > & modules)
-{
-    Q_UNUSED(modules)
-    return true;
-}
-
 KConfigGroup Plugin::config()
 {
     if (d->name.isEmpty()) {

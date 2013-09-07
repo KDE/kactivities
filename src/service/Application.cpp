@@ -22,12 +22,14 @@
 #include <QDebug>
 #include <QDBusConnection>
 #include <QThread>
+#include <QDir>
 
 // #include <KCrash>
 // #include <KAboutData>
 // #include <KCmdLineArgs>
-// #include <KServiceTypeTrader>
-// #include <KSharedConfig>
+#include <kservicetypetrader.h>
+#include <ksharedconfig.h>
+
 #include <kdbusconnectionpool.h>
 #include <kdbusservice.h>
 
@@ -41,6 +43,8 @@
 #include <memory>
 
 #include <utils/d_ptr_implementation.h>
+
+#include <kactivities-features.h>
 
 namespace {
     QList < QThread * > s_moduleThreads;
@@ -103,16 +107,13 @@ Application * Application::Private::s_instance = Q_NULLPTR;
 Application::Application(int & argc, char ** argv)
     : QCoreApplication(argc, argv)
 {
-    // TODO: We should move away from any GUI code
-    // setQuitOnLastWindowClosed(false);
-
     if (!KDBusConnectionPool::threadConnection().registerService(QStringLiteral("org.kde.ActivityManager"))) {
         exit(0);
     }
 
     // KAMD is a daemon, if it crashes it is not a problem as
     // long as it restarts properly
-    // NOTE: We have a custom crash handler
+    // TODO:
     // KCrash::setFlags(KCrash::AutoRestart);
 
     QMetaObject::invokeMethod(this, "loadPlugins", Qt::QueuedConnection);
@@ -121,18 +122,40 @@ Application::Application(int & argc, char ** argv)
 void Application::loadPlugins()
 {
     // TODO: Return the plugin system
-    // const auto offers = KServiceTypeTrader::self()->query("ActivityManager/Plugin");
 
-    // const auto config = KSharedConfig::openConfig("activitymanagerrc");
-    // auto disabledPlugins = config->group("Global").readEntry("disabledPlugins", QStringList());
+    const auto config = KSharedConfig::openConfig(QStringLiteral("activitymanagerrc"));
+    auto disabledPlugins = config->group("Global").readEntry("disabledPlugins", QStringList());
 
-    // const auto pluginsGroup = config->group("Plugins");
-    // foreach (const QString & plugin, pluginsGroup.keyList()) {
-    //     if (!pluginsGroup.readEntry(plugin, true))
-    //         disabledPlugins << plugin;
-    // }
+    const auto pluginsGroup = config->group("Plugins");
+    foreach (const QString & plugin, pluginsGroup.keyList()) {
+        if (!pluginsGroup.readEntry(plugin, true))
+            disabledPlugins << plugin;
+    }
 
-    // // Adding overridden plugins into the list of disabled ones
+    // Adding overridden plugins into the list of disabled ones
+    // TODO: Properly load plugins when KF5::KService becomes more stable
+    QDir pluginsDir(QStringLiteral(KAMD_INSTALL_PREFIX "/" KAMD_PLUGIN_DIR));
+
+    const auto pluginFiles = pluginsDir.entryList(
+            QStringList() << QStringLiteral("activitymanager*.so"),
+            QDir::Files
+        );
+
+    foreach (const auto & pluginFile, pluginFiles) {
+        qDebug() << "Loading a plugin: "
+                 << pluginFile
+                 << "(" << pluginsDir.absoluteFilePath(pluginFile) << ")";
+
+        QPluginLoader loader(pluginsDir.absoluteFilePath(pluginFile));
+
+        auto plugin = dynamic_cast<Plugin*>(loader.instance());
+
+        if (plugin) {
+            plugin->init(Module::get());
+        }
+    }
+
+    // const auto offers = KServiceTypeTrader::self()->query(QStringLiteral("ActivityManager/Plugin"));
 
     // foreach (const auto & service, offers) {
     //     if (!disabledPlugins.contains(service->library())) {

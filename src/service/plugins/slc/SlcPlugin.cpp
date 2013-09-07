@@ -27,7 +27,7 @@ SlcPlugin::SlcPlugin(QObject * parent, const QVariantList & args)
     Q_UNUSED(args)
 
     new SLCAdaptor(this);
-    KDBusConnectionPool::threadConnection().registerObject("/SLC", this);
+    KDBusConnectionPool::threadConnection().registerObject(QStringLiteral("/SLC"), this);
 }
 
 SlcPlugin::~SlcPlugin()
@@ -98,17 +98,17 @@ void SlcPlugin::registeredResourceTitle(const QString & uri, const QString & tit
 
 bool SlcPlugin::init(const QHash < QString, QObject * > & modules)
 {
-    connect(modules["resources"], SIGNAL(RegisteredResourceEvent(Event)),
+    connect(modules[QStringLiteral("resources")], SIGNAL(RegisteredResourceEvent(Event)),
             this, SLOT(registeredResourceEvent(Event)),
             Qt::QueuedConnection);
-    connect(modules["resources"], SIGNAL(RegisteredResourceMimeType(QString, QString)),
+    connect(modules[QStringLiteral("resources")], SIGNAL(RegisteredResourceMimeType(QString, QString)),
             this, SLOT(registeredResourceMimeType(QString, QString)),
             Qt::QueuedConnection);
-    connect(modules["resources"], SIGNAL(RegisteredResourceTitle(QString, QString)),
+    connect(modules[QStringLiteral("resources")], SIGNAL(RegisteredResourceTitle(QString, QString)),
             this, SLOT(registeredResourceTitle(QString, QString)),
             Qt::QueuedConnection);
 
     return true;
 }
 
-KAMD_EXPORT_PLUGIN(SlcPlugin, "activitymanger_plugin_slc")
+// KAMD_EXPORT_PLUGIN(SlcPlugin, "activitymanger_plugin_slc")

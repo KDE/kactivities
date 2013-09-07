@@ -14,9 +14,11 @@ set (CMAKE_INCLUDE_CURRENT_DIR ON)
 set (plugin_implementation_SRCS
    ${CMAKE_CURRENT_SOURCE_DIR}/Plugin.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/Module.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/Event.cpp
    )
 
-# add_subdirectory (plugins)
+add_subdirectory (plugins)
+
 include_directories (
    ${KDBusAddons_INCLUDE_DIR}
    ${KConfig_INCLUDE_DIR}
