@@ -32,7 +32,6 @@
 #include <config-features.h>
 
 #include <utils/d_ptr_implementation.h>
-#include <utils/val.h>
 
 class DatabaseConnection::Private {
 public:
@@ -174,7 +173,7 @@ void DatabaseConnection::getResourceScoreCache(const QString & usedActivity, con
         );
 
     if (query.next()) {
-        val time = query.value(1).toLongLong();
+        const auto time = query.value(1).toLongLong();
 
         if (time < 0) {
             // If we haven't had the cache before, set the score to 0
@@ -207,8 +206,8 @@ void DatabaseConnection::getResourceScoreCache(const QString & usedActivity, con
     while (query.next()) {
         start = query.value(0).toLongLong();
 
-        val end = query.value(1).toLongLong();
-        val intervalLength = end - start;
+        const auto end = query.value(1).toLongLong();
+        const auto intervalLength = end - start;
 
         if (intervalLength == 0) {
             // We have an Accessed event - otherwise, this wouldn't be 0
@@ -248,7 +247,7 @@ DatabaseConnection * DatabaseConnection::self()
 DatabaseConnection::DatabaseConnection()
     : d()
 {
-    val path = KStandardDirs::locateLocal("data", "activitymanager/resources/database", true);
+    const auto path = KStandardDirs::locateLocal("data", "activitymanager/resources/database", true);
 
     d->database = QSqlDatabase::addDatabase("QSQLITE", "plugins_sqlite_db_resources");
     d->database.setDatabaseName(path);

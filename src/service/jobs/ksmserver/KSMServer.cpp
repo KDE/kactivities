@@ -30,7 +30,6 @@
 #include <kdbusconnectionpool.h>
 
 #include <utils/d_ptr_implementation.h>
-#include <utils/val.h>
 
 #define KWIN_SERVICE QStringLiteral("org.kde.kwin")
 #define KSMSERVER_SERVICE QStringLiteral("org.kde.ksmserver")
@@ -142,7 +141,7 @@ void KSMServer::Private::processLater(const QString & activity, bool start)
 {
     qDebug() << "Scheduling" << activity << "to be" << (start ? "started" : "stopped");
 
-    foreach (val & item, queue) {
+    foreach (const auto & item, queue) {
         if (item.first == activity) {
             return;
         }
@@ -165,7 +164,7 @@ void KSMServer::Private::process()
     }
 
 
-    val item = queue.takeFirst();
+    const auto item = queue.takeFirst();
     processingActivity = item.first;
 
     qDebug() << "Processing" << item;
@@ -184,11 +183,11 @@ void KSMServer::Private::makeRunning(bool value)
         return;
     }
 
-    val call = kwin->asyncCall(
+    const auto call = kwin->asyncCall(
             value ? QLatin1String("startActivity") : QLatin1String("stopActivity"),
             processingActivity);
 
-    val watcher = new QDBusPendingCallWatcher(call, this);
+    const auto watcher = new QDBusPendingCallWatcher(call, this);
 
     QObject::connect(
         watcher, SIGNAL(finished(QDBusPendingCallWatcher*)),
@@ -210,7 +209,7 @@ void KSMServer::Private::startCallFinished(QDBusPendingCallWatcher * call)
      } else {
          // If we got false, it means something is going on with ksmserver
          // and it didn't start our activity
-         val retval = reply.argumentAt<0>();
+         const auto retval = reply.argumentAt<0>();
 
          qDebug() << "Did we start the activity successfully:" << retval;
          if (!retval) {
@@ -232,7 +231,7 @@ void KSMServer::Private::stopCallFinished(QDBusPendingCallWatcher * call)
     } else {
         // If we got false, it means something is going on with ksmserver
         // and it didn't stop our activity
-        val retval = reply.argumentAt<0>();
+        const auto retval = reply.argumentAt<0>();
 
         qDebug() << "Did we stop the activity successfully:" << retval;
         if (!retval) {

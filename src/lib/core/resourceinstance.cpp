@@ -28,7 +28,6 @@ namespace KActivities {
 class ResourceInstancePrivate {
 public:
     quintptr wid;
-    ResourceInstance::AccessReason reason;
     QUrl uri;
     QString mimetype;
     QString title;
@@ -46,20 +45,20 @@ public:
         FocusedOut = 5
     };
 
-    static void registerResourceEvent(const QString &application, quintptr wid, const QUrl &uri, Type event, ResourceInstance::AccessReason reason)
+    static void registerResourceEvent(const QString &application, quintptr wid, const QUrl &uri, Type event)
     {
-        Manager::resources()->RegisterResourceEvent(application, wid, uri.toString(), uint(event), uint(reason));
+        Manager::resources()->RegisterResourceEvent(application, wid, uri.toString(), uint(event));
     }
 };
 
 void ResourceInstancePrivate::closeResource()
 {
-    registerResourceEvent(application, wid, uri, Closed, reason);
+    registerResourceEvent(application, wid, uri, Closed);
 }
 
 void ResourceInstancePrivate::openResource()
 {
-    registerResourceEvent(application, wid, uri, Opened, reason);
+    registerResourceEvent(application, wid, uri, Opened);
 }
 
 ResourceInstance::ResourceInstance(quintptr wid, QObject *parent)
@@ -67,26 +66,23 @@ ResourceInstance::ResourceInstance(quintptr wid, QObject *parent)
 {
     qDebug() << "Creating ResourceInstance: empty for now";
     d->wid = wid;
-    d->reason = User;
     d->application = QCoreApplication::instance()->applicationName();
 }
 
-ResourceInstance::ResourceInstance(quintptr wid, AccessReason reason, const QString &application, QObject *parent)
+ResourceInstance::ResourceInstance(quintptr wid, const QString &application, QObject *parent)
     : QObject(parent), d(new ResourceInstancePrivate())
 {
     qDebug() << "Creating ResourceInstance: empty for now";
     d->wid = wid;
-    d->reason = reason;
     d->application = application.isEmpty() ? QCoreApplication::instance()->applicationName() : application;
 }
 
 ResourceInstance::ResourceInstance(quintptr wid, QUrl resourceUri, const QString &mimetype,
-        const QString &title, AccessReason reason, const QString &application, QObject *parent)
+        const QString &title, const QString &application, QObject *parent)
     : QObject(parent), d(new ResourceInstancePrivate())
 {
     qDebug() << "Creating ResourceInstance: " << resourceUri;
     d->wid = wid;
-    d->reason = reason;
     d->uri = resourceUri;
     d->application = application.isEmpty() ? QCoreApplication::instance()->applicationName() : application;
 
@@ -103,17 +99,17 @@ ResourceInstance::~ResourceInstance()
 
 void ResourceInstance::notifyModified()
 {
-    d->registerResourceEvent(d->application, d->wid, d->uri, ResourceInstancePrivate::Modified, d->reason);
+    d->registerResourceEvent(d->application, d->wid, d->uri, ResourceInstancePrivate::Modified);
 }
 
 void ResourceInstance::notifyFocusedIn()
 {
-    d->registerResourceEvent(d->application, d->wid, d->uri, ResourceInstancePrivate::FocusedIn, d->reason);
+    d->registerResourceEvent(d->application, d->wid, d->uri, ResourceInstancePrivate::FocusedIn);
 }
 
 void ResourceInstance::notifyFocusedOut()
 {
-    d->registerResourceEvent(d->application, d->wid, d->uri, ResourceInstancePrivate::FocusedOut, d->reason);
+    d->registerResourceEvent(d->application, d->wid, d->uri, ResourceInstancePrivate::FocusedOut);
 }
 
 void ResourceInstance::setUri(const QUrl &newUri)
@@ -169,16 +165,11 @@ quintptr ResourceInstance::winId() const
     return d->wid;
 }
 
-ResourceInstance::AccessReason ResourceInstance::accessReason() const
-{
-    return d->reason;
-}
-
 void ResourceInstance::notifyAccessed(const QUrl &uri, const QString &application)
 {
     ResourceInstancePrivate::registerResourceEvent(
             application.isEmpty() ? QCoreApplication::instance()->applicationName() : application,
-            0, uri, ResourceInstancePrivate::Accessed, User);
+            0, uri, ResourceInstancePrivate::Accessed);
 }
 
 } // namespace KActivities

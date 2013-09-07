@@ -34,8 +34,6 @@
 
 #include "DatabaseConnection.h"
 
-#include <utils/val.h>
-
 StatsPlugin * StatsPlugin::s_instance = Q_NULLPTR;
 
 StatsPlugin::StatsPlugin(QObject *parent, const QVariantList & args)
@@ -78,7 +76,7 @@ bool StatsPlugin::init(const QHash < QString, QObject * > & modules)
 void StatsPlugin::loadConfiguration()
 {
     config().config()->reparseConfiguration();
-    static val configFile = KStandardDirs::locateLocal("config", "activitymanager-pluginsrc");
+    static const auto configFile = KStandardDirs::locateLocal("config", "activitymanager-pluginsrc");
 
     if (m_configWatcher) {
         // When saving a config file, KConfig deletes the old,
@@ -128,11 +126,11 @@ void StatsPlugin::addEvents(const EventList & events)
     if (m_blockAll || m_whatToRemember == NoApplications) return;
 
     for (int i = 0; i < events.size(); i++) {
-        val & event = events[i];
+        const auto & event = events[i];
 
         if (event.uri.startsWith(QLatin1String("about"))) continue;
 
-        val currentActivity = Plugin::callOn <QString, Qt::DirectConnection> (m_activities, "CurrentActivity", "QString");
+        const auto currentActivity = Plugin::callOn <QString, Qt::DirectConnection> (m_activities, "CurrentActivity", "QString");
 
         // if blocked by default, the list contains allowed applications
         //     ignore event if the list doesn't contain the application
@@ -181,7 +179,7 @@ void StatsPlugin::addEvents(const EventList & events)
 
 void StatsPlugin::deleteRecentStats(const QString & activity, int count, const QString & what)
 {
-    val activityCheck = activity.isEmpty() ?
+    const auto activityCheck = activity.isEmpty() ?
         QString(" 1 ") :
         QString(" usedActivity = '" + activity + "' ");
 
@@ -216,12 +214,12 @@ void StatsPlugin::deleteRecentStats(const QString & activity, int count, const Q
         // cached items. Thkinking it is not that important -
         // if something was accessed before, it is not really a secret
 
-        static val queryRSC = QString(
+        static const auto queryRSC = QString(
                 "DELETE FROM kext_ResourceScoreCache "
                 " WHERE %1 "
                 " AND firstUpdate > %2 "
             );
-        static val queryDE = QString(
+        static const auto queryDE = QString(
                 "DELETE FROM nuao_DesktopEvent "
                 " WHERE %1 "
                 " AND end > %2 "
@@ -246,20 +244,20 @@ void StatsPlugin::deleteEarlierStats(const QString & activity, int months)
 {
     if (months == 0) return;
 
-    val activityCheck = activity.isEmpty() ?
+    const auto activityCheck = activity.isEmpty() ?
         QString(" 1 ") :
         QString(" usedActivity = '" + activity + "' ");
 
     // Deleting a specified length of time
 
-    val time = QDateTime::currentDateTime().addMonths(-months);
+    const auto time = QDateTime::currentDateTime().addMonths(-months);
 
-    static val queryRSC = QString(
+    static const auto queryRSC = QString(
             "DELETE FROM kext_ResourceScoreCache "
             " WHERE %1 "
             " AND lastUpdate < %2 "
         );
-    static val queryDE = QString(
+    static const auto queryDE = QString(
             "DELETE FROM nuao_DesktopEvent "
             " WHERE %1 "
             " AND start < %2 "

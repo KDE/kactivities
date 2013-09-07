@@ -29,7 +29,6 @@
 
 #include <utils/for_each_assoc.h>
 #include <utils/remove_if.h>
-#include <utils/val.h>
 
 #define RESULT_COUNT_LIMIT 10
 #define COALESCE_ACTIVITY(Activity) ((Activity.isEmpty()) ? \
@@ -54,7 +53,7 @@ RankingsUpdateThread::~RankingsUpdateThread()
 void RankingsUpdateThread::run() {
     qDebug() << "This is the activity we want the results for:" << m_activity;
 
-    val & query = QString::fromLatin1(
+    const auto & query = QString::fromLatin1(
             "SELECT targettedResource, cachedScore "
             "FROM kext_ResourceScoreCache " // this should be kao_ResourceScoreCache, but lets leave it
             "WHERE usedActivity = '%1' "
@@ -67,8 +66,8 @@ void RankingsUpdateThread::run() {
     auto result = DatabaseConnection::self()->database().exec(query);
 
     while (result.next()) {
-        val url   = result.value(0).toString();
-        val score = result.value(1).toReal();
+        const auto url   = result.value(0).toString();
+        const auto score = result.value(1).toReal();
 
         if (score > (*m_scoreTrashold)[m_activity]) {
             (*m_listptr) << Rankings::ResultItem(url, score);
@@ -143,13 +142,13 @@ void Rankings::setCurrentActivity(const QString & activity)
 
 void Rankings::initResults(const QString & _activity)
 {
-    val & activity = COALESCE_ACTIVITY(_activity);
+    const auto & activity = COALESCE_ACTIVITY(_activity);
 
     m_results[activity].clear();
     notifyResultsUpdated(activity);
     updateScoreTrashold(activity);
 
-    val thread = new RankingsUpdateThread(
+    const auto thread = new RankingsUpdateThread(
             activity,
             &(m_results[activity]),
             &m_resultScoreTreshold
@@ -219,12 +218,12 @@ void Rankings::updateScoreTrashold(const QString & activity)
 
 void Rankings::notifyResultsUpdated(const QString & _activity, QStringList clients)
 {
-    val & activity = COALESCE_ACTIVITY(_activity);
+    const auto & activity = COALESCE_ACTIVITY(_activity);
 
     updateScoreTrashold(activity);
 
     QVariantList data;
-    foreach (val & item, m_results[activity]) {
+    foreach (const auto & item, m_results[activity]) {
         data << item.uri.toString();
     }
 
@@ -236,7 +235,7 @@ void Rankings::notifyResultsUpdated(const QString & _activity, QStringList clien
         }
     }
 
-    foreach (val & client, clients) {
+    foreach (const auto & client, clients) {
         QDBusInterface rankingsservice(client, "/RankingsClient", "org.kde.ActivityManager.RankingsClient");
         rankingsservice.asyncCall("updated", data);
     }

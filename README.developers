@@ -72,23 +72,6 @@ There are some convenience macros and methods defined in the headers placed
 in the service/utils/ directory.
 
 .TP
-.B val
-val.h defines a macro 'val' that expands to 'const auto'. People tend not
-to use the const keyword even when they are defining a variable that will
-not change. This way, it is easier to do so. For example, instead of writing:
-
-    const QString path = KStandardDirs::locateLocal("data", ...);
-    const int id = object->id();
-
-you can (and should) write this:
-
-    val path = KStandardDirs::locateLocal("data", ...);
-    val id   = object->id();
-
-This should be always last included header since other parts of the project
-or upstream libraries could have used val as a variable name.
-
-.TP
 .B D_PTR
 d_ptr.h and d_ptr_implementation.h define a smart pointer way of doing
 the d-ptr (aka pimpl) idiom.

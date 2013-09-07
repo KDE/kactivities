@@ -21,8 +21,6 @@
 #include <QDBusConnection>
 #include <kdbusconnectionpool.h>
 
-#include <utils/val.h>
-
 SlcPlugin::SlcPlugin(QObject * parent, const QVariantList & args)
     : Plugin(parent)
 {
@@ -59,7 +57,7 @@ void SlcPlugin::registeredResourceEvent(const Event & event)
             if (!event.uri.startsWith(QLatin1String("about"))) {
                 if (m_focussedResource != event.uri) {
                     m_focussedResource = event.uri;
-                    val & info = m_resources[m_focussedResource];
+                    const auto & info = m_resources[m_focussedResource];
                     emit focusChanged(event.uri, info.mimetype, info.title);
                 }
             } else {

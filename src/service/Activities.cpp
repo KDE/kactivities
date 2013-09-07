@@ -38,7 +38,6 @@
 
 #include <utils/d_ptr_implementation.h>
 #include <utils/find_if_assoc.h>
-#include <utils/val.h>
 
 // Private
 
@@ -85,13 +84,13 @@ Activities::Activities(QObject * parent)
 
     // Reading activities from the config file
 
-    foreach (val & activity, d->activitiesConfig().keyList()) {
+    foreach (const auto & activity, d->activitiesConfig().keyList()) {
         d->activities[activity] = Activities::Stopped;
     }
 
-    val & runningActivities = d->mainConfig().readEntry("runningActivities", d->activities.keys());
+    const auto & runningActivities = d->mainConfig().readEntry("runningActivities", d->activities.keys());
 
-    foreach (val & activity, runningActivities) {
+    foreach (const auto & activity, runningActivities) {
         if (d->activities.contains(activity)) {
             d->activities[activity] = Activities::Running;
         }
@@ -159,7 +158,7 @@ bool Activities::Private::setCurrentActivity(const QString & activity)
 void Activities::Private::loadLastActivity()
 {
     // If there are no public activities, try to load the last used activity
-    val & lastUsedActivity = mainConfig().readEntry("currentActivity", QString());
+    const auto & lastUsedActivity = mainConfig().readEntry("currentActivity", QString());
 
     setCurrentActivity(
         (lastUsedActivity.isEmpty() && activities.size() > 0)
@@ -193,7 +192,7 @@ QString Activities::AddActivity(const QString & name)
     // Ensuring a new Uuid. The loop should usually end after only
     // one iteration
 
-    val & existingActivities = d->activities.keys();
+    const auto & existingActivities = d->activities.keys();
     while (activity.isEmpty() || existingActivities.contains(activity)) {
         activity = QUuid::createUuid().toString();
         activity.replace(QRegExp(QStringLiteral("[{}]")), QString());
@@ -290,8 +289,8 @@ QString Activities::Private::activityIcon(const QString & activity)
 
 void Activities::Private::scheduleConfigSync(const bool soon)
 {
-    static val shortInterval = 5 * 1000;
-    static val longInterval  = 2 * 60 * 1000;
+    static const auto shortInterval = 5 * 1000;
+    static const auto longInterval  = 2 * 60 * 1000;
 
     // short interval has priority to the long one
     if (soon) {
@@ -430,7 +429,7 @@ void Activities::Private::ensureCurrentActivityIsRunning()
     // If the current activity is not running,
     // make some other activity current
 
-    val & runningActivities = q->ListActivities(Activities::Running);
+    const auto & runningActivities = q->ListActivities(Activities::Running);
 
     if (!runningActivities.contains(currentActivity)) {
         if (runningActivities.size() > 0) {

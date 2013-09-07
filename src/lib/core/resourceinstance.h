@@ -57,21 +57,8 @@ class KACTIVITIES_EXPORT ResourceInstance: public QObject
     Q_PROPERTY(QString mimetype READ mimetype WRITE setMimetype)
     Q_PROPERTY(QString title READ title WRITE setTitle)
     Q_PROPERTY(quintptr winId READ winId)
-    Q_PROPERTY(AccessReason accessReason READ accessReason)
 
 public:
-    /***
-     * The reason for opening the resource
-     */
-    enum AccessReason {
-         User = 0,      ///< Due to an explicit user request
-         Scheduled = 1, ///< As a result of a user-scheduled action
-         Heuristic = 2, ///< Deduced from user's activity, or indirectly requested
-         System = 3,    ///< Due to a system event
-         World = 4      ///< Due to an action performed by an external entity
-    };
-    Q_ENUMS(AccessReason)
-
     /**
      * Creates a new resource instance
      * @param wid id of the window that will show the resource
@@ -83,12 +70,11 @@ public:
     /**
      * Creates a new resource instance
      * @param wid id of the window that will show the resource
-     * @param reason reason for opening the resource
      * @param application application's name (the name used for the .desktop file).
      *        If not specified, QCoreApplication::applicationName is used
      * @param parent pointer to the parent object
      */
-    explicit ResourceInstance(quintptr wid, AccessReason reason = User, const QString &application = QString(), QObject * parent = Q_NULLPTR);
+    explicit ResourceInstance(quintptr wid, const QString &application = QString(), QObject * parent = Q_NULLPTR);
 
     /**
      * Creates a new resource instance and automatically
@@ -108,12 +94,11 @@ public:
      * @param resourceUri URI of the resource that is shown
      * @param mimetype the mime type of the resource
      * @param title the title of the resource
-     * @param reason reason for opening the resource
      * @param application application's name (the name used for the .desktop file).
      *        If not specified, QCoreApplication::applicationName is used
      * @param parent pointer to the parent object
      */
-    ResourceInstance(quintptr wid, QUrl resourceUri, const QString &mimetype = QString(), const QString &title = QString(), AccessReason reason = User, const QString &application = QString(), QObject *parent = Q_NULLPTR);
+    ResourceInstance(quintptr wid, QUrl resourceUri, const QString &mimetype = QString(), const QString &title = QString(), const QString &application = QString(), QObject *parent = Q_NULLPTR);
 
     /**
      * Destroys the ResourceInstance and notifies the system
@@ -194,11 +179,6 @@ public:
      * @returns the window id
      */
     quintptr winId() const;
-
-    /**
-     * @returns the reason for accessing the resource
-     */
-    AccessReason accessReason() const;
 
     /**
      * If there's no way to tell for how long an application is keeping

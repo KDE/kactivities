@@ -43,7 +43,6 @@
 #include "BlacklistedApplicationsModel.h"
 
 #include <utils/d_ptr_implementation.h>
-#include <utils/val.h>
 
 K_PLUGIN_FACTORY ( ActivitiesKCMFactory, registerPlugin<MainConfigurationWidget>(); )
 K_EXPORT_PLUGIN  ( ActivitiesKCMFactory("kcm_activities","kcm_activities") )
@@ -66,7 +65,7 @@ MainConfigurationWidget::MainConfigurationWidget(QWidget * parent, QVariantList 
 {
     Q_UNUSED(args)
 
-    val about = new KAboutData(
+    const auto about = new KAboutData(
             "kio_activities", 0, ki18n("Activities"),
             KDE_VERSION_STRING, KLocalizedString(), KAboutData::License_GPL,
             ki18n("(c) 2012 Ivan Cukic")
@@ -78,8 +77,8 @@ MainConfigurationWidget::MainConfigurationWidget(QWidget * parent, QVariantList 
 
     // Plugin selector initialization
 
-    val offers = KServiceTypeTrader::self()->query("ActivityManager/Plugin");
-    val plugins = KPluginInfo::fromServices(offers);
+    const auto offers = KServiceTypeTrader::self()->query("ActivityManager/Plugin");
+    const auto plugins = KPluginInfo::fromServices(offers);
 
     d->mainConfig   = KSharedConfig::openConfig("activitymanagerrc");
     d->pluginConfig = KSharedConfig::openConfig("activitymanager-pluginsrc");
@@ -210,9 +209,9 @@ void MainConfigurationWidget::load()
     d->pluginSelector->load();
     d->blacklistedApplicationsModel->load();
 
-    val statisticsConfig = d->pluginConfig->group("Plugin-org.kde.kactivitymanager.resourcescoring");
+    const auto statisticsConfig = d->pluginConfig->group("Plugin-org.kde.kactivitymanager.resourcescoring");
 
-    val whatToRemember = (WhatToRemember) statisticsConfig.readEntry("what-to-remember", (int)AllApplications);
+    const auto whatToRemember = (WhatToRemember) statisticsConfig.readEntry("what-to-remember", (int)AllApplications);
     d->radioRememberAllApplications->setChecked(whatToRemember == AllApplications);
     d->radioRememberSpecificApplications->setChecked(whatToRemember == SpecificApplications);
     d->radioDontRememberApplications->setChecked(whatToRemember == NoApplications);

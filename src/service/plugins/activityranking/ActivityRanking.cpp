@@ -36,7 +36,6 @@
 
 #include <utils/for_each_assoc.h>
 #include <utils/d_ptr_implementation.h>
-#include <utils/val.h>
 
 #define PRINT_LAST_ERROR(A) if (A.lastError().isValid()) qDebug() << "DATABASE ERROR" << A.lastError();
 
@@ -149,8 +148,8 @@ void ActivityRanking::Private::processActivityInterval(const QString & activity,
 
 void ActivityRanking::Private::processWeekData(const QString & activity, const QString & location, qint64 start, qint64 end)
 {
-    val startDateTime = QDateTime::fromMSecsSinceEpoch(start);
-    val endDateTime   = QDateTime::fromMSecsSinceEpoch(end);
+    const auto startDateTime = QDateTime::fromMSecsSinceEpoch(start);
+    const auto endDateTime   = QDateTime::fromMSecsSinceEpoch(end);
 
     #define fordate(What, Start, End) \
         for (int What = Start.date().What(); What <= End.date().What(); What++)
@@ -162,12 +161,12 @@ void ActivityRanking::Private::processWeekData(const QString & activity, const Q
 
             ensureWeekScoreExists(activity, year, weekNumber, location);
 
-            val weekStartDateTime = QDateTime(QDate(year, 1, 1).addDays((weekNumber - 1) * 7));
-            val weekStart         = weekStartDateTime.toMSecsSinceEpoch();
-            val weekEnd           = weekStartDateTime.addDays(7).toMSecsSinceEpoch();
+            const auto weekStartDateTime = QDateTime(QDate(year, 1, 1).addDays((weekNumber - 1) * 7));
+            const auto weekStart         = weekStartDateTime.toMSecsSinceEpoch();
+            const auto weekEnd           = weekStartDateTime.addDays(7).toMSecsSinceEpoch();
 
-            val currentStart      = QDateTime::fromMSecsSinceEpoch(qMax(weekStart, start));
-            val currentEnd        = QDateTime::fromMSecsSinceEpoch(qMin(weekEnd, end));
+            const auto currentStart      = QDateTime::fromMSecsSinceEpoch(qMax(weekStart, start));
+            const auto currentEnd        = QDateTime::fromMSecsSinceEpoch(qMin(weekEnd, end));
 
             auto query = database.exec(
                     selectWeekScore
@@ -181,16 +180,16 @@ void ActivityRanking::Private::processWeekData(const QString & activity, const Q
 
             if (query.next()) {
                 auto record = query.record();
-                val iFirstColumn = record.indexOf("s00");
+                const auto iFirstColumn = record.indexOf("s00");
 
                 #define SEGMENTS 8
                 for (int day = currentStart.date().dayOfWeek(); day <= currentEnd.date().dayOfWeek(); day++) {
 
-                    val startSegment = floor(currentStart.time().hour() / 3.0);
-                    val endSegment   = ceil(currentEnd.time().hour() / 3.0);
+                    const auto startSegment = floor(currentStart.time().hour() / 3.0);
+                    const auto endSegment   = ceil(currentEnd.time().hour() / 3.0);
 
                     for (int segment = 0; segment < SEGMENTS; segment++) {
-                        val index = iFirstColumn + SEGMENTS * (day - 1) + segment;
+                        const auto index = iFirstColumn + SEGMENTS * (day - 1) + segment;
 
                         // Setting the 1.0 value for the active segments
                         if (startSegment <= segment && segment <= endSegment) {
@@ -206,7 +205,7 @@ void ActivityRanking::Private::processWeekData(const QString & activity, const Q
                     // Setting the .67 for the edge stuff
 
                     if (startSegment > 1) {
-                        val index = iFirstColumn + SEGMENTS * (day - 1) + startSegment - 1;
+                        const auto index = iFirstColumn + SEGMENTS * (day - 1) + startSegment - 1;
 
                         if (record.value(index).toDouble() < .67) {
                             record.setValue(index, .67);
@@ -214,7 +213,7 @@ void ActivityRanking::Private::processWeekData(const QString & activity, const Q
                     }
 
                     if (endSegment < 7) {
-                        val index = iFirstColumn + SEGMENTS * (day - 1) + endSegment + 1;
+                        const auto index = iFirstColumn + SEGMENTS * (day - 1) + endSegment + 1;
 
                         if (record.value(index).toDouble() < .67) {
                             record.setValue(index, .67);
@@ -223,7 +222,7 @@ void ActivityRanking::Private::processWeekData(const QString & activity, const Q
                 }
                 #undef SEGMENTS
 
-                static val & where = QString::fromLatin1(" WHERE activity = '%1' AND year = %2 AND week = %3 AND location='%4'");
+                static const auto & where = QString::fromLatin1(" WHERE activity = '%1' AND year = %2 AND week = %3 AND location='%4'");
 
                 database.exec(database.driver()->
                         sqlStatement(QSqlDriver::UpdateStatement, "WeekScores", record, false)
@@ -239,8 +238,8 @@ void ActivityRanking::Private::processWeekData(const QString & activity, const Q
 
 void ActivityRanking::Private::processMonthData(const QString & activity, const QString & location, qint64 start, qint64 end)
 {
-    val startDateTime = QDateTime::fromMSecsSinceEpoch(start);
-    val endDateTime   = QDateTime::fromMSecsSinceEpoch(end);
+    const auto startDateTime = QDateTime::fromMSecsSinceEpoch(start);
+    const auto endDateTime   = QDateTime::fromMSecsSinceEpoch(end);
 
     #define fordate(What, Start, End) \
         for (int What = Start.date().What(); What <= End.date().What(); What++)
@@ -252,18 +251,18 @@ void ActivityRanking::Private::processMonthData(const QString & activity, const 
 
             ensureMonthScoreExists(activity, year, month, location);
 
-            val monthStartDateTime = QDateTime(QDate(year, month, 1));
-            val monthStart         = monthStartDateTime.toMSecsSinceEpoch();
-            val monthEnd           = monthStartDateTime.addMonths(1).toMSecsSinceEpoch();
+            const auto monthStartDateTime = QDateTime(QDate(year, month, 1));
+            const auto monthStart         = monthStartDateTime.toMSecsSinceEpoch();
+            const auto monthEnd           = monthStartDateTime.addMonths(1).toMSecsSinceEpoch();
 
-            val currentStart       = qMax(monthStart, start);
-            val currentEnd         = qMin(monthEnd, end);
+            const auto currentStart       = qMax(monthStart, start);
+            const auto currentEnd         = qMin(monthEnd, end);
 
-            val coefStart          = (currentStart - monthStart) / (qreal) (monthEnd - monthStart) * 64;
-            val coefEnd            = (currentEnd   - monthStart) / (qreal) (monthEnd - monthStart) * 64;
+            const auto coefStart          = (currentStart - monthStart) / (qreal) (monthEnd - monthStart) * 64;
+            const auto coefEnd            = (currentEnd   - monthStart) / (qreal) (monthEnd - monthStart) * 64;
 
-            val iStart             = ceil(coefStart);
-            val iEnd               = floor(coefEnd);
+            const auto iStart             = ceil(coefStart);
+            const auto iEnd               = floor(coefEnd);
 
             auto query = database.exec(
                 selectMonthScore
@@ -279,7 +278,7 @@ void ActivityRanking::Private::processMonthData(const QString & activity, const 
 
             if (query.next()) {
                 auto record = query.record();
-                val iFirstColumn = record.indexOf("s00");
+                const auto iFirstColumn = record.indexOf("s00");
 
                 if (iStart > 0) {
                     increaseValue(iFirstColumn + iStart - 1, iStart - coefStart);
@@ -293,7 +292,7 @@ void ActivityRanking::Private::processMonthData(const QString & activity, const 
                     increaseValue(iFirstColumn + iEnd, coefEnd - iEnd);
                 }
 
-                static val & where = QString::fromLatin1(" WHERE activity = '%1' AND year = %2 AND month = %3 AND location = '%4'");
+                static const auto & where = QString::fromLatin1(" WHERE activity = '%1' AND year = %2 AND month = %3 AND location = '%4'");
 
                 database.exec(database.driver()->
                         sqlStatement(QSqlDriver::UpdateStatement, "MonthScores", record, false)
@@ -323,7 +322,7 @@ void ActivityRanking::Private::closeDanglingActivityRecords()
     tableActivityEvents.select();
 
     // Setting the current time as the end of the last dangling event
-    val i = tableActivityEvents.rowCount() - 1;
+    const auto i = tableActivityEvents.rowCount() - 1;
     qDebug() << "dangling count:" << i+1;
 
     if (i < 0) return;
@@ -368,7 +367,7 @@ void ActivityRanking::init(QObject * activities)
     new ActivityRankingAdaptor(this);
     KDBusConnectionPool::threadConnection().registerObject("/ActivityRanking", this);
 
-    val path = KStandardDirs::locateLocal("data", "activitymanager/activityranking/database", true);
+    const auto path = KStandardDirs::locateLocal("data", "activitymanager/activityranking/database", true);
 
     d->database = QSqlDatabase::addDatabase("QSQLITE", "plugins_activityranking_db");
     d->database.setDatabaseName(path);
@@ -535,9 +534,9 @@ QMap <QString, qreal> ActivityRanking::Private::topActivitiesFor(const QDateTime
     QMap <QString, qreal> result;
 
     // We want to get the scores for the current week segment
-    val monthStartDateTime = QDateTime(QDate(time.date().year(), time.date().month(), 1));
-    val monthStart = monthStartDateTime.toMSecsSinceEpoch();
-    val monthEnd   = monthStartDateTime.addMonths(1).toMSecsSinceEpoch();
+    const auto monthStartDateTime = QDateTime(QDate(time.date().year(), time.date().month(), 1));
+    const auto monthStart = monthStartDateTime.toMSecsSinceEpoch();
+    const auto monthEnd   = monthStartDateTime.addMonths(1).toMSecsSinceEpoch();
 
     // TODO: This should be tested - something is wrong here
     const int coefStart  = (time.toMSecsSinceEpoch() - monthStart) / (qreal) (monthEnd - monthStart) * 64;
@@ -556,7 +555,7 @@ QMap <QString, qreal> ActivityRanking::Private::topActivitiesFor(const QDateTime
     PRINT_LAST_ERROR(database);
 
     while (query.next()) {
-        val & record = query.record();
+        const auto & record = query.record();
         result[record.value(0).toString()] = record.value(1).toDouble();
     }
 
@@ -567,7 +566,7 @@ QList < ActivityData > ActivityRanking::activities()
 {
     QList < ActivityData > result;
 
-    val topActivities = d->topActivitiesFor(QDateTime::currentDateTime(), d->lastLocation);
+    const auto topActivities = d->topActivitiesFor(QDateTime::currentDateTime(), d->lastLocation);
 
     kamd::utils::for_each_assoc(topActivities,
         [&result](const QString & activity, qreal score) {

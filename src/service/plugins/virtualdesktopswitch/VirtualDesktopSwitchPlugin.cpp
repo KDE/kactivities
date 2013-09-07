@@ -22,9 +22,7 @@
 
 // #include <KWindowSystem>
 
-#include <utils/val.h>
-
-val configPattern       = QString::fromLatin1("desktop-for-%1");
+const auto configPattern       = QString::fromLatin1("desktop-for-%1");
 
 VirtualDesktopSwitchPlugin::VirtualDesktopSwitchPlugin(QObject * parent, const QVariantList & args)
     : Plugin(parent),
@@ -64,7 +62,7 @@ void VirtualDesktopSwitchPlugin::currentActivityChanged(const QString & activity
 
     m_currentActivity = activity;
 
-    val desktopId = config().readEntry(configPattern.arg(m_currentActivity), -1);
+    const auto desktopId = config().readEntry(configPattern.arg(m_currentActivity), -1);
 
     if (desktopId <= KWindowSystem::numberOfDesktops() && desktopId >= 0) {
         KWindowSystem::setCurrentDesktop(desktopId);

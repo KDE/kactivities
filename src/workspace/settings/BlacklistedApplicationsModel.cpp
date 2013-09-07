@@ -34,7 +34,6 @@
 #include <KConfigGroup>
 
 #include <utils/d_ptr_implementation.h>
-#include <utils/val.h>
 
 
 class BlacklistedApplicationsModel::Private {
@@ -71,15 +70,15 @@ void BlacklistedApplicationsModel::load()
 {
     // Loading plugin configuration
 
-    val config = d->pluginConfig->group("Plugin-org.kde.kactivitymanager.resourcescoring");
+    const auto config = d->pluginConfig->group("Plugin-org.kde.kactivitymanager.resourcescoring");
 
-    val defaultBlockedValue = config.readEntry("blocked-by-default", false);
+    const auto defaultBlockedValue = config.readEntry("blocked-by-default", false);
     auto blockedApplications = QSet<QString>::fromList(config.readEntry("blocked-applications", QStringList()));
     auto allowedApplications = QSet<QString>::fromList(config.readEntry("allowed-applications", QStringList()));
 
     // Reading new applications from the database
 
-    val path = KStandardDirs::locateLocal("data", "activitymanager/resources/database", true);
+    const auto path = KStandardDirs::locateLocal("data", "activitymanager/resources/database", true);
 
     d->database = QSqlDatabase::addDatabase("QSQLITE", "plugins_sqlite_db_resources");
     d->database.setDatabaseName(path);
@@ -98,7 +97,7 @@ void BlacklistedApplicationsModel::load()
     }
 
     while (query.next()) {
-        val name = query.value(0).toString();
+        const auto name = query.value(0).toString();
 
         if (defaultBlockedValue) {
             if (!allowedApplications.contains(name))
@@ -116,9 +115,9 @@ void BlacklistedApplicationsModel::load()
 
         beginInsertRows(QModelIndex(), 0, applications.length() - 1);
 
-        foreach (val & name, applications) {
-            val service = KService::serviceByDesktopName(name);
-            val blocked = blockedApplications.contains(name);
+        foreach (const auto & name, applications) {
+            const auto service = KService::serviceByDesktopName(name);
+            const auto blocked = blockedApplications.contains(name);
 
             if (service) {
                 d->applications << Private::ApplicationData {
@@ -183,12 +182,12 @@ QVariant BlacklistedApplicationsModel::headerData(int section, Qt::Orientation o
 
 QVariant BlacklistedApplicationsModel::data(const QModelIndex & modelIndex, int role) const
 {
-    val index = modelIndex.row();
+    const auto index = modelIndex.row();
 
     if (index > rowCount())
         return QVariant();
 
-    val & application = d->applications[index];
+    const auto & application = d->applications[index];
 
     switch (role) {
         default:

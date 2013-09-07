@@ -24,7 +24,6 @@
 #include <kdbusconnectionpool.h>
 
 #include <utils/d_ptr_implementation.h>
-#include <utils/val.h>
 
 class Features::Private {
 
@@ -48,8 +47,8 @@ Features::~Features()
 template <typename RetType, typename Function>
 static RetType passToModule(const QString & feature, RetType defaultResult, Function f)
 {
-    val params = feature.split(QLatin1Char('/'));
-    val module = Module::get(params.first());
+    const auto params = feature.split(QLatin1Char('/'));
+    const auto module = Module::get(params.first());
 
     if (!module) return defaultResult;
 

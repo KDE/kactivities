@@ -30,7 +30,6 @@
 
 #include <utils/for_each_assoc.h>
 #include <utils/d_ptr_implementation.h>
-#include <utils/val.h>
 
 class ResourceScoreMaintainer::Private: public QThread {
 public:
@@ -67,7 +66,7 @@ void ResourceScoreMaintainer::Private::run()
             openResources.clear();
         }
 
-        val & activity = StatsPlugin::self()->currentActivity();
+        const auto & activity = StatsPlugin::self()->currentActivity();
 
         // Let us first process the events related to the current
         // activity so that the stats are available quicker
@@ -121,7 +120,7 @@ void ResourceScoreMaintainer::processResource(const KUrl & resource, const QStri
     // Checking whether the item is already scheduled for
     // processing
 
-    val & activity = StatsPlugin::self()->currentActivity();
+    const auto & activity = StatsPlugin::self()->currentActivity();
 
     if (d->openResources.contains(activity) &&
             d->openResources[activity].contains(application) &&

@@ -39,7 +39,6 @@
 #include <kdbusconnectionpool.h>
 
 #include <utils/d_ptr_implementation.h>
-#include <utils/val.h>
 
 namespace Nepomuk = Nepomuk2;
 using namespace KDE::Vocabulary;
@@ -63,8 +62,8 @@ public:
 
         if (!nepomukPresent) return;
 
-        val currentActivityId = Plugin::callOn <QString, Qt::DirectConnection> (activities, "CurrentActivity", "QString");
-        val activity = _activity.isEmpty() ? currentActivityId : _activity;
+        const auto currentActivityId = Plugin::callOn <QString, Qt::DirectConnection> (activities, "CurrentActivity", "QString");
+        const auto activity = _activity.isEmpty() ? currentActivityId : _activity;
 
         qDebug() << "The current activity is: " << currentActivityId
                  << "We need to set the linking for: " << activity;
@@ -271,7 +270,7 @@ void NepomukPlugin::Private::syncActivities(const QStringList & activitys)
 
     // If we got an empty list, it means we should synchronize
     // all the activities known by the service
-    foreach (val & activity,
+    foreach (const auto & activity,
         (
             activitys.isEmpty()
                 ? Plugin::callOn <QStringList, Qt::DirectConnection> (activities, "ListActivities", "QStringList")
@@ -282,9 +281,9 @@ void NepomukPlugin::Private::syncActivities(const QStringList & activitys)
         org::kde::KDirNotify::emitFilesAdded("activities:/" + activity);
 
         // Getting the activity info from the service
-        val name = Plugin::callOnWithArgs <QString, Qt::DirectConnection>
+        const auto name = Plugin::callOnWithArgs <QString, Qt::DirectConnection>
                 (activities, "ActivityName", "QString", Q_ARG(QString, activity));
-        val icon = Plugin::callOnWithArgs <QString, Qt::DirectConnection>
+        const auto icon = Plugin::callOnWithArgs <QString, Qt::DirectConnection>
                 (activities, "ActivityIcon", "QString", Q_ARG(QString, activity));
 
         // Setting the nepomuk resource properties - id, name, icon
@@ -301,7 +300,7 @@ void NepomukPlugin::Private::syncActivities(const QStringList & activitys)
         } else {
             // If there is no icon reported by the service, and we
             // have one in nepomuk, send it to the service
-            val & symbols = resource.symbols();
+            const auto & symbols = resource.symbols();
             if (symbols.size() > 0) {
                 Plugin::callOnWithArgs <QString, Qt::DirectConnection>
                     (activities, "SetActivityIcon", "QString", Q_ARG(QString, activity), Q_ARG(QString, symbols.at(0)));
@@ -320,13 +319,13 @@ void NepomukPlugin::resourceScoreUpdated(const QString & activity, const QString
 void NepomukPlugin::deleteRecentStats(const QString & activity, int count, const QString & what)
 {
 #ifdef NEPOMUK_STORE_RESOURCE_SCORES
-    val activityCheck = activity.isEmpty()
+    const auto activityCheck = activity.isEmpty()
             ? QString()
             : "?cache kao:usedActivity "
                 + Soprano::Node::resourceToN3(activityResource(activity).uri())
                 + " .";
 
-    static val _query = QString(
+    static const auto _query = QString(
         "select ?cache where { "
             "?cache a kao:ResourceScoreCache . "
             " %1 " // "?cache kao:usedActivity %activity . "
@@ -339,7 +338,7 @@ void NepomukPlugin::deleteRecentStats(const QString & activity, int count, const
     // no need to bother with the count and the date
 
     if (what == "everything") {
-        val query = _query
+        const auto query = _query
                 .arg(activityCheck)
                 .arg(QString())
             ;
@@ -365,12 +364,12 @@ void NepomukPlugin::deleteRecentStats(const QString & activity, int count, const
             now = now.addMonths(-count);
         }
 
-        static val timeChecking = QString(
+        static const auto timeChecking = QString(
                 " ?cache nao:created ?created . "
                 " FILTER ( ?created > %1 ) . "
             );
 
-        val query = _query
+        const auto query = _query
                 .arg(activityCheck)
                 .arg(
                     timeChecking.arg(Soprano::Node::literalToN3(now))
@@ -388,13 +387,13 @@ void NepomukPlugin::deleteEarlierStats(const QString & activity, int months)
 #ifdef NEPOMUK_STORE_RESOURCE_SCORES
     if (months == 0) return;
 
-    val activityCheck = activity.isEmpty()
+    const auto activityCheck = activity.isEmpty()
             ? QString()
             : "?cache kao:usedActivity "
                 + Soprano::Node::resourceToN3(activityResource(activity).uri())
                 + " .";
 
-    static val _query = QString(
+    static const auto _query = QString(
         "select ?cache where { "
             "?cache a kao:ResourceScoreCache . "
             " %1 " // "?cache kao:usedActivity %activity . "
@@ -403,14 +402,14 @@ void NepomukPlugin::deleteEarlierStats(const QString & activity, int months)
         "}"
     );
 
-    val time = QDateTime::currentDateTime().addMonths(-months);
+    const auto time = QDateTime::currentDateTime().addMonths(-months);
 
-    static val timeChecking = QString(
+    static const auto timeChecking = QString(
             " ?cache nao:created ?created . "
             " FILTER ( ?modified < %1 ) . "
         );
 
-    val query = _query
+    const auto query = _query
             .arg(activityCheck)
             .arg(
                 timeChecking.arg(Soprano::Node::literalToN3(time))
@@ -452,11 +451,11 @@ bool NepomukPlugin::IsResourceLinkedToActivity(const QString & uri, const QStrin
 
     if (!d->nepomukPresent) return false;
 
-    val activity = _activity.isEmpty()
+    const auto activity = _activity.isEmpty()
             ? Plugin::callOn <QString, Qt::DirectConnection> (d->activities, "CurrentActivity", "QString")
             : _activity;
 
-    static val _query = QString::fromLatin1(
+    static const auto _query = QString::fromLatin1(
             "select ?r where { "
                 " ?a a kao:Activity . "
                 " ?a nao:isRelated ?r . "
@@ -464,7 +463,7 @@ bool NepomukPlugin::IsResourceLinkedToActivity(const QString & uri, const QStrin
                 " ?a kao:activityIdentifier %2 "
             "}");
 
-    val query = _query.arg(Soprano::Node::resourceToN3(uri))
+    const auto query = _query.arg(Soprano::Node::resourceToN3(uri))
                       .arg(Soprano::Node::literalToN3(activity));
 
     qDebug() << "So, this is the query that should get the linked resource " << query;
@@ -473,7 +472,7 @@ bool NepomukPlugin::IsResourceLinkedToActivity(const QString & uri, const QStrin
         = Nepomuk::ResourceManager::instance()->mainModel()->executeQuery(
                 query, Soprano::Query::QueryLanguageSparql);
 
-    val hasResults = it.next();
+    const auto hasResults = it.next();
     it.close();
 
     return hasResults;

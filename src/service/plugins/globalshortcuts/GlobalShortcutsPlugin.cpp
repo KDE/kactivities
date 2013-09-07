@@ -26,10 +26,8 @@
 #include <KActionCollection>
 #include <KLocalizedString>
 
-#include <utils/val.h>
-
-val objectNamePattern       = QString::fromLatin1("switch-to-activity-%1");
-val objectNamePatternLength = objectNamePattern.length() - 2;
+const auto objectNamePattern       = QString::fromLatin1("switch-to-activity-%1");
+const auto objectNamePatternLength = objectNamePattern.length() - 2;
 
 GlobalShortcutsPlugin::GlobalShortcutsPlugin(QObject * parent, const QVariantList & args)
     : Plugin(parent),
@@ -49,9 +47,9 @@ bool GlobalShortcutsPlugin::init(const QHash < QString, QObject * > & modules)
 {
     m_activitiesService = modules["activities"];
 
-    val activitiesList = Plugin::callOn <QStringList, Qt::DirectConnection> (m_activitiesService, "ListActivities", "QStringList");
+    const auto activitiesList = Plugin::callOn <QStringList, Qt::DirectConnection> (m_activitiesService, "ListActivities", "QStringList");
 
-    foreach (val & activity, activitiesList) {
+    foreach (const auto & activity, activitiesList) {
         activityAdded(activity);
     }
 
@@ -63,7 +61,7 @@ bool GlobalShortcutsPlugin::init(const QHash < QString, QObject * > & modules)
 
     m_actionCollection->readSettings();
 
-    foreach (val & action, m_actionCollection->actions()) {
+    foreach (const auto & action, m_actionCollection->actions()) {
         if (!activitiesList.contains(action->objectName().mid(objectNamePatternLength))) {
             m_actionCollection->removeAction(action);
         }
@@ -76,7 +74,7 @@ bool GlobalShortcutsPlugin::init(const QHash < QString, QObject * > & modules)
 
 void GlobalShortcutsPlugin::activityAdded(const QString & activity)
 {
-    val action = m_actionCollection->addAction(
+    const auto action = m_actionCollection->addAction(
             objectNamePattern.arg(activity)
         );
 
@@ -91,7 +89,7 @@ void GlobalShortcutsPlugin::activityAdded(const QString & activity)
 
 void GlobalShortcutsPlugin::activityRemoved(const QString & activity)
 {
-    foreach (val & action, m_actionCollection->actions()) {
+    foreach (const auto & action, m_actionCollection->actions()) {
         if (activity == action->objectName().mid(objectNamePatternLength)) {
             m_actionCollection->removeAction(action);
         }
@@ -102,7 +100,7 @@ void GlobalShortcutsPlugin::activityRemoved(const QString & activity)
 
 void GlobalShortcutsPlugin::activityChanged(const QString & activity)
 {
-    foreach (val & action, m_actionCollection->actions()) {
+    foreach (const auto & action, m_actionCollection->actions()) {
         if (activity == action->objectName().mid(objectNamePatternLength)) {
             action->setText(i18nc("@action", "Switch to activity \"%1\"", activityName(activity)));
         }

@@ -41,7 +41,6 @@
 #include <memory>
 
 #include <utils/d_ptr_implementation.h>
-#include <utils/val.h>
 
 namespace {
     QList < QThread * > s_moduleThreads;
@@ -122,12 +121,12 @@ Application::Application(int & argc, char ** argv)
 void Application::loadPlugins()
 {
     // TODO: Return the plugin system
-    // val offers = KServiceTypeTrader::self()->query("ActivityManager/Plugin");
+    // const auto offers = KServiceTypeTrader::self()->query("ActivityManager/Plugin");
 
-    // val config = KSharedConfig::openConfig("activitymanagerrc");
+    // const auto config = KSharedConfig::openConfig("activitymanagerrc");
     // auto disabledPlugins = config->group("Global").readEntry("disabledPlugins", QStringList());
 
-    // val pluginsGroup = config->group("Plugins");
+    // const auto pluginsGroup = config->group("Plugins");
     // foreach (const QString & plugin, pluginsGroup.keyList()) {
     //     if (!pluginsGroup.readEntry(plugin, true))
     //         disabledPlugins << plugin;
@@ -135,7 +134,7 @@ void Application::loadPlugins()
 
     // // Adding overridden plugins into the list of disabled ones
 
-    // foreach (val & service, offers) {
+    // foreach (const auto & service, offers) {
     //     if (!disabledPlugins.contains(service->library())) {
     //         disabledPlugins.append(
     //                 service->property("X-ActivityManager-PluginOverrides", QVariant::StringList).toStringList()
@@ -146,19 +145,19 @@ void Application::loadPlugins()
     // qDebug() << "These are the disabled plugins:" << disabledPlugins;
 
     // // Loading plugins and initializing them
-    // foreach (val & service, offers) {
+    // foreach (const auto & service, offers) {
     //     if (disabledPlugins.contains(service->library()) ||
     //             disabledPlugins.contains(service->property("X-KDE-PluginInfo-Name").toString() + "Enabled")) {
     //         continue;
     //     }
 
-    //     val factory = KPluginLoader(service->library()).factory();
+    //     const auto factory = KPluginLoader(service->library()).factory();
 
     //     if (!factory) {
     //         continue;
     //     }
 
-    //     val plugin = factory->create < Plugin > (this);
+    //     const auto plugin = factory->create < Plugin > (this);
 
     //     if (plugin) {
     //         qDebug() << "Got the plugin: " << service->library();
@@ -173,11 +172,11 @@ void Application::loadPlugins()
 
 Application::~Application()
 {
-    foreach (val plugin, d->plugins) {
+    foreach (const auto plugin, d->plugins) {
         delete plugin;
     }
 
-    foreach (val thread, s_moduleThreads) {
+    foreach (const auto thread, s_moduleThreads) {
         thread->quit();
         thread->wait();
 
