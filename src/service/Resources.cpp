@@ -88,9 +88,9 @@ void Resources::Private::insertEvent(const Event & newEvent)
 }
 
 void Resources::Private::addEvent(const QString & application, quintptr wid, const QString & uri,
-            int type, int reason)
+            int type)
 {
-    Event newEvent(application, wid, uri, type, reason);
+    Event newEvent(application, wid, uri, type);
     addEvent(newEvent);
 }
 
@@ -105,7 +105,6 @@ void Resources::Private::addEvent(const Event & newEvent)
         if (newEvent.type != Event::Accessed) {
             kamd::utils::remove_if(events, [&newEvent] (const Event & event) -> bool {
                 return
-                    event.reason      == Event::Accessed      &&
                     event.application == newEvent.application &&
                     event.uri         == newEvent.uri
                 ;
@@ -208,7 +207,7 @@ void Resources::Private::windowClosed(quintptr windowId)
 
     foreach (const QString & uri, windows[windowId].resources) {
         q->RegisterResourceEvent(windows[windowId].application,
-                windowId, uri, Event::Closed, 0);
+                windowId, uri, Event::Closed);
     }
 
     windows.remove(windowId);
@@ -268,14 +267,13 @@ Resources::~Resources()
 }
 
 void Resources::RegisterResourceEvent(QString application, uint _windowId,
-        const QString & uri, uint event, uint reason)
+        const QString & uri, uint event)
 {
     Q_ASSERT_X(!uri.startsWith("nepomuk:"), "Resources::RegisterResourceEvent",
             "We do not accept nepomuk URIs for resource events");
 
     if (
            event > Event::LastEventType
-        || reason > Event::LastEventReason
         || uri.isEmpty()
         || application.isEmpty()
         // Dirty way to skip special web browser URIs
@@ -286,8 +284,7 @@ void Resources::RegisterResourceEvent(QString application, uint _windowId,
     QString kuri(uri);
     quintptr windowId = (quintptr) _windowId;
 
-    d->addEvent(application, windowId,
-            kuri, (Event::Type) event, (Event::Reason) reason);
+    d->addEvent(application, windowId, kuri, (Event::Type) event);
 }
 
 

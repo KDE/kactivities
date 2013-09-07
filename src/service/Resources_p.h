@@ -39,7 +39,7 @@ public:
 
     // Processes the event and inserts it into the queue
     void addEvent(const QString & application, quintptr wid, const QString & uri,
-                int type, int reason);
+                int type);
 
     // Processes the event and inserts it into the queue
     void addEvent(const Event & newEvent);

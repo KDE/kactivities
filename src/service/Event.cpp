@@ -24,12 +24,12 @@
 
 
 Event::Event()
-    : wid(0), type(Accessed), reason(User), timestamp(QDateTime::currentDateTime())
+    : wid(0), type(Accessed), timestamp(QDateTime::currentDateTime())
 {
 }
 
-Event::Event(const QString & vApplication, quintptr vWid, const QString & vUri, int vType, int vReason)
-    : application(vApplication), wid(vWid), uri(vUri), type(vType), reason(vReason), timestamp(QDateTime::currentDateTime())
+Event::Event(const QString & vApplication, quintptr vWid, const QString & vUri, int vType)
+    : application(vApplication), wid(vWid), uri(vUri), type(vType), timestamp(QDateTime::currentDateTime())
 {
     Q_ASSERT(!vApplication.isEmpty());
     Q_ASSERT(!vUri.isEmpty());
@@ -49,7 +49,6 @@ bool Event::operator == (const Event & other) const
         wid == other.wid &&
         uri == other.uri &&
         type == other.type &&
-        reason == other.reason &&
         timestamp == other.timestamp;
 }
 

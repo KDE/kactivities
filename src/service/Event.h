@@ -29,7 +29,6 @@
  */
 class Event {
 public:
-
     enum Type {
         Accessed = 0,    ///< resource was accessed, but we don't know for how long it will be open/used
 
@@ -53,24 +52,10 @@ public:
 
     };
 
-    // TODO: Remove
-    // Was introduced for better cooperation with Zeitgeist
-    // We don't use it
-    enum Reason {
-        User = 0,
-        Scheduled = 1,
-        Heuristic = 2,
-        System = 3,
-        World = 4,
-
-        LastEventReason = 4,
-        UserEventReason = 32
-    };
-
     Event();
 
     explicit Event(const QString & application, quintptr wid, const QString & uri,
-            int type = Accessed, int reason = User);
+            int type = Accessed);
 
     Event deriveWithType(Type type) const;
 
@@ -81,7 +66,6 @@ public:
     quintptr wid;
     QString uri;
     int     type;
-    int     reason;
     QDateTime timestamp;
 
     QString typeName() const;
