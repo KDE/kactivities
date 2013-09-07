@@ -21,8 +21,6 @@
 
 #include <Plugin.h>
 
-#include <utils/override.h>
-
 class QSignalMapper;
 class KActionCollection;
 

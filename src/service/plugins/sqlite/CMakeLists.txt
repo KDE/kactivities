@@ -41,7 +41,7 @@ target_link_libraries (
    )
 
 set_target_properties(
-   activitymanager_plugin_slc
+   activitymanager_plugin_sqlite
    PROPERTIES PREFIX ""
    )
 
