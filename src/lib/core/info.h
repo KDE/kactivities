@@ -105,14 +105,6 @@ public:
     QString uri() const;
 
     /**
-     * @deprecated we don't guarantee that nepomuk is the backend
-     * @returns the Nepomuk resource URI of this activity
-     * @note Functional only when availability is Everything
-     */
-    KACTIVITIES_DEPRECATED
-    QString resourceUri() const;
-
-    /**
      * @returns the id of the activity
      */
     QString id() const;
@@ -140,13 +132,6 @@ public:
     State state() const;
 
     /**
-     * @returns true if encrypted
-     * @since 4.8
-     */
-    KACTIVITIES_DEPRECATED
-    bool isEncrypted() const;
-
-    /**
      * This function is provided for convenience.
      * @returns the name of the specified activity
      * @param id id of the activity
@@ -168,14 +153,6 @@ public:
      * @note This method is <b>asynchronous</b>
      */
     void unlinkResource(const QString & resourceUri);
-
-
-    /**
-     * @returns the list of linked resources
-     * @note This method is <b>blocking</b>
-     */
-    KACTIVITIES_DEPRECATED
-    QStringList linkedResources() const;
 
 
     /**

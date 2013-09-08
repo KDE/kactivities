@@ -55,13 +55,6 @@ void Controller::setActivityIcon(const QString & id, const QString & icon)
     Manager::activities()->SetActivityIcon(id, icon);
 }
 
-void Controller::setActivityEncrypted(const QString & id, bool encrypted)
-{
-    Q_UNUSED(id)
-    Q_UNUSED(encrypted)
-    // Manager::activities()->SetActivityEncrypted(id, encrypted);
-}
-
 bool Controller::setCurrentActivity(const QString & id)
 {
     return Manager::activities()->SetCurrentActivity(id);

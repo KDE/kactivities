@@ -159,11 +159,6 @@ QString Info::uri() const
     return QStringLiteral("activities://") + d->id;
 }
 
-QString Info::resourceUri() const
-{
-    return QString();
-}
-
 QString Info::id() const
 {
     return d->id;
@@ -195,11 +190,6 @@ QString Info::name(const QString & id)
         );
 }
 
-bool Info::isEncrypted() const
-{
-    return false;
-}
-
 Info::Availability Info::availability() const
 {
     Availability result = Nothing;
@@ -213,21 +203,6 @@ Info::Availability Info::availability() const
 
         if (Manager::features()->IsFeatureOperational(QString::fromLatin1("org.kde.ActivityManager.Nepomuk/linking"))) {
             result = Everything;
-        }
-    }
-
-    return result;
-}
-
-QStringList Info::linkedResources() const
-{
-    QStringList result;
-
-    QDBusReply < QStringList > dbusReply = Manager::resourcesLinking()->ResourcesLinkedToActivity(d->id);
-
-    if (dbusReply.isValid()) {
-        foreach (const QString & uri, dbusReply.value()) {
-            result << QString(uri);
         }
     }
 

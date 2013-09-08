@@ -65,14 +65,6 @@ public:
     void setActivityIcon(const QString & id, const QString & icon);
 
     /**
-     * Sets whether the activity should be encrypted
-     * @param id id of the activity
-     * @param encrypted should the activity be encrypted
-     */
-    KACTIVITIES_DEPRECATED
-    void setActivityEncrypted(const QString & id, bool encrypted);
-
-    /**
      * Sets the current activity
      * @param id id of the activity to make current
      * @returns true if successful
