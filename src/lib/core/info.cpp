@@ -167,7 +167,7 @@ QString Info::id() const
 KAMD_REMOTE_VALUE_GETTER(QString, Info, name, QString());
 //        i18nc("The name of the main activity - when the activity manager is not running", "Main"))
 
-KAMD_REMOTE_VALUE_GETTER(QString, Info, icon, QString::fromLatin1("preferences-activities"))
+KAMD_REMOTE_VALUE_GETTER(QString, Info, icon, QStringLiteral("preferences-activities"))
 
 Info::State Info::state() const
 {
@@ -201,7 +201,7 @@ Info::Availability Info::availability() const
     if (Manager::activities()->ListActivities().value().contains(d->id)) {
         result = BasicInfo;
 
-        if (Manager::features()->IsFeatureOperational(QString::fromLatin1("org.kde.ActivityManager.Nepomuk/linking"))) {
+        if (Manager::features()->IsFeatureOperational(QStringLiteral("org.kde.ActivityManager.Nepomuk/linking"))) {
             result = Everything;
         }
     }

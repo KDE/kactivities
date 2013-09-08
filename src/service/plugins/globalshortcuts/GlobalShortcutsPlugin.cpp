@@ -26,7 +26,7 @@
 #include <KActionCollection>
 #include <KLocalizedString>
 
-const auto objectNamePattern = QString::fromLatin1("switch-to-activity-%1");
+const auto objectNamePattern = QStringLiteral("switch-to-activity-%1");
 const auto objectNamePatternLength = objectNamePattern.length() - 2;
 
 GlobalShortcutsPlugin::GlobalShortcutsPlugin(QObject *parent, const QVariantList &args)

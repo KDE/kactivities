@@ -299,7 +299,7 @@ void NepomukPlugin::Private::syncActivities(const QStringList &activitys)
         } else {
             // If there is no icon reported by the service, and we
             // have one in nepomuk, send it to the service
-            const auto &symbols = resource.symbols();
+            const auto symbols = resource.symbols();
             if (symbols.size() > 0) {
                 Plugin::callOnWithArgs<QString, Qt::DirectConnection>(activities, "SetActivityIcon", "QString", Q_ARG(QString, activity), Q_ARG(QString, symbols.at(0)));
             }
@@ -449,7 +449,7 @@ bool NepomukPlugin::IsResourceLinkedToActivity(const QString &uri, const QString
                               ? Plugin::callOn<QString, Qt::DirectConnection>(d->activities, "CurrentActivity", "QString")
                               : _activity;
 
-    static const auto _query = QString::fromLatin1(
+    static const auto _query = QStringLiteral(
         "select ?r where { "
         " ?a a kao:Activity . "
         " ?a nao:isRelated ?r . "

@@ -66,7 +66,7 @@ void ResourceScoreMaintainer::Private::run()
             openResources.clear();
         }
 
-        const auto &activity = StatsPlugin::self()->currentActivity();
+        const auto activity = StatsPlugin::self()->currentActivity();
 
         // Let us first process the events related to the current
         // activity so that the stats are available quicker
@@ -118,7 +118,7 @@ void ResourceScoreMaintainer::processResource(const QString &resource, const QSt
     // Checking whether the item is already scheduled for
     // processing
 
-    const auto &activity = StatsPlugin::self()->currentActivity();
+    const auto activity = StatsPlugin::self()->currentActivity();
 
     if (d->openResources.contains(activity) && d->openResources[activity].contains(application) && d->openResources[activity][application].contains(resource)) {
 

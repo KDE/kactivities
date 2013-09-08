@@ -21,7 +21,7 @@
 
 QUrl resourceForUrl(const QUrl &url)
 {
-    static const auto &query = QString::fromLatin1(
+    static const auto query = QStringLiteral(
         "select ?r where { "
         "?r nie:url %1 . "
         "} LIMIT 1");
@@ -44,13 +44,13 @@ QUrl resourceForUrl(const QUrl &url)
 
 QUrl resourceForId(const QString &resourceId, const QUrl &type)
 {
-    static const auto &_query = QString::fromLatin1(
+    static const auto _query = QStringLiteral(
         "select ?r where { "
         "?r a %1 . "
         "?r nao:identifier %2 . "
         "} LIMIT 1");
 
-    const auto &query = _query.arg(
+    const auto query = _query.arg(
         /* %1 */ Soprano::Node::resourceToN3(type),
         /* %2 */ Soprano::Node::literalToN3(resourceId));
 
@@ -75,12 +75,12 @@ void updateNepomukScore(const QString &activity, const QString &application, con
 
     // Selecting a ResourceScoreCache object that is assigned to the specified
     // (activity, application, resource) triple
-    static const auto &_query = QString::fromLatin1("select ?r where { "
-                                                    "?r a %1 . "
-                                                    "?r kao:usedActivity %2 . "
-                                                    "?r kao:initiatingAgent %3 . "
-                                                    "?r kao:targettedResource %4 . "
-                                                    "} LIMIT 1");
+    static const auto _query = QStringLiteral("select ?r where { "
+                                              "?r a %1 . "
+                                              "?r kao:usedActivity %2 . "
+                                              "?r kao:initiatingAgent %3 . "
+                                              "?r kao:targettedResource %4 . "
+                                              "} LIMIT 1");
 
     const auto query = _query.arg(
         /* %1 */ resN3(KAO::ResourceScoreCache()),

@@ -92,7 +92,7 @@ public:
         uds.insert(KIO::UDSEntry::UDS_NAME, name);
         uds.insert(KIO::UDSEntry::UDS_DISPLAY_NAME, displayName);
         uds.insert(KIO::UDSEntry::UDS_FILE_TYPE, S_IFDIR);
-        uds.insert(KIO::UDSEntry::UDS_MIME_TYPE, QString::fromLatin1("inode/directory"));
+        uds.insert(KIO::UDSEntry::UDS_MIME_TYPE, QStringLiteral("inode/directory"));
         uds.insert(KIO::UDSEntry::UDS_MODIFICATION_TIME, dt.toTime_t());
         uds.insert(KIO::UDSEntry::UDS_CREATION_TIME, dt.toTime_t());
         uds.insert(KIO::UDSEntry::UDS_ACCESS, 0700);
@@ -142,7 +142,7 @@ public:
     void listActivities() const
     {
         kio->listEntry(createFolderUDSEntry(
-                           QString::fromLatin1("current"),
+                           QStringLiteral("current"),
                            i18n("Current activity"),
                            QDate::currentDate()),
                        false);
@@ -168,7 +168,7 @@ public:
         if (!activity.isEmpty()) {
             Nepomuk::Resource activityResource(activity, KAO::Activity());
 
-            const QString query = QString::fromLatin1(
+            const QString query = QStringLiteral(
                 "select distinct ?r, ?url where { "
                 "     ?r a nfo:FileDataObject . "
                 "     ?r nie:url ?url . "
@@ -334,10 +334,10 @@ void ActivitiesProtocol::stat(const KUrl &url)
     switch (d->parseUrl(url)) {
     case Private::RootItem: {
         KIO::UDSEntry uds;
-        uds.insert(KIO::UDSEntry::UDS_NAME, QString::fromLatin1("/"));
-        uds.insert(KIO::UDSEntry::UDS_ICON_NAME, QString::fromLatin1("preferences-activities"));
+        uds.insert(KIO::UDSEntry::UDS_NAME, QStringLiteral("/"));
+        uds.insert(KIO::UDSEntry::UDS_ICON_NAME, QStringLiteral("preferences-activities"));
         uds.insert(KIO::UDSEntry::UDS_FILE_TYPE, S_IFDIR);
-        uds.insert(KIO::UDSEntry::UDS_MIME_TYPE, QString::fromLatin1("inode/directory"));
+        uds.insert(KIO::UDSEntry::UDS_MIME_TYPE, QStringLiteral("inode/directory"));
         statEntry(uds);
         finished();
         break;
@@ -347,7 +347,7 @@ void ActivitiesProtocol::stat(const KUrl &url)
         KIO::UDSEntry uds;
         uds.insert(KIO::UDSEntry::UDS_NAME, d->activity);
         uds.insert(KIO::UDSEntry::UDS_FILE_TYPE, S_IFDIR);
-        uds.insert(KIO::UDSEntry::UDS_MIME_TYPE, QString::fromLatin1("inode/directory"));
+        uds.insert(KIO::UDSEntry::UDS_MIME_TYPE, QStringLiteral("inode/directory"));
         statEntry(uds);
         finished();
         break;

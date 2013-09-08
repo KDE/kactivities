@@ -97,7 +97,9 @@ public:
      *        If not specified, QCoreApplication::applicationName is used
      * @param parent pointer to the parent object
      */
-    ResourceInstance(quintptr wid, QUrl resourceUri, const QString &mimetype = QString(), const QString &title = QString(), const QString &application = QString(), QObject *parent = Q_NULLPTR);
+    ResourceInstance(quintptr wid, QUrl resourceUri, const QString &mimetype = QString(),
+                     const QString &title = QString(), const QString &application = QString(),
+                     QObject *parent = Q_NULLPTR);
 
     /**
      * Destroys the ResourceInstance and notifies the system

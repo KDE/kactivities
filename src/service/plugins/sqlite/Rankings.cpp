@@ -59,16 +59,14 @@ void RankingsUpdateThread::run()
 {
     qDebug() << "This is the activity we want the results for:" << m_activity;
 
-    const auto &query = QString::fromLatin1(
+    static const auto query = QStringLiteral(
         "SELECT targettedResource, cachedScore "
         "FROM kext_ResourceScoreCache " // this should be kao_ResourceScoreCache, but lets leave it
         "WHERE usedActivity = '%1' "
         "AND cachedScore > 0 "
-        "ORDER BY cachedScore DESC LIMIT 30").arg(m_activity);
+        "ORDER BY cachedScore DESC LIMIT 30");
 
-    qDebug() << query;
-
-    auto result = DatabaseConnection::self()->database().exec(query);
+    auto result = DatabaseConnection::self()->database().exec(query.arg(m_activity));
 
     while (result.next()) {
         const auto url = result.value(0).toString();
@@ -150,7 +148,7 @@ void Rankings::setCurrentActivity(const QString &activity)
 
 void Rankings::initResults(const QString &_activity)
 {
-    const auto &activity = COALESCE_ACTIVITY(_activity);
+    const auto activity = COALESCE_ACTIVITY(_activity);
 
     m_results[activity].clear();
     notifyResultsUpdated(activity);
@@ -208,7 +206,7 @@ void Rankings::updateScoreTrashold(const QString &activity)
 
 void Rankings::notifyResultsUpdated(const QString &_activity, QStringList clients)
 {
-    const auto &activity = COALESCE_ACTIVITY(_activity);
+    const auto activity = COALESCE_ACTIVITY(_activity);
 
     updateScoreTrashold(activity);
 

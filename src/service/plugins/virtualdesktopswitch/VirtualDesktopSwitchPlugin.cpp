@@ -22,7 +22,7 @@
 
 // #include <KWindowSystem>
 
-const auto configPattern = QString::fromLatin1("desktop-for-%1");
+const auto configPattern = QStringLiteral("desktop-for-%1");
 
 VirtualDesktopSwitchPlugin::VirtualDesktopSwitchPlugin(QObject *parent, const QVariantList &args)
     : Plugin(parent)

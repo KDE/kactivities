@@ -214,7 +214,7 @@ void ActivityRanking::Private::processWeekData(const QString &activity, const QS
                 }
 #undef SEGMENTS
 
-                static const auto &where = QString::fromLatin1(" WHERE activity = '%1' AND year = %2 AND week = %3 AND location='%4'");
+                static const auto where = QStringLiteral(" WHERE activity = '%1' AND year = %2 AND week = %3 AND location='%4'");
 
                 database.exec(database.driver()->sqlStatement(QSqlDriver::UpdateStatement, "WeekScores", record, false)
                               + where.arg(activity).arg(year).arg(weekNumber).arg(location));
@@ -283,7 +283,7 @@ void ActivityRanking::Private::processMonthData(const QString &activity, const Q
                     increaseValue(iFirstColumn + iEnd, coefEnd - iEnd);
                 }
 
-                static const auto &where = QString::fromLatin1(" WHERE activity = '%1' AND year = %2 AND month = %3 AND location = '%4'");
+                static const auto where = QStringLiteral(" WHERE activity = '%1' AND year = %2 AND month = %3 AND location = '%4'");
 
                 database.exec(database.driver()->sqlStatement(QSqlDriver::UpdateStatement, "MonthScores", record, false)
                               + where.arg(activity).arg(year).arg(month).arg(location));
@@ -537,7 +537,7 @@ QMap<QString, qreal> ActivityRanking::Private::topActivitiesFor(const QDateTime 
     PRINT_LAST_ERROR(database);
 
     while (query.next()) {
-        const auto &record = query.record();
+        const auto record = query.record();
         result[record.value(0).toString()] = record.value(1).toDouble();
     }
 

@@ -89,7 +89,7 @@ Activities::Activities(QObject *parent)
         d->activities[activity] = Activities::Stopped;
     }
 
-    const auto &runningActivities = d->mainConfig().readEntry("runningActivities", d->activities.keys());
+    const auto runningActivities = d->mainConfig().readEntry("runningActivities", d->activities.keys());
 
     foreach (const auto & activity, runningActivities) {
         if (d->activities.contains(activity)) {
@@ -159,7 +159,7 @@ bool Activities::Private::setCurrentActivity(const QString &activity)
 void Activities::Private::loadLastActivity()
 {
     // If there are no public activities, try to load the last used activity
-    const auto &lastUsedActivity = mainConfig().readEntry("currentActivity", QString());
+    const auto lastUsedActivity = mainConfig().readEntry("currentActivity", QString());
 
     setCurrentActivity(
         (lastUsedActivity.isEmpty() && activities.size() > 0)
@@ -192,7 +192,7 @@ QString Activities::AddActivity(const QString &name)
     // Ensuring a new Uuid. The loop should usually end after only
     // one iteration
 
-    const auto &existingActivities = d->activities.keys();
+    const auto existingActivities = d->activities.keys();
     while (activity.isEmpty() || existingActivities.contains(activity)) {
         activity = QUuid::createUuid().toString();
         activity.replace(QRegExp(QStringLiteral("[{}]")), QString());
@@ -434,7 +434,7 @@ void Activities::Private::ensureCurrentActivityIsRunning()
     // If the current activity is not running,
     // make some other activity current
 
-    const auto &runningActivities = q->ListActivities(Activities::Running);
+    const auto runningActivities = q->ListActivities(Activities::Running);
 
     if (!runningActivities.contains(currentActivity)) {
         if (runningActivities.size() > 0) {

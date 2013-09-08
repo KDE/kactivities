@@ -254,7 +254,7 @@ void ResourceModel::Private::loadFromQuery(const QString &query)
 
 void ResourceModel::Private::loadLinked()
 {
-    static const QString &_query = QString::fromLatin1(
+    static const QString &_query = QStringLiteral(
         "select distinct ?r, ?url, -1 as ?score, ?title, ?icon where { "
         "?activity nao:isRelated ?r . "
         "?activity kao:activityIdentifier %1. "
@@ -264,7 +264,7 @@ void ResourceModel::Private::loadLinked()
         "%2 "
         "}");
 
-    static const QString &_applicationFilter = QString::fromLatin1(
+    static const QString &_applicationFilter = QStringLiteral(
         "?scoreCache a kao:ResourceScoreCache . "
         "?scoreCache kao:usedActivity ?activity . "
         "?scoreCache kao:targettedResource ?r . "
@@ -278,7 +278,7 @@ void ResourceModel::Private::loadLinked()
 
 void ResourceModel::Private::loadRecent()
 {
-    static const QString &_query = QString::fromLatin1(
+    static const QString &_query = QStringLiteral(
         "select distinct ?r, ?url, "
         // "(bif:datediff ('second', \"1970-01-01\"^^<http://www.w3.org/2001/XMLSchema#date>, ?lastModified)) as ?score, "
         "(bif:datediff ('second', \"1970-01-01\"^^<http://www.w3.org/2001/XMLSchema#date>, ?lastModified)) as ?score, "
@@ -294,7 +294,7 @@ void ResourceModel::Private::loadRecent()
         "%2 "
         "} order by desc(?score) limit %3");
 
-    static const QString &_applicationFilter = QString::fromLatin1(
+    static const QString &_applicationFilter = QStringLiteral(
         "?scoreCache kao:initiatingAgent ?agent . "
         "?agent nao:identifier %1 .");
 
@@ -308,7 +308,7 @@ void ResourceModel::Private::loadRecent()
 
 void ResourceModel::Private::loadTopRated()
 {
-    static const QString &_query = QString::fromLatin1(
+    static const QString &_query = QStringLiteral(
         "select distinct ?r, ?url, ?score, ?title, ?icon where { "
         "?scoreCache a kao:ResourceScoreCache . "
         "?scoreCache kao:usedActivity ?activity . "
@@ -321,7 +321,7 @@ void ResourceModel::Private::loadTopRated()
         "%2 "
         "} order by desc(?score) limit %3");
 
-    static const QString &_applicationFilter = QString::fromLatin1(
+    static const QString &_applicationFilter = QStringLiteral(
         "?scoreCache kao:initiatingAgent ?agent . "
         "?agent nao:identifier %1 .");
 
@@ -381,7 +381,7 @@ void ResourceModel::Private::newEntries(const QList<NQuery::Result> &entries)
 
     foreach(const NQuery::Result & result, entries)
     {
-        const ResourceInfo &entry = infoFromResult(result);
+        const ResourceInfo entry = infoFromResult(result);
 
         if (entry.title.isEmpty()
             || resourceSet.contains(entry.url)
