@@ -124,8 +124,6 @@ bool Activities::Private::setCurrentActivity(const QString &activity)
     using namespace Jobs;
     using namespace Jobs::General;
 
-    DEFINE_ORDERED_SCHEDULER(setCurrentActivityJob);
-
     // If the activity is empty, this means we are entering a limbo state
     if (activity.isEmpty()) {
         currentActivity.clear();
@@ -144,14 +142,7 @@ bool Activities::Private::setCurrentActivity(const QString &activity)
     q->StartActivity(activity);
 
     //   - change the current activity and signal the change
-
-    setCurrentActivityJob
-        << // Change the activity
-        General::call(this,
-                      QStringLiteral("emitCurrentActivityChanged"),
-                      activity);
-
-    setCurrentActivityJob.start();
+    emitCurrentActivityChanged(activity);
 
     return true;
 }
