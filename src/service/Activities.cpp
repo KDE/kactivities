@@ -208,23 +208,7 @@ void Activities::RemoveActivity(const QString &activity)
     if (!d->activities.contains(activity))
         return;
 
-    DEFINE_ORDERED_SCHEDULER(removeActivityJob);
-
-    using namespace Jobs;
-    using namespace Jobs::General;
-
-    //   - stop
-    //   - if it was current, switch to a running activity
-    //   - remove from configs
-    //   - signal the event
-
-    removeActivityJob
-        << // Remove activity
-        // TODO: Leaving the operator->() call so that no one is able to
-        // miss out the fact that we are passing a raw pointer to d!
-        General::call(d.operator->(), QStringLiteral("removeActivity"), activity, true /* wait finished */);
-
-    removeActivityJob.start();
+    d->removeActivity(activity);
 }
 
 void Activities::Private::removeActivity(const QString &activity)
