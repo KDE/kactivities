@@ -28,8 +28,10 @@
 #include <config-features.h>
 #include <utils/d_ptr_implementation.h>
 
-#define LOCATION_MANAGER_SERVICE "org.kde.LocationManager"
-#define LOCATION_MANAGER_OBJECT "/LocationManager"
+#define LOCATION_MANAGER_SERVICE \
+    "org.kde.LocationManager"
+#define LOCATION_MANAGER_OBJECT \
+    "/LocationManager"
 
 class Location::Private {
 public:
@@ -38,30 +40,32 @@ public:
     {
     }
 
-    ~Private() {
+    ~Private()
+    {
         delete manager;
     }
 
-    org::kde::LocationManager * manager;
+    org::kde::LocationManager *manager;
     QString current;
-    QDBusServiceWatcher * watcher;
+    QDBusServiceWatcher *watcher;
 
-    static Location * s_instance;
+    static Location *s_instance;
 };
 
-Location * Location::Private::s_instance = Q_NULLPTR;
+Location *Location::Private::s_instance = Q_NULLPTR;
 
-Location::Location(QObject * parent)
-    : QObject(parent), d()
+Location::Location(QObject *parent)
+    : QObject(parent)
+    , d()
 {
     qDebug() << "Location object initializing";
 
     d->watcher = new QDBusServiceWatcher(
-            LOCATION_MANAGER_SERVICE,
-            KDBusConnectionPool::threadConnection(),
-            QDBusServiceWatcher::WatchForRegistration
-                | QDBusServiceWatcher::WatchForUnregistration,
-            this);
+        LOCATION_MANAGER_SERVICE,
+        KDBusConnectionPool::threadConnection(),
+        QDBusServiceWatcher::WatchForRegistration
+        | QDBusServiceWatcher::WatchForUnregistration,
+        this);
 
     connect(d->watcher, SIGNAL(serviceRegistered(QString)),
             this, SLOT(enable()));
@@ -82,10 +86,10 @@ QString Location::current() const
     return d->current;
 }
 
-Location * Location::self(QObject * parent)
+Location *Location::self(QObject *parent)
 {
     if (!Private::s_instance) {
-        Private:: s_instance = new Location(parent);
+        Private::s_instance = new Location(parent);
     }
 
     return Private::s_instance;
@@ -100,10 +104,9 @@ void Location::disable()
 void Location::enable()
 {
     d->manager = new org::kde::LocationManager(
-            LOCATION_MANAGER_SERVICE,
-            LOCATION_MANAGER_OBJECT,
-            KDBusConnectionPool::threadConnection()
-        );
+        LOCATION_MANAGER_SERVICE,
+        LOCATION_MANAGER_OBJECT,
+        KDBusConnectionPool::threadConnection());
 
     connect(d->manager, SIGNAL(currentLocationChanged(QString, QString)),
             this, SLOT(setCurrent(QString)));
@@ -111,10 +114,8 @@ void Location::enable()
     d->current = d->manager->currentLocationId();
 }
 
-void Location::setCurrent(const QString & location)
+void Location::setCurrent(const QString &location)
 {
     d->current = location;
     emit currentChanged(location);
 }
-
-

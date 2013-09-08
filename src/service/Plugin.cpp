@@ -35,8 +35,9 @@ public:
     KSharedConfig::Ptr config;
 };
 
-Plugin::Plugin(QObject * parent)
-    : Module(QString(), parent), d()
+Plugin::Plugin(QObject *parent)
+    : Module(QString(), parent)
+    , d()
 {
 }
 
@@ -58,7 +59,7 @@ KConfigGroup Plugin::config()
     return d->config->group(QStringLiteral("Plugin-") + d->name);
 }
 
-void Plugin::setName(const QString & name)
+void Plugin::setName(const QString &name)
 {
     Q_ASSERT_X(d->name.isEmpty(), "Plugin::setName", "The name can not be set twice");
     Q_ASSERT_X(!name.isEmpty(), "Plugin::setName", "The name can not be empty");
@@ -71,4 +72,3 @@ QString Plugin::name() const
 {
     return d->name;
 }
-

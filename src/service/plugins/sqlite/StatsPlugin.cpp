@@ -34,14 +34,14 @@
 
 #include "DatabaseConnection.h"
 
-StatsPlugin * StatsPlugin::s_instance = Q_NULLPTR;
+StatsPlugin *StatsPlugin::s_instance = Q_NULLPTR;
 
-StatsPlugin::StatsPlugin(QObject *parent, const QVariantList & args)
-    : Plugin(parent),
-      m_rankings(Q_NULLPTR),
-      m_activities(Q_NULLPTR),
-      m_resources(Q_NULLPTR),
-      m_configWatcher(Q_NULLPTR)
+StatsPlugin::StatsPlugin(QObject *parent, const QVariantList &args)
+    : Plugin(parent)
+    , m_rankings(Q_NULLPTR)
+    , m_activities(Q_NULLPTR)
+    , m_resources(Q_NULLPTR)
+    , m_configWatcher(Q_NULLPTR)
 {
     Q_UNUSED(args)
     s_instance = this;
@@ -52,7 +52,7 @@ StatsPlugin::StatsPlugin(QObject *parent, const QVariantList & args)
     setName(QStringLiteral("org.kde.ActivityManager.Resources.Scoring"));
 }
 
-bool StatsPlugin::init(const QHash < QString, QObject * > & modules)
+bool StatsPlugin::init(const QHash<QString, QObject *> &modules)
 {
     qDebug() << "These are the registered modules: " << modules.keys();
 
@@ -77,8 +77,7 @@ void StatsPlugin::loadConfiguration()
 {
     config().config()->reparseConfiguration();
 
-    const QString configFile =
-        QStandardPaths::writableLocation(QStandardPaths::ConfigLocation) + QStringLiteral("activitymanager-pluginsrc");
+    const QString configFile = QStandardPaths::writableLocation(QStandardPaths::ConfigLocation) + QStringLiteral("activitymanager-pluginsrc");
 
     if (m_configWatcher) {
         // When saving a config file, KConfig deletes the old,
@@ -102,9 +101,9 @@ void StatsPlugin::loadConfiguration()
 
     if (m_whatToRemember == SpecificApplications) {
         m_apps = config().readEntry(
-                m_blockedByDefault ? "allowed-applications" : "blocked-applications",
-                QStringList()
-            ).toSet();
+                              m_blockedByDefault ? "allowed-applications" : "blocked-applications",
+                              QStringList())
+                     .toSet();
     }
 
     // Delete old events, as per configuration
@@ -113,56 +112,56 @@ void StatsPlugin::loadConfiguration()
     deleteEarlierStats(QString(), config().readEntry("keep-history-for", 0));
 }
 
-StatsPlugin * StatsPlugin::self()
+StatsPlugin *StatsPlugin::self()
 {
     return s_instance;
 }
 
 QString StatsPlugin::currentActivity() const
 {
-    return Plugin::callOn <QString, Qt::DirectConnection> (m_activities, "CurrentActivity", "QString");
+    return Plugin::callOn<QString, Qt::DirectConnection>(m_activities, "CurrentActivity", "QString");
 }
 
-void StatsPlugin::addEvents(const EventList & events)
+void StatsPlugin::addEvents(const EventList &events)
 {
-    if (m_blockAll || m_whatToRemember == NoApplications) return;
+    if (m_blockAll || m_whatToRemember == NoApplications)
+        return;
 
     for (int i = 0; i < events.size(); i++) {
-        const auto & event = events[i];
+        const auto &event = events[i];
 
-        if (event.uri.startsWith(QLatin1String("about"))) continue;
+        if (event.uri.startsWith(QLatin1String("about")))
+            continue;
 
-        const auto currentActivity = Plugin::callOn <QString, Qt::DirectConnection> (m_activities, "CurrentActivity", "QString");
+        const auto currentActivity = Plugin::callOn<QString, Qt::DirectConnection>(m_activities, "CurrentActivity", "QString");
 
         // if blocked by default, the list contains allowed applications
         //     ignore event if the list doesn't contain the application
         // if not blocked by default, the list contains blocked applications
         //     ignore event if the list contains the application
         if (
-                (m_whatToRemember == SpecificApplications) &&
-                (m_blockedByDefault
-                    ? !m_apps.contains(event.application)
-                    :  m_apps.contains(event.application)
-                )
-           ) continue;
+                (m_whatToRemember == SpecificApplications) && (m_blockedByDefault
+                                                                   ? !m_apps.contains(event.application)
+                                                                   : m_apps.contains(event.application)))
+            continue;
 
         switch (event.type) {
             case Event::Accessed:
                 DatabaseConnection::self()->openDesktopEvent(
-                        currentActivity, event.application, event.uri, event.timestamp, event.timestamp);
+                    currentActivity, event.application, event.uri, event.timestamp, event.timestamp);
                 ResourceScoreMaintainer::self()->processResource(event.uri, event.application);
 
                 break;
 
             case Event::Opened:
                 DatabaseConnection::self()->openDesktopEvent(
-                        currentActivity, event.application, event.uri, event.timestamp);
+                    currentActivity, event.application, event.uri, event.timestamp);
 
                 break;
 
             case Event::Closed:
                 DatabaseConnection::self()->closeDesktopEvent(
-                        currentActivity, event.application, event.uri, event.timestamp);
+                    currentActivity, event.application, event.uri, event.timestamp);
                 ResourceScoreMaintainer::self()->processResource(event.uri, event.application);
 
                 break;
@@ -179,22 +178,18 @@ void StatsPlugin::addEvents(const EventList & events)
     }
 }
 
-void StatsPlugin::deleteRecentStats(const QString & activity, int count, const QString & what)
+void StatsPlugin::deleteRecentStats(const QString &activity, int count, const QString &what)
 {
-    const auto activityCheck = activity.isEmpty() ?
-        QStringLiteral(" 1 ") :
-        QStringLiteral(" usedActivity = '") + activity + QStringLiteral("' ");
+    const auto activityCheck = activity.isEmpty() ? QStringLiteral(" 1 ") : QStringLiteral(" usedActivity = '") + activity + QStringLiteral("' ");
 
     // If we need to delete everything,
     // no need to bother with the count and the date
 
     if (what == QStringLiteral("everything")) {
         DatabaseConnection::self()->database().exec(
-                QStringLiteral("DELETE FROM kext_ResourceScoreCache WHERE ") + activityCheck
-            );
+            QStringLiteral("DELETE FROM kext_ResourceScoreCache WHERE ") + activityCheck);
         DatabaseConnection::self()->database().exec(
-                QStringLiteral("DELETE FROM nuao_DesktopEvent WHERE ") + activityCheck
-            );
+            QStringLiteral("DELETE FROM nuao_DesktopEvent WHERE ") + activityCheck);
 
     } else {
 
@@ -217,65 +212,56 @@ void StatsPlugin::deleteRecentStats(const QString & activity, int count, const Q
         // if something was accessed before, it is not really a secret
 
         static const auto queryRSC = QStringLiteral(
-                "DELETE FROM kext_ResourceScoreCache "
-                " WHERE %1 "
-                " AND firstUpdate > %2 "
-            );
+            "DELETE FROM kext_ResourceScoreCache "
+            " WHERE %1 "
+            " AND firstUpdate > %2 ");
         static const auto queryDE = QStringLiteral(
-                "DELETE FROM nuao_DesktopEvent "
-                " WHERE %1 "
-                " AND end > %2 "
-            );
+            "DELETE FROM nuao_DesktopEvent "
+            " WHERE %1 "
+            " AND end > %2 ");
 
         DatabaseConnection::self()->database().exec(
             queryRSC
                 .arg(activityCheck)
-                .arg(now.toTime_t())
-            );
+                .arg(now.toTime_t()));
         DatabaseConnection::self()->database().exec(
             queryDE
                 .arg(activityCheck)
-                .arg(now.toTime_t())
-            );
+                .arg(now.toTime_t()));
     }
 
     emit recentStatsDeleted(activity, count, what);
 }
 
-void StatsPlugin::deleteEarlierStats(const QString & activity, int months)
+void StatsPlugin::deleteEarlierStats(const QString &activity, int months)
 {
-    if (months == 0) return;
+    if (months == 0)
+        return;
 
-    const auto activityCheck = activity.isEmpty() ?
-        QStringLiteral(" 1 ") :
-        QStringLiteral(" usedActivity = '") + activity + QStringLiteral("' ");
+    const auto activityCheck = activity.isEmpty() ? QStringLiteral(" 1 ") : QStringLiteral(" usedActivity = '") + activity + QStringLiteral("' ");
 
     // Deleting a specified length of time
 
     const auto time = QDateTime::currentDateTime().addMonths(-months);
 
     static const auto queryRSC = QStringLiteral(
-            "DELETE FROM kext_ResourceScoreCache "
-            " WHERE %1 "
-            " AND lastUpdate < %2 "
-        );
+        "DELETE FROM kext_ResourceScoreCache "
+        " WHERE %1 "
+        " AND lastUpdate < %2 ");
     static const auto queryDE = QStringLiteral(
-            "DELETE FROM nuao_DesktopEvent "
-            " WHERE %1 "
-            " AND start < %2 "
-        );
+        "DELETE FROM nuao_DesktopEvent "
+        " WHERE %1 "
+        " AND start < %2 ");
 
     DatabaseConnection::self()->database().exec(
         queryRSC
             .arg(activityCheck)
-            .arg(time.toTime_t())
-        );
+            .arg(time.toTime_t()));
 
     DatabaseConnection::self()->database().exec(
         queryDE
             .arg(activityCheck)
-            .arg(time.toTime_t())
-        );
+            .arg(time.toTime_t()));
 
     emit earlierStatsDeleted(activity, months);
 }

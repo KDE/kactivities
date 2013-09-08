@@ -28,7 +28,7 @@
 
 class JobFactory::Private {
 public:
-    QHash < QString, QVariant > properties;
+    QHash<QString, QVariant> properties;
 };
 
 JobFactory::JobFactory()
@@ -40,26 +40,26 @@ JobFactory::~JobFactory()
 {
 }
 
-void JobFactory::setProperty(const QString & key, const QVariant & value)
+void JobFactory::setProperty(const QString &key, const QVariant &value)
 {
     d->properties[key] = value;
 }
 
-void JobFactory::clearProperty(const QString & key)
+void JobFactory::clearProperty(const QString &key)
 {
     d->properties.remove(key);
 }
 
-void JobFactory::property(const QString & key) const
+void JobFactory::property(const QString &key) const
 {
     d->properties[key];
 }
 
-Job * JobFactory::create(QObject * parent)
+Job *JobFactory::create(QObject *parent)
 {
-    Job * result = createJob(parent);
+    Job *result = createJob(parent);
 
-    QHashIterator < QString, QVariant > i(d->properties);
+    QHashIterator<QString, QVariant> i(d->properties);
     while (i.hasNext()) {
         i.next();
         result->setProperty(i.key().toLatin1().constData(), i.value());
@@ -68,15 +68,15 @@ Job * JobFactory::create(QObject * parent)
     return result;
 }
 
-class JobFactoryWrapper: public JobFactory {
+class JobFactoryWrapper : public JobFactory {
 public:
-    JobFactoryWrapper(Job * job)
+    JobFactoryWrapper(Job *job)
         : m_job(job)
     {
     }
 
 protected:
-    virtual Job * createJob(QObject * parent) Q_DECL_OVERRIDE
+    virtual Job *createJob(QObject *parent) Q_DECL_OVERRIDE
     {
         m_job->setParent(parent);
 
@@ -84,14 +84,12 @@ protected:
     }
 
 private:
-    Job * m_job;
+    Job *m_job;
 };
 
-JobFactory * JobFactory::wrap(Job * job)
+JobFactory *JobFactory::wrap(Job *job)
 {
     return new JobFactoryWrapper(job);
 }
 
 // class JobFactory
-
-

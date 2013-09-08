@@ -25,13 +25,14 @@
 
 class Job::Private {
 public:
-    static QObject * s_global;
+    static QObject *s_global;
 };
 
-QObject * Job::Private::s_global = Q_NULLPTR;
+QObject *Job::Private::s_global = Q_NULLPTR;
 
-Job::Job(QObject * parent)
-    :KJob(parent), d()
+Job::Job(QObject *parent)
+    : KJob(parent)
+    , d()
 {
 }
 
@@ -43,7 +44,7 @@ void Job::init()
 {
 }
 
-QObject * Job::global()
+QObject *Job::global()
 {
     if (!Private::s_global) {
         Private::s_global = new QObject();
@@ -51,5 +52,3 @@ QObject * Job::global()
 
     return Private::s_global;
 }
-
-

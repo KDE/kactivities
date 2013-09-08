@@ -20,23 +20,22 @@
 
 #include <Plugin.h>
 
-class SlcPlugin: public Plugin
-{
+class SlcPlugin : public Plugin {
     Q_OBJECT
     Q_CLASSINFO("D-Bus Interface", "org.kde.ActivityManager.SLC")
     // Q_PLUGIN_METADATA(IID "org.kde.ActivityManager.plugins.slc" FILE "activitymanager-plugin-slc.json")
     Q_PLUGIN_METADATA(IID "org.kde.ActivityManager.plugins.slc")
 
 public:
-    explicit SlcPlugin(QObject * parent = Q_NULLPTR, const QVariantList & args = QVariantList());
+    explicit SlcPlugin(QObject *parent = Q_NULLPTR, const QVariantList &args = QVariantList());
     ~SlcPlugin();
 
-    virtual bool init(const QHash < QString, QObject * > & modules) Q_DECL_OVERRIDE;
+    virtual bool init(const QHash<QString, QObject *> &modules) Q_DECL_OVERRIDE;
 
 private Q_SLOTS:
-    void registeredResourceEvent(const Event & event);
-    void registeredResourceMimeType(const QString & uri, const QString & mimetype);
-    void registeredResourceTitle(const QString & uri, const QString & title);
+    void registeredResourceEvent(const Event &event);
+    void registeredResourceMimeType(const QString &uri, const QString &mimetype);
+    void registeredResourceTitle(const QString &uri, const QString &title);
 
 public Q_SLOTS:
     QString focussedResourceURI() const;
@@ -44,7 +43,7 @@ public Q_SLOTS:
     QString focussedResourceTitle() const;
 
 Q_SIGNALS:
-    void focusChanged(const QString & uri, const QString & mimetype, const QString & title);
+    void focusChanged(const QString &uri, const QString &mimetype, const QString &title);
 
 private:
     struct ResourceInfo {
@@ -52,9 +51,8 @@ private:
         QString mimetype;
     };
 
-    QHash < QString, ResourceInfo > m_resources;
+    QHash<QString, ResourceInfo> m_resources;
     QString m_focussedResource;
 };
 
 #endif // PLUGINS_SLC_PLUGIN_H
-

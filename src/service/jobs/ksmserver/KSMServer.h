@@ -27,29 +27,28 @@
 /**
  * KSMServer
  */
-class KSMServer: public QObject {
+class KSMServer : public QObject {
     Q_OBJECT
 public:
 
     enum ReturnStatus {
-        Started      = 0,
-        Stopped      = 1,
+        Started = 0,
+        Stopped = 1,
         FailedToStop = 2
     };
 
-    KSMServer(QObject * parent = Q_NULLPTR);
+    KSMServer(QObject *parent = Q_NULLPTR);
     virtual ~KSMServer();
 
 public Q_SLOTS:
-    void startActivitySession(const QString & activity);
-    void stopActivitySession(const QString & activity);
+    void startActivitySession(const QString &activity);
+    void stopActivitySession(const QString &activity);
 
 Q_SIGNALS:
-    void activitySessionStateChanged(const QString & activity, int status);
+    void activitySessionStateChanged(const QString &activity, int status);
 
 private:
     D_PTR;
 };
 
 #endif // KSMSERVER_H
-

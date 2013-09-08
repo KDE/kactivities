@@ -24,7 +24,8 @@
 #include <jobs/JobFactory.h>
 #include <jobs/schedulers/Abstract.h>
 
-#define TEST_JOB(TestJob, Expect) new Jobs::Schedulers::Test(TestJob, Expect)
+#define TEST_JOB(TestJob, Expect) \
+    new Jobs::Schedulers::Test(TestJob, Expect)
 
 namespace Jobs {
 namespace Schedulers {
@@ -32,19 +33,19 @@ namespace Schedulers {
 /**
  * Test
  */
-class Test: public Abstract {
+class Test : public Abstract {
     Q_OBJECT
 
 public:
-    Test(JobFactory * job, int expectedResult, QObject * parent = Q_NULLPTR);
+    Test(JobFactory *job, int expectedResult, QObject *parent = Q_NULLPTR);
     virtual ~Test();
 
 protected:
     virtual void jobFinished(int result);
 
 private:
-    Test(const Test & original);
-    Test & operator = (const Test & original);
+    Test(const Test &original);
+    Test &operator=(const Test &original);
 
     int m_expectedResult;
 };
@@ -53,4 +54,3 @@ private:
 } // namespace Jobs
 
 #endif // JOBS_SCHEDULER_TEST_H
-

@@ -31,22 +31,22 @@
  * Features object provides one interface for clients
  * to access other objects' features
  */
-class Features: public Module {
+class Features : public Module {
     Q_OBJECT
     Q_CLASSINFO("D-Bus Interface", "org.kde.ActivityManager.Features")
 
 public:
-    Features(QObject * parent = Q_NULLPTR);
+    Features(QObject *parent = Q_NULLPTR);
     virtual ~Features();
 
 public Q_SLOTS:
-    bool IsFeatureOperational(const QString & feature) const;
+    bool IsFeatureOperational(const QString &feature) const;
 
-    bool IsFeatureEnabled(const QString & feature) const;
+    bool IsFeatureEnabled(const QString &feature) const;
 
-    void SetFeatureEnabled(const QString & feature, bool value);
+    void SetFeatureEnabled(const QString &feature, bool value);
 
-    QStringList ListFeatures(const QString & module) const;
+    QStringList ListFeatures(const QString &module) const;
 
 private:
     D_PTR;

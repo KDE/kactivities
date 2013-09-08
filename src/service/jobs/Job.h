@@ -27,20 +27,19 @@
 /**
  * Job
  */
-class Job: public KJob {
+class Job : public KJob {
     Q_OBJECT
 
 public:
-    Job(QObject * parent = Q_NULLPTR);
+    Job(QObject *parent = Q_NULLPTR);
     virtual ~Job();
 
     virtual void init();
 
-    static QObject * global();
+    static QObject *global();
 
 private:
     D_PTR;
 };
 
 #endif // JOBS_JOB_H
-

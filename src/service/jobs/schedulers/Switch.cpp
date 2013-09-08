@@ -22,7 +22,7 @@
 namespace Jobs {
 namespace Schedulers {
 
-Switch::Switch(QObject * parent)
+Switch::Switch(QObject *parent)
     : Abstract(parent)
 {
 }
@@ -31,14 +31,14 @@ Switch::~Switch()
 {
 }
 
-Switch & Switch::operator << (JobFactory * job)
+Switch &Switch::operator<<(JobFactory *job)
 {
     addJob(job);
 
     return *this;
 }
 
-Switch & Switch::operator << (Job * job)
+Switch &Switch::operator<<(Job *job)
 {
     addJob(job);
 
@@ -60,12 +60,8 @@ void Switch::jobFinished(int result)
 
     } else {
         startJob(-result);
-
     }
 }
 
-
-
 } // namespace Schedulers
 } // namespace Jobs
-

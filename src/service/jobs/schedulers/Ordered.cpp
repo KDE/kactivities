@@ -24,7 +24,7 @@
 namespace Jobs {
 namespace Schedulers {
 
-Ordered::Ordered(QObject * parent)
+Ordered::Ordered(QObject *parent)
     : Abstract(parent)
 {
 }
@@ -33,14 +33,14 @@ Ordered::~Ordered()
 {
 }
 
-Ordered & Ordered::operator << (JobFactory * job)
+Ordered &Ordered::operator<<(JobFactory *job)
 {
     addJob(job);
 
     return *this;
 }
 
-Ordered & Ordered::operator << (Job * job)
+Ordered &Ordered::operator<<(Job *job)
 {
     addJob(job);
 
@@ -61,12 +61,8 @@ void Ordered::jobFinished(int result)
     } else {
         qDebug() << "next job please";
         startJob(lastJobStarted() + 1);
-
     }
 }
 
-
-
 } // namespace Schedulers
 } // namespace Jobs
-

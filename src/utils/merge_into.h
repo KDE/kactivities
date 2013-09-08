@@ -24,7 +24,7 @@ namespace kamd {
 namespace utils {
 
 template <typename Container>
-inline void merge_into(Container & into, const Container & from)
+inline void merge_into(Container &into, const Container &from)
 {
     typename Container::iterator into_begin = into.begin();
     typename Container::iterator into_end = into.end();

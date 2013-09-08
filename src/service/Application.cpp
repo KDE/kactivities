@@ -47,20 +47,21 @@
 #include <kactivities-features.h>
 
 namespace {
-    QList < QThread * > s_moduleThreads;
+QList<QThread *> s_moduleThreads;
 }
 
 // Runs a QObject inside a QThread
 
 template <typename T>
-T * runInQThread()
+T *runInQThread()
 {
-    T * object = new T();
+    T *object = new T();
 
-    class Thread: public QThread {
+    class Thread : public QThread {
     public:
-        Thread(T * ptr = Q_NULLPTR)
-            : QThread(), object(ptr)
+        Thread(T *ptr = Q_NULLPTR)
+            : QThread()
+            , object(ptr)
         {
         }
 
@@ -71,9 +72,9 @@ T * runInQThread()
         }
 
     private:
-        T * object;
+        T *object;
 
-    } * thread = new Thread(object);
+    } *thread = new Thread(object);
 
     s_moduleThreads << thread;
 
@@ -86,25 +87,24 @@ T * runInQThread()
 class Application::Private {
 public:
     Private()
-        : resources  (runInQThread <Resources>  ()),
-          activities (runInQThread <Activities> ()),
-          features   (runInQThread <Features>   ())
+        : resources(runInQThread<Resources>())
+        , activities(runInQThread<Activities>())
+        , features(runInQThread<Features>())
     {
     }
 
-    Resources  * resources;
-    Activities * activities;
-    Features   * features;
+    Resources *resources;
+    Activities *activities;
+    Features *features;
 
-    QList < Plugin * > plugins;
+    QList<Plugin *> plugins;
 
-    static Application * s_instance;
-
+    static Application *s_instance;
 };
 
-Application * Application::Private::s_instance = Q_NULLPTR;
+Application *Application::Private::s_instance = Q_NULLPTR;
 
-Application::Application(int & argc, char ** argv)
+Application::Application(int &argc, char **argv)
     : QCoreApplication(argc, argv)
 {
     if (!KDBusConnectionPool::threadConnection().registerService(QStringLiteral("org.kde.ActivityManager"))) {
@@ -137,9 +137,8 @@ void Application::loadPlugins()
     QDir pluginsDir(QStringLiteral(KAMD_INSTALL_PREFIX "/" KAMD_PLUGIN_DIR));
 
     const auto pluginFiles = pluginsDir.entryList(
-            QStringList() << QStringLiteral("activitymanager*.so"),
-            QDir::Files
-        );
+        QStringList() << QStringLiteral("activitymanager*.so"),
+        QDir::Files);
 
     foreach (const auto & pluginFile, pluginFiles) {
         qDebug() << "Loading a plugin: "
@@ -148,7 +147,7 @@ void Application::loadPlugins()
 
         QPluginLoader loader(pluginsDir.absoluteFilePath(pluginFile));
 
-        auto plugin = dynamic_cast<Plugin*>(loader.instance());
+        auto plugin = dynamic_cast<Plugin *>(loader.instance());
 
         if (plugin) {
             plugin->init(Module::get());
@@ -215,12 +214,12 @@ int Application::newInstance()
     return 0;
 }
 
-Activities & Application::activities() const
+Activities &Application::activities() const
 {
     return *d->activities;
 }
 
-Resources & Application::resources()  const
+Resources &Application::resources() const
 {
     return *d->resources;
 }
@@ -242,10 +241,9 @@ void Application::quit()
     }
 }
 
-
 // Leaving object oriented world :)
 
-int main(int argc, char ** argv)
+int main(int argc, char **argv)
 {
     Application application(argc, argv);
     application.setApplicationName(QStringLiteral("ActivityManager"));
@@ -263,4 +261,3 @@ int main(int argc, char ** argv)
 
     return application.exec();
 }
-

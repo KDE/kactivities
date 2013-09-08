@@ -62,7 +62,8 @@ void ResourceInstancePrivate::openResource()
 }
 
 ResourceInstance::ResourceInstance(quintptr wid, QObject *parent)
-    : QObject(parent), d(new ResourceInstancePrivate())
+    : QObject(parent)
+    , d(new ResourceInstancePrivate())
 {
     qDebug() << "Creating ResourceInstance: empty for now";
     d->wid = wid;
@@ -70,7 +71,8 @@ ResourceInstance::ResourceInstance(quintptr wid, QObject *parent)
 }
 
 ResourceInstance::ResourceInstance(quintptr wid, const QString &application, QObject *parent)
-    : QObject(parent), d(new ResourceInstancePrivate())
+    : QObject(parent)
+    , d(new ResourceInstancePrivate())
 {
     qDebug() << "Creating ResourceInstance: empty for now";
     d->wid = wid;
@@ -78,8 +80,9 @@ ResourceInstance::ResourceInstance(quintptr wid, const QString &application, QOb
 }
 
 ResourceInstance::ResourceInstance(quintptr wid, QUrl resourceUri, const QString &mimetype,
-        const QString &title, const QString &application, QObject *parent)
-    : QObject(parent), d(new ResourceInstancePrivate())
+                                   const QString &title, const QString &application, QObject *parent)
+    : QObject(parent)
+    , d(new ResourceInstancePrivate())
 {
     qDebug() << "Creating ResourceInstance: " << resourceUri;
     d->wid = wid;
@@ -128,7 +131,8 @@ void ResourceInstance::setUri(const QUrl &newUri)
 
 void ResourceInstance::setMimetype(const QString &mimetype)
 {
-    if (mimetype.isEmpty()) return;
+    if (mimetype.isEmpty())
+        return;
 
     d->mimetype = mimetype;
     // TODO: update the service info
@@ -138,7 +142,8 @@ void ResourceInstance::setMimetype(const QString &mimetype)
 void ResourceInstance::setTitle(const QString &title)
 {
     qDebug() << "Setting the title: " << title;
-    if (title.isEmpty()) return;
+    if (title.isEmpty())
+        return;
 
     d->title = title;
     // TODO: update the service info
@@ -168,8 +173,8 @@ quintptr ResourceInstance::winId() const
 void ResourceInstance::notifyAccessed(const QUrl &uri, const QString &application)
 {
     ResourceInstancePrivate::registerResourceEvent(
-            application.isEmpty() ? QCoreApplication::instance()->applicationName() : application,
-            0, uri, ResourceInstancePrivate::Accessed);
+        application.isEmpty() ? QCoreApplication::instance()->applicationName() : application,
+        0, uri, ResourceInstancePrivate::Accessed);
 }
 
 } // namespace KActivities

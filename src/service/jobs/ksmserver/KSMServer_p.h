@@ -28,22 +28,22 @@ class QDBusServiceWatcher;
 class QDBusInterface;
 class QDBusPendingCallWatcher;
 
-class KSMServer::Private: public QObject {
+class KSMServer::Private : public QObject {
     Q_OBJECT
 
 public:
-    Private(KSMServer * parent);
+    Private(KSMServer *parent);
 
-    void processLater(const QString & activity, bool start);
+    void processLater(const QString &activity, bool start);
 
 private Q_SLOTS:
-    void serviceOwnerChanged(const QString & service, const QString & oldOwner, const QString & newOwner);
+    void serviceOwnerChanged(const QString &service, const QString &oldOwner, const QString &newOwner);
 
     void process();
     void makeRunning(bool value);
 
-    void startCallFinished(QDBusPendingCallWatcher * watcher);
-    void stopCallFinished(QDBusPendingCallWatcher * watcher);
+    void startCallFinished(QDBusPendingCallWatcher *watcher);
+    void stopCallFinished(QDBusPendingCallWatcher *watcher);
 
     void subSessionOpened();
     void subSessionClosed();
@@ -51,15 +51,15 @@ private Q_SLOTS:
     void subSessionSendEvent(int event);
 
 private:
-    QDBusServiceWatcher * serviceWatcher;
-    QDBusInterface * kwin;
-    QDBusInterface * ksmserver;
+    QDBusServiceWatcher *serviceWatcher;
+    QDBusInterface *kwin;
+    QDBusInterface *ksmserver;
 
     bool processing;
     QString processingActivity;
-    QList < QPair < QString, bool > > queue;
+    QList<QPair<QString, bool>> queue;
 
-    KSMServer * const q;
+    KSMServer *const q;
 };
 
 #endif // KSMSERVER_P_H

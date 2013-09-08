@@ -24,8 +24,9 @@
 #include <jobs/JobFactory.h>
 #include <jobs/schedulers/Abstract.h>
 
-#define DEFINE_ORDERED_SCHEDULER(Name) Jobs::Schedulers::Ordered & Name \
-    = * (new Jobs::Schedulers::Ordered())
+#define DEFINE_ORDERED_SCHEDULER(Name) \
+    Jobs::Schedulers::Ordered &Name    \
+        = *(new Jobs::Schedulers::Ordered())
 
 namespace Jobs {
 namespace Schedulers {
@@ -33,26 +34,25 @@ namespace Schedulers {
 /**
  * Ordered
  */
-class Ordered: public Abstract {
+class Ordered : public Abstract {
     Q_OBJECT
 
 public:
-    Ordered(QObject * parent = Q_NULLPTR);
+    Ordered(QObject *parent = Q_NULLPTR);
     virtual ~Ordered();
 
-    Ordered & operator << (JobFactory * other);
-    Ordered & operator << (Job * other);
+    Ordered &operator<<(JobFactory *other);
+    Ordered &operator<<(Job *other);
 
 protected:
     virtual void jobFinished(int result);
 
 private:
-    Ordered(const Ordered & original);
-    Ordered & operator = (const Ordered & original);
+    Ordered(const Ordered &original);
+    Ordered &operator=(const Ordered &original);
 };
 
 } // namespace Schedulers
 } // namespace Jobs
 
 #endif // JOBS_SCHEDULER_ORDERED_H
-

@@ -25,19 +25,20 @@
 
 namespace KActivities {
 
-class ControllerPrivate: public QObject {
+class ControllerPrivate : public QObject {
 public:
-    ControllerPrivate(Controller * parent)
+    ControllerPrivate(Controller *parent)
         : q(parent)
     {
     }
 
 private:
-    Controller * const q;
+    Controller *const q;
 };
 
-Controller::Controller(QObject * parent)
-    : Consumer(parent), d(new ControllerPrivate(this))
+Controller::Controller(QObject *parent)
+    : Consumer(parent)
+    , d(new ControllerPrivate(this))
 {
 }
 
@@ -45,37 +46,37 @@ Controller::~Controller()
 {
 }
 
-void Controller::setActivityName(const QString & id, const QString & name)
+void Controller::setActivityName(const QString &id, const QString &name)
 {
     Manager::activities()->SetActivityName(id, name);
 }
 
-void Controller::setActivityIcon(const QString & id, const QString & icon)
+void Controller::setActivityIcon(const QString &id, const QString &icon)
 {
     Manager::activities()->SetActivityIcon(id, icon);
 }
 
-bool Controller::setCurrentActivity(const QString & id)
+bool Controller::setCurrentActivity(const QString &id)
 {
     return Manager::activities()->SetCurrentActivity(id);
 }
 
-QString Controller::addActivity(const QString & name)
+QString Controller::addActivity(const QString &name)
 {
     return Manager::activities()->AddActivity(name);
 }
 
-void Controller::removeActivity(const QString & id)
+void Controller::removeActivity(const QString &id)
 {
     Manager::activities()->RemoveActivity(id);
 }
 
-void Controller::stopActivity(const QString & id)
+void Controller::stopActivity(const QString &id)
 {
     Manager::activities()->StopActivity(id);
 }
 
-void Controller::startActivity(const QString & id)
+void Controller::startActivity(const QString &id)
 {
     Manager::activities()->StartActivity(id);
 }

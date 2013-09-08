@@ -29,27 +29,26 @@
 /**
  * Module
  */
-class Module: public QObject {
+class Module : public QObject {
     Q_OBJECT
 
 public:
-    explicit Module(const QString & name, QObject * parent = Q_NULLPTR);
+    explicit Module(const QString &name, QObject *parent = Q_NULLPTR);
     virtual ~Module();
 
-    static QObject * get(const QString & name);
-    static const QHash < QString, QObject * > get();
+    static QObject *get(const QString &name);
+    static const QHash<QString, QObject *> get();
 
-    virtual bool isFeatureOperational(const QStringList & feature) const;
-    virtual bool isFeatureEnabled(const QStringList & feature) const;
-    virtual void setFeatureEnabled(const QStringList & feature, bool value);
-    virtual QStringList listFeatures(const QStringList & feature) const;
+    virtual bool isFeatureOperational(const QStringList &feature) const;
+    virtual bool isFeatureEnabled(const QStringList &feature) const;
+    virtual void setFeatureEnabled(const QStringList &feature, bool value);
+    virtual QStringList listFeatures(const QStringList &feature) const;
 
 protected:
-    static void registerModule(const QString & name, QObject * module);
+    static void registerModule(const QString &name, QObject *module);
 
 private:
     D_PTR;
 };
 
 #endif // MODULE_H
-

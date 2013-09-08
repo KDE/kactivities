@@ -21,7 +21,7 @@
 #include <QDBusConnection>
 #include <kdbusconnectionpool.h>
 
-SlcPlugin::SlcPlugin(QObject * parent, const QVariantList & args)
+SlcPlugin::SlcPlugin(QObject *parent, const QVariantList &args)
     : Plugin(parent)
 {
     Q_UNUSED(args)
@@ -49,7 +49,7 @@ QString SlcPlugin::focussedResourceTitle() const
     return m_resources[m_focussedResource].title;
 }
 
-void SlcPlugin::registeredResourceEvent(const Event & event)
+void SlcPlugin::registeredResourceEvent(const Event &event)
 {
     switch (event.type) {
         case Event::FocussedIn:
@@ -57,7 +57,7 @@ void SlcPlugin::registeredResourceEvent(const Event & event)
             if (!event.uri.startsWith(QLatin1String("about"))) {
                 if (m_focussedResource != event.uri) {
                     m_focussedResource = event.uri;
-                    const auto & info = m_resources[m_focussedResource];
+                    const auto &info = m_resources[m_focussedResource];
                     emit focusChanged(event.uri, info.mimetype, info.title);
                 }
             } else {
@@ -86,17 +86,17 @@ void SlcPlugin::registeredResourceEvent(const Event & event)
     }
 }
 
-void SlcPlugin::registeredResourceMimeType(const QString & uri, const QString & mimetype)
+void SlcPlugin::registeredResourceMimeType(const QString &uri, const QString &mimetype)
 {
     m_resources[uri].mimetype = mimetype;
 }
 
-void SlcPlugin::registeredResourceTitle(const QString & uri, const QString & title)
+void SlcPlugin::registeredResourceTitle(const QString &uri, const QString &title)
 {
     m_resources[uri].title = title;
 }
 
-bool SlcPlugin::init(const QHash < QString, QObject * > & modules)
+bool SlcPlugin::init(const QHash<QString, QObject *> &modules)
 {
     connect(modules[QStringLiteral("resources")], SIGNAL(RegisteredResourceEvent(Event)),
             this, SLOT(registeredResourceEvent(Event)),

@@ -33,21 +33,21 @@ namespace Service = org::kde::ActivityManager;
 
 namespace KActivities {
 
-class Manager: public QObject {
+class Manager : public QObject {
     Q_OBJECT
 
 public:
-    static Manager * self();
+    static Manager *self();
 
     static bool isServicePresent();
 
-    static Service::Activities       * activities();
-    static Service::Resources        * resources();
-    static Service::ResourcesLinking * resourcesLinking();
-    static Service::Features         * features();
+    static Service::Activities *activities();
+    static Service::Resources *resources();
+    static Service::ResourcesLinking *resourcesLinking();
+    static Service::Features *features();
 
 public Q_SLOTS:
-    void serviceOwnerChanged(const QString & serviceName, const QString & oldOwner, const QString & newOwner);
+    void serviceOwnerChanged(const QString &serviceName, const QString &oldOwner, const QString &newOwner);
 
 Q_SIGNALS:
     void servicePresenceChanged(bool present);
@@ -57,15 +57,14 @@ private:
 
     QDBusServiceWatcher m_watcher;
 
-    static Manager * s_instance;
+    static Manager *s_instance;
 
-    Service::Activities        * const m_activities;
-    Service::Resources         * const m_resources;
-    Service::ResourcesLinking  * const m_resourcesLinking;
-    Service::Features          * const m_features;
+    Service::Activities *const m_activities;
+    Service::Resources *const m_resources;
+    Service::ResourcesLinking *const m_resourcesLinking;
+    Service::Features *const m_features;
 };
 
 } // namespace KActivities
 
 #endif // ACTIVITIES_MANAGER_P
-

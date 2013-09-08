@@ -29,12 +29,12 @@ namespace General {
 /**
  * Call
  */
-class Call: public Job {
+class Call : public Job {
     Q_OBJECT
-    Q_PROPERTY(QObject * receiver     READ receiver     WRITE setReceiver)
-    Q_PROPERTY(QString   slot         READ slot         WRITE setSlot)
-    Q_PROPERTY(QString   argument     READ argument     WRITE setArgument)
-    Q_PROPERTY(bool      waitFinished READ waitFinished WRITE setWaitFinished)
+    Q_PROPERTY(QObject *receiver READ receiver WRITE setReceiver)
+    Q_PROPERTY(QString slot READ slot WRITE setSlot)
+    Q_PROPERTY(QString argument READ argument WRITE setArgument)
+    Q_PROPERTY(bool waitFinished READ waitFinished WRITE setWaitFinished)
 
 public:
     enum Type {
@@ -43,15 +43,15 @@ public:
         Error
     };
 
-    DECLARE_JOB_FACTORY(Call, (QObject * receiver, const QString & slot, const QString & argument, bool waitFinished));
+    DECLARE_JOB_FACTORY(Call, (QObject *receiver, const QString &slot, const QString &argument, bool waitFinished));
 
     QString argument() const;
-    void setArgument(const QString & argument);
+    void setArgument(const QString &argument);
 
-    void setReceiver(QObject * receiver);
-    QObject * receiver() const;
+    void setReceiver(QObject *receiver);
+    QObject *receiver() const;
 
-    void setSlot(const QString & slot);
+    void setSlot(const QString &slot);
     QString slot() const;
 
     void setWaitFinished(bool value);
@@ -60,15 +60,14 @@ public:
     virtual void start() Q_DECL_OVERRIDE;
 
 private:
-    QObject * m_receiver;
+    QObject *m_receiver;
     QString m_slot;
     QString m_argument;
-    bool    m_waitFinished;
-
+    bool m_waitFinished;
 };
 
-inline Call::Factory * call(QObject * receiver, const QString & slot,
-        const QString & argument, bool waitFinished = false)
+inline Call::Factory *call(QObject *receiver, const QString &slot,
+                           const QString &argument, bool waitFinished = false)
 {
     return new Call::Factory(receiver, slot, argument, waitFinished);
 }
@@ -77,4 +76,3 @@ inline Call::Factory * call(QObject * receiver, const QString & slot,
 } // namespace Jobs
 
 #endif // JOBS_GENERAL_CALL_H
-

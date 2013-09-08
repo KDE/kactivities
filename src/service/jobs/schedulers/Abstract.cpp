@@ -27,12 +27,12 @@
 namespace Jobs {
 namespace Schedulers {
 
-Abstract::Private::Private(Abstract * parent)
+Abstract::Private::Private(Abstract *parent)
     : q(parent)
 {
 }
 
-void Abstract::Private::jobFinished(KJob * job)
+void Abstract::Private::jobFinished(KJob *job)
 {
     qDebug() << "Job has finished with this result" << job->error();
     q->jobFinished(job->error());
@@ -48,7 +48,7 @@ bool Abstract::startJob(int index)
         return false;
     }
 
-    JobFactory * factory = d->jobs[index];
+    JobFactory *factory = d->jobs[index];
 
     // If the job factory is null, exit
     if (!factory) {
@@ -57,18 +57,19 @@ bool Abstract::startJob(int index)
     }
 
     // Starting the job
-    KJob * job = d->jobs[index]->create(this);
+    KJob *job = d->jobs[index]->create(this);
 
     d->connect(job, SIGNAL(finished(KJob *)),
-            SLOT(jobFinished(KJob *)));
+               SLOT(jobFinished(KJob *)));
 
     job->start();
 
     return true;
 }
 
-Abstract::Abstract(QObject * parent)
-    : Job(parent), d(this)
+Abstract::Abstract(QObject *parent)
+    : Job(parent)
+    , d(this)
 {
     d->lastJobStarted = -1;
 
@@ -76,8 +77,7 @@ Abstract::Abstract(QObject * parent)
         connect(
             this, SIGNAL(finished(KJob *)),
             this, SLOT(deleteLater()),
-            Qt::QueuedConnection
-        );
+            Qt::QueuedConnection);
     }
 }
 
@@ -86,12 +86,12 @@ Abstract::~Abstract()
     qDeleteAll(d->jobs);
 }
 
-void Abstract::addJob(Job * other)
+void Abstract::addJob(Job *other)
 {
     d->jobs << JobFactory::wrap(other);
 }
 
-void Abstract::addJob(JobFactory * other)
+void Abstract::addJob(JobFactory *other)
 {
     d->jobs << other;
 }
@@ -127,7 +127,6 @@ void Abstract::returnResult(int result)
     setError(result);
     emitResult();
 }
-
 
 } // namespace Schedulers
 } // namespace Jobs

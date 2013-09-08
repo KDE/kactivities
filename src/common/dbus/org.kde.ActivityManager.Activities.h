@@ -37,9 +37,9 @@ typedef QList<ActivityInfo> ActivityInfoList;
 Q_DECLARE_METATYPE(ActivityInfo)
 Q_DECLARE_METATYPE(ActivityInfoList)
 
-QDBusArgument & operator << (QDBusArgument & arg, const ActivityInfo);
-const QDBusArgument & operator >> (const QDBusArgument & arg, ActivityInfo & rec);
+QDBusArgument &operator<<(QDBusArgument &arg, const ActivityInfo);
+const QDBusArgument &operator>>(const QDBusArgument &arg, ActivityInfo &rec);
 
-QDebug operator << (QDebug dbg, const ActivityInfo & r);
+QDebug operator<<(QDebug dbg, const ActivityInfo &r);
 
 #endif // KAMD_ACTIVITIES_DBUS_H

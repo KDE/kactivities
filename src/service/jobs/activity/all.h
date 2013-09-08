@@ -23,4 +23,3 @@
 #include "Start.h"
 
 #endif // JOBS_ACTIVITY_ALL_H
-

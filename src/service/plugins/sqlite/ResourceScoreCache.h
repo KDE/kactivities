@@ -31,7 +31,7 @@ class ResourceScoreCachePrivate;
  */
 class ResourceScoreCache {
 public:
-    ResourceScoreCache(const QString & activity, const QString & application, const QString & resource);
+    ResourceScoreCache(const QString &activity, const QString &application, const QString &resource);
     virtual ~ResourceScoreCache();
 
     void updateScore();

@@ -22,14 +22,13 @@
 
 #include <QDeclarativeExtensionPlugin>
 
-class ActivitiesComponentDataPlugin: public QDeclarativeExtensionPlugin {
+class ActivitiesComponentDataPlugin : public QDeclarativeExtensionPlugin {
     Q_OBJECT
 
 public:
-    void registerTypes(const char * uri);
+    void registerTypes(const char *uri);
 };
 
 Q_EXPORT_PLUGIN2(activitiescomponentdataplugin, ActivitiesComponentDataPlugin)
 
 #endif // ACTIVITIES_COMPONENT_DATA_PLUGIN_H
-

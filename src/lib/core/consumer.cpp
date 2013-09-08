@@ -25,9 +25,9 @@
 namespace KActivities {
 
 static QString nulluuid = QStringLiteral("00000000-0000-0000-0000-000000000000");
-ConsumerPrivate * ConsumerPrivate::s_instance = 0;
+ConsumerPrivate *ConsumerPrivate::s_instance = Q_NULLPTR;
 
-ConsumerPrivate * ConsumerPrivate::self(QObject * consumer)
+ConsumerPrivate *ConsumerPrivate::self(QObject *consumer)
 {
     if (!s_instance) {
         s_instance = new ConsumerPrivate();
@@ -38,24 +38,24 @@ ConsumerPrivate * ConsumerPrivate::self(QObject * consumer)
     return s_instance;
 }
 
-void ConsumerPrivate::free(QObject * consumer)
+void ConsumerPrivate::free(QObject *consumer)
 {
     consumers.remove(consumer);
 
     if (consumers.isEmpty()) {
-        s_instance = 0;
+        s_instance = Q_NULLPTR;
         deleteLater();
     }
 }
 
-KAMD_RETRIEVE_REMOTE_VALUE_HANDLER(QString,     ConsumerPrivate, currentActivity, nulluuid)
+KAMD_RETRIEVE_REMOTE_VALUE_HANDLER(QString, ConsumerPrivate, currentActivity, nulluuid)
 KAMD_RETRIEVE_REMOTE_VALUE_HANDLER(QStringList, ConsumerPrivate, listActivities, QStringList())
 KAMD_RETRIEVE_REMOTE_VALUE_HANDLER(QStringList, ConsumerPrivate, runningActivities, QStringList())
 
 ConsumerPrivate::ConsumerPrivate()
-    : currentActivityCallWatcher(0),
-      listActivitiesCallWatcher(0),
-      runningActivitiesCallWatcher(0)
+    : currentActivityCallWatcher(Q_NULLPTR)
+    , listActivitiesCallWatcher(Q_NULLPTR)
+    , runningActivitiesCallWatcher(Q_NULLPTR)
 {
     connect(Manager::activities(), SIGNAL(CurrentActivityChanged(const QString &)),
             this, SLOT(setCurrentActivity(const QString &)));
@@ -63,14 +63,13 @@ ConsumerPrivate::ConsumerPrivate()
             this, SLOT(addActivity(QString)));
     connect(Manager::activities(), SIGNAL(ActivityRemoved(QString)),
             this, SLOT(removeActivity(QString)));
-    connect(Manager::activities(), SIGNAL(ActivityStateChanged(QString,int)),
+    connect(Manager::activities(), SIGNAL(ActivityStateChanged(QString, int)),
             this, SLOT(setActivityState(QString, int)));
 
     connect(Manager::self(), SIGNAL(servicePresenceChanged(bool)),
             this, SLOT(setServicePresent(bool)));
 
-    qDebug() << "We are checking whether the service is present" <<
-        Manager::isServicePresent();
+    qDebug() << "We are checking whether the service is present" << Manager::isServicePresent();
 
     if (Manager::isServicePresent()) {
         initializeCachedData();
@@ -80,8 +79,7 @@ ConsumerPrivate::ConsumerPrivate()
 void ConsumerPrivate::setServicePresent(bool present)
 {
     emit serviceStatusChanged(
-            present ? Consumer::Running : Consumer::NotRunning
-        );
+        present ? Consumer::Running : Consumer::NotRunning);
 
     if (present) {
         initializeCachedData();
@@ -95,7 +93,7 @@ void ConsumerPrivate::initializeCachedData()
     KAMD_RETRIEVE_REMOTE_VALUE(runningActivities, ListActivities(Info::Running), this);
 }
 
-void ConsumerPrivate::setCurrentActivity(const QString & activity)
+void ConsumerPrivate::setCurrentActivity(const QString &activity)
 {
     qDebug() << "current activity is" << activity;
     currentActivity = activity;
@@ -103,7 +101,7 @@ void ConsumerPrivate::setCurrentActivity(const QString & activity)
     emit currentActivityChanged(activity);
 }
 
-void ConsumerPrivate::addActivity(const QString & activity)
+void ConsumerPrivate::addActivity(const QString &activity)
 {
     qDebug() << "new activity added" << activity;
     if (!listActivities.contains(activity)) {
@@ -114,7 +112,7 @@ void ConsumerPrivate::addActivity(const QString & activity)
     emit activityAdded(activity);
 }
 
-void ConsumerPrivate::removeActivity(const QString & activity)
+void ConsumerPrivate::removeActivity(const QString &activity)
 {
     qDebug() << "activity removed added" << activity;
     listActivities.removeAll(activity);
@@ -123,11 +121,11 @@ void ConsumerPrivate::removeActivity(const QString & activity)
     emit activityRemoved(activity);
 }
 
-void ConsumerPrivate::setActivityState(const QString & activity, int state)
+void ConsumerPrivate::setActivityState(const QString &activity, int state)
 {
     if (!listActivities.contains(activity)) {
-         qWarning("trying to alter state of unknown activity!!");
-         return; // denied
+        qWarning("trying to alter state of unknown activity!!");
+        return; // denied
     }
 
     if (state == Info::Running) {
@@ -139,8 +137,9 @@ void ConsumerPrivate::setActivityState(const QString & activity, int state)
     }
 }
 
-Consumer::Consumer(QObject * parent)
-    : QObject(parent), d(ConsumerPrivate::self(this))
+Consumer::Consumer(QObject *parent)
+    : QObject(parent)
+    , d(ConsumerPrivate::self(this))
 {
     connect(d, SIGNAL(serviceStatusChanged(KActivities::Consumer::ServiceStatus)),
             this, SIGNAL(serviceStatusChanged(KActivities::Consumer::ServiceStatus)));
@@ -150,7 +149,6 @@ Consumer::Consumer(QObject * parent)
             this, SIGNAL(activityAdded(QString)));
     connect(d, SIGNAL(activityRemoved(QString)),
             this, SIGNAL(activityRemoved(QString)));
-
 }
 
 Consumer::~Consumer()
@@ -164,7 +162,8 @@ KAMD_REMOTE_VALUE_GETTER(QStringList, Consumer, listActivities, QStringList(null
 QStringList Consumer::listActivities(Info::State state) const
 {
     if (state == Info::Running) {
-        if (!Manager::isServicePresent()) return QStringList(nulluuid);
+        if (!Manager::isServicePresent())
+            return QStringList(nulluuid);
 
         waitForCallFinished(d->runningActivitiesCallWatcher, &d->runningActivitiesMutex);
 
@@ -174,8 +173,7 @@ QStringList Consumer::listActivities(Info::State state) const
     }
 
     KAMD_RETRIEVE_REMOTE_VALUE_SYNC(
-            QStringList, activities, ListActivities(state), QStringList(nulluuid)
-        );
+        QStringList, activities, ListActivities(state), QStringList(nulluuid));
 }
 
 Consumer::ServiceStatus Consumer::serviceStatus()
@@ -188,4 +186,3 @@ Consumer::ServiceStatus Consumer::serviceStatus()
 }
 
 } // namespace KActivities
-

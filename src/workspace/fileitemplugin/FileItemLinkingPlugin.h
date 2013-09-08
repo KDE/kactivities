@@ -29,18 +29,17 @@
 /**
  * FileItemLinkingPlugin
  */
-class FileItemLinkingPlugin: public KAbstractFileItemActionPlugin {
+class FileItemLinkingPlugin : public KAbstractFileItemActionPlugin {
 public:
-    FileItemLinkingPlugin(QObject * parent, const QVariantList &);
+    FileItemLinkingPlugin(QObject *parent, const QVariantList &);
     virtual ~FileItemLinkingPlugin();
 
-    virtual QList <QAction *> actions (const KFileItemListProperties &fileItemInfos,
-            QWidget *parentWidget);
+    virtual QList<QAction *> actions(const KFileItemListProperties &fileItemInfos,
+                                     QWidget *parentWidget);
 
 private:
     class Private;
-    Private * const d;
+    Private *const d;
 };
 
 #endif // FILE_ITEM_LINKING_PLUGIN_H
-

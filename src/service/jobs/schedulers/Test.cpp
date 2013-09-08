@@ -24,8 +24,9 @@
 namespace Jobs {
 namespace Schedulers {
 
-Test::Test(JobFactory * job, int expectedResult, QObject * parent)
-    : Abstract(parent), m_expectedResult(expectedResult)
+Test::Test(JobFactory *job, int expectedResult, QObject *parent)
+    : Abstract(parent)
+    , m_expectedResult(expectedResult)
 {
     addJob(job);
 }
@@ -41,8 +42,5 @@ void Test::jobFinished(int result)
     returnResult(m_expectedResult == result ? 0 : 1);
 }
 
-
-
 } // namespace Schedulers
 } // namespace Jobs
-

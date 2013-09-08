@@ -27,13 +27,13 @@
 /**
  * BlacklistedApplicationsModel
  */
-class BlacklistedApplicationsModel: public QAbstractListModel {
+class BlacklistedApplicationsModel : public QAbstractListModel {
     Q_OBJECT
 
     Q_PROPERTY(bool enabled READ enabled WRITE setEnabled NOTIFY enabledChanged)
 
 public:
-    BlacklistedApplicationsModel(QObject * parent = Q_NULLPTR);
+    BlacklistedApplicationsModel(QObject *parent = Q_NULLPTR);
 
     enum Roles {
         ApplicationIdRole = Qt::UserRole + 1,
@@ -41,8 +41,8 @@ public:
     };
 
     QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const Q_DECL_OVERRIDE;
-    QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const Q_DECL_OVERRIDE;
-    int rowCount(const QModelIndex & parent = QModelIndex()) const Q_DECL_OVERRIDE;
+    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const Q_DECL_OVERRIDE;
+    int rowCount(const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE;
 
 Q_SIGNALS:
     void changed();
@@ -63,4 +63,3 @@ private:
 };
 
 #endif // BLACKLISTED_APPLICATIONS_MODEL_H
-

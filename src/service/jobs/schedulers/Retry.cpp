@@ -22,7 +22,7 @@
 namespace Jobs {
 namespace Schedulers {
 
-Retry::Retry(JobFactory * _input, JobFactory * _test, JobFactory * _error, QObject * parent)
+Retry::Retry(JobFactory *_input, JobFactory *_test, JobFactory *_error, QObject *parent)
     : Abstract(parent)
 {
     addJob(_input);
@@ -68,8 +68,5 @@ void Retry::jobFinished(int result)
     }
 }
 
-
-
 } // namespace Schedulers
 } // namespace Jobs
-

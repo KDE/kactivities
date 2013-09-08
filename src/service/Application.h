@@ -30,11 +30,11 @@ class Features;
 /**
  * Main application object
  */
-class Application: public QCoreApplication {
+class Application : public QCoreApplication {
     Q_OBJECT
 
 public:
-    Application(int & argc, char ** argv);
+    Application(int &argc, char **argv);
     virtual ~Application();
 
     virtual int newInstance();
@@ -42,9 +42,9 @@ public:
     // static Application * self();
     static void quit();
 
-    Resources  & resources()  const;
-    Activities & activities() const;
-    Features   & features()   const;
+    Resources &resources() const;
+    Activities &activities() const;
+    Features &features() const;
 
 private Q_SLOTS:
     void loadPlugins();

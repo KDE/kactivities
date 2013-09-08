@@ -29,10 +29,10 @@ namespace Activity {
 /**
  * Change
  */
-class Change: public Job {
+class Change : public Job {
     Q_OBJECT
-    Q_PROPERTY(QObject * receiver WRITE setReceiver)
-    Q_PROPERTY(QString slot     WRITE setSlot)
+    Q_PROPERTY(QObject *receiver WRITE setReceiver)
+    Q_PROPERTY(QString slot WRITE setSlot)
     Q_PROPERTY(QString activity READ activity WRITE setActivity)
 
 public:
@@ -42,24 +42,23 @@ public:
         Error
     };
 
-    DECLARE_JOB_FACTORY(Change, (QObject * receiver, const QString & slot, const QString & activity));
+    DECLARE_JOB_FACTORY(Change, (QObject *receiver, const QString &slot, const QString &activity));
 
     QString activity() const;
-    void setActivity(const QString & activity);
+    void setActivity(const QString &activity);
 
-    void setReceiver(QObject * receiver);
-    void setSlot(const QString & slot);
+    void setReceiver(QObject *receiver);
+    void setSlot(const QString &slot);
 
     virtual void start() Q_DECL_OVERRIDE;
 
 private:
-    QObject * m_receiver;
+    QObject *m_receiver;
     QString m_slot;
     QString m_activity;
-
 };
 
-inline Change::Factory * change(QObject * receiver, const QString & slot, const QString & activity)
+inline Change::Factory *change(QObject *receiver, const QString &slot, const QString &activity)
 {
     return new Change::Factory(receiver, slot, activity);
 }
@@ -68,4 +67,3 @@ inline Change::Factory * change(QObject * receiver, const QString & slot, const 
 } // namespace Jobs
 
 #endif // JOBS_ACTIVITY_START_H
-

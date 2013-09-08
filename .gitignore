@@ -9,6 +9,5 @@ _tests
 .ycm_extra_conf.py
 .ycm_extra_conf.pyc
 .clang_complete
-.clang-format
 kactivities.kdev4
 compile_commands.json

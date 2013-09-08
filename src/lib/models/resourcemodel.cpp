@@ -50,7 +50,7 @@
 #include "utils_p.h"
 
 namespace Nepomuk = Nepomuk2;
-namespace NQuery  = Nepomuk2::Query;
+namespace NQuery = Nepomuk2::Query;
 
 using namespace Soprano::Vocabulary;
 using namespace Nepomuk::Vocabulary;
@@ -77,35 +77,42 @@ struct ResourceInfo {
     QString icon;
     double score;
 
-    bool operator >= (const ResourceInfo & other) const {
-        short this_sign  = sign(score);
+    bool operator>=(const ResourceInfo &other) const
+    {
+        short this_sign = sign(score);
         short other_sign = sign(other.score);
 
         if (this_sign != other_sign) {
             return (other_sign == -1);
         }
 
-        double this_abs  = abs(score);
+        double this_abs = abs(score);
         double other_abs = abs(other.score);
 
-        if (this_abs < other_abs) return true;
+        if (this_abs < other_abs)
+            return true;
 
         return title < other.title;
     }
 
-    bool operator < (const ResourceInfo & other) const {
+    bool operator<(const ResourceInfo &other) const
+    {
         return !(*this >= other);
     }
 };
 
-typedef QList < ResourceInfo > ResourceInfoList;
+typedef QList<ResourceInfo> ResourceInfoList;
 
 class ResourceModel::Private {
 public:
     DECLARE_RAII_MODEL_UPDATERS(ResourceModel)
 
-    Private(ResourceModel * parent)
-        : limit(10), service(0), q(parent), valid(false), showCurrentActivity(true)
+    Private(ResourceModel *parent)
+        : limit(10)
+        , service(0)
+        , q(parent)
+        , valid(false)
+        , showCurrentActivity(true)
     {
         servicePresenceChanged(Manager::isServicePresent());
 
@@ -115,22 +122,21 @@ public:
 
     void reload();
     void servicePresenceChanged(bool present);
-    void resourceScoreUpdated(const QString & activity, const QString & client, const QString & resource, double score);
+    void resourceScoreUpdated(const QString &activity, const QString &client, const QString &resource, double score);
 
-    void newEntries(const QList < NQuery::Result > & entries);
-    void entriesRemoved(const QList < QUrl > & entries);
-    void error(const QString & errorMessage);
+    void newEntries(const QList<NQuery::Result> &entries);
+    void entriesRemoved(const QList<QUrl> &entries);
+    void error(const QString &errorMessage);
 
-    static
-    ResourceInfo infoFromResult(const NQuery::Result & result);
+    static ResourceInfo infoFromResult(const NQuery::Result &result);
 
-    void loadFromQuery(const QString & query);
+    void loadFromQuery(const QString &query);
     void loadLinked();
     void loadTopRated();
     void loadRecent();
 
     QString activityToShowN3() const;
-    void setCurrentActivity(const QString & activity);
+    void setCurrentActivity(const QString &activity);
 
     QString activity;
     QString currentActivity;
@@ -138,13 +144,13 @@ public:
     int limit;
     ResourceModel::ContentMode contentMode;
 
-    QSet < QString > resourceSet;
+    QSet<QString> resourceSet;
     ResourceInfoList resources;
-    QList < NQuery::QueryServiceClient * > queries;
+    QList<NQuery::QueryServiceClient *> queries;
 
-    QDBusInterface * service;
+    QDBusInterface *service;
 
-    ResourceModel * const q;
+    ResourceModel *const q;
     bool valid : 1;
     bool showCurrentActivity : 1;
 };
@@ -154,7 +160,7 @@ void ResourceModel::Private::reload()
     servicePresenceChanged(Manager::isServicePresent());
 }
 
-void ResourceModel::Private::resourceScoreUpdated(const QString & activity, const QString & client, const QString & resource, double score)
+void ResourceModel::Private::resourceScoreUpdated(const QString &activity, const QString &client, const QString &resource, double score)
 {
     qDebug() << activity << client << resource << score;
 }
@@ -174,7 +180,8 @@ void ResourceModel::Private::servicePresenceChanged(bool present)
         service = 0;
     }
 
-    if (!valid) return;
+    if (!valid)
+        return;
 
     if (showCurrentActivity && currentActivity.isEmpty()) {
         // we need to show the current activity, but don't know which it is
@@ -189,10 +196,9 @@ void ResourceModel::Private::servicePresenceChanged(bool present)
     }
 
     service = new QDBusInterface(
-            "org.kde.ActivityManager",
-            "/ActivityManager/Resources/Scoring",
-            "org.kde.ActivityManager.Resources.Scoring"
-        );
+        "org.kde.ActivityManager",
+        "/ActivityManager/Resources/Scoring",
+        "org.kde.ActivityManager.Resources.Scoring");
 
     // connect(service, SIGNAL(resourceScoreUpdated(QString, QString, QString, double)),
     //         q, SLOT(resourceScoreUpdated(QString, QString, QString, double)));
@@ -203,36 +209,36 @@ void ResourceModel::Private::servicePresenceChanged(bool present)
     contentMode = Recent;
 
     switch (contentMode) {
-        case Favorites:
-            loadTopRated();
-            loadLinked();
-            break;
+    case Favorites:
+        loadTopRated();
+        loadLinked();
+        break;
 
-        case Linked:
-            loadLinked();
-            break;
+    case Linked:
+        loadLinked();
+        break;
 
-        case TopRated:
-            loadTopRated();
-            break;
+    case TopRated:
+        loadTopRated();
+        break;
 
-        case Recent:
-            loadRecent();
-            break;
+    case Recent:
+        loadRecent();
+        break;
     }
 }
 
-void ResourceModel::Private::loadFromQuery(const QString & query)
+void ResourceModel::Private::loadFromQuery(const QString &query)
 {
     qDebug() << query;
 
-    NQuery::QueryServiceClient * queryClient = new NQuery::QueryServiceClient(q);
+    NQuery::QueryServiceClient *queryClient = new NQuery::QueryServiceClient(q);
 
     NQuery::RequestPropertyMap requestPropertyMap;
-    requestPropertyMap.insert("url",   NIE::url());
+    requestPropertyMap.insert("url", NIE::url());
     requestPropertyMap.insert("title", NAO::prefLabel());
     requestPropertyMap.insert("score", NAO::numericRating());
-    requestPropertyMap.insert("icon",  NAO::iconName());
+    requestPropertyMap.insert("icon", NAO::iconName());
 
     queryClient->sparqlQuery(query, requestPropertyMap);
 
@@ -248,120 +254,99 @@ void ResourceModel::Private::loadFromQuery(const QString & query)
 
 void ResourceModel::Private::loadLinked()
 {
-    static const QString & _query = QString::fromLatin1(
-            "select distinct ?r, ?url, -1 as ?score, ?title, ?icon where { "
-                "?activity nao:isRelated ?r . "
-                "?activity kao:activityIdentifier %1. "
-                "?r nie:url ?url . "
-                "OPTIONAL { ?r nao:prefLabel ?title } . "
-                "OPTIONAL { ?r nao:iconName ?icon } . "
-                "%2 "
-            "}"
-        );
+    static const QString &_query = QString::fromLatin1(
+        "select distinct ?r, ?url, -1 as ?score, ?title, ?icon where { "
+        "?activity nao:isRelated ?r . "
+        "?activity kao:activityIdentifier %1. "
+        "?r nie:url ?url . "
+        "OPTIONAL { ?r nao:prefLabel ?title } . "
+        "OPTIONAL { ?r nao:iconName ?icon } . "
+        "%2 "
+        "}");
 
-    static const QString & _applicationFilter = QString::fromLatin1(
-            "?scoreCache a kao:ResourceScoreCache . "
-            "?scoreCache kao:usedActivity ?activity . "
-            "?scoreCache kao:targettedResource ?r . "
-            "?scoreCache kao:initiatingAgent ?agent . "
-            "?agent nao:identifier %1 ."
-        );
+    static const QString &_applicationFilter = QString::fromLatin1(
+        "?scoreCache a kao:ResourceScoreCache . "
+        "?scoreCache kao:usedActivity ?activity . "
+        "?scoreCache kao:targettedResource ?r . "
+        "?scoreCache kao:initiatingAgent ?agent . "
+        "?agent nao:identifier %1 .");
 
     loadFromQuery(_query.arg(
-            activityToShowN3(),
-            (application.isEmpty() ?
-                QString() :
-                _applicationFilter.arg(Soprano::Node::literalToN3(application))
-            )
-        ));
+        activityToShowN3(),
+        (application.isEmpty() ? QString() : _applicationFilter.arg(Soprano::Node::literalToN3(application)))));
 }
 
 void ResourceModel::Private::loadRecent()
 {
-    static const QString & _query = QString::fromLatin1(
-            "select distinct ?r, ?url, "
-            // "(bif:datediff ('second', \"1970-01-01\"^^<http://www.w3.org/2001/XMLSchema#date>, ?lastModified)) as ?score, "
-            "(bif:datediff ('second', \"1970-01-01\"^^<http://www.w3.org/2001/XMLSchema#date>, ?lastModified)) as ?score, "
-            "?title, ?icon where { "
-                "?scoreCache a kao:ResourceScoreCache . "
-                "?scoreCache kao:usedActivity ?activity . "
-                "?activity kao:activityIdentifier %1. "
-                "?scoreCache kao:targettedResource ?r . "
-                "?scoreCache nao:lastModified ?lastModified . "
-                "?r nie:url ?url . "
-                "OPTIONAL { ?r nao:prefLabel ?title } . "
-                "OPTIONAL { ?r nao:iconName ?icon } . "
-                "%2 "
-            "} order by desc(?score) limit %3"
-        );
+    static const QString &_query = QString::fromLatin1(
+        "select distinct ?r, ?url, "
+        // "(bif:datediff ('second', \"1970-01-01\"^^<http://www.w3.org/2001/XMLSchema#date>, ?lastModified)) as ?score, "
+        "(bif:datediff ('second', \"1970-01-01\"^^<http://www.w3.org/2001/XMLSchema#date>, ?lastModified)) as ?score, "
+        "?title, ?icon where { "
+        "?scoreCache a kao:ResourceScoreCache . "
+        "?scoreCache kao:usedActivity ?activity . "
+        "?activity kao:activityIdentifier %1. "
+        "?scoreCache kao:targettedResource ?r . "
+        "?scoreCache nao:lastModified ?lastModified . "
+        "?r nie:url ?url . "
+        "OPTIONAL { ?r nao:prefLabel ?title } . "
+        "OPTIONAL { ?r nao:iconName ?icon } . "
+        "%2 "
+        "} order by desc(?score) limit %3");
 
-    static const QString & _applicationFilter = QString::fromLatin1(
-            "?scoreCache kao:initiatingAgent ?agent . "
-            "?agent nao:identifier %1 ."
-        );
+    static const QString &_applicationFilter = QString::fromLatin1(
+        "?scoreCache kao:initiatingAgent ?agent . "
+        "?agent nao:identifier %1 .");
 
-    qDebug() << Soprano::Node::literalToN3(QDate(1970,1,1));
+    qDebug() << Soprano::Node::literalToN3(QDate(1970, 1, 1));
 
     loadFromQuery(_query.arg(
-            activityToShowN3(),
-            (application.isEmpty() ?
-                QString() :
-                _applicationFilter.arg(Soprano::Node::literalToN3(application))
-            ),
-            QString::number(limit)
-        ));
+        activityToShowN3(),
+        (application.isEmpty() ? QString() : _applicationFilter.arg(Soprano::Node::literalToN3(application))),
+        QString::number(limit)));
 }
 
 void ResourceModel::Private::loadTopRated()
 {
-    static const QString & _query = QString::fromLatin1(
-            "select distinct ?r, ?url, ?score, ?title, ?icon where { "
-                "?scoreCache a kao:ResourceScoreCache . "
-                "?scoreCache kao:usedActivity ?activity . "
-                "?activity kao:activityIdentifier %1. "
-                "?scoreCache kao:targettedResource ?r . "
-                "?scoreCache kao:cachedScore ?score . "
-                "?r nie:url ?url . "
-                "OPTIONAL { ?r nao:prefLabel ?title } . "
-                "OPTIONAL { ?r nao:iconName ?icon } . "
-                "%2 "
-            "} order by desc(?score) limit %3"
-        );
+    static const QString &_query = QString::fromLatin1(
+        "select distinct ?r, ?url, ?score, ?title, ?icon where { "
+        "?scoreCache a kao:ResourceScoreCache . "
+        "?scoreCache kao:usedActivity ?activity . "
+        "?activity kao:activityIdentifier %1. "
+        "?scoreCache kao:targettedResource ?r . "
+        "?scoreCache kao:cachedScore ?score . "
+        "?r nie:url ?url . "
+        "OPTIONAL { ?r nao:prefLabel ?title } . "
+        "OPTIONAL { ?r nao:iconName ?icon } . "
+        "%2 "
+        "} order by desc(?score) limit %3");
 
-    static const QString & _applicationFilter = QString::fromLatin1(
-            "?scoreCache kao:initiatingAgent ?agent . "
-            "?agent nao:identifier %1 ."
-        );
+    static const QString &_applicationFilter = QString::fromLatin1(
+        "?scoreCache kao:initiatingAgent ?agent . "
+        "?agent nao:identifier %1 .");
 
     loadFromQuery(_query.arg(
-            activityToShowN3(),
-            (application.isEmpty() ?
-                QString() :
-                _applicationFilter.arg(Soprano::Node::literalToN3(application))
-            ),
-            QString::number(limit)
-        ));
+        activityToShowN3(),
+        (application.isEmpty() ? QString() : _applicationFilter.arg(Soprano::Node::literalToN3(application))),
+        QString::number(limit)));
 }
 
 QString ResourceModel::Private::activityToShowN3() const
 {
     return Soprano::Node::literalToN3(
-            activity.isEmpty() ?
-                currentActivity :
-                activity
-        );
+        activity.isEmpty() ? currentActivity : activity);
 }
 
-ResourceInfo ResourceModel::Private::infoFromResult(const NQuery::Result & result)
+ResourceInfo ResourceModel::Private::infoFromResult(const NQuery::Result &result)
 {
     ResourceInfo info;
     info.resource = result.resource().uri();
 
-    QHash < Nepomuk::Types::Property, Soprano::Node > props = result.requestProperties();
+    QHash<Nepomuk::Types::Property, Soprano::Node> props = result.requestProperties();
 
-    info.url   = props[NIE::url()].toString();
+    info.url = props[NIE::url()].toString();
     info.title = props[NAO::prefLabel()].toString();
-    info.icon  = props[NAO::iconName()].toString();
+    info.icon = props[NAO::iconName()].toString();
     info.score = props[NAO::numericRating()].toString().toDouble();
 
     qDebug()
@@ -375,37 +360,36 @@ ResourceInfo ResourceModel::Private::infoFromResult(const NQuery::Result & resul
 
         if (fileItem.isFile() || fileItem.isDir()) {
             info.title = fileItem.text();
-            info.icon  = fileItem.iconName();
+            info.icon = fileItem.iconName();
 
             qDebug() << "## 1 ##" << info.title << info.icon;
 
         } else {
             info.title = info.url;
-
         }
     }
 
     return info;
 }
 
-void ResourceModel::Private::newEntries(const QList < NQuery::Result > & entries)
+void ResourceModel::Private::newEntries(const QList<NQuery::Result> &entries)
 {
     // model_insert m(q, QModelIndex(), 0, entries.size());
     model_reset m(q);
 
     ResourceInfoList newEntries;
 
-    foreach (const NQuery::Result & result, entries) {
-        const ResourceInfo & entry = infoFromResult(result);
+    foreach(const NQuery::Result & result, entries)
+    {
+        const ResourceInfo &entry = infoFromResult(result);
 
         if (entry.title.isEmpty()
             || resourceSet.contains(entry.url)
             || entry.url.startsWith(QLatin1String("filex://")))
-                continue;
+            continue;
 
         resourceSet << entry.url;
         newEntries << entry;
-
     }
 
     kamd::utils::merge_into(resources, newEntries);
@@ -413,11 +397,12 @@ void ResourceModel::Private::newEntries(const QList < NQuery::Result > & entries
     valid = 1;
 }
 
-void ResourceModel::Private::entriesRemoved(const QList < QUrl > & entries)
+void ResourceModel::Private::entriesRemoved(const QList<QUrl> &entries)
 {
     model_reset m(q);
 
-    foreach (const QUrl & entry, entries) {
+    foreach(const QUrl & entry, entries)
+    {
         qDebug() << "Removing: " << entry;
 
         ResourceInfoList::iterator start = resources.begin();
@@ -426,38 +411,39 @@ void ResourceModel::Private::entriesRemoved(const QList < QUrl > & entries)
         while (start != end) {
             if (start->resource == entry) {
                 start = resources.erase(start);
-                end   = resources.end();
+                end = resources.end();
 
             } else {
                 ++start;
-
             }
         }
     }
 }
 
-void ResourceModel::Private::setCurrentActivity(const QString & activity)
+void ResourceModel::Private::setCurrentActivity(const QString &activity)
 {
-    if (currentActivity == activity) return;
+    if (currentActivity == activity)
+        return;
 
     currentActivity = activity;
 
     reload();
 }
 
-void ResourceModel::Private::error(const QString & errorMessage)
+void ResourceModel::Private::error(const QString &errorMessage)
 {
     qDebug() << errorMessage;
 }
 
-ResourceModel::ResourceModel(QObject * parent)
-    : QAbstractListModel(parent), d(new Private(this))
+ResourceModel::ResourceModel(QObject *parent)
+    : QAbstractListModel(parent)
+    , d(new Private(this))
 {
     d->valid = false;
 
     QHash<int, QByteArray> roles;
 
-    roles[Qt::DisplayRole]    = "name";
+    roles[Qt::DisplayRole] = "name";
     roles[Qt::DecorationRole] = "icon";
 
     setRoleNames(roles);
@@ -468,44 +454,47 @@ ResourceModel::~ResourceModel()
     delete d;
 }
 
-int ResourceModel::rowCount(const QModelIndex & parent) const
+int ResourceModel::rowCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent);
 
-    if (!d->valid) return 0;
+    if (!d->valid)
+        return 0;
 
     return qMin(d->limit, d->resources.size());
 }
 
-QVariant ResourceModel::data(const QModelIndex & index, int role) const
+QVariant ResourceModel::data(const QModelIndex &index, int role) const
 {
-    if (!d->valid) return QVariant();
+    if (!d->valid)
+        return QVariant();
 
     const int row = index.row();
 
-    if (row >= d->resources.size()) return QVariant();
+    if (row >= d->resources.size())
+        return QVariant();
 
-    const ResourceInfo & info = d->resources[row];
+    const ResourceInfo &info = d->resources[row];
 
     switch (role) {
-        case Qt::DisplayRole:
-            return info.title;
-            // return QString(info.title + " " + QString::number(info.score));
+    case Qt::DisplayRole:
+        return info.title;
+    // return QString(info.title + " " + QString::number(info.score));
 
-        case Qt::DecorationRole:
-            return KIcon(info.icon);
+    case Qt::DecorationRole:
+        return KIcon(info.icon);
 
-        case ResourceUrl:
-            return info.url;
+    case ResourceUrl:
+        return info.url;
 
-        case ResourceIconName:
-            return info.icon;
+    case ResourceIconName:
+        return info.icon;
 
-        case ResourceScore:
-            return info.score;
+    case ResourceScore:
+        return info.score;
 
-        default:
-            return QVariant();
+    default:
+        return QVariant();
     }
 }
 
@@ -520,9 +509,10 @@ QVariant ResourceModel::headerData(int section, Qt::Orientation orientation, int
     return QVariant();
 }
 
-void ResourceModel::setActivity(const QString & activity)
+void ResourceModel::setActivity(const QString &activity)
 {
-    if (d->activity == activity) return;
+    if (d->activity == activity)
+        return;
 
     d->activity = activity;
 
@@ -538,9 +528,10 @@ QString ResourceModel::activity() const
     return d->activity;
 }
 
-void ResourceModel::setApplication(const QString & application)
+void ResourceModel::setApplication(const QString &application)
 {
-    if (d->application == application) return;
+    if (d->application == application)
+        return;
 
     qDebug() << "Setting the application to:" << application;
 
@@ -558,7 +549,8 @@ QString ResourceModel::application() const
 
 void ResourceModel::setLimit(int count)
 {
-    if (d->limit == count) return;
+    if (d->limit == count)
+        return;
 
     d->limit = count;
 
@@ -574,7 +566,8 @@ int ResourceModel::limit() const
 
 void ResourceModel::setContentMode(ResourceModel::ContentMode mode)
 {
-    if (d->contentMode == mode) return;
+    if (d->contentMode == mode)
+        return;
 
     d->contentMode = mode;
     d->reload();

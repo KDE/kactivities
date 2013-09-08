@@ -29,10 +29,10 @@
 /**
  * MainConfigurationWidget
  */
-class MainConfigurationWidget: public KCModule {
+class MainConfigurationWidget : public KCModule {
     Q_OBJECT
 public:
-    MainConfigurationWidget(QWidget * parent, QVariantList args);
+    MainConfigurationWidget(QWidget *parent, QVariantList args);
 
 public Q_SLOTS:
     virtual void defaults() Q_DECL_OVERRIDE;
@@ -42,7 +42,7 @@ public Q_SLOTS:
 private Q_SLOTS:
     void updateLayout();
 
-    void forget(int count, const QString & what);
+    void forget(int count, const QString &what);
     void forgetLastHour();
     void forgetTwoHours();
     void forgetDay();
@@ -53,14 +53,12 @@ protected:
 
 private:
     enum WhatToRemember {
-        AllApplications      = 0,
+        AllApplications = 0,
         SpecificApplications = 1,
-        NoApplications       = 2
+        NoApplications = 2
     };
 
     D_PTR;
 };
 
-
 #endif // MAIN_CONFIGURATION_WIDGET_H
-

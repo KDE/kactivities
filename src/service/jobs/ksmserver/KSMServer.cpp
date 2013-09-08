@@ -31,15 +31,17 @@
 
 #include <utils/d_ptr_implementation.h>
 
-#define KWIN_SERVICE QStringLiteral("org.kde.kwin")
-#define KSMSERVER_SERVICE QStringLiteral("org.kde.ksmserver")
+#define KWIN_SERVICE \
+    QStringLiteral("org.kde.kwin")
+#define KSMSERVER_SERVICE \
+    QStringLiteral("org.kde.ksmserver")
 
-KSMServer::Private::Private(KSMServer * parent)
-  : serviceWatcher(Q_NULLPTR),
-    kwin(Q_NULLPTR),
-    ksmserver(Q_NULLPTR),
-    processing(false),
-    q(parent)
+KSMServer::Private::Private(KSMServer *parent)
+    : serviceWatcher(Q_NULLPTR)
+    , kwin(Q_NULLPTR)
+    , ksmserver(Q_NULLPTR)
+    , processing(false)
+    , q(parent)
 {
     serviceWatcher = new QDBusServiceWatcher(this);
 
@@ -50,13 +52,13 @@ KSMServer::Private::Private(KSMServer * parent)
     connect(serviceWatcher, SIGNAL(serviceOwnerChanged(QString, QString, QString)),
             this, SLOT(serviceOwnerChanged(QString, QString, QString)));
 
-    serviceOwnerChanged(KWIN_SERVICE,      QString(), QString());
+    serviceOwnerChanged(KWIN_SERVICE, QString(), QString());
     serviceOwnerChanged(KSMSERVER_SERVICE, QString(), QString());
 }
 
-template < typename Func >
-static void initializeInterface(QDBusInterface * & service,
-        const QString & servicePath, const QString & path, const QString & object, Func init)
+template <typename Func>
+static void initializeInterface(QDBusInterface *&service,
+                                const QString &servicePath, const QString &path, const QString &object, Func init)
 {
     // Delete the old object, just in case
     delete service;
@@ -74,13 +76,11 @@ static void initializeInterface(QDBusInterface * & service,
     } else {
         delete service;
         service = Q_NULLPTR;
-
     }
-
 }
 
-void KSMServer::Private::serviceOwnerChanged(const QString & service,
-        const QString & oldOwner, const QString & newOwner)
+void KSMServer::Private::serviceOwnerChanged(const QString &service,
+                                             const QString &oldOwner, const QString &newOwner)
 {
     Q_UNUSED(oldOwner);
     Q_UNUSED(newOwner);
@@ -92,7 +92,7 @@ void KSMServer::Private::serviceOwnerChanged(const QString & service,
             KSMSERVER_SERVICE,
             QStringLiteral("/KSMServer"),
             QStringLiteral("org.kde.KSMServerInterface"),
-            [this] (QObject * service) {
+            [this](QObject * service) {
                 service->setParent(this);
                 connect(service, SIGNAL(subSessionOpened()),
                     this, SLOT(subSessionOpened()));
@@ -100,8 +100,7 @@ void KSMServer::Private::serviceOwnerChanged(const QString & service,
                     this, SLOT(subSessionClosed()));
                 connect(service, SIGNAL(subSessionCloseCanceled()),
                     this, SLOT(subSessionCloseCanceled()));
-            }
-        );
+            });
 
     } else if (service == KWIN_SERVICE) {
 
@@ -110,16 +109,15 @@ void KSMServer::Private::serviceOwnerChanged(const QString & service,
             KWIN_SERVICE,
             QStringLiteral("/KWin"),
             QStringLiteral("org.kde.KWin"),
-            [this] (QObject * service) {
+            [this](QObject * service) {
                 service->setParent(this);
-            }
-        );
-
+            });
     }
 }
 
-KSMServer::KSMServer(QObject * parent)
-  : QObject(parent), d(this)
+KSMServer::KSMServer(QObject *parent)
+    : QObject(parent)
+    , d(this)
 {
 }
 
@@ -127,21 +125,21 @@ KSMServer::~KSMServer()
 {
 }
 
-void KSMServer::startActivitySession(const QString & activity)
+void KSMServer::startActivitySession(const QString &activity)
 {
     d->processLater(activity, true);
 }
 
-void KSMServer::stopActivitySession(const QString & activity)
+void KSMServer::stopActivitySession(const QString &activity)
 {
     d->processLater(activity, false);
 }
 
-void KSMServer::Private::processLater(const QString & activity, bool start)
+void KSMServer::Private::processLater(const QString &activity, bool start)
 {
     qDebug() << "Scheduling" << activity << "to be" << (start ? "started" : "stopped");
 
-    foreach (const auto & item, queue) {
+    foreach (const auto &item, queue) {
         if (item.first == activity) {
             return;
         }
@@ -163,7 +161,6 @@ void KSMServer::Private::process()
         return;
     }
 
-
     const auto item = queue.takeFirst();
     processingActivity = item.first;
 
@@ -184,45 +181,44 @@ void KSMServer::Private::makeRunning(bool value)
     }
 
     const auto call = kwin->asyncCall(
-            value ? QLatin1String("startActivity") : QLatin1String("stopActivity"),
-            processingActivity);
+        value ? QLatin1String("startActivity") : QLatin1String("stopActivity"),
+        processingActivity);
 
     const auto watcher = new QDBusPendingCallWatcher(call, this);
 
     QObject::connect(
-        watcher, SIGNAL(finished(QDBusPendingCallWatcher*)),
+        watcher, SIGNAL(finished(QDBusPendingCallWatcher *)),
         this,
-            value
-              ? SLOT(startCallFinished(QDBusPendingCallWatcher*))
-              : SLOT(stopCallFinished(QDBusPendingCallWatcher*))
-    );
+        value
+            ? SLOT(startCallFinished(QDBusPendingCallWatcher *))
+            : SLOT(stopCallFinished(QDBusPendingCallWatcher *)));
 }
 
-void KSMServer::Private::startCallFinished(QDBusPendingCallWatcher * call)
+void KSMServer::Private::startCallFinished(QDBusPendingCallWatcher *call)
 {
-     QDBusPendingReply < bool > reply = * call;
+    QDBusPendingReply<bool> reply = *call;
 
-     if (reply.isError()) {
-         qDebug() << "Session starting call failed, but we are returning success";
-         emit q->activitySessionStateChanged(processingActivity, KSMServer::Started);
+    if (reply.isError()) {
+        qDebug() << "Session starting call failed, but we are returning success";
+        emit q->activitySessionStateChanged(processingActivity, KSMServer::Started);
 
-     } else {
-         // If we got false, it means something is going on with ksmserver
-         // and it didn't start our activity
-         const auto retval = reply.argumentAt<0>();
+    } else {
+        // If we got false, it means something is going on with ksmserver
+        // and it didn't start our activity
+        const auto retval = reply.argumentAt<0>();
 
-         qDebug() << "Did we start the activity successfully:" << retval;
-         if (!retval) {
+        qDebug() << "Did we start the activity successfully:" << retval;
+        if (!retval) {
             subSessionSendEvent(KSMServer::Stopped);
-         }
-     }
+        }
+    }
 
-     call->deleteLater();
+    call->deleteLater();
 }
 
-void KSMServer::Private::stopCallFinished(QDBusPendingCallWatcher * call)
+void KSMServer::Private::stopCallFinished(QDBusPendingCallWatcher *call)
 {
-    QDBusPendingReply < bool > reply = * call;
+    QDBusPendingReply<bool> reply = *call;
 
     if (reply.isError()) {
         qDebug() << "Session stopping call failed, but we are returning success";
@@ -244,7 +240,8 @@ void KSMServer::Private::stopCallFinished(QDBusPendingCallWatcher * call)
 
 void KSMServer::Private::subSessionSendEvent(int event)
 {
-    if (processingActivity.isEmpty()) return;
+    if (processingActivity.isEmpty())
+        return;
 
     emit q->activitySessionStateChanged(processingActivity, event);
 
@@ -265,4 +262,3 @@ void KSMServer::Private::subSessionCloseCanceled()
 {
     subSessionSendEvent(KSMServer::FailedToStop);
 }
-

@@ -22,11 +22,11 @@
 
 // #include <KWindowSystem>
 
-const auto configPattern       = QString::fromLatin1("desktop-for-%1");
+const auto configPattern = QString::fromLatin1("desktop-for-%1");
 
-VirtualDesktopSwitchPlugin::VirtualDesktopSwitchPlugin(QObject * parent, const QVariantList & args)
-    : Plugin(parent),
-      m_activitiesService(Q_NULLPTR)
+VirtualDesktopSwitchPlugin::VirtualDesktopSwitchPlugin(QObject *parent, const QVariantList &args)
+    : Plugin(parent)
+    , m_activitiesService(Q_NULLPTR)
 {
     Q_UNUSED(args)
 
@@ -37,11 +37,11 @@ VirtualDesktopSwitchPlugin::~VirtualDesktopSwitchPlugin()
 {
 }
 
-bool VirtualDesktopSwitchPlugin::init(const QHash < QString, QObject * > & modules)
+bool VirtualDesktopSwitchPlugin::init(const QHash<QString, QObject *> &modules)
 {
     m_activitiesService = modules["activities"];
 
-    m_currentActivity = Plugin::callOn <QString, Qt::DirectConnection> (m_activitiesService, "CurrentActivity", "QString");
+    m_currentActivity = Plugin::callOn<QString, Qt::DirectConnection>(m_activitiesService, "CurrentActivity", "QString");
 
     connect(m_activitiesService, SIGNAL(CurrentActivityChanged(QString)),
             this, SLOT(currentActivityChanged(QString)));
@@ -51,14 +51,14 @@ bool VirtualDesktopSwitchPlugin::init(const QHash < QString, QObject * > & modul
     return true;
 }
 
-void VirtualDesktopSwitchPlugin::currentActivityChanged(const QString & activity)
+void VirtualDesktopSwitchPlugin::currentActivityChanged(const QString &activity)
 {
-    if (m_currentActivity == activity) return;
+    if (m_currentActivity == activity)
+        return;
 
     config().writeEntry(
-            configPattern.arg(m_currentActivity),
-            QString::number(KWindowSystem::currentDesktop())
-        );
+        configPattern.arg(m_currentActivity),
+        QString::number(KWindowSystem::currentDesktop()));
 
     m_currentActivity = activity;
 
@@ -69,11 +69,10 @@ void VirtualDesktopSwitchPlugin::currentActivityChanged(const QString & activity
     }
 }
 
-void VirtualDesktopSwitchPlugin::activityRemoved(const QString & activity)
+void VirtualDesktopSwitchPlugin::activityRemoved(const QString &activity)
 {
     config().deleteEntry(configPattern.arg(activity));
     config().sync();
 }
 
 KAMD_EXPORT_PLUGIN(VirtualDesktopSwitchPlugin, "activitymanger_plugin_virtualdesktopswitch")
-

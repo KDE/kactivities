@@ -22,8 +22,9 @@
 namespace Jobs {
 namespace Schedulers {
 
-Given::Given(JobFactory * _condition, JobFactory * _then, JobFactory * _else, bool failOnElse, QObject * parent)
-    : Abstract(parent), m_failOnElse(failOnElse)
+Given::Given(JobFactory *_condition, JobFactory *_then, JobFactory *_else, bool failOnElse, QObject *parent)
+    : Abstract(parent)
+    , m_failOnElse(failOnElse)
 {
     addJob(_condition);
     addJob(_then);
@@ -43,7 +44,6 @@ void Given::jobFinished(int result)
             startJob(next);
             return;
         }
-
     }
 
     if (lastJobStarted() == 2 && m_failOnElse) {
@@ -51,14 +51,10 @@ void Given::jobFinished(int result)
 
     } else {
         setError(result);
-
     }
 
     emitResult();
 }
 
-
-
 } // namespace Schedulers
 } // namespace Jobs
-

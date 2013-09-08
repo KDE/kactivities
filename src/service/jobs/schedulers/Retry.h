@@ -24,7 +24,8 @@
 #include <jobs/JobFactory.h>
 #include <jobs/schedulers/Abstract.h>
 
-#define RETRY_JOB(Input, Test, Error) new Jobs::Schedulers::Retry(Input, Test, Error)
+#define RETRY_JOB(Input, Test, Error) \
+    new Jobs::Schedulers::Retry(Input, Test, Error)
 
 namespace Jobs {
 namespace Schedulers {
@@ -32,19 +33,19 @@ namespace Schedulers {
 /**
  * Retry
  */
-class Retry: public Abstract {
+class Retry : public Abstract {
     Q_OBJECT
 
 public:
-    Retry(JobFactory * _input, JobFactory * _test, JobFactory * _error, QObject * parent = Q_NULLPTR);
+    Retry(JobFactory *_input, JobFactory *_test, JobFactory *_error, QObject *parent = Q_NULLPTR);
     virtual ~Retry();
 
 protected:
     virtual void jobFinished(int result);
 
 private:
-    Retry(const Retry & original);
-    Retry & operator = (const Retry & original);
+    Retry(const Retry &original);
+    Retry &operator=(const Retry &original);
 
     bool m_failOnElse;
 };
@@ -53,4 +54,3 @@ private:
 } // namespace Jobs
 
 #endif // JOBS_SCHEDULER_RETRY_H
-

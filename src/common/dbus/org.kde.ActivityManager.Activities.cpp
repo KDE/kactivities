@@ -28,19 +28,18 @@ class ActivityInfoStaticInit {
 public:
     ActivityInfoStaticInit()
     {
-        qDBusRegisterMetaType < ActivityInfo > ();
-        qDBusRegisterMetaType < ActivityInfoList > ();
+        qDBusRegisterMetaType<ActivityInfo>();
+        qDBusRegisterMetaType<ActivityInfoList>();
     }
 
     static ActivityInfoStaticInit _instance;
-
 };
 
 ActivityInfoStaticInit ActivityInfoStaticInit::_instance;
 
 } // namespace details
 
-QDBusArgument & operator << (QDBusArgument & arg, const ActivityInfo r)
+QDBusArgument &operator<<(QDBusArgument &arg, const ActivityInfo r)
 {
     arg.beginStructure();
 
@@ -54,7 +53,7 @@ QDBusArgument & operator << (QDBusArgument & arg, const ActivityInfo r)
     return arg;
 }
 
-const QDBusArgument & operator >> (const QDBusArgument & arg, ActivityInfo & r)
+const QDBusArgument &operator>>(const QDBusArgument &arg, ActivityInfo &r)
 {
     arg.beginStructure();
 
@@ -68,9 +67,8 @@ const QDBusArgument & operator >> (const QDBusArgument & arg, ActivityInfo & r)
     return arg;
 }
 
-QDebug operator << (QDebug dbg, const ActivityInfo & r)
+QDebug operator<<(QDebug dbg, const ActivityInfo &r)
 {
     dbg << "ActivityInfo(" << r.id << r.name << ")";
     return dbg.space();
 }
-

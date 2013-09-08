@@ -30,18 +30,17 @@
 class Event {
 public:
     enum Type {
-        Accessed = 0,    ///< resource was accessed, but we don't know for how long it will be open/used
+        Accessed = 0, ///< resource was accessed, but we don't know for how long it will be open/used
 
-        Opened = 1,      ///< resource was opened
-        Modified = 2,    ///< previously opened resource was modified
-        Closed = 3,      ///< previously opened resource was closed
+        Opened = 1, ///< resource was opened
+        Modified = 2, ///< previously opened resource was modified
+        Closed = 3, ///< previously opened resource was closed
 
-        FocussedIn = 4,  ///< resource get the keyboard focus
+        FocussedIn = 4, ///< resource get the keyboard focus
         FocussedOut = 5, ///< resource lost the focus
 
         LastEventType = 5,
         UserEventType = 32
-
     };
 
     // These events can't come outside of the activity manager daemon,
@@ -49,29 +48,28 @@ public:
     // to the daemon plugins
     enum UserType {
         UpdateScore = UserEventType + 1
-
     };
 
     Event();
 
-    explicit Event(const QString & application, quintptr wid, const QString & uri,
-            int type = Accessed);
+    explicit Event(const QString &application, quintptr wid, const QString &uri,
+                   int type = Accessed);
 
     Event deriveWithType(Type type) const;
 
-    bool operator == (const Event & other) const;
+    bool operator==(const Event &other) const;
 
 public:
     QString application;
     quintptr wid;
     QString uri;
-    int     type;
+    int type;
     QDateTime timestamp;
 
     QString typeName() const;
 };
 
-QDebug operator << (QDebug dbg, const Event & e);
+QDebug operator<<(QDebug dbg, const Event &e);
 
 typedef QList<Event> EventList;
 
@@ -79,4 +77,3 @@ Q_DECLARE_METATYPE(Event)
 Q_DECLARE_METATYPE(EventList)
 
 #endif // EVENT_H
-

@@ -26,38 +26,38 @@
 
 class QFileSystemWatcher;
 
-class NepomukPlugin: public Plugin {
+class NepomukPlugin : public Plugin {
     Q_OBJECT
     Q_CLASSINFO("D-Bus Interface", "org.kde.ActivityManager.ResourcesLinking")
 
 public:
-    explicit NepomukPlugin(QObject *parent = Q_NULLPTR, const QVariantList & args = QVariantList());
+    explicit NepomukPlugin(QObject *parent = Q_NULLPTR, const QVariantList &args = QVariantList());
     ~NepomukPlugin();
 
-    static NepomukPlugin * self();
+    static NepomukPlugin *self();
 
-    virtual bool init(const QHash < QString, QObject * > & modules) Q_DECL_OVERRIDE;
+    virtual bool init(const QHash<QString, QObject *> &modules) Q_DECL_OVERRIDE;
 
 public Q_SLOTS:
     // Resource linking slots
-    void LinkResourceToActivity(const QString & uri, const QString & activity = QString());
-    void UnlinkResourceFromActivity(const QString & uri, const QString & activity = QString());
-    bool IsResourceLinkedToActivity(const QString & uri, const QString & activity = QString()) const;
+    void LinkResourceToActivity(const QString &uri, const QString &activity = QString());
+    void UnlinkResourceFromActivity(const QString &uri, const QString &activity = QString());
+    bool IsResourceLinkedToActivity(const QString &uri, const QString &activity = QString()) const;
 
-    QStringList ResourcesLinkedToActivity(const QString & activity = QString()) const;
+    QStringList ResourcesLinkedToActivity(const QString &activity = QString()) const;
 
 private Q_SLOTS:
     // Activity slots
-    void setActivityName(const QString & activity, const QString & name);
-    void setActivityIcon(const QString & activity, const QString & icon);
-    void setCurrentActivity(const QString & activity);
-    void addActivity(const QString & activity);
-    void removeActivity(const QString & activity);
+    void setActivityName(const QString &activity, const QString &name);
+    void setActivityIcon(const QString &activity, const QString &icon);
+    void setCurrentActivity(const QString &activity);
+    void addActivity(const QString &activity);
+    void removeActivity(const QString &activity);
 
     // Resource score slots
-    void resourceScoreUpdated(const QString & activity, const QString & client, const QString & resource, double score);
-    void deleteRecentStats(const QString & activity, int count, const QString & what);
-    void deleteEarlierStats(const QString & activity, int months);
+    void resourceScoreUpdated(const QString &activity, const QString &client, const QString &resource, double score);
+    void deleteRecentStats(const QString &activity, int count, const QString &what);
+    void deleteEarlierStats(const QString &activity, int months);
 
     // Nepomuk slots
     void nepomukSystemStarted();
@@ -67,10 +67,10 @@ private Q_SLOTS:
     // setResourceTitle
 
 public:
-    virtual bool isFeatureOperational(const QStringList & feature) const Q_DECL_OVERRIDE;
-    virtual bool isFeatureEnabled(const QStringList & feature) const Q_DECL_OVERRIDE;
-    virtual void setFeatureEnabled(const QStringList & feature, bool value) Q_DECL_OVERRIDE;
-    virtual QStringList listFeatures(const QStringList & feature) const Q_DECL_OVERRIDE;
+    virtual bool isFeatureOperational(const QStringList &feature) const Q_DECL_OVERRIDE;
+    virtual bool isFeatureEnabled(const QStringList &feature) const Q_DECL_OVERRIDE;
+    virtual void setFeatureEnabled(const QStringList &feature, bool value) Q_DECL_OVERRIDE;
+    virtual QStringList listFeatures(const QStringList &feature) const Q_DECL_OVERRIDE;
 
 private:
     D_PTR;

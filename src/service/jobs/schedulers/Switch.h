@@ -30,26 +30,25 @@ namespace Schedulers {
 /**
  * Switch
  */
-class Switch: public Abstract {
+class Switch : public Abstract {
     Q_OBJECT
 
 public:
-    Switch(QObject * parent = Q_NULLPTR);
+    Switch(QObject *parent = Q_NULLPTR);
     virtual ~Switch();
 
-    Switch & operator << (JobFactory * other);
-    Switch & operator << (Job * other);
+    Switch &operator<<(JobFactory *other);
+    Switch &operator<<(Job *other);
 
 protected:
     virtual void jobFinished(int result);
 
 private:
-    Switch(const Switch & original);
-    Switch & operator = (const Switch & original);
+    Switch(const Switch &original);
+    Switch &operator=(const Switch &original);
 };
 
 } // namespace Schedulers
 } // namespace Jobs
 
 #endif // JOBS_SCHEDULER_SWITCH_H
-

@@ -33,7 +33,7 @@ namespace Models {
  * ResourceModel
  */
 
-class KACTIVITIES_MODELS_EXPORT ResourceModel: public QAbstractListModel {
+class KACTIVITIES_MODELS_EXPORT ResourceModel : public QAbstractListModel {
     Q_OBJECT
 
     Q_PROPERTY(QString activity READ activity WRITE setActivity NOTIFY activityChanged)
@@ -41,7 +41,7 @@ class KACTIVITIES_MODELS_EXPORT ResourceModel: public QAbstractListModel {
     Q_PROPERTY(int limit READ limit WRITE setLimit NOTIFY limitChanged)
 
 public:
-    ResourceModel(QObject * parent = 0);
+    ResourceModel(QObject *parent = 0);
     virtual ~ResourceModel();
 
     /**
@@ -49,9 +49,9 @@ public:
      */
     enum ContentMode {
         Favorites, // Show linked resources first, then the top rated (default)
-        Linked,    // Show only linked resources
-        TopRated,  // Show only top rated resources
-        Recent     // Show recently used resources
+        Linked, // Show only linked resources
+        TopRated, // Show only top rated resources
+        Recent // Show recently used resources
     };
 
     enum Roles {
@@ -60,8 +60,8 @@ public:
         ResourceIconName
     };
 
-    virtual int rowCount(const QModelIndex & parent = QModelIndex()) const;
-    virtual QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const;
+    virtual int rowCount(const QModelIndex &parent = QModelIndex()) const;
+    virtual QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
     virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
 
 public Q_SLOTS:
@@ -72,7 +72,7 @@ public Q_SLOTS:
      * will display resources linked to the current activity
      * (default)
      */
-    void setActivity(const QString & activity);
+    void setActivity(const QString &activity);
 
     /**
      * @returns which activity the model displays
@@ -85,7 +85,7 @@ public Q_SLOTS:
      * @note if empty, shows resources for all applications
      * aggregated (default)
      */
-    void setApplication(const QString & application);
+    void setApplication(const QString &application);
 
     /**
      * @returns for which application the resources are shown
@@ -116,10 +116,9 @@ public Q_SLOTS:
     ContentMode contentMode() const;
 
 Q_SIGNALS:
-    void applicationChanged(const QString & application);
-    void activityChanged(const QString & activity);
+    void applicationChanged(const QString &application);
+    void activityChanged(const QString &activity);
     void limitChanged(int limit);
-
 
 private:
     Q_PRIVATE_SLOT(d, void servicePresenceChanged(bool))
@@ -134,11 +133,10 @@ private:
     friend class Private;
 
     class Private;
-    Private * const d;
+    Private *const d;
 };
 
 } // namespace Models
 } // namespace KActivities
 
 #endif // KACTIVITIES_MODELS_RESOURCE_MODEL_H
-

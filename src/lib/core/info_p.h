@@ -26,21 +26,21 @@
 
 namespace KActivities {
 
-class InfoPrivateCommon: public QObject {
+class InfoPrivateCommon : public QObject {
     Q_OBJECT
 public:
-    static InfoPrivateCommon * self();
+    static InfoPrivateCommon *self();
 
     InfoPrivateCommon();
     virtual ~InfoPrivateCommon();
 
 private:
-    static InfoPrivateCommon * s_instance;
+    static InfoPrivateCommon *s_instance;
 };
 
 class InfoPrivate {
 public:
-    InfoPrivate(Info * info, const QString & activity);
+    InfoPrivate(Info *info, const QString &activity);
 
     void activityStateChanged(const QString &, int);
 

@@ -26,9 +26,9 @@ namespace KActivities {
 
 // Private common
 
-InfoPrivateCommon * InfoPrivateCommon::s_instance = 0;
+InfoPrivateCommon *InfoPrivateCommon::s_instance = Q_NULLPTR;
 
-InfoPrivateCommon * InfoPrivateCommon::self()
+InfoPrivateCommon *InfoPrivateCommon::self()
 {
     if (!s_instance) {
         s_instance = new InfoPrivateCommon();
@@ -48,11 +48,11 @@ InfoPrivateCommon::~InfoPrivateCommon()
 // Private
 
 InfoPrivate::InfoPrivate(Info *info, const QString &activity)
-    : q(info),
-      state(Info::Invalid),
-      nameCallWatcher(0),
-      iconCallWatcher(0),
-      id(activity)
+    : q(info)
+    , state(Info::Invalid)
+    , nameCallWatcher(Q_NULLPTR)
+    , iconCallWatcher(Q_NULLPTR)
+    , id(activity)
 {
     if (Manager::isServicePresent()) {
         initializeCachedData();
@@ -60,13 +60,14 @@ InfoPrivate::InfoPrivate(Info *info, const QString &activity)
 }
 
 // Filters out signals for only this activity
-#define IMPLEMENT_SIGNAL_HANDLER(ORIGINAL, INTERNAL)       \
-    void InfoPrivate::INTERNAL(const QString & _id) const  \
-    {                                                      \
-        if (id == _id) emit q->INTERNAL();                 \
+#define IMPLEMENT_SIGNAL_HANDLER(ORIGINAL, INTERNAL)     \
+    void InfoPrivate::INTERNAL(const QString &_id) const \
+    {                                                    \
+        if (id == _id)                                   \
+            emit q->INTERNAL();                          \
     }
 
-IMPLEMENT_SIGNAL_HANDLER(ActivityAdded,   added)
+IMPLEMENT_SIGNAL_HANDLER(ActivityAdded, added)
 IMPLEMENT_SIGNAL_HANDLER(ActivityRemoved, removed)
 IMPLEMENT_SIGNAL_HANDLER(ActivityStarted, started)
 IMPLEMENT_SIGNAL_HANDLER(ActivityStopped, stopped)
@@ -77,7 +78,7 @@ IMPLEMENT_SIGNAL_HANDLER(ActivityChanged, infoChanged)
 KAMD_RETRIEVE_REMOTE_VALUE_HANDLER(QString, InfoPrivate, name, QString())
 KAMD_RETRIEVE_REMOTE_VALUE_HANDLER(QString, InfoPrivate, icon, QString())
 
-void InfoPrivate::nameChanged(const QString & _id, const QString & _name) const
+void InfoPrivate::nameChanged(const QString &_id, const QString &_name) const
 {
     if (id == _id) {
         name = _name;
@@ -85,14 +86,13 @@ void InfoPrivate::nameChanged(const QString & _id, const QString & _name) const
     }
 }
 
-void InfoPrivate::iconChanged(const QString & _id, const QString & _icon) const
+void InfoPrivate::iconChanged(const QString &_id, const QString &_icon) const
 {
     if (id == _id) {
         icon = _icon;
         emit q->iconChanged(icon);
     }
 }
-
 
 void InfoPrivate::setServicePresent(bool present)
 {
@@ -101,7 +101,7 @@ void InfoPrivate::setServicePresent(bool present)
     }
 }
 
-void InfoPrivate::activityStateChanged(const QString & idChanged, int newState)
+void InfoPrivate::activityStateChanged(const QString &idChanged, int newState)
 {
     if (idChanged == id) {
         state = static_cast<Info::State>(newState);
@@ -117,8 +117,8 @@ void InfoPrivate::initializeCachedData()
 
 // Info
 Info::Info(const QString &activity, QObject *parent)
-    : QObject(parent),
-      d(new InfoPrivate(this, activity))
+    : QObject(parent)
+    , d(new InfoPrivate(this, activity))
 {
     connect(Manager::activities(), SIGNAL(ActivityStateChanged(QString, int)),
             this, SLOT(activityStateChanged(QString, int)));
@@ -172,7 +172,7 @@ KAMD_REMOTE_VALUE_GETTER(QString, Info, icon, QString::fromLatin1("preferences-a
 Info::State Info::state() const
 {
     if (d->state == Invalid) {
-        QDBusReply < int > dbusReply = Manager::activities()->ActivityState(d->id);
+        QDBusReply<int> dbusReply = Manager::activities()->ActivityState(d->id);
 
         if (dbusReply.isValid()) {
             d->state = (State)(dbusReply.value());
@@ -182,11 +182,11 @@ Info::State Info::state() const
     return d->state;
 }
 
-QString Info::name(const QString & id)
+QString Info::name(const QString &id)
 {
     KAMD_RETRIEVE_REMOTE_VALUE_SYNC(
-            QString, activities, ActivityName(id), QString()
-            // i18nc("The name of the main activity - when the activity manager is not running", "Main")
+        QString, activities, ActivityName(id), QString()
+        // i18nc("The name of the main activity - when the activity manager is not running", "Main")
         );
 }
 
@@ -209,17 +209,17 @@ Info::Availability Info::availability() const
     return result;
 }
 
-void Info::linkResource(const QString & resourceUri)
+void Info::linkResource(const QString &resourceUri)
 {
     Manager::resourcesLinking()->LinkResourceToActivity(resourceUri, d->id);
 }
 
-void Info::unlinkResource(const QString & resourceUri)
+void Info::unlinkResource(const QString &resourceUri)
 {
     Manager::resourcesLinking()->UnlinkResourceFromActivity(resourceUri, d->id);
 }
 
-bool Info::isResourceLinked(const QString & resourceUri)
+bool Info::isResourceLinked(const QString &resourceUri)
 {
     return Manager::resourcesLinking()->IsResourceLinkedToActivity(resourceUri, d->id);
 }
@@ -228,4 +228,3 @@ bool Info::isResourceLinked(const QString & resourceUri)
 
 #include "moc_info.cpp"
 #include "moc_info_p.cpp"
-

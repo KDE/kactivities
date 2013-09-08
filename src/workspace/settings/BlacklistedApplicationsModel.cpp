@@ -35,7 +35,6 @@
 
 #include <utils/d_ptr_implementation.h>
 
-
 class BlacklistedApplicationsModel::Private {
 public:
     struct ApplicationData {
@@ -45,21 +44,21 @@ public:
         bool blocked;
     };
 
-    QList <ApplicationData> applications;
+    QList<ApplicationData> applications;
     QSqlDatabase database;
 
     KSharedConfig::Ptr pluginConfig;
     bool enabled;
 };
 
-BlacklistedApplicationsModel::BlacklistedApplicationsModel(QObject * parent)
+BlacklistedApplicationsModel::BlacklistedApplicationsModel(QObject *parent)
     : QAbstractListModel(parent)
 {
-    QHash < int, QByteArray > roles;
-    roles[ApplicationIdRole]       = "name";
-    roles[Qt::DecorationRole]      = "icon";
-    roles[Qt::DisplayRole]         = "title";
-    roles[BlockedApplicationRole]  = "blocked";
+    QHash<int, QByteArray> roles;
+    roles[ApplicationIdRole] = "name";
+    roles[Qt::DecorationRole] = "icon";
+    roles[Qt::DisplayRole] = "title";
+    roles[BlockedApplicationRole] = "blocked";
     setRoleNames(roles);
 
     d->enabled = false;
@@ -115,19 +114,20 @@ void BlacklistedApplicationsModel::load()
 
         beginInsertRows(QModelIndex(), 0, applications.length() - 1);
 
-        foreach (const auto & name, applications) {
+        foreach(const auto & name, applications)
+        {
             const auto service = KService::serviceByDesktopName(name);
             const auto blocked = blockedApplications.contains(name);
 
             if (service) {
-                d->applications << Private::ApplicationData {
-                    name,
-                        service->name(),
-                        service->icon(),
-                        blocked
-                };
+                d->applications << Private::ApplicationData{
+                                       name,
+                                       service->name(),
+                                       service->icon(),
+                                       blocked
+                                   };
             } else {
-                d->applications << Private::ApplicationData { name, name, name, blocked };
+                d->applications << Private::ApplicationData{ name, name, name, blocked };
             }
         }
 
@@ -180,34 +180,34 @@ QVariant BlacklistedApplicationsModel::headerData(int section, Qt::Orientation o
     return QVariant();
 }
 
-QVariant BlacklistedApplicationsModel::data(const QModelIndex & modelIndex, int role) const
+QVariant BlacklistedApplicationsModel::data(const QModelIndex &modelIndex, int role) const
 {
     const auto index = modelIndex.row();
 
     if (index > rowCount())
         return QVariant();
 
-    const auto & application = d->applications[index];
+    const auto &application = d->applications[index];
 
     switch (role) {
-        default:
-            return QVariant();
+    default:
+        return QVariant();
 
-        case ApplicationIdRole:
-            return application.name;
+    case ApplicationIdRole:
+        return application.name;
 
-        case Qt::DisplayRole:
-            return application.title;
+    case Qt::DisplayRole:
+        return application.title;
 
-        case Qt::DecorationRole:
-            return application.icon;
+    case Qt::DecorationRole:
+        return application.icon;
 
-        case BlockedApplicationRole:
-            return application.blocked;
+    case BlockedApplicationRole:
+        return application.blocked;
     }
 }
 
-int BlacklistedApplicationsModel::rowCount(const QModelIndex & parent) const
+int BlacklistedApplicationsModel::rowCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent)
     return d->applications.size();

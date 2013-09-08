@@ -26,25 +26,26 @@
 
 class ActivityRankingPlugin::Private {
 public:
-    ActivityRanking * ranking;
-    QThread * rankingThread;
+    ActivityRanking *ranking;
+    QThread *rankingThread;
 };
 
-ActivityRankingPlugin::ActivityRankingPlugin(QObject * parent, const QVariantList & args)
+ActivityRankingPlugin::ActivityRankingPlugin(QObject *parent, const QVariantList &args)
     : Plugin(parent)
 {
     Q_UNUSED(args)
 }
 
-bool ActivityRankingPlugin::init(const QHash < QString, QObject * > & modules)
+bool ActivityRankingPlugin::init(const QHash<QString, QObject *> &modules)
 {
     d->ranking = new ActivityRanking();
     d->ranking->init(modules["activities"]);
 
-    class Thread: public QThread {
+    class Thread : public QThread {
     public:
-        Thread(ActivityRanking * ptr = Q_NULLPTR)
-            : QThread(), object(ptr)
+        Thread(ActivityRanking *ptr = Q_NULLPTR)
+            : QThread()
+            , object(ptr)
         {
         }
 
@@ -55,9 +56,9 @@ bool ActivityRankingPlugin::init(const QHash < QString, QObject * > & modules)
         }
 
     private:
-        ActivityRanking * object;
+        ActivityRanking *object;
 
-    } * thread = new Thread(d->ranking);
+    } *thread = new Thread(d->ranking);
 
     d->rankingThread = thread;
     d->ranking->moveToThread(thread);

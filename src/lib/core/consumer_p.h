@@ -29,46 +29,45 @@ class QDBusPendingCallWatcher;
 
 namespace KActivities {
 
-class ConsumerPrivate: public QObject {
+class ConsumerPrivate : public QObject {
     Q_OBJECT
 
 public:
-    static ConsumerPrivate * self(QObject * consumer);
-    void free(QObject * consumer);
+    static ConsumerPrivate *self(QObject *consumer);
+    void free(QObject *consumer);
 
 public Q_SLOTS:
     void setServicePresent(bool present);
     void initializeCachedData();
 
-    void currentActivityCallFinished(QDBusPendingCallWatcher * call);
-    void listActivitiesCallFinished(QDBusPendingCallWatcher * call);
-    void runningActivitiesCallFinished(QDBusPendingCallWatcher * call);
+    void currentActivityCallFinished(QDBusPendingCallWatcher *call);
+    void listActivitiesCallFinished(QDBusPendingCallWatcher *call);
+    void runningActivitiesCallFinished(QDBusPendingCallWatcher *call);
 
-    void setCurrentActivity(const QString & activity);
-    void addActivity(const QString & activity);
-    void removeActivity(const QString & activity);
-    void setActivityState(const QString & activity, int state);
+    void setCurrentActivity(const QString &activity);
+    void addActivity(const QString &activity);
+    void removeActivity(const QString &activity);
+    void setActivityState(const QString &activity, int state);
 
 Q_SIGNALS:
     void serviceStatusChanged(KActivities::Consumer::ServiceStatus status);
 
-    void currentActivityChanged(const QString & id);
-    void activityAdded(const QString & id);
-    void activityRemoved(const QString & id);
+    void currentActivityChanged(const QString &id);
+    void activityAdded(const QString &id);
+    void activityRemoved(const QString &id);
 
 public:
     KAMD_REMOTE_VALUE_CUSTOM_HANDLER(QString, currentActivity);
     KAMD_REMOTE_VALUE_CUSTOM_HANDLER(QStringList, listActivities);
     KAMD_REMOTE_VALUE_CUSTOM_HANDLER(QStringList, runningActivities);
 
-    QSet <QObject *> consumers;
+    QSet<QObject *> consumers;
 
 private:
     ConsumerPrivate();
-    static ConsumerPrivate * s_instance;
+    static ConsumerPrivate *s_instance;
 };
 
 } // namespace KActivities
 
 #endif // ACTIVITIES_CONSUMER_P_H
-

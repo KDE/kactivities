@@ -35,17 +35,16 @@
 
 #define KAMD_EXPORT_PLUGIN(ClassName, AboutData)                       \
     K_PLUGIN_FACTORY(ClassName##Factory, registerPlugin<ClassName>();) \
-    K_EXPORT_PLUGIN(ClassName##Factory(AboutData))
-
+        K_EXPORT_PLUGIN(ClassName##Factory(AboutData))
 
 /**
  *
  */
-class KACTIVITIES_EXPORT Plugin: public Module {
+class KACTIVITIES_EXPORT Plugin : public Module {
     Q_OBJECT
 
 public:
-    Plugin(QObject * parent);
+    Plugin(QObject *parent);
     virtual ~Plugin();
 
     /**
@@ -54,8 +53,7 @@ public:
      * @returns the plugin needs to return whether it has
      *      successfully been initialized
      */
-    virtual
-    bool init(const QHash < QString, QObject * > & modules) = 0;
+    virtual bool init(const QHash<QString, QObject *> &modules) = 0;
 
     /**
      * Returns the config group for the plugin.
@@ -68,41 +66,35 @@ public:
      * Convenience meta-method to provide prettier invocation of QMetaObject::invokeMethod
      */
     template <typename ReturnType, Qt::ConnectionType connection>
-    inline static
-    ReturnType callOn(QObject * object, const char * method, const char * returnTypeName)
+    inline static ReturnType callOn(QObject *object, const char *method, const char *returnTypeName)
     {
         ReturnType result;
 
         QMetaObject::invokeMethod(
-                object, method, connection,
-                QReturnArgument < ReturnType > (returnTypeName, result)
-            );
+            object, method, connection,
+            QReturnArgument<ReturnType>(returnTypeName, result));
 
         return result;
     }
 
     template <typename ReturnType, Qt::ConnectionType connection, typename... Args>
-    inline static
-    ReturnType callOnWithArgs(QObject * object, const char * method, const char * returnTypeName, Args ... args)
+    inline static ReturnType callOnWithArgs(QObject *object, const char *method, const char *returnTypeName, Args... args)
     {
         ReturnType result;
 
         QMetaObject::invokeMethod(
-                object, method, connection,
-                QReturnArgument < ReturnType > (returnTypeName, result),
-                args...
-            );
+            object, method, connection,
+            QReturnArgument<ReturnType>(returnTypeName, result),
+            args...);
 
         return result;
     }
 
 protected:
-    void setName(const QString & name);
+    void setName(const QString &name);
 
 private:
     D_PTR;
-
 };
 
 #endif // PLUGIN_H
-

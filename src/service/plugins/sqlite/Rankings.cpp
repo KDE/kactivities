@@ -32,19 +32,22 @@
 #include <utils/for_each_assoc.h>
 #include <utils/remove_if.h>
 
-#define RESULT_COUNT_LIMIT 10
-#define COALESCE_ACTIVITY(Activity) ((Activity.isEmpty()) ? \
-        (StatsPlugin::self()->currentActivity()) : (Activity))
+#define RESULT_COUNT_LIMIT \
+    10
+#define COALESCE_ACTIVITY(Activity) \
+    ((Activity.isEmpty()) ? (StatsPlugin::self()->currentActivity()) : (Activity))
 
-Rankings * Rankings::s_instance = Q_NULLPTR;
+Rankings *Rankings::s_instance = Q_NULLPTR;
 
 /**
  *
  */
 RankingsUpdateThread::RankingsUpdateThread(
-        const QString & activity, QVector < Rankings::ResultItem > * listptr,
-        QHash < Rankings::Activity, qreal > * scoreTrashold)
-    : m_activity(activity), m_listptr(listptr), m_scoreTrashold(scoreTrashold)
+    const QString &activity, QVector<Rankings::ResultItem> *listptr,
+    QHash<Rankings::Activity, qreal> *scoreTrashold)
+    : m_activity(activity)
+    , m_listptr(listptr)
+    , m_scoreTrashold(scoreTrashold)
 {
 }
 
@@ -52,23 +55,23 @@ RankingsUpdateThread::~RankingsUpdateThread()
 {
 }
 
-void RankingsUpdateThread::run() {
+void RankingsUpdateThread::run()
+{
     qDebug() << "This is the activity we want the results for:" << m_activity;
 
-    const auto & query = QString::fromLatin1(
-            "SELECT targettedResource, cachedScore "
-            "FROM kext_ResourceScoreCache " // this should be kao_ResourceScoreCache, but lets leave it
-            "WHERE usedActivity = '%1' "
-            "AND cachedScore > 0 "
-            "ORDER BY cachedScore DESC LIMIT 30"
-        ).arg(m_activity);
+    const auto &query = QString::fromLatin1(
+        "SELECT targettedResource, cachedScore "
+        "FROM kext_ResourceScoreCache " // this should be kao_ResourceScoreCache, but lets leave it
+        "WHERE usedActivity = '%1' "
+        "AND cachedScore > 0 "
+        "ORDER BY cachedScore DESC LIMIT 30").arg(m_activity);
 
     qDebug() << query;
 
     auto result = DatabaseConnection::self()->database().exec(query);
 
     while (result.next()) {
-        const auto url   = result.value(0).toString();
+        const auto url = result.value(0).toString();
         const auto score = result.value(1).toReal();
 
         if (score > (*m_scoreTrashold)[m_activity]) {
@@ -79,19 +82,20 @@ void RankingsUpdateThread::run() {
     emit loaded(m_activity);
 }
 
-void Rankings::init(QObject * parent)
+void Rankings::init(QObject *parent)
 {
-    if (s_instance) return;
+    if (s_instance)
+        return;
 
     s_instance = new Rankings(parent);
 }
 
-Rankings * Rankings::self()
+Rankings *Rankings::self()
 {
     return s_instance;
 }
 
-Rankings::Rankings(QObject * parent)
+Rankings::Rankings(QObject *parent)
     : QObject(parent)
 {
     // TODO: We don't really have users of this one
@@ -106,8 +110,8 @@ Rankings::~Rankings()
 {
 }
 
-void Rankings::registerClient(const QString & client,
-        const QString & activity, const QString & type)
+void Rankings::registerClient(const QString &client,
+                              const QString &activity, const QString &type)
 {
     Q_UNUSED(type);
 
@@ -122,9 +126,9 @@ void Rankings::registerClient(const QString & client,
     notifyResultsUpdated(activity, QStringList() << client);
 }
 
-void Rankings::deregisterClient(const QString & client)
+void Rankings::deregisterClient(const QString &client)
 {
-    QMutableHashIterator < Activity, QStringList > i(m_clients);
+    QMutableHashIterator<Activity, QStringList> i(m_clients);
 
     while (i.hasNext()) {
         i.next();
@@ -136,7 +140,7 @@ void Rankings::deregisterClient(const QString & client)
     }
 }
 
-void Rankings::setCurrentActivity(const QString & activity)
+void Rankings::setCurrentActivity(const QString &activity)
 {
     // We need to update scores for items that have no
     // activity specified
@@ -144,19 +148,18 @@ void Rankings::setCurrentActivity(const QString & activity)
     initResults(activity);
 }
 
-void Rankings::initResults(const QString & _activity)
+void Rankings::initResults(const QString &_activity)
 {
-    const auto & activity = COALESCE_ACTIVITY(_activity);
+    const auto &activity = COALESCE_ACTIVITY(_activity);
 
     m_results[activity].clear();
     notifyResultsUpdated(activity);
     updateScoreTrashold(activity);
 
     const auto thread = new RankingsUpdateThread(
-            activity,
-            &(m_results[activity]),
-            &m_resultScoreTreshold
-        );
+        activity,
+        &(m_results[activity]),
+        &m_resultScoreTreshold);
     connect(thread, SIGNAL(loaded(QString)),
             this, SLOT(notifyResultsUpdated(QString)));
     connect(thread, SIGNAL(terminated()),
@@ -165,8 +168,8 @@ void Rankings::initResults(const QString & _activity)
     thread->start();
 }
 
-void Rankings::resourceScoreUpdated(const QString & activity,
-        const QString & application, const QString & uri, qreal score)
+void Rankings::resourceScoreUpdated(const QString &activity,
+                                    const QString &application, const QString &uri, qreal score)
 {
     Q_UNUSED(application);
 
@@ -174,11 +177,11 @@ void Rankings::resourceScoreUpdated(const QString & activity,
         return;
     }
 
-    auto & results = m_results[activity];
+    auto &results = m_results[activity];
 
     // Removing the item from the list if it is already in it
 
-    kamd::utils::remove_if(results, [&uri] (const ResultItem & item) {
+    kamd::utils::remove_if(results, [&uri](const ResultItem & item) {
         return item.uri == uri;
     });
 
@@ -187,7 +190,7 @@ void Rankings::resourceScoreUpdated(const QString & activity,
     ResultItem item(uri, score);
 
     auto insertionPoint = std::lower_bound(
-            results.begin(), results.end(), item);
+        results.begin(), results.end(), item);
 
     results.insert(insertionPoint, item);
 
@@ -196,23 +199,21 @@ void Rankings::resourceScoreUpdated(const QString & activity,
     notifyResultsUpdated(activity);
 }
 
-void Rankings::updateScoreTrashold(const QString & activity)
+void Rankings::updateScoreTrashold(const QString &activity)
 {
-    m_resultScoreTreshold[activity] =
-        (m_results[activity].size() >= RESULT_COUNT_LIMIT)
-            ? m_results[activity].last().score
-            : 0
-        ;
+    m_resultScoreTreshold[activity] = (m_results[activity].size() >= RESULT_COUNT_LIMIT)
+                                          ? m_results[activity].last().score
+                                          : 0;
 }
 
-void Rankings::notifyResultsUpdated(const QString & _activity, QStringList clients)
+void Rankings::notifyResultsUpdated(const QString &_activity, QStringList clients)
 {
-    const auto & activity = COALESCE_ACTIVITY(_activity);
+    const auto &activity = COALESCE_ACTIVITY(_activity);
 
     updateScoreTrashold(activity);
 
     QVariantList data;
-    foreach (const auto & item, m_results[activity]) {
+    foreach (const auto &item, m_results[activity]) {
         data << item.uri;
     }
 
@@ -232,8 +233,7 @@ void Rankings::notifyResultsUpdated(const QString & _activity, QStringList clien
     // }
 }
 
-void Rankings::requestScoreUpdate(const QString & activity, const QString & application, const QString & resource)
+void Rankings::requestScoreUpdate(const QString &activity, const QString &application, const QString &resource)
 {
     ResourceScoreCache(activity, application, resource).updateScore();
 }
-

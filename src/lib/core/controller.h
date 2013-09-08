@@ -39,14 +39,13 @@ class ControllerPrivate;
  *
  * @since 4.5
  */
-class KACTIVITIES_EXPORT Controller: public Consumer
-{
+class KACTIVITIES_EXPORT Controller : public Consumer {
     Q_OBJECT
 
     Q_PROPERTY(QString currentActivity READ currentActivity WRITE setCurrentActivity)
 
 public:
-    explicit Controller(QObject * parent = Q_NULLPTR);
+    explicit Controller(QObject *parent = Q_NULLPTR);
 
     ~Controller();
 
@@ -55,46 +54,46 @@ public:
      * @param id id of the activity
      * @param name name to be set
      */
-    void setActivityName(const QString & id, const QString & name);
+    void setActivityName(const QString &id, const QString &name);
 
     /**
      * Sets the icon of the specified activity
      * @param id id of the activity
      * @param icon icon to be set - freedesktop.org name or file path
      */
-    void setActivityIcon(const QString & id, const QString & icon);
+    void setActivityIcon(const QString &id, const QString &icon);
 
     /**
      * Sets the current activity
      * @param id id of the activity to make current
      * @returns true if successful
      */
-    bool setCurrentActivity(const QString & id);
+    bool setCurrentActivity(const QString &id);
 
     /**
      * Adds a new activity
      * @param name name of the activity
      * @returns id of the newly created activity
      */
-    QString addActivity(const QString & name);
+    QString addActivity(const QString &name);
 
     /**
      * Removes the specified activity
      * @param id id of the activity to delete
      */
-    void removeActivity(const QString & id);
+    void removeActivity(const QString &id);
 
     /**
      * Stops the activity
      * @param id id of the activity to stop
      */
-    void stopActivity(const QString & id);
+    void stopActivity(const QString &id);
 
     /**
      * Starts the activity
      * @param id id of the activity to start
      */
-    void startActivity(const QString & id);
+    void startActivity(const QString &id);
 
 private:
     const QScopedPointer<ControllerPrivate> d;
@@ -103,4 +102,3 @@ private:
 } // namespace KActivities
 
 #endif // ACTIVITIES_CONTROLLER_H
-

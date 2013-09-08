@@ -31,11 +31,11 @@ namespace Schedulers {
 /**
  * Abstract
  */
-class Abstract: public Job {
+class Abstract : public Job {
     Q_OBJECT
 
 public:
-    Abstract(QObject * parent = Q_NULLPTR);
+    Abstract(QObject *parent = Q_NULLPTR);
     virtual ~Abstract();
 
     virtual void start() Q_DECL_OVERRIDE;
@@ -48,14 +48,14 @@ protected:
     int jobCount() const;
     bool hasJob(int index) const;
 
-    void addJob(JobFactory * job);
-    void addJob(Job * job);
+    void addJob(JobFactory *job);
+    void addJob(Job *job);
 
     void returnResult(int result);
 
 private:
-    Abstract(const Abstract & original);
-    Abstract & operator = (const Abstract & original);
+    Abstract(const Abstract &original);
+    Abstract &operator=(const Abstract &original);
 
     D_PTR;
 };
@@ -66,4 +66,3 @@ private:
 } // namespace Jobs
 
 #endif // JOBS_SCHEDULER_ABSTRACT_H
-

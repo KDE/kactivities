@@ -24,7 +24,7 @@
 namespace Jobs {
 namespace General {
 
-Call::JOB_FACTORY(QObject * receiver, const QString & slot, const QString & argument, bool waitFinished)
+Call::JOB_FACTORY(QObject *receiver, const QString &slot, const QString &argument, bool waitFinished)
 {
     JOB_FACTORY_PROPERTY(receiver);
     JOB_FACTORY_PROPERTY(slot);
@@ -37,22 +37,22 @@ QString Call::argument() const
     return m_argument;
 }
 
-void Call::setArgument(const QString & argument)
+void Call::setArgument(const QString &argument)
 {
     m_argument = argument;
 }
 
-void Call::setReceiver(QObject * receiver)
+void Call::setReceiver(QObject *receiver)
 {
     m_receiver = receiver;
 }
 
-void Call::setSlot(const QString & slot)
+void Call::setSlot(const QString &slot)
 {
     m_slot = slot;
 }
 
-QObject * Call::receiver() const
+QObject *Call::receiver() const
 {
     return m_receiver;
 }
@@ -78,14 +78,13 @@ void Call::start()
         qDebug() << ">>> Calling the method" << m_slot << "with" << m_argument;
 
         QMetaObject::invokeMethod(m_receiver, m_slot.toLatin1().constData(),
-                (m_waitFinished ? Qt::QueuedConnection : Qt::DirectConnection),
-                Q_ARG(QString, m_argument));
+                                  (m_waitFinished ? Qt::QueuedConnection : Qt::DirectConnection),
+                                  Q_ARG(QString, m_argument));
 
     } else {
         qDebug() << ">>> Receiver is nullptr, failing";
         setError(1);
         setErrorText(QStringLiteral("There is no receiver registered to call"));
-
     }
 
     emit emitResult();
@@ -93,4 +92,3 @@ void Call::start()
 
 } // namespace General
 } // namespace Jobs
-

@@ -22,7 +22,7 @@
 namespace Jobs {
 namespace Schedulers {
 
-Fallible::Fallible(QObject * parent)
+Fallible::Fallible(QObject *parent)
     : Abstract(parent)
 {
 }
@@ -31,14 +31,14 @@ Fallible::~Fallible()
 {
 }
 
-Fallible & Fallible::operator << (JobFactory * job)
+Fallible &Fallible::operator<<(JobFactory *job)
 {
     addJob(job);
 
     return *this;
 }
 
-Fallible & Fallible::operator << (Job * job)
+Fallible &Fallible::operator<<(Job *job)
 {
     addJob(job);
 
@@ -52,12 +52,8 @@ void Fallible::jobFinished(int result)
 
     } else {
         startJob(lastJobStarted() + 1);
-
     }
 }
 
-
-
 } // namespace Schedulers
 } // namespace Jobs
-

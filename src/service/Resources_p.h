@@ -26,25 +26,25 @@
 #include <QString>
 #include <QList>
 
-class Resources::Private: public QThread {
+class Resources::Private : public QThread {
     Q_OBJECT
 
 public:
-    Private(Resources * parent);
+    Private(Resources *parent);
 
     void run();
 
     // Inserts the event directly into the queue
-    void insertEvent(const Event & newEvent);
+    void insertEvent(const Event &newEvent);
 
     // Processes the event and inserts it into the queue
-    void addEvent(const QString & application, quintptr wid, const QString & uri,
-                int type);
+    void addEvent(const QString &application, quintptr wid, const QString &uri,
+                  int type);
 
     // Processes the event and inserts it into the queue
-    void addEvent(const Event & newEvent);
+    void addEvent(const Event &newEvent);
 
-    QStringList resourcesLinkedToActivity(const QString & activity) const;
+    QStringList resourcesLinkedToActivity(const QString &activity) const;
 
 private Q_SLOTS:
     // Reacting to window manager signals
@@ -54,7 +54,7 @@ private Q_SLOTS:
 
 private:
     struct WindowData {
-        QSet < QString > resources;
+        QSet<QString> resources;
         QString focussedResource;
         QString application;
     };
@@ -63,10 +63,10 @@ private:
     // EventList events;
     // QMutex events_mutex;
 
-    QHash < quintptr, WindowData > windows;
+    QHash<quintptr, WindowData> windows;
     quintptr focussedWindow;
 
-    Resources * const q;
+    Resources *const q;
 };
 
 #endif // RESOURCES_P_H

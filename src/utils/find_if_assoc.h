@@ -31,48 +31,50 @@ namespace utils {
 
 namespace details {
 
-    // Iterator Functions
+// Iterator Functions
 
-    template <typename Iterator, typename Function>
-    Function qt_find_if_assoc(Iterator start, Iterator end, Function f)
-    {
-        for ( ; start != end; ++ start ) {
-            if (f(start.key(), start.value())) break;
-        }
-
-        return f;
+template <typename Iterator, typename Function>
+Function qt_find_if_assoc(Iterator start, Iterator end, Function f)
+{
+    for (; start != end; ++start) {
+        if (f(start.key(), start.value()))
+            break;
     }
 
-    template <typename Iterator, typename Function>
-    Function stl_find_if_assoc(Iterator start, Iterator end, Function f)
-    {
-        for ( ; start != end; ++ start ) {
-            if (f(start->first, start->second)) break;
-        }
+    return f;
+}
 
-        return f;
+template <typename Iterator, typename Function>
+Function stl_find_if_assoc(Iterator start, Iterator end, Function f)
+{
+    for (; start != end; ++start) {
+        if (f(start->first, start->second))
+            break;
     }
 
-    // Container functions
+    return f;
+}
 
-    template <typename Container, typename Function>
-    Function _find_if_assoc_helper_container(const Container & c, Function f,
-            decltype(&Container::constBegin) * )
-    {
-        return qt_find_if_assoc(c.constBegin(), c.constEnd(), f);
-    }
+// Container functions
 
-    template <typename Container, typename Function>
-    Function _find_if_assoc_helper_container(const Container & c, Function f,
-            decltype(&Container::cbegin) * )
-    {
-        return stl_find_if_assoc(c.cbegin(), c.cend(), f);
-    }
+template <typename Container, typename Function>
+Function _find_if_assoc_helper_container(const Container &c, Function f,
+                                         decltype(&Container::constBegin) *)
+{
+    return qt_find_if_assoc(c.constBegin(), c.constEnd(), f);
+}
+
+template <typename Container, typename Function>
+Function _find_if_assoc_helper_container(const Container &c, Function f,
+                                         decltype(&Container::cbegin) *)
+{
+    return stl_find_if_assoc(c.cbegin(), c.cend(), f);
+}
 
 } // namespace details
 
 template <typename Container, typename Function>
-Function find_if_assoc(const Container & c, Function f)
+Function find_if_assoc(const Container &c, Function f)
 {
     return details::_find_if_assoc_helper_container
         <Container, Function>(c, f, Q_NULLPTR);

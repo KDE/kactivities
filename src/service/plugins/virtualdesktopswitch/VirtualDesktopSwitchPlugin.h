@@ -22,23 +22,22 @@
 
 #include <utils/override.h>
 
-class VirtualDesktopSwitchPlugin: public Plugin
-{
+class VirtualDesktopSwitchPlugin : public Plugin {
     Q_OBJECT
 
 public:
-    VirtualDesktopSwitchPlugin(QObject * parent, const QVariantList & args);
+    VirtualDesktopSwitchPlugin(QObject *parent, const QVariantList &args);
     virtual ~VirtualDesktopSwitchPlugin();
 
-    virtual bool init(const QHash < QString, QObject * > & modules) Q_DECL_OVERRIDE;
+    virtual bool init(const QHash<QString, QObject *> &modules) Q_DECL_OVERRIDE;
 
 private Q_SLOTS:
-    void currentActivityChanged(const QString & activity);
-    void activityRemoved(const QString & activity);
+    void currentActivityChanged(const QString &activity);
+    void activityRemoved(const QString &activity);
 
 private:
     QString m_currentActivity;
-    QObject * m_activitiesService;
+    QObject *m_activitiesService;
 };
 
 #endif // PLUGINS_VIRTUAL_DESKTOP_SWITCH_PLUGIN_H

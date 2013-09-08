@@ -49,8 +49,7 @@ class ResourceInstancePrivate;
  * systems - everything is done under-the-hood automatically.
  *
  */
-class KACTIVITIES_EXPORT ResourceInstance: public QObject
-{
+class KACTIVITIES_EXPORT ResourceInstance : public QObject {
     Q_OBJECT
 
     Q_PROPERTY(QUrl uri READ uri WRITE setUri)
@@ -74,7 +73,7 @@ public:
      *        If not specified, QCoreApplication::applicationName is used
      * @param parent pointer to the parent object
      */
-    explicit ResourceInstance(quintptr wid, const QString &application = QString(), QObject * parent = Q_NULLPTR);
+    explicit ResourceInstance(quintptr wid, const QString &application = QString(), QObject *parent = Q_NULLPTR);
 
     /**
      * Creates a new resource instance and automatically
@@ -190,13 +189,11 @@ public:
      *        If not specified, QCoreApplication::applicationName is used
      *
      */
-    static void  notifyAccessed(const QUrl &uri, const QString &application = QString());
+    static void notifyAccessed(const QUrl &uri, const QString &application = QString());
 
 private:
     const QScopedPointer<ResourceInstancePrivate> d;
 };
-
 }
 
 #endif // ACTIVITIES_RESOURCEINSTANCE_H
-

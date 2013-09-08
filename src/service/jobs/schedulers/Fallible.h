@@ -24,7 +24,8 @@
 #include <jobs/JobFactory.h>
 #include <jobs/schedulers/Abstract.h>
 
-#define FALLIBLE_JOB(Job) &((new Jobs::Schedulers::Fallible())->operator<<(Job))
+#define FALLIBLE_JOB(Job) \
+    &((new Jobs::Schedulers::Fallible())->operator<<(Job))
 
 namespace Jobs {
 namespace Schedulers {
@@ -32,26 +33,25 @@ namespace Schedulers {
 /**
  * Fallible
  */
-class Fallible: public Abstract {
+class Fallible : public Abstract {
     Q_OBJECT
 
 public:
-    Fallible(QObject * parent = Q_NULLPTR);
+    Fallible(QObject *parent = Q_NULLPTR);
     virtual ~Fallible();
 
-    Fallible & operator << (JobFactory * other);
-    Fallible & operator << (Job * other);
+    Fallible &operator<<(JobFactory *other);
+    Fallible &operator<<(Job *other);
 
 protected:
     virtual void jobFinished(int result);
 
 private:
-    Fallible(const Fallible & original);
-    Fallible & operator = (const Fallible & original);
+    Fallible(const Fallible &original);
+    Fallible &operator=(const Fallible &original);
 };
 
 } // namespace Schedulers
 } // namespace Jobs
 
 #endif // JOBS_SCHEDULER_FALLIBLE_H
-

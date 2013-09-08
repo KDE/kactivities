@@ -46,30 +46,32 @@ using namespace KDE::Vocabulary;
 class NepomukPlugin::Private {
 public:
     Private()
-      : nepomuk(Q_NULLPTR),
-        activities(Q_NULLPTR),
-        resourceScoring(Q_NULLPTR),
-        nepomukPresent(false)
+        : nepomuk(Q_NULLPTR)
+        , activities(Q_NULLPTR)
+        , resourceScoring(Q_NULLPTR)
+        , nepomukPresent(false)
     {
     }
 
-    void syncActivities(const QStringList & activities = QStringList());
+    void syncActivities(const QStringList &activities = QStringList());
 
-    template < typename Fn >
-    void doWithActivity(const QString & _activity, Fn fn)
+    template <typename Fn>
+    void doWithActivity(const QString &_activity, Fn fn)
     {
         qDebug() << "Doing something sinister with nepomuk, is it here? " << nepomukPresent;
 
-        if (!nepomukPresent) return;
+        if (!nepomukPresent)
+            return;
 
-        const auto currentActivityId = Plugin::callOn <QString, Qt::DirectConnection> (activities, "CurrentActivity", "QString");
+        const auto currentActivityId = Plugin::callOn<QString, Qt::DirectConnection>(activities, "CurrentActivity", "QString");
         const auto activity = _activity.isEmpty() ? currentActivityId : _activity;
 
         qDebug() << "The current activity is: " << currentActivityId
                  << "We need to set the linking for: " << activity;
 
         // JIC checking that the service hasn't returned an empty activity
-        if (activity.isEmpty()) return;
+        if (activity.isEmpty())
+            return;
 
         fn(activity);
 
@@ -79,11 +81,11 @@ public:
         org::kde::KDirNotify::emitFilesAdded("activities:/" + activity);
     }
 
-    void deleteFromQuery(const QString & query)
+    void deleteFromQuery(const QString &query)
     {
         Soprano::QueryResultIterator it
             = Nepomuk::ResourceManager::instance()->mainModel()->executeQuery(query,
-                    Soprano::Query::QueryLanguageSparql);
+                                                                              Soprano::Query::QueryLanguageSparql);
 
         QList<QUrl> toDelete;
 
@@ -96,19 +98,19 @@ public:
         Nepomuk::removeResources(toDelete);
     }
 
-    Nepomuk::ResourceManager * nepomuk;
-    QObject * activities;
-    QObject * resourceScoring;
+    Nepomuk::ResourceManager *nepomuk;
+    QObject *activities;
+    QObject *resourceScoring;
     bool nepomukPresent;
 
-    static NepomukPlugin * s_instance;
+    static NepomukPlugin *s_instance;
     static QString protocol;
 };
 
-NepomukPlugin * NepomukPlugin::Private::s_instance = Q_NULLPTR;
+NepomukPlugin *NepomukPlugin::Private::s_instance = Q_NULLPTR;
 QString NepomukPlugin::Private::protocol = QLatin1String("activities:/");
 
-NepomukPlugin::NepomukPlugin(QObject *parent, const QVariantList & args)
+NepomukPlugin::NepomukPlugin(QObject *parent, const QVariantList &args)
     : Plugin(parent)
 {
     Q_UNUSED(args)
@@ -127,7 +129,7 @@ NepomukPlugin::~NepomukPlugin()
     Private::s_instance = Q_NULLPTR;
 }
 
-bool NepomukPlugin::init(const QHash < QString, QObject * > & modules)
+bool NepomukPlugin::init(const QHash<QString, QObject *> &modules)
 {
     // Listening to changes in activities
     d->activities = modules["activities"];
@@ -175,12 +177,12 @@ bool NepomukPlugin::init(const QHash < QString, QObject * > & modules)
     return true;
 }
 
-NepomukPlugin * NepomukPlugin::self()
+NepomukPlugin *NepomukPlugin::self()
 {
     return Private::s_instance;
 }
 
-void NepomukPlugin::setActivityName(const QString & activity, const QString & name)
+void NepomukPlugin::setActivityName(const QString &activity, const QString &name)
 {
     Q_ASSERT(!activity.isEmpty());
     Q_ASSERT(!name.isEmpty());
@@ -189,7 +191,7 @@ void NepomukPlugin::setActivityName(const QString & activity, const QString & na
         activityResource(activity).setLabel(name);
 }
 
-void NepomukPlugin::setActivityIcon(const QString & activity, const QString & icon)
+void NepomukPlugin::setActivityIcon(const QString &activity, const QString &icon)
 {
     Q_ASSERT(!activity.isEmpty());
 
@@ -197,14 +199,14 @@ void NepomukPlugin::setActivityIcon(const QString & activity, const QString & ic
         activityResource(activity).setSymbols(QStringList() << icon);
 }
 
-void NepomukPlugin::setCurrentActivity(const QString & activity)
+void NepomukPlugin::setCurrentActivity(const QString &activity)
 {
     Q_UNUSED(activity);
 
     org::kde::KDirNotify::emitFilesAdded(Private::protocol + "current");
 }
 
-void NepomukPlugin::addActivity(const QString & activity)
+void NepomukPlugin::addActivity(const QString &activity)
 {
     Q_ASSERT(!activity.isEmpty());
 
@@ -214,7 +216,7 @@ void NepomukPlugin::addActivity(const QString & activity)
     org::kde::KDirNotify::emitFilesAdded(Private::protocol + activity);
 }
 
-void NepomukPlugin::removeActivity(const QString & activity)
+void NepomukPlugin::removeActivity(const QString &activity)
 {
     Q_ASSERT(!activity.isEmpty());
 
@@ -224,10 +226,10 @@ void NepomukPlugin::removeActivity(const QString & activity)
     org::kde::KDirNotify::emitFilesAdded(Private::protocol);
 }
 
-
 void NepomukPlugin::nepomukSystemStarted()
 {
-    if (d->nepomukPresent) return;
+    if (d->nepomukPresent)
+        return;
     d->nepomukPresent = true;
 }
 
@@ -236,7 +238,7 @@ void NepomukPlugin::nepomukSystemStopped()
     d->nepomukPresent = false;
 }
 
-bool NepomukPlugin::isFeatureOperational(const QStringList & feature) const
+bool NepomukPlugin::isFeatureOperational(const QStringList &feature) const
 {
     if (feature.size() && feature.first() == "linking")
         return d->nepomukPresent;
@@ -244,47 +246,44 @@ bool NepomukPlugin::isFeatureOperational(const QStringList & feature) const
     return false;
 }
 
-bool NepomukPlugin::isFeatureEnabled(const QStringList & feature) const
+bool NepomukPlugin::isFeatureEnabled(const QStringList &feature) const
 {
     Q_UNUSED(feature)
 
     return false;
 }
 
-void NepomukPlugin::setFeatureEnabled(const QStringList & feature, bool value)
+void NepomukPlugin::setFeatureEnabled(const QStringList &feature, bool value)
 {
     Q_UNUSED(feature)
     Q_UNUSED(value)
 }
 
-QStringList NepomukPlugin::listFeatures(const QStringList & feature) const
+QStringList NepomukPlugin::listFeatures(const QStringList &feature) const
 {
     Q_UNUSED(feature)
 
     return QStringList() << "linking";
 }
 
-void NepomukPlugin::Private::syncActivities(const QStringList & activitys)
+void NepomukPlugin::Private::syncActivities(const QStringList &activitys)
 {
-    if (!nepomukPresent) return;
+    if (!nepomukPresent)
+        return;
 
     // If we got an empty list, it means we should synchronize
     // all the activities known by the service
     foreach (const auto & activity,
-        (
-            activitys.isEmpty()
-                ? Plugin::callOn <QStringList, Qt::DirectConnection> (activities, "ListActivities", "QStringList")
-                : activitys
-        )
-    ) {
+                (activitys.isEmpty()
+                    ? Plugin::callOn<QStringList, Qt::DirectConnection>(activities, "ListActivities", "QStringList")
+                    : activitys))
+    {
         // Notifying KIO of the update
         org::kde::KDirNotify::emitFilesAdded("activities:/" + activity);
 
         // Getting the activity info from the service
-        const auto name = Plugin::callOnWithArgs <QString, Qt::DirectConnection>
-                (activities, "ActivityName", "QString", Q_ARG(QString, activity));
-        const auto icon = Plugin::callOnWithArgs <QString, Qt::DirectConnection>
-                (activities, "ActivityIcon", "QString", Q_ARG(QString, activity));
+        const auto name = Plugin::callOnWithArgs<QString, Qt::DirectConnection>(activities, "ActivityName", "QString", Q_ARG(QString, activity));
+        const auto icon = Plugin::callOnWithArgs<QString, Qt::DirectConnection>(activities, "ActivityIcon", "QString", Q_ARG(QString, activity));
 
         // Setting the nepomuk resource properties - id, name, icon
         auto resource = activityResource(activity);
@@ -300,48 +299,46 @@ void NepomukPlugin::Private::syncActivities(const QStringList & activitys)
         } else {
             // If there is no icon reported by the service, and we
             // have one in nepomuk, send it to the service
-            const auto & symbols = resource.symbols();
+            const auto &symbols = resource.symbols();
             if (symbols.size() > 0) {
-                Plugin::callOnWithArgs <QString, Qt::DirectConnection>
-                    (activities, "SetActivityIcon", "QString", Q_ARG(QString, activity), Q_ARG(QString, symbols.at(0)));
+                Plugin::callOnWithArgs<QString, Qt::DirectConnection>(activities, "SetActivityIcon", "QString", Q_ARG(QString, activity), Q_ARG(QString, symbols.at(0)));
             }
         }
     }
 }
 
-void NepomukPlugin::resourceScoreUpdated(const QString & activity, const QString & client, const QString & resource, double score)
+void NepomukPlugin::resourceScoreUpdated(const QString &activity, const QString &client, const QString &resource, double score)
 {
-    if (!d->nepomukPresent) return;
+    if (!d->nepomukPresent)
+        return;
 
     updateNepomukScore(activity, client, resource, score);
 }
 
-void NepomukPlugin::deleteRecentStats(const QString & activity, int count, const QString & what)
+void NepomukPlugin::deleteRecentStats(const QString &activity, int count, const QString &what)
 {
 #ifdef NEPOMUK_STORE_RESOURCE_SCORES
     const auto activityCheck = activity.isEmpty()
-            ? QString()
-            : "?cache kao:usedActivity "
-                + Soprano::Node::resourceToN3(activityResource(activity).uri())
-                + " .";
+                                   ? QString()
+                                   : "?cache kao:usedActivity "
+                                     + Soprano::Node::resourceToN3(activityResource(activity).uri())
+                                     + " .";
 
     static const auto _query = QString(
         "select ?cache where { "
-            "?cache a kao:ResourceScoreCache . "
-            " %1 " // "?cache kao:usedActivity %activity . "
-            " %2 " // "?cache nao:created ?created . "
-                   // "FILTER ( ?create > %date ) . "
-        "}"
-    );
+        "?cache a kao:ResourceScoreCache . "
+        " %1 " // "?cache kao:usedActivity %activity . "
+        " %2 " // "?cache nao:created ?created . "
+        // "FILTER ( ?create > %date ) . "
+        "}");
 
     // If we need to delete everything,
     // no need to bother with the count and the date
 
     if (what == "everything") {
         const auto query = _query
-                .arg(activityCheck)
-                .arg(QString())
-            ;
+                               .arg(activityCheck)
+                               .arg(QString());
 
         qDebug() << "This are the results we need to delete: " << query;
 
@@ -365,15 +362,13 @@ void NepomukPlugin::deleteRecentStats(const QString & activity, int count, const
         }
 
         static const auto timeChecking = QString(
-                " ?cache nao:created ?created . "
-                " FILTER ( ?created > %1 ) . "
-            );
+            " ?cache nao:created ?created . "
+            " FILTER ( ?created > %1 ) . ");
 
         const auto query = _query
-                .arg(activityCheck)
-                .arg(
-                    timeChecking.arg(Soprano::Node::literalToN3(now))
-                );
+                               .arg(activityCheck)
+                               .arg(
+                                    timeChecking.arg(Soprano::Node::literalToN3(now)));
 
         qDebug() << "This are the results we need to delete: " << query;
 
@@ -382,38 +377,36 @@ void NepomukPlugin::deleteRecentStats(const QString & activity, int count, const
 #endif
 }
 
-void NepomukPlugin::deleteEarlierStats(const QString & activity, int months)
+void NepomukPlugin::deleteEarlierStats(const QString &activity, int months)
 {
 #ifdef NEPOMUK_STORE_RESOURCE_SCORES
-    if (months == 0) return;
+    if (months == 0)
+        return;
 
     const auto activityCheck = activity.isEmpty()
-            ? QString()
-            : "?cache kao:usedActivity "
-                + Soprano::Node::resourceToN3(activityResource(activity).uri())
-                + " .";
+                                   ? QString()
+                                   : "?cache kao:usedActivity "
+                                     + Soprano::Node::resourceToN3(activityResource(activity).uri())
+                                     + " .";
 
     static const auto _query = QString(
         "select ?cache where { "
-            "?cache a kao:ResourceScoreCache . "
-            " %1 " // "?cache kao:usedActivity %activity . "
-            " %2 " // "?cache nao:modified ?modified . "
-                   // "FILTER ( ?modified < %date ) . "
-        "}"
-    );
+        "?cache a kao:ResourceScoreCache . "
+        " %1 " // "?cache kao:usedActivity %activity . "
+        " %2 " // "?cache nao:modified ?modified . "
+        // "FILTER ( ?modified < %date ) . "
+        "}");
 
     const auto time = QDateTime::currentDateTime().addMonths(-months);
 
     static const auto timeChecking = QString(
-            " ?cache nao:created ?created . "
-            " FILTER ( ?modified < %1 ) . "
-        );
+        " ?cache nao:created ?created . "
+        " FILTER ( ?modified < %1 ) . ");
 
     const auto query = _query
-            .arg(activityCheck)
-            .arg(
-                timeChecking.arg(Soprano::Node::literalToN3(time))
-            );
+                           .arg(activityCheck)
+                           .arg(
+                                timeChecking.arg(Soprano::Node::literalToN3(time)));
 
     qDebug() << "This are the results we need to delete: " << query;
 
@@ -421,56 +414,57 @@ void NepomukPlugin::deleteEarlierStats(const QString & activity, int months)
 #endif
 }
 
-void NepomukPlugin::LinkResourceToActivity(const QString & uri, const QString & activity)
+void NepomukPlugin::LinkResourceToActivity(const QString &uri, const QString &activity)
 {
     Q_ASSERT_X(!uri.isEmpty(), "NepomukPlugin::LinkResourceToActivity", "URI of the resource can not be empty");
 
     d->doWithActivity(activity,
-        [uri] (const QString & activity) {
+                      [uri](const QString & activity) {
             // linking the resource to the specified activity
             qDebug() << "Adding the triple " << activity << " isRelated " << uri;
             activityResource(activity).addIsRelated(Nepomuk::Resource(uri));
-        });
+    });
 }
 
-void NepomukPlugin::UnlinkResourceFromActivity(const QString & uri, const QString & activity)
+void NepomukPlugin::UnlinkResourceFromActivity(const QString &uri, const QString &activity)
 {
     Q_ASSERT(!uri.isEmpty());
 
     d->doWithActivity(activity,
-        [uri] (const QString & activity) {
+                      [uri](const QString & activity) {
             // unlinking the resource from the specified activity
             qDebug() << "Removing the triple " << activity << " isRelated " << uri;
             activityResource(activity).removeProperty(NAO::isRelated(), Nepomuk::Resource(uri));
-        });
+    });
 }
 
-bool NepomukPlugin::IsResourceLinkedToActivity(const QString & uri, const QString & _activity) const
+bool NepomukPlugin::IsResourceLinkedToActivity(const QString &uri, const QString &_activity) const
 {
     Q_ASSERT(!uri.isEmpty());
 
-    if (!d->nepomukPresent) return false;
+    if (!d->nepomukPresent)
+        return false;
 
     const auto activity = _activity.isEmpty()
-            ? Plugin::callOn <QString, Qt::DirectConnection> (d->activities, "CurrentActivity", "QString")
-            : _activity;
+                              ? Plugin::callOn<QString, Qt::DirectConnection>(d->activities, "CurrentActivity", "QString")
+                              : _activity;
 
     static const auto _query = QString::fromLatin1(
-            "select ?r where { "
-                " ?a a kao:Activity . "
-                " ?a nao:isRelated ?r . "
-                " ?r nie:url %1 . "
-                " ?a kao:activityIdentifier %2 "
-            "}");
+        "select ?r where { "
+        " ?a a kao:Activity . "
+        " ?a nao:isRelated ?r . "
+        " ?r nie:url %1 . "
+        " ?a kao:activityIdentifier %2 "
+        "}");
 
     const auto query = _query.arg(Soprano::Node::resourceToN3(uri))
-                      .arg(Soprano::Node::literalToN3(activity));
+                           .arg(Soprano::Node::literalToN3(activity));
 
     qDebug() << "So, this is the query that should get the linked resource " << query;
 
     Soprano::QueryResultIterator it
         = Nepomuk::ResourceManager::instance()->mainModel()->executeQuery(
-                query, Soprano::Query::QueryLanguageSparql);
+            query, Soprano::Query::QueryLanguageSparql);
 
     const auto hasResults = it.next();
     it.close();
@@ -481,9 +475,10 @@ bool NepomukPlugin::IsResourceLinkedToActivity(const QString & uri, const QStrin
 // TODO: This should be removed as soon as we get rid of the ResourcesLinkedToActivity method
 // BEGIN
 
-QStringList NepomukPlugin::ResourcesLinkedToActivity(const QString & activity) const
+QStringList NepomukPlugin::ResourcesLinkedToActivity(const QString &activity) const
 {
-    if (!d->nepomukPresent) return QStringList();
+    if (!d->nepomukPresent)
+        return QStringList();
 
     QStringList result;
 
@@ -493,7 +488,6 @@ QStringList NepomukPlugin::ResourcesLinkedToActivity(const QString & activity) c
 
         } else {
             result << resource.uri().toString();
-
         }
     }
 
@@ -503,4 +497,3 @@ QStringList NepomukPlugin::ResourcesLinkedToActivity(const QString & activity) c
 // END
 
 KAMD_EXPORT_PLUGIN(NepomukPlugin, "activitymanger_plugin_nepomuk")
-

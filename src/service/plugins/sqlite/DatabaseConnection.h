@@ -28,25 +28,24 @@
 class QDateTime;
 class QSqlDatabase;
 
-class DatabaseConnection: public QObject {
+class DatabaseConnection : public QObject {
     Q_OBJECT
 
 public:
-    static DatabaseConnection * self();
+    static DatabaseConnection *self();
 
-    void openDesktopEvent(const QString & usedActivity, const QString & initiatingAgent,
-            const QString & targettedResource, const QDateTime & start, const QDateTime & end = QDateTime());
-    void closeDesktopEvent(const QString & usedActivity, const QString & initiatingAgent,
-            const QString & targettedResource, const QDateTime & end);
+    void openDesktopEvent(const QString &usedActivity, const QString &initiatingAgent,
+                          const QString &targettedResource, const QDateTime &start, const QDateTime &end = QDateTime());
+    void closeDesktopEvent(const QString &usedActivity, const QString &initiatingAgent,
+                           const QString &targettedResource, const QDateTime &end);
 
-    void getResourceScoreCache(const QString & usedActivity, const QString & initiatingAgent,
-            const QString & targettedResource, qreal & score, QDateTime & lastUpdate);
+    void getResourceScoreCache(const QString &usedActivity, const QString &initiatingAgent,
+                               const QString &targettedResource, qreal &score, QDateTime &lastUpdate);
 
-    QSqlDatabase & database();
-
+    QSqlDatabase &database();
 
 private:
-    static DatabaseConnection * s_instance;
+    static DatabaseConnection *s_instance;
 
     DatabaseConnection();
     ~DatabaseConnection();
@@ -57,4 +56,3 @@ private:
 };
 
 #endif // PLUGINS_SQLITE_DATABASE_CONNECTION_H
-

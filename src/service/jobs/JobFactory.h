@@ -25,21 +25,24 @@
 
 #include <utils/d_ptr.h>
 
-#define DECLARE_JOB_FACTORY(Type, ConstructorParams)    \
-    Type(QObject * parent)                              \
-        :Job(parent)                                    \
-    { init(); }                                         \
-    class Factory: public JobFactory {                  \
-    public:                                             \
-        Factory ConstructorParams ;                     \
-        Job * createJob(QObject * parent) {             \
-            return new Type(parent);                    \
-        }                                               \
+#define DECLARE_JOB_FACTORY(Type, ConstructorParams) \
+    Type(QObject *parent) : Job(parent)              \
+    {                                                \
+        init();                                      \
+    }                                                \
+    class Factory : public JobFactory {              \
+    public:                                          \
+        Factory ConstructorParams;                   \
+        Job *createJob(QObject *parent)              \
+        {                                            \
+            return new Type(parent);                 \
+        }                                            \
     }
 
-#define JOB_FACTORY Factory::Factory
+#define JOB_FACTORY \
+    Factory::Factory
 
-#define JOB_FACTORY_PROPERTY(PropertyName)              \
+#define JOB_FACTORY_PROPERTY(PropertyName) \
     setProperty(QStringLiteral(#PropertyName), QVariant::fromValue(PropertyName))
 
 /**
@@ -50,20 +53,19 @@ public:
     JobFactory();
     virtual ~JobFactory();
 
-    virtual Job * create(QObject * parent);
+    virtual Job *create(QObject *parent);
 
-    void setProperty(const QString & key, const QVariant & value);
-    void clearProperty(const QString & key);
-    void property(const QString & key) const;
+    void setProperty(const QString &key, const QVariant &value);
+    void clearProperty(const QString &key);
+    void property(const QString &key) const;
 
-    static JobFactory * wrap(Job * job);
+    static JobFactory *wrap(Job *job);
 
 protected:
-    virtual Job * createJob(QObject * parent) = 0;
+    virtual Job *createJob(QObject *parent) = 0;
 
 private:
     D_PTR;
 };
 
 #endif // JOBS_JOB_FACTORY_H
-

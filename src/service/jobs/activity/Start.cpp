@@ -24,7 +24,7 @@
 namespace Jobs {
 namespace Activity {
 
-Change::JOB_FACTORY(QObject * receiver, const QString & slot, const QString & activity)
+Change::JOB_FACTORY(QObject *receiver, const QString &slot, const QString &activity)
 {
     JOB_FACTORY_PROPERTY(receiver);
     JOB_FACTORY_PROPERTY(slot);
@@ -36,17 +36,17 @@ QString Change::activity() const
     return m_activity;
 }
 
-void Change::setActivity(const QString & activity)
+void Change::setActivity(const QString &activity)
 {
     m_activity = activity;
 }
 
-void Change::setReceiver(QObject * receiver)
+void Change::setReceiver(QObject *receiver)
 {
     m_receiver = receiver;
 }
 
-void Change::setSlot(const QString & slot)
+void Change::setSlot(const QString &slot)
 {
     m_slot = slot;
 }
@@ -62,7 +62,6 @@ void Change::start()
         qDebug() << ">>> Receiver is nullptr, failing";
         setError(1);
         setErrorText("There is no receiver registered to signal the change activity");
-
     }
 
     emit emitResult();
@@ -70,4 +69,3 @@ void Change::start()
 
 } // namespace Activity
 } // namespace Jobs
-

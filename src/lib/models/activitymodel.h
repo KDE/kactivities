@@ -33,15 +33,15 @@ namespace Models {
  * ActivityModel
  */
 
-class KACTIVITIES_MODELS_EXPORT ActivityModel: public QAbstractListModel {
+class KACTIVITIES_MODELS_EXPORT ActivityModel : public QAbstractListModel {
     Q_OBJECT
 
 public:
-    ActivityModel(QObject * parent = 0);
+    ActivityModel(QObject *parent = 0);
     virtual ~ActivityModel();
 
-    virtual int rowCount(const QModelIndex & parent = QModelIndex()) const;
-    virtual QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const;
+    virtual int rowCount(const QModelIndex &parent = QModelIndex()) const;
+    virtual QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
     virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
 
     enum Roles {
@@ -50,17 +50,16 @@ public:
     };
 
     enum State {
-        Invalid  = 0,
-        Running  = 2,
+        Invalid = 0,
+        Running = 2,
         Starting = 3,
-        Stopped  = 4,
+        Stopped = 4,
         Stopping = 5
     };
 
-
 private:
-    Q_PRIVATE_SLOT(d, void listActivitiesCallFinished(QDBusPendingCallWatcher*))
-    Q_PRIVATE_SLOT(d, void activityInfoCallFinished(QDBusPendingCallWatcher*))
+    Q_PRIVATE_SLOT(d, void listActivitiesCallFinished(QDBusPendingCallWatcher *))
+    Q_PRIVATE_SLOT(d, void activityInfoCallFinished(QDBusPendingCallWatcher *))
 
     Q_PRIVATE_SLOT(d, void activityNameChanged(const QString &, const QString &))
     Q_PRIVATE_SLOT(d, void activityIconChanged(const QString &, const QString &))
@@ -74,11 +73,10 @@ private:
     friend class Private;
 
     class Private;
-    Private * const d;
+    Private *const d;
 };
 
 } // namespace Models
 } // namespace KActivities
 
 #endif // KACTIVITIES_MODELS_ACTIVITY_MODEL_H
-

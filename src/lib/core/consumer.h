@@ -73,7 +73,7 @@ class ConsumerPrivate;
  *
  * @since 4.5
  */
-class KACTIVITIES_EXPORT Consumer: public QObject {
+class KACTIVITIES_EXPORT Consumer : public QObject {
     Q_OBJECT
 
     Q_PROPERTY(QString currentActivity READ currentActivity NOTIFY currentActivityChanged)
@@ -84,11 +84,11 @@ public:
      * Different states of the activities service
      */
     enum ServiceStatus {
-        NotRunning,        ///< Service is not running
+        NotRunning, ///< Service is not running
         Running
     };
 
-    explicit Consumer(QObject * parent = Q_NULLPTR);
+    explicit Consumer(QObject *parent = Q_NULLPTR);
 
     ~Consumer();
 
@@ -130,7 +130,7 @@ Q_SIGNALS:
      * activity is changed
      * @param id id of the new current activity
      */
-    void currentActivityChanged(const QString & id);
+    void currentActivityChanged(const QString &id);
 
     /**
      * This signal is emitted when the activity service
@@ -143,20 +143,19 @@ Q_SIGNALS:
      * This signal is emitted when a new activity is added
      * @param id id of the new activity
      */
-    void activityAdded(const QString & id);
+    void activityAdded(const QString &id);
 
     /**
      * This signal is emitted when the activity
      * is removed
      * @param id id of the removed activity
      */
-    void activityRemoved(const QString & id);
+    void activityRemoved(const QString &id);
 
 private:
-    ConsumerPrivate * const d;
+    ConsumerPrivate *const d;
 };
 
 } // namespace KActivities
 
 #endif // ACTIVITIES_CONSUMER_H
-

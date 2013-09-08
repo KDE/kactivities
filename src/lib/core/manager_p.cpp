@@ -27,47 +27,49 @@
 
 namespace KActivities {
 
-Manager * Manager::s_instance = Q_NULLPTR;
+Manager *Manager::s_instance = Q_NULLPTR;
 
-#define ACTIVITY_MANAGER_DBUS_PATH      QStringLiteral("org.kde.ActivityManager")
-#define ACTIVITY_MANAGER_DBUS_OBJECT(A) QStringLiteral("/ActivityManager" A)
+#define ACTIVITY_MANAGER_DBUS_PATH \
+    QStringLiteral("org.kde.ActivityManager")
+#define ACTIVITY_MANAGER_DBUS_OBJECT(A) \
+    QStringLiteral("/ActivityManager" A)
 
 Manager::Manager()
-    : QObject(),
-      m_activities(
-          new org::kde::ActivityManager::Activities(
-            ACTIVITY_MANAGER_DBUS_PATH,
-            ACTIVITY_MANAGER_DBUS_OBJECT("/Activities"),
-            KDBusConnectionPool::threadConnection(),
-            this
-            )),
-      m_resources(
-          new org::kde::ActivityManager::Resources(
-            ACTIVITY_MANAGER_DBUS_PATH,
-            ACTIVITY_MANAGER_DBUS_OBJECT("/Resources"),
-            KDBusConnectionPool::threadConnection(),
-            this
-            )),
-      m_resourcesLinking(
-          new org::kde::ActivityManager::ResourcesLinking(
-            ACTIVITY_MANAGER_DBUS_PATH,
-            ACTIVITY_MANAGER_DBUS_OBJECT("/Resources/Linking"),
-            KDBusConnectionPool::threadConnection(),
-            this
-            )),
-      m_features(
-          new org::kde::ActivityManager::Features(
-            ACTIVITY_MANAGER_DBUS_PATH,
-            ACTIVITY_MANAGER_DBUS_OBJECT("/Features"),
-            KDBusConnectionPool::threadConnection(),
-            this
-            ))
+    : QObject()
+    , m_activities(
+            new org::kde::ActivityManager::Activities(
+                ACTIVITY_MANAGER_DBUS_PATH,
+                ACTIVITY_MANAGER_DBUS_OBJECT("/Activities"),
+                KDBusConnectionPool::threadConnection(),
+                this)
+            )
+    , m_resources(
+            new org::kde::ActivityManager::Resources(
+                ACTIVITY_MANAGER_DBUS_PATH,
+                ACTIVITY_MANAGER_DBUS_OBJECT("/Resources"),
+                KDBusConnectionPool::threadConnection(),
+                this)
+            )
+    , m_resourcesLinking(
+            new org::kde::ActivityManager::ResourcesLinking(
+                ACTIVITY_MANAGER_DBUS_PATH,
+                ACTIVITY_MANAGER_DBUS_OBJECT("/Resources/Linking"),
+                KDBusConnectionPool::threadConnection(),
+                this)
+            )
+    , m_features(
+            new org::kde::ActivityManager::Features(
+                ACTIVITY_MANAGER_DBUS_PATH,
+                ACTIVITY_MANAGER_DBUS_OBJECT("/Features"),
+                KDBusConnectionPool::threadConnection(),
+                this)
+            )
 {
     connect(&m_watcher, SIGNAL(serviceOwnerChanged(const QString &, const QString &, const QString &)),
             this, SLOT(serviceOwnerChanged(const QString &, const QString &, const QString &)));
 }
 
-Manager * Manager::self()
+Manager *Manager::self()
 {
     if (!s_instance) {
         // check if the activity manager is already running
@@ -102,7 +104,7 @@ bool Manager::isServicePresent()
     return KDBusConnectionPool::threadConnection().interface()->isServiceRegistered(ACTIVITY_MANAGER_DBUS_PATH);
 }
 
-void Manager::serviceOwnerChanged(const QString & serviceName, const QString & oldOwner, const QString & newOwner)
+void Manager::serviceOwnerChanged(const QString &serviceName, const QString &oldOwner, const QString &newOwner)
 {
     Q_UNUSED(oldOwner)
 
@@ -111,25 +113,24 @@ void Manager::serviceOwnerChanged(const QString & serviceName, const QString & o
     }
 }
 
-Service::Activities * Manager::activities()
+Service::Activities *Manager::activities()
 {
     return self()->m_activities;
 }
 
-Service::Resources * Manager::resources()
+Service::Resources *Manager::resources()
 {
     return self()->m_resources;
 }
 
-Service::ResourcesLinking * Manager::resourcesLinking()
+Service::ResourcesLinking *Manager::resourcesLinking()
 {
     return self()->m_resourcesLinking;
 }
 
-Service::Features * Manager::features()
+Service::Features *Manager::features()
 {
     return self()->m_features;
 }
 
 } // namespace KActivities
-

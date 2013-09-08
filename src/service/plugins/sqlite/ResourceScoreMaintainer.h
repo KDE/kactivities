@@ -30,11 +30,11 @@ class QString;
  */
 class ResourceScoreMaintainer {
 public:
-    static ResourceScoreMaintainer * self();
+    static ResourceScoreMaintainer *self();
 
     virtual ~ResourceScoreMaintainer();
 
-    void processResource(const QString & resource, const QString & application);
+    void processResource(const QString &resource, const QString &application);
 
 private:
     ResourceScoreMaintainer();

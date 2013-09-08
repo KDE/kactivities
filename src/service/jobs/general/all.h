@@ -23,4 +23,3 @@
 #include "Call.h"
 
 #endif // JOBS_GENERAL_ALL_H
-

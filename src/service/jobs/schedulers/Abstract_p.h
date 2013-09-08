@@ -27,19 +27,19 @@
 namespace Jobs {
 namespace Schedulers {
 
-class Abstract::Private: public QObject {
+class Abstract::Private : public QObject {
     Q_OBJECT
 public:
-    Private(Abstract * parent);
+    Private(Abstract *parent);
 
-    QList < JobFactory * > jobs;
+    QList<JobFactory *> jobs;
     int lastJobStarted;
 
 public Q_SLOTS:
-    void jobFinished(KJob * job);
+    void jobFinished(KJob *job);
 
 public:
-    Abstract * const q;
+    Abstract *const q;
 };
 
 } // namespace Schedulers

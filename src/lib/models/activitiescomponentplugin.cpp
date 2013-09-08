@@ -26,20 +26,17 @@
 
 #include <QDebug>
 
-#define REGISTER_MODEL(Title, Icon, Type)                           \
-    QML_REGISTER_TYPE(Type);                                        \
+#define REGISTER_MODEL(Title, Icon, Type) \
+    QML_REGISTER_TYPE(Type);              \
     AvailableModels::addModel(Title, QIcon::fromTheme(Icon), #Type)
 
-
-void ActivitiesComponentDataPlugin::registerTypes(const char * uri)
+void ActivitiesComponentDataPlugin::registerTypes(const char *uri)
 {
     qDebug() << "###########";
     Q_ASSERT(uri == QLatin1String("org.kde.activities.models"));
 
-    qmlRegisterType < KActivities::Models::ResourceModel > (uri, 0, 1, "ResourceModel");
-    qmlRegisterType < KActivities::Models::ActivityModel > (uri, 0, 1, "ActivityModel");
-
+    qmlRegisterType<KActivities::Models::ResourceModel>(uri, 0, 1, "ResourceModel");
+    qmlRegisterType<KActivities::Models::ActivityModel>(uri, 0, 1, "ActivityModel");
 }
 
 #include "activitiescomponentplugin.moc"
-

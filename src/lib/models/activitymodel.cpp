@@ -41,7 +41,7 @@
 namespace KActivities {
 namespace Models {
 
-static bool activityInfoLessThen(const ActivityInfo & left, const ActivityInfo & right)
+static bool activityInfoLessThen(const ActivityInfo &left, const ActivityInfo &right)
 {
     return left.name.toLower() < right.name.toLower();
 }
@@ -50,8 +50,9 @@ class ActivityModel::Private {
 public:
     DECLARE_RAII_MODEL_UPDATERS(ActivityModel)
 
-    Private(ActivityModel * parent)
-        : q(parent), valid(false)
+    Private(ActivityModel *parent)
+        : q(parent)
+        , valid(false)
     {
         qDebug() << "Manager isServicePresent" << Manager::isServicePresent();
         if (Manager::isServicePresent())
@@ -73,28 +74,28 @@ public:
     }
 
     void fetchActivityList();
-    void fetchActivityInfo(const QString & activity);
+    void fetchActivityInfo(const QString &activity);
 
-    void listActivitiesCallFinished(QDBusPendingCallWatcher * watcher);
-    void activityInfoCallFinished(QDBusPendingCallWatcher * watcher);
+    void listActivitiesCallFinished(QDBusPendingCallWatcher *watcher);
+    void activityInfoCallFinished(QDBusPendingCallWatcher *watcher);
     QMutex listActivitiesMutex;
     QMutex activityInfoMutex;
 
-    void activityNameChanged(const QString & activity, const QString & name);
-    void activityIconChanged(const QString & activity, const QString & icon);
-    void activityStateChanged(const QString & activity, int state);
+    void activityNameChanged(const QString &activity, const QString &name);
+    void activityIconChanged(const QString &activity, const QString &icon);
+    void activityStateChanged(const QString &activity, int state);
 
-    void activityAdded(const QString & activity);
-    void activityRemoved(const QString & activity);
+    void activityAdded(const QString &activity);
+    void activityRemoved(const QString &activity);
 
     void servicePresenceChanged(bool present);
 
-    QList < ActivityInfo > activities;
-    QHash < QString, int > activityIndex;
+    QList<ActivityInfo> activities;
+    QHash<QString, int> activityIndex;
 
-    ActivityModel * const q;
+    ActivityModel *const q;
 
-    QDBusPendingCallWatcher * listActivitiesCallWatcher;
+    QDBusPendingCallWatcher *listActivitiesCallWatcher;
 
     bool valid : 1;
 };
@@ -107,7 +108,8 @@ void ActivityModel::Private::servicePresenceChanged(bool present)
 
     valid = false;
 
-    if (valid) fetchActivityList();
+    if (valid)
+        fetchActivityList();
 }
 
 void ActivityModel::Private::fetchActivityList()
@@ -116,19 +118,19 @@ void ActivityModel::Private::fetchActivityList()
     KAMD_RETRIEVE_REMOTE_VALUE(listActivities, ListActivitiesWithInformation(), q);
 }
 
-void ActivityModel::Private::fetchActivityInfo(const QString & activity)
+void ActivityModel::Private::fetchActivityInfo(const QString &activity)
 {
-    QDBusPendingCallWatcher * activityInfoCallWatcher;
+    QDBusPendingCallWatcher *activityInfoCallWatcher;
     qDebug() << "getting info for " << activity;
     KAMD_RETRIEVE_REMOTE_VALUE(activityInfo, ActivityInformation(activity), q);
 }
 
-void ActivityModel::Private::listActivitiesCallFinished(QDBusPendingCallWatcher * watcher)
+void ActivityModel::Private::listActivitiesCallFinished(QDBusPendingCallWatcher *watcher)
 {
     qDebug() << "got the activities";
     model_reset m(q);
 
-    QDBusPendingReply <ActivityInfoList> reply = * watcher;
+    QDBusPendingReply<ActivityInfoList> reply = *watcher;
 
     if (reply.isError()) {
         valid = false;
@@ -151,11 +153,11 @@ void ActivityModel::Private::listActivitiesCallFinished(QDBusPendingCallWatcher 
     watcher->deleteLater();
 }
 
-void ActivityModel::Private::activityInfoCallFinished(QDBusPendingCallWatcher * watcher)
+void ActivityModel::Private::activityInfoCallFinished(QDBusPendingCallWatcher *watcher)
 {
     qDebug() << "got the activities";
 
-    QDBusPendingReply <ActivityInfo> reply = * watcher;
+    QDBusPendingReply<ActivityInfo> reply = *watcher;
 
     if (reply.isError()) {
         valid = false;
@@ -165,15 +167,15 @@ void ActivityModel::Private::activityInfoCallFinished(QDBusPendingCallWatcher * 
 
     ActivityInfo info = reply.argumentAt<0>();
 
-    QList < ActivityInfo > ::iterator insertAt
-         = qLowerBound(activities.begin(), activities.end(), info, activityInfoLessThen);
+    QList<ActivityInfo>::iterator insertAt
+        = qLowerBound(activities.begin(), activities.end(), info, activityInfoLessThen);
 
     insertAt = activities.insert(insertAt, info);
 
     int index = insertAt - activities.begin();
     model_insert m(q, QModelIndex(), index, index);
 
-    QMutableHashIterator < QString, int > i(activityIndex);
+    QMutableHashIterator<QString, int> i(activityIndex);
     while (i.hasNext()) {
         i.next();
 
@@ -187,32 +189,34 @@ void ActivityModel::Private::activityInfoCallFinished(QDBusPendingCallWatcher * 
     watcher->deleteLater();
 }
 
-#define PROPERTY_CHANGED_HANDLER(Name, StrName, Type)                               \
-    void ActivityModel::Private::Name##Changed(const QString & activity, Type StrName) \
-    {                                                                               \
-        if (!activityIndex.contains(activity)) return;                              \
-                                                                                    \
-        const int index = activityIndex[activity];                                  \
-        activities[index].StrName = StrName;                                        \
-                                                                                    \
-        QModelIndex i = q->index(index);                                            \
-        q->dataChanged(i, i);                                                       \
+#define PROPERTY_CHANGED_HANDLER(Name, StrName, Type)                                 \
+    void ActivityModel::Private::Name##Changed(const QString &activity, Type StrName) \
+    {                                                                                 \
+        if (!activityIndex.contains(activity))                                        \
+            return;                                                                   \
+                                                                                      \
+        const int index = activityIndex[activity];                                    \
+        activities[index].StrName = StrName;                                          \
+                                                                                      \
+        QModelIndex i = q->index(index);                                              \
+        q->dataChanged(i, i);                                                         \
     }
 
-PROPERTY_CHANGED_HANDLER(activityName,  name,  const QString &)
-PROPERTY_CHANGED_HANDLER(activityIcon,  icon,  const QString &)
+PROPERTY_CHANGED_HANDLER(activityName, name, const QString &)
+PROPERTY_CHANGED_HANDLER(activityIcon, icon, const QString &)
 PROPERTY_CHANGED_HANDLER(activityState, state, int)
 
 #undef PROPERTY_CHANGED_HANDLER
 
-void ActivityModel::Private::activityAdded(const QString & activity)
+void ActivityModel::Private::activityAdded(const QString &activity)
 {
     fetchActivityInfo(activity);
 }
 
-void ActivityModel::Private::activityRemoved(const QString & activity)
+void ActivityModel::Private::activityRemoved(const QString &activity)
 {
-    if (!activityIndex.contains(activity)) return;
+    if (!activityIndex.contains(activity))
+        return;
 
     int index = activityIndex[activity];
     model_remove m(q, QModelIndex(), index, index);
@@ -220,7 +224,7 @@ void ActivityModel::Private::activityRemoved(const QString & activity)
     activities.removeAt(index);
     activityIndex.remove(activity);
 
-    QMutableHashIterator < QString, int > i(activityIndex);
+    QMutableHashIterator<QString, int> i(activityIndex);
     while (i.hasNext()) {
         i.next();
 
@@ -230,19 +234,19 @@ void ActivityModel::Private::activityRemoved(const QString & activity)
     }
 }
 
-
-ActivityModel::ActivityModel(QObject * parent)
-    : QAbstractListModel(parent), d(new Private(this))
+ActivityModel::ActivityModel(QObject *parent)
+    : QAbstractListModel(parent)
+    , d(new Private(this))
 {
     qDebug() << "################";
     d->valid = false;
 
     QHash<int, QByteArray> roles;
 
-    roles[Qt::DisplayRole]    = "name";
+    roles[Qt::DisplayRole] = "name";
     roles[Qt::DecorationRole] = "icon";
-    roles[ActivityState]      = "state";
-    roles[ActivityId]         = "id";
+    roles[ActivityState] = "state";
+    roles[ActivityId] = "id";
 
     setRoleNames(roles);
 }
@@ -252,36 +256,38 @@ ActivityModel::~ActivityModel()
     delete d;
 }
 
-int ActivityModel::rowCount(const QModelIndex & parent) const
+int ActivityModel::rowCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent);
 
-    if (!d->valid) return 0;
+    if (!d->valid)
+        return 0;
 
     return d->activities.size();
 }
 
-QVariant ActivityModel::data(const QModelIndex & index, int role) const
+QVariant ActivityModel::data(const QModelIndex &index, int role) const
 {
-    if (!d->valid) return QVariant();
+    if (!d->valid)
+        return QVariant();
 
     const int row = index.row();
 
     switch (role) {
-        case Qt::DisplayRole:
-            return d->activities[row].name;
+    case Qt::DisplayRole:
+        return d->activities[row].name;
 
-        case Qt::DecorationRole:
-            return KIcon(d->activities[row].icon);
+    case Qt::DecorationRole:
+        return KIcon(d->activities[row].icon);
 
-        case ActivityId:
-            return d->activities[row].id;
+    case ActivityId:
+        return d->activities[row].id;
 
-        case ActivityState:
-            return d->activities[row].state;
+    case ActivityState:
+        return d->activities[row].state;
 
-        default:
-            return QVariant();
+    default:
+        return QVariant();
     }
 }
 

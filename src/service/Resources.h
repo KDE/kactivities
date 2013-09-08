@@ -31,12 +31,12 @@
 /**
  * Resources
  */
-class Resources: public Module {
+class Resources : public Module {
     Q_OBJECT
     Q_CLASSINFO("D-Bus Interface", "org.kde.ActivityManager.Resources")
 
 public:
-    Resources(QObject * parent = Q_NULLPTR);
+    Resources(QObject *parent = Q_NULLPTR);
     virtual ~Resources();
 
 public Q_SLOTS:
@@ -47,7 +47,7 @@ public Q_SLOTS:
      * @param uri URI of the resource on which the event happened
      * @param event type of the event
      */
-    void RegisterResourceEvent(QString application, uint windowId, const QString & uri, uint event);
+    void RegisterResourceEvent(QString application, uint windowId, const QString &uri, uint event);
 
     /**
      * Registers resource's mimetype. If not manually specified, it will
@@ -56,7 +56,7 @@ public Q_SLOTS:
      * Note that this will be forgotten when the resource in question is closed.
      * @param uri URI of the resource
      */
-    void RegisterResourceMimeType(const QString & uri, const QString & mimetype);
+    void RegisterResourceMimeType(const QString &uri, const QString &mimetype);
 
     /**
      * Registers resource's title. If not manually specified, it will be a shortened
@@ -65,23 +65,22 @@ public Q_SLOTS:
      * Note that this will be forgotten when the resource in question is closed.
      * @param uri URI of the resource
      */
-    void RegisterResourceTitle(const QString & uri, const QString & title);
+    void RegisterResourceTitle(const QString &uri, const QString &title);
 
 Q_SIGNALS:
-    void RegisteredResourceEvent(const Event & event);
-    void ProcessedResourceEvents(const EventList & events);
-    void RegisteredResourceMimeType(const QString & uri, const QString & mimetype);
-    void RegisteredResourceTitle(const QString & uri, const QString & title);
+    void RegisteredResourceEvent(const Event &event);
+    void ProcessedResourceEvents(const EventList &events);
+    void RegisteredResourceMimeType(const QString &uri, const QString &mimetype);
+    void RegisteredResourceTitle(const QString &uri, const QString &title);
 
 public:
-    virtual bool isFeatureOperational(const QStringList & feature) const Q_DECL_OVERRIDE;
-    virtual bool isFeatureEnabled(const QStringList & feature) const Q_DECL_OVERRIDE;
-    virtual void setFeatureEnabled(const QStringList & feature, bool value) Q_DECL_OVERRIDE;
-    virtual QStringList listFeatures(const QStringList & feature) const Q_DECL_OVERRIDE;
+    virtual bool isFeatureOperational(const QStringList &feature) const Q_DECL_OVERRIDE;
+    virtual bool isFeatureEnabled(const QStringList &feature) const Q_DECL_OVERRIDE;
+    virtual void setFeatureEnabled(const QStringList &feature, bool value) Q_DECL_OVERRIDE;
+    virtual QStringList listFeatures(const QStringList &feature) const Q_DECL_OVERRIDE;
 
 private:
     D_PTR;
 };
 
 #endif // RESOURCES_H
-

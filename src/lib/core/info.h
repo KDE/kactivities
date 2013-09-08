@@ -56,8 +56,7 @@ class InfoPrivate;
  *
  * @since 4.5
  */
-class KACTIVITIES_EXPORT Info: public QObject
-{
+class KACTIVITIES_EXPORT Info : public QObject {
     Q_OBJECT
 
     Q_PROPERTY(QString id READ id)
@@ -65,7 +64,7 @@ class KACTIVITIES_EXPORT Info: public QObject
     Q_PROPERTY(QString icon READ icon NOTIFY iconChanged)
 
 public:
-    explicit Info(const QString & activity, QObject * parent = Q_NULLPTR);
+    explicit Info(const QString &activity, QObject *parent = Q_NULLPTR);
     ~Info();
 
     /**
@@ -77,19 +76,19 @@ public:
      * Specifies which parts of this class are functional
      */
     enum Availability {
-        Nothing = 0,             ///< No activity info provided (isValid is false)
-        BasicInfo = 1,           ///< Basic info is provided
-        Everything = 2           ///< Everything is available
+        Nothing = 0, ///< No activity info provided (isValid is false)
+        BasicInfo = 1, ///< Basic info is provided
+        Everything = 2 ///< Everything is available
     };
 
     /**
      * State of the activity
      */
     enum State {
-        Invalid  = 0,
-        Running  = 2,
+        Invalid = 0,
+        Running = 2,
         Starting = 3,
-        Stopped  = 4,
+        Stopped = 4,
         Stopping = 5
     };
 
@@ -137,30 +136,28 @@ public:
      * @param id id of the activity
      * @note This method is <b>blocking</b>, you should use Info::name()
      */
-    static QString name(const QString & id);
+    static QString name(const QString &id);
 
     /**
      * Links the specified resource to the activity
      * @param resourceUri resource URI
      * @note This method is <b>asynchronous</b>
      */
-    void linkResource(const QString & resourceUri);
-
+    void linkResource(const QString &resourceUri);
 
     /**
      * Unlinks the specified resource from the activity
      * @param resourceUri resource URI
      * @note This method is <b>asynchronous</b>
      */
-    void unlinkResource(const QString & resourceUri);
-
+    void unlinkResource(const QString &resourceUri);
 
     /**
      * @returns whether a resource is linked to this activity
      * @note this method is <b>blocking</b>
      * @since 4.11
      */
-    bool isResourceLinked(const QString & resourceUri);
+    bool isResourceLinked(const QString &resourceUri);
 
 Q_SIGNALS:
     /**
@@ -171,12 +168,12 @@ Q_SIGNALS:
     /**
      * Emitted when the name is changed
      */
-    void nameChanged(const QString & name);
+    void nameChanged(const QString &name);
 
     /**
      * Emitted when the icon was changed
      */
-    void iconChanged(const QString & icon);
+    void iconChanged(const QString &icon);
 
     /**
      * Emitted when the activity is added
@@ -216,8 +213,8 @@ private:
     Q_PRIVATE_SLOT(d, void nameChanged(const QString &, const QString &))
     Q_PRIVATE_SLOT(d, void iconChanged(const QString &, const QString &))
     Q_PRIVATE_SLOT(d, void setServicePresent(bool))
-    Q_PRIVATE_SLOT(d, void nameCallFinished(QDBusPendingCallWatcher*))
-    Q_PRIVATE_SLOT(d, void iconCallFinished(QDBusPendingCallWatcher*))
+    Q_PRIVATE_SLOT(d, void nameCallFinished(QDBusPendingCallWatcher *))
+    Q_PRIVATE_SLOT(d, void iconCallFinished(QDBusPendingCallWatcher *))
 
     friend class InfoPrivate;
 };
@@ -225,4 +222,3 @@ private:
 } // namespace KActivities
 
 #endif // ACTIVITIES_INFO_H
-

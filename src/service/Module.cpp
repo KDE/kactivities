@@ -28,19 +28,20 @@
 
 class Module::Private {
 public:
-    static QHash < QString, QObject * > s_modules;
-
+    static QHash<QString, QObject *> s_modules;
 };
 
-QHash < QString, QObject * > Module::Private::s_modules;
+QHash<QString, QObject *> Module::Private::s_modules;
 
-Module::Module(const QString & name, QObject * parent)
-    : QObject(parent), d()
+Module::Module(const QString &name, QObject *parent)
+    : QObject(parent)
+    , d()
 {
     registerModule(name, this);
 }
 
-void Module::registerModule(const QString & name, QObject * module) {
+void Module::registerModule(const QString &name, QObject *module)
+{
     if (!name.isEmpty()) {
         Private::s_modules[name] = module;
         qDebug() << "Module " << name << "is registered";
@@ -51,7 +52,7 @@ Module::~Module()
 {
 }
 
-QObject * Module::get(const QString & name)
+QObject *Module::get(const QString &name)
 {
     Q_ASSERT(!name.isEmpty());
 
@@ -64,32 +65,31 @@ QObject * Module::get(const QString & name)
     return Q_NULLPTR;
 }
 
-const QHash < QString, QObject * > Module::get()
+const QHash<QString, QObject *> Module::get()
 {
     return Private::s_modules;
 }
 
-bool Module::isFeatureEnabled(const QStringList & feature) const
+bool Module::isFeatureEnabled(const QStringList &feature) const
 {
     Q_UNUSED(feature)
     return false;
 }
 
-bool Module::isFeatureOperational(const QStringList & feature) const
+bool Module::isFeatureOperational(const QStringList &feature) const
 {
     Q_UNUSED(feature)
     return false;
 }
 
-void Module::setFeatureEnabled(const QStringList & feature, bool value)
+void Module::setFeatureEnabled(const QStringList &feature, bool value)
 {
     Q_UNUSED(feature)
     Q_UNUSED(value)
 }
 
-QStringList Module::listFeatures(const QStringList & feature) const
+QStringList Module::listFeatures(const QStringList &feature) const
 {
     Q_UNUSED(feature)
     return QStringList();
 }
-

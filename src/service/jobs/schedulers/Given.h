@@ -24,7 +24,8 @@
 #include <jobs/JobFactory.h>
 #include <jobs/schedulers/Abstract.h>
 
-#define DO_OR_DIE(Task, Death) new Jobs::Schedulers::Given(Task, Q_NULLPTR, Death, true)
+#define DO_OR_DIE(Task, Death) \
+    new Jobs::Schedulers::Given(Task, Q_NULLPTR, Death, true)
 
 namespace Jobs {
 namespace Schedulers {
@@ -32,19 +33,19 @@ namespace Schedulers {
 /**
  * Given
  */
-class Given: public Abstract {
+class Given : public Abstract {
     Q_OBJECT
 
 public:
-    Given(JobFactory * _condition, JobFactory * _then, JobFactory * _else, bool failOnElse, QObject * parent = Q_NULLPTR);
+    Given(JobFactory *_condition, JobFactory *_then, JobFactory *_else, bool failOnElse, QObject *parent = Q_NULLPTR);
     virtual ~Given();
 
 protected:
     virtual void jobFinished(int result);
 
 private:
-    Given(const Given & original);
-    Given & operator = (const Given & original);
+    Given(const Given &original);
+    Given &operator=(const Given &original);
 
     bool m_failOnElse;
 };
@@ -53,4 +54,3 @@ private:
 } // namespace Jobs
 
 #endif // JOBS_SCHEDULER_GIVEN_H
-
