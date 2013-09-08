@@ -173,12 +173,12 @@ void Activities::Private::emitCurrentActivityChanged(const QString &activity)
 
 QString Activities::AddActivity(const QString &name)
 {
+    QString activity;
+
     if (name.isEmpty()) {
         Q_ASSERT(!name.isEmpty());
-        return QString();
+        return activity;
     }
-
-    QString activity;
 
     // Ensuring a new Uuid. The loop should usually end after only
     // one iteration
