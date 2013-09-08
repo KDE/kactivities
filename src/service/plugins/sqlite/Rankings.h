@@ -76,11 +76,16 @@ public:
     class ResultItem {
     public:
         ResultItem(
-                const QString & _uri,
-                qreal _score
+                const QString & _uri = QString(),
+                qreal _score = 0
             )
             : uri(_uri), score(_score)
         {
+        }
+
+        bool operator < (const ResultItem & other) const
+        {
+            return score < other.score;
         }
 
         QString uri;
@@ -97,7 +102,7 @@ private Q_SLOTS:
 
 private:
     QHash < Activity, QStringList > m_clients;
-    QHash < Activity, QList < ResultItem > > m_results;
+    QHash < Activity, QVector < ResultItem > > m_results;
     QHash < Activity, qreal > m_resultScoreTreshold;
 };
 
@@ -105,7 +110,7 @@ class RankingsUpdateThread: public QThread {
     Q_OBJECT
 
 public:
-    RankingsUpdateThread(const QString & activity, QList < Rankings::ResultItem > * listptr,
+    RankingsUpdateThread(const QString & activity, QVector < Rankings::ResultItem > * listptr,
             QHash < Rankings::Activity, qreal > * scoreTrashold);
     virtual ~RankingsUpdateThread();
 
@@ -116,7 +121,7 @@ Q_SIGNALS:
 
 private:
     QString m_activity;
-    QList < Rankings::ResultItem > * m_listptr;
+    QVector < Rankings::ResultItem > * m_listptr;
     QHash < Rankings::Activity, qreal > * m_scoreTrashold;
 };
 

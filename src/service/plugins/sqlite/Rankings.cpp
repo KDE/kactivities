@@ -16,7 +16,9 @@
  */
 
 #include "Rankings.h"
-#include "rankingsadaptor.h"
+// #include "rankingsadaptor.h"
+
+#include <algorithm>
 
 #include <QDBusConnection>
 #include <QVariantList>
@@ -40,7 +42,7 @@ Rankings * Rankings::s_instance = Q_NULLPTR;
  *
  */
 RankingsUpdateThread::RankingsUpdateThread(
-        const QString & activity, QList < Rankings::ResultItem > * listptr,
+        const QString & activity, QVector < Rankings::ResultItem > * listptr,
         QHash < Rankings::Activity, qreal > * scoreTrashold)
     : m_activity(activity), m_listptr(listptr), m_scoreTrashold(scoreTrashold)
 {
@@ -92,8 +94,10 @@ Rankings * Rankings::self()
 Rankings::Rankings(QObject * parent)
     : QObject(parent)
 {
-    new RankingsAdaptor(this);
-    KDBusConnectionPool::threadConnection().registerObject("/Rankings", this);
+    // TODO: We don't really have users of this one
+    // If we get them, enable this again:
+    // new RankingsAdaptor(this);
+    // KDBusConnectionPool::threadConnection().registerObject("/Rankings", this);
 
     initResults(QString());
 }
@@ -170,11 +174,11 @@ void Rankings::resourceScoreUpdated(const QString & activity,
         return;
     }
 
-    auto & list = m_results[activity];
+    auto & results = m_results[activity];
 
     // Removing the item from the list if it is already in it
 
-    kamd::utils::remove_if(list, [&uri] (const ResultItem & item) {
+    kamd::utils::remove_if(results, [&uri] (const ResultItem & item) {
         return item.uri == uri;
     });
 
@@ -182,27 +186,12 @@ void Rankings::resourceScoreUpdated(const QString & activity,
 
     ResultItem item(uri, score);
 
-    if (list.size() == 0) {
-        list << item;
+    auto insertionPoint = std::lower_bound(
+            results.begin(), results.end(), item);
 
-    } else {
-        int i;
+    results.insert(insertionPoint, item);
 
-        for (i = 0; i < list.size(); i++) {
-            if (list[i].score < score) {
-                list.insert(i, item);
-                break;
-            }
-        }
-
-        if (i == list.size()) {
-            list << item;
-        }
-    }
-
-    while (list.size() > RESULT_COUNT_LIMIT) {
-        list.removeLast();
-    }
+    results.resize(std::min(results.size(), RESULT_COUNT_LIMIT));
 
     notifyResultsUpdated(activity);
 }
@@ -224,7 +213,7 @@ void Rankings::notifyResultsUpdated(const QString & _activity, QStringList clien
 
     QVariantList data;
     foreach (const auto & item, m_results[activity]) {
-        data << item.uri.toString();
+        data << item.uri;
     }
 
     if (clients.isEmpty()) {
@@ -235,10 +224,12 @@ void Rankings::notifyResultsUpdated(const QString & _activity, QStringList clien
         }
     }
 
-    foreach (const auto & client, clients) {
-        QDBusInterface rankingsservice(client, "/RankingsClient", "org.kde.ActivityManager.RankingsClient");
-        rankingsservice.asyncCall("updated", data);
-    }
+    // TODO: We don't really have users of this one
+    // If we get them, enable this again:
+    // foreach (const auto & client, clients) {
+    //     QDBusInterface rankingsservice(client, "/RankingsClient", "org.kde.ActivityManager.RankingsClient");
+    //     rankingsservice.asyncCall("updated", data);
+    // }
 }
 
 void Rankings::requestScoreUpdate(const QString & activity, const QString & application, const QString & resource)
