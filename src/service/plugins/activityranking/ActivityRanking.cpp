@@ -313,8 +313,9 @@ void ActivityRanking::Private::closeDanglingActivityRecords()
     const auto i = tableActivityEvents.rowCount() - 1;
     qDebug() << "dangling count:" << i + 1;
 
-    if (i < 0)
+    if (i < 0) {
         return;
+    }
 
     auto record = tableActivityEvents.record(i);
 
@@ -525,8 +526,9 @@ QMap<QString, qreal> ActivityRanking::Private::topActivitiesFor(const QDateTime 
     const int coefStart = (time.toMSecsSinceEpoch() - monthStart) / (qreal)(monthEnd - monthStart) * 64;
 
     auto monthSegment = QString::number(coefStart, 8);
-    if (monthSegment.size() == 1)
+    if (monthSegment.size() == 1) {
         monthSegment = '0' + monthSegment;
+    }
 
     auto query = database.exec(
         selectScore

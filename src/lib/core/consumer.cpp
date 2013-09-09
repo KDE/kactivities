@@ -129,8 +129,9 @@ void ConsumerPrivate::setActivityState(const QString &activity, int state)
     }
 
     if (state == Info::Running) {
-        if (!runningActivities.contains(activity))
+        if (!runningActivities.contains(activity)) {
             runningActivities << activity;
+        }
 
     } else {
         runningActivities.removeAll(activity);
@@ -162,8 +163,9 @@ KAMD_REMOTE_VALUE_GETTER(QStringList, Consumer, listActivities, QStringList(null
 QStringList Consumer::listActivities(Info::State state) const
 {
     if (state == Info::Running) {
-        if (!Manager::isServicePresent())
+        if (!Manager::isServicePresent()) {
             return QStringList(nulluuid);
+        }
 
         waitForCallFinished(d->runningActivitiesCallWatcher, &d->runningActivitiesMutex);
 

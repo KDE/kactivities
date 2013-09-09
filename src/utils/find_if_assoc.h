@@ -37,8 +37,9 @@ template <typename Iterator, typename Function>
 Function qt_find_if_assoc(Iterator start, Iterator end, Function f)
 {
     for (; start != end; ++start) {
-        if (f(start.key(), start.value()))
+        if (f(start.key(), start.value())) {
             break;
+        }
     }
 
     return f;
@@ -48,8 +49,9 @@ template <typename Iterator, typename Function>
 Function stl_find_if_assoc(Iterator start, Iterator end, Function f)
 {
     for (; start != end; ++start) {
-        if (f(start->first, start->second))
+        if (f(start->first, start->second)) {
             break;
+        }
     }
 
     return f;

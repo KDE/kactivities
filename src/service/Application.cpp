@@ -128,8 +128,9 @@ void Application::loadPlugins()
 
     const auto pluginsGroup = config->group("Plugins");
     foreach (const QString & plugin, pluginsGroup.keyList()) {
-        if (!pluginsGroup.readEntry(plugin, true))
+        if (!pluginsGroup.readEntry(plugin, true)) {
             disabledPlugins << plugin;
+        }
     }
 
     // Adding overridden plugins into the list of disabled ones

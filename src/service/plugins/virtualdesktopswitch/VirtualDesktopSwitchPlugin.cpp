@@ -53,8 +53,9 @@ bool VirtualDesktopSwitchPlugin::init(const QHash<QString, QObject *> &modules)
 
 void VirtualDesktopSwitchPlugin::currentActivityChanged(const QString &activity)
 {
-    if (m_currentActivity == activity)
+    if (m_currentActivity == activity) {
         return;
+    }
 
     config().writeEntry(
         configPattern.arg(m_currentActivity),

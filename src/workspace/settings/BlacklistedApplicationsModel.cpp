@@ -99,11 +99,13 @@ void BlacklistedApplicationsModel::load()
         const auto name = query.value(0).toString();
 
         if (defaultBlockedValue) {
-            if (!allowedApplications.contains(name))
+            if (!allowedApplications.contains(name)) {
                 blockedApplications << name;
+            }
         } else {
-            if (!blockedApplications.contains(name))
+            if (!blockedApplications.contains(name)) {
                 allowedApplications << name;
+            }
         }
     }
 
@@ -162,8 +164,9 @@ void BlacklistedApplicationsModel::defaults()
 
 void BlacklistedApplicationsModel::toggleApplicationBlocked(int index)
 {
-    if (index > rowCount())
+    if (index > rowCount()) {
         return;
+    }
 
     d->applications[index].blocked = !d->applications[index].blocked;
     dataChanged(QAbstractListModel::index(index),
@@ -184,8 +187,9 @@ QVariant BlacklistedApplicationsModel::data(const QModelIndex &modelIndex, int r
 {
     const auto index = modelIndex.row();
 
-    if (index > rowCount())
+    if (index > rowCount()) {
         return QVariant();
+    }
 
     const auto &application = d->applications[index];
 

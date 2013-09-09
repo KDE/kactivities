@@ -89,8 +89,9 @@ struct ResourceInfo {
         double this_abs = abs(score);
         double other_abs = abs(other.score);
 
-        if (this_abs < other_abs)
+        if (this_abs < other_abs) {
             return true;
+        }
 
         return title < other.title;
     }
@@ -180,8 +181,9 @@ void ResourceModel::Private::servicePresenceChanged(bool present)
         service = 0;
     }
 
-    if (!valid)
+    if (!valid) {
         return;
+    }
 
     if (showCurrentActivity && currentActivity.isEmpty()) {
         // we need to show the current activity, but don't know which it is
@@ -385,8 +387,9 @@ void ResourceModel::Private::newEntries(const QList<NQuery::Result> &entries)
 
         if (entry.title.isEmpty()
             || resourceSet.contains(entry.url)
-            || entry.url.startsWith(QLatin1String("filex://")))
+            || entry.url.startsWith(QLatin1String("filex://"))) {
             continue;
+        }
 
         resourceSet << entry.url;
         newEntries << entry;
@@ -422,8 +425,9 @@ void ResourceModel::Private::entriesRemoved(const QList<QUrl> &entries)
 
 void ResourceModel::Private::setCurrentActivity(const QString &activity)
 {
-    if (currentActivity == activity)
+    if (currentActivity == activity) {
         return;
+    }
 
     currentActivity = activity;
 
@@ -458,21 +462,24 @@ int ResourceModel::rowCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent);
 
-    if (!d->valid)
+    if (!d->valid) {
         return 0;
+    }
 
     return qMin(d->limit, d->resources.size());
 }
 
 QVariant ResourceModel::data(const QModelIndex &index, int role) const
 {
-    if (!d->valid)
+    if (!d->valid) {
         return QVariant();
+    }
 
     const int row = index.row();
 
-    if (row >= d->resources.size())
+    if (row >= d->resources.size()) {
         return QVariant();
+    }
 
     const ResourceInfo &info = d->resources[row];
 
@@ -511,8 +518,9 @@ QVariant ResourceModel::headerData(int section, Qt::Orientation orientation, int
 
 void ResourceModel::setActivity(const QString &activity)
 {
-    if (d->activity == activity)
+    if (d->activity == activity) {
         return;
+    }
 
     d->activity = activity;
 
@@ -530,8 +538,9 @@ QString ResourceModel::activity() const
 
 void ResourceModel::setApplication(const QString &application)
 {
-    if (d->application == application)
+    if (d->application == application) {
         return;
+    }
 
     qDebug() << "Setting the application to:" << application;
 
@@ -549,8 +558,9 @@ QString ResourceModel::application() const
 
 void ResourceModel::setLimit(int count)
 {
-    if (d->limit == count)
+    if (d->limit == count) {
         return;
+    }
 
     d->limit = count;
 
@@ -566,8 +576,9 @@ int ResourceModel::limit() const
 
 void ResourceModel::setContentMode(ResourceModel::ContentMode mode)
 {
-    if (d->contentMode == mode)
+    if (d->contentMode == mode) {
         return;
+    }
 
     d->contentMode = mode;
     d->reload();

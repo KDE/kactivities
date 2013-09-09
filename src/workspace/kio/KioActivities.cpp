@@ -119,8 +119,9 @@ public:
         uds.insert(KIO::UDSEntry::UDS_LOCAL_PATH, url.toLocalFile());
         uds.insert(KIO::UDSEntry::UDS_TARGET_URL, url.prettyUrl());
 
-        if (fileItem.isDir())
+        if (fileItem.isDir()) {
             uds.insert(KIO::UDSEntry::UDS_FILE_TYPE, S_IFDIR);
+        }
 
         return uds;
     }

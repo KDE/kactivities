@@ -132,10 +132,12 @@ bool Activities::Private::setCurrentActivity(const QString &activity)
     }
 
     // Sanity checks
-    if (!activities.contains(activity))
+    if (!activities.contains(activity)) {
         return false;
-    if (currentActivity == activity)
+    }
+    if (currentActivity == activity) {
         return true;
+    }
 
     // Start activity
     // TODO: Move this to job-based execution
@@ -205,8 +207,9 @@ QString Activities::AddActivity(const QString &name)
 void Activities::RemoveActivity(const QString &activity)
 {
     // Sanity checks
-    if (!d->activities.contains(activity))
+    if (!d->activities.contains(activity)) {
         return;
+    }
 
     d->removeActivity(activity);
 }
@@ -312,8 +315,9 @@ QList<ActivityInfo> Activities::ListActivitiesWithInformation() const
 
 ActivityInfo Activities::ActivityInformation(const QString &activity) const
 {
-    if (!d->activities.contains(activity))
+    if (!d->activities.contains(activity)) {
         return ActivityInfo();
+    }
 
     ActivityInfo activityInfo;
     activityInfo.id = activity;
@@ -325,19 +329,22 @@ ActivityInfo Activities::ActivityInformation(const QString &activity) const
 
 QString Activities::ActivityName(const QString &activity) const
 {
-    if (!d->activities.contains(activity))
+    if (!d->activities.contains(activity)) {
         return QString();
+    }
 
     return d->activityName(activity);
 }
 
 void Activities::SetActivityName(const QString &activity, const QString &name)
 {
-    if (!d->activities.contains(activity))
+    if (!d->activities.contains(activity)) {
         return;
+    }
 
-    if (name == d->activityName(activity))
+    if (name == d->activityName(activity)) {
         return;
+    }
 
     d->activitiesConfig().writeEntry(activity, name);
 
@@ -349,16 +356,18 @@ void Activities::SetActivityName(const QString &activity, const QString &name)
 
 QString Activities::ActivityIcon(const QString &activity) const
 {
-    if (!d->activities.contains(activity))
+    if (!d->activities.contains(activity)) {
         return QString();
+    }
 
     return d->activityIcon(activity);
 }
 
 void Activities::SetActivityIcon(const QString &activity, const QString &icon)
 {
-    if (!d->activities.contains(activity))
+    if (!d->activities.contains(activity)) {
         return;
+    }
 
     d->activityIconsConfig().writeEntry(activity, icon);
 
@@ -373,8 +382,9 @@ void Activities::Private::setActivityState(const QString &activity, Activities::
     qDebug() << activities << activity;
     Q_ASSERT(activities.contains(activity));
 
-    if (activities.value(activity) == state)
+    if (activities.value(activity) == state) {
         return;
+    }
 
     // Treating 'Starting' as 'Running', and 'Stopping' as 'Stopped'
     // as far as the config file is concerned
@@ -411,11 +421,9 @@ void Activities::Private::ensureCurrentActivityIsRunning()
 
     const auto runningActivities = q->ListActivities(Activities::Running);
 
-    if (!runningActivities.contains(currentActivity)) {
-        if (runningActivities.size() > 0) {
-            qDebug() << "Somebody called ensureCurrentActivityIsRunning?";
-            setCurrentActivity(runningActivities.first());
-        }
+    if (!runningActivities.contains(currentActivity) && runningActivities.size() > 0) {
+        qDebug() << "Somebody called ensureCurrentActivityIsRunning?";
+        setCurrentActivity(runningActivities.first());
     }
 }
 
@@ -445,8 +453,9 @@ void Activities::StopActivity(const QString &activity)
 
 void Activities::Private::activitySessionStateChanged(const QString &activity, int status)
 {
-    if (!activities.contains(activity))
+    if (!activities.contains(activity)) {
         return;
+    }
 
     switch (status) {
         case KSMServer::Started:

@@ -60,8 +60,9 @@ public:
     {
         qDebug() << "Doing something sinister with nepomuk, is it here? " << nepomukPresent;
 
-        if (!nepomukPresent)
+        if (!nepomukPresent) {
             return;
+        }
 
         const auto currentActivityId = Plugin::callOn<QString, Qt::DirectConnection>(activities, "CurrentActivity", "QString");
         const auto activity = _activity.isEmpty() ? currentActivityId : _activity;
@@ -70,13 +71,15 @@ public:
                  << "We need to set the linking for: " << activity;
 
         // JIC checking that the service hasn't returned an empty activity
-        if (activity.isEmpty())
+        if (activity.isEmpty()) {
             return;
+        }
 
         fn(activity);
 
-        if (currentActivityId == activity)
+        if (currentActivityId == activity) {
             org::kde::KDirNotify::emitFilesAdded("activities:/current");
+        }
 
         org::kde::KDirNotify::emitFilesAdded("activities:/" + activity);
     }
@@ -187,16 +190,18 @@ void NepomukPlugin::setActivityName(const QString &activity, const QString &name
     Q_ASSERT(!activity.isEmpty());
     Q_ASSERT(!name.isEmpty());
 
-    if (d->nepomukPresent)
+    if (d->nepomukPresent) {
         activityResource(activity).setLabel(name);
+    }
 }
 
 void NepomukPlugin::setActivityIcon(const QString &activity, const QString &icon)
 {
     Q_ASSERT(!activity.isEmpty());
 
-    if (d->nepomukPresent && !icon.isEmpty())
+    if (d->nepomukPresent && !icon.isEmpty()) {
         activityResource(activity).setSymbols(QStringList() << icon);
+    }
 }
 
 void NepomukPlugin::setCurrentActivity(const QString &activity)
@@ -220,16 +225,18 @@ void NepomukPlugin::removeActivity(const QString &activity)
 {
     Q_ASSERT(!activity.isEmpty());
 
-    if (d->nepomukPresent)
+    if (d->nepomukPresent) {
         activityResource(activity).remove();
+    }
 
     org::kde::KDirNotify::emitFilesAdded(Private::protocol);
 }
 
 void NepomukPlugin::nepomukSystemStarted()
 {
-    if (d->nepomukPresent)
+    if (d->nepomukPresent) {
         return;
+    }
     d->nepomukPresent = true;
 }
 
@@ -240,8 +247,9 @@ void NepomukPlugin::nepomukSystemStopped()
 
 bool NepomukPlugin::isFeatureOperational(const QStringList &feature) const
 {
-    if (feature.size() && feature.first() == "linking")
+    if (feature.size() && feature.first() == "linking") {
         return d->nepomukPresent;
+    }
 
     return false;
 }
@@ -268,8 +276,9 @@ QStringList NepomukPlugin::listFeatures(const QStringList &feature) const
 
 void NepomukPlugin::Private::syncActivities(const QStringList &activitys)
 {
-    if (!nepomukPresent)
+    if (!nepomukPresent) {
         return;
+    }
 
     // If we got an empty list, it means we should synchronize
     // all the activities known by the service
@@ -309,8 +318,9 @@ void NepomukPlugin::Private::syncActivities(const QStringList &activitys)
 
 void NepomukPlugin::resourceScoreUpdated(const QString &activity, const QString &client, const QString &resource, double score)
 {
-    if (!d->nepomukPresent)
+    if (!d->nepomukPresent) {
         return;
+    }
 
     updateNepomukScore(activity, client, resource, score);
 }
@@ -380,8 +390,9 @@ void NepomukPlugin::deleteRecentStats(const QString &activity, int count, const 
 void NepomukPlugin::deleteEarlierStats(const QString &activity, int months)
 {
 #ifdef NEPOMUK_STORE_RESOURCE_SCORES
-    if (months == 0)
+    if (months == 0) {
         return;
+    }
 
     const auto activityCheck = activity.isEmpty()
                                    ? QString()
@@ -442,8 +453,9 @@ bool NepomukPlugin::IsResourceLinkedToActivity(const QString &uri, const QString
 {
     Q_ASSERT(!uri.isEmpty());
 
-    if (!d->nepomukPresent)
+    if (!d->nepomukPresent) {
         return false;
+    }
 
     const auto activity = _activity.isEmpty()
                               ? Plugin::callOn<QString, Qt::DirectConnection>(d->activities, "CurrentActivity", "QString")
@@ -477,8 +489,9 @@ bool NepomukPlugin::IsResourceLinkedToActivity(const QString &uri, const QString
 
 QStringList NepomukPlugin::ResourcesLinkedToActivity(const QString &activity) const
 {
-    if (!d->nepomukPresent)
+    if (!d->nepomukPresent) {
         return QStringList();
+    }
 
     QStringList result;
 

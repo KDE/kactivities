@@ -32,8 +32,9 @@ void FileItemLinkingPlugin::Private::actionTriggered()
 {
     QAction *action = dynamic_cast<QAction *>(sender());
 
-    if (!action)
+    if (!action) {
         return;
+    }
 
     bool link = action->property("link").toBool();
     QString activity = action->property("activity").toString();
@@ -87,8 +88,9 @@ FileItemLinkingPlugin::FileItemLinkingPlugin(QObject *parent, const QVariantList
 
 FileItemLinkingPlugin::~FileItemLinkingPlugin()
 {
-    if (!d->thread)
+    if (!d->thread) {
         delete d;
+    }
 }
 
 QList<QAction *> FileItemLinkingPlugin::actions(const KFileItemListProperties &fileItemInfos, QWidget *parentWidget)

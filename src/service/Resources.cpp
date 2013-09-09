@@ -54,8 +54,7 @@ QMutex events_mutex;
 
 void Resources::Private::run()
 {
-    forever
-    {
+    forever {
         // initial delay before processing the events
         sleep(5);
 
@@ -79,8 +78,10 @@ void Resources::Private::run()
 
 void Resources::Private::insertEvent(const Event &newEvent)
 {
-    if (lastEvent == newEvent)
+    if (lastEvent == newEvent) {
         return;
+    }
+
     lastEvent = newEvent;
 
     {
@@ -224,8 +225,9 @@ void Resources::Private::activeWindowChanged(quintptr windowId)
     // The windows can do this manually, but if they are
     // SDI, we can do it on our own.
 
-    if (windowId == focussedWindow)
+    if (windowId == focussedWindow) {
         return;
+    }
 
     if (windows.contains(focussedWindow)) {
         const WindowData &data = windows[focussedWindow];
@@ -276,15 +278,11 @@ void Resources::RegisterResourceEvent(QString application, uint _windowId,
                "Resources::RegisterResourceEvent",
                "We do not accept nepomuk URIs for resource events");
 
-    if (
-            event > Event::LastEventType
-            || uri.isEmpty()
-            || application.isEmpty()
-               // Dirty way to skip special web browser URIs
-               // This is up to the plugin - whether it wants it filtered out or not
-               // || uri.startsWith(QLatin1String("about:"))
-            )
+    if (event > Event::LastEventType
+        || uri.isEmpty()
+        || application.isEmpty()) {
         return;
+    }
 
     QString kuri(uri);
     quintptr windowId = (quintptr)_windowId;
@@ -294,8 +292,9 @@ void Resources::RegisterResourceEvent(QString application, uint _windowId,
 
 void Resources::RegisterResourceMimeType(const QString &uri, const QString &mimetype)
 {
-    if (!mimetype.isEmpty())
+    if (!mimetype.isEmpty()) {
         return;
+    }
 
     QString kuri(uri);
 
@@ -305,8 +304,9 @@ void Resources::RegisterResourceMimeType(const QString &uri, const QString &mime
 void Resources::RegisterResourceTitle(const QString &uri, const QString &title)
 {
     // A dirty saninty check for the title
-    if (title.length() < 3)
+    if (title.length() < 3) {
         return;
+    }
 
     QString kuri(uri);
 

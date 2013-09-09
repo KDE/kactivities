@@ -82,8 +82,9 @@ void RankingsUpdateThread::run()
 
 void Rankings::init(QObject *parent)
 {
-    if (s_instance)
+    if (s_instance) {
         return;
+    }
 
     s_instance = new Rankings(parent);
 }

@@ -117,8 +117,9 @@ void ResourceInstance::notifyFocusedOut()
 
 void ResourceInstance::setUri(const QUrl &newUri)
 {
-    if (d->uri == newUri)
+    if (d->uri == newUri) {
         return;
+    }
 
     if (!d->uri.isEmpty()) {
         d->closeResource();
@@ -131,8 +132,9 @@ void ResourceInstance::setUri(const QUrl &newUri)
 
 void ResourceInstance::setMimetype(const QString &mimetype)
 {
-    if (mimetype.isEmpty())
+    if (mimetype.isEmpty()) {
         return;
+    }
 
     d->mimetype = mimetype;
     // TODO: update the service info
@@ -142,8 +144,9 @@ void ResourceInstance::setMimetype(const QString &mimetype)
 void ResourceInstance::setTitle(const QString &title)
 {
     qDebug() << "Setting the title: " << title;
-    if (title.isEmpty())
+    if (title.isEmpty()) {
         return;
+    }
 
     d->title = title;
     // TODO: update the service info

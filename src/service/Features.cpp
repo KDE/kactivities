@@ -50,8 +50,9 @@ static RetType passToModule(const QString &feature, RetType defaultResult, Funct
     const auto params = feature.split(QLatin1Char('/'));
     const auto module = Module::get(params.first());
 
-    if (!module)
+    if (!module) {
         return defaultResult;
+    }
 
     return f(static_cast<Module *>(module), params.mid(1));
 }
@@ -64,8 +65,9 @@ static RetType passToModule(const QString &feature, RetType defaultResult, Funct
 
 bool Features::IsFeatureOperational(const QString &feature) const
 {
-    if (feature.isEmpty())
+    if (feature.isEmpty()) {
         return false;
+    }
 
     return FEATURES_PASS_TO_MODULE(bool, false,
                                    return module->isFeatureOperational(params););
@@ -73,8 +75,9 @@ bool Features::IsFeatureOperational(const QString &feature) const
 
 bool Features::IsFeatureEnabled(const QString &feature) const
 {
-    if (feature.isEmpty())
+    if (feature.isEmpty()) {
         return false;
+    }
 
     return FEATURES_PASS_TO_MODULE(bool, false,
                                    return module->isFeatureEnabled(params););
@@ -82,8 +85,9 @@ bool Features::IsFeatureEnabled(const QString &feature) const
 
 void Features::SetFeatureEnabled(const QString &feature, bool value)
 {
-    if (feature.isEmpty())
+    if (feature.isEmpty()) {
         return;
+    }
 
     FEATURES_PASS_TO_MODULE(bool, false,
                             module->setFeatureEnabled(params, value);

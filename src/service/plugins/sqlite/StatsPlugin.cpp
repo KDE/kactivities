@@ -124,14 +124,16 @@ QString StatsPlugin::currentActivity() const
 
 void StatsPlugin::addEvents(const EventList &events)
 {
-    if (m_blockAll || m_whatToRemember == NoApplications)
+    if (m_blockAll || m_whatToRemember == NoApplications) {
         return;
+    }
 
     for (int i = 0; i < events.size(); i++) {
         const auto &event = events[i];
 
-        if (event.uri.startsWith(QLatin1String("about")))
+        if (event.uri.startsWith(QLatin1String("about"))) {
             continue;
+        }
 
         const auto currentActivity = Plugin::callOn<QString, Qt::DirectConnection>(m_activities, "CurrentActivity", "QString");
 
@@ -139,11 +141,12 @@ void StatsPlugin::addEvents(const EventList &events)
         //     ignore event if the list doesn't contain the application
         // if not blocked by default, the list contains blocked applications
         //     ignore event if the list contains the application
-        if (
-                (m_whatToRemember == SpecificApplications) && (m_blockedByDefault
-                                                                   ? !m_apps.contains(event.application)
-                                                                   : m_apps.contains(event.application)))
+        if ((m_whatToRemember == SpecificApplications)
+            && (m_blockedByDefault
+                    ? !m_apps.contains(event.application)
+                    : m_apps.contains(event.application))) {
             continue;
+        }
 
         switch (event.type) {
             case Event::Accessed:
@@ -235,8 +238,9 @@ void StatsPlugin::deleteRecentStats(const QString &activity, int count, const QS
 
 void StatsPlugin::deleteEarlierStats(const QString &activity, int months)
 {
-    if (months == 0)
+    if (months == 0) {
         return;
+    }
 
     const auto activityCheck = activity.isEmpty() ? QStringLiteral(" 1 ") : QStringLiteral(" usedActivity = '") + activity + QStringLiteral("' ");
 

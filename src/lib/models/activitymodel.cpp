@@ -55,8 +55,9 @@ public:
         , valid(false)
     {
         qDebug() << "Manager isServicePresent" << Manager::isServicePresent();
-        if (Manager::isServicePresent())
+        if (Manager::isServicePresent()) {
             fetchActivityList();
+        }
 
         connect(Manager::self(), SIGNAL(servicePresenceChanged(bool)),
                 q, SLOT(servicePresenceChanged(bool)));
@@ -108,8 +109,9 @@ void ActivityModel::Private::servicePresenceChanged(bool present)
 
     valid = false;
 
-    if (valid)
+    if (valid) {
         fetchActivityList();
+    }
 }
 
 void ActivityModel::Private::fetchActivityList()
@@ -180,8 +182,9 @@ void ActivityModel::Private::activityInfoCallFinished(QDBusPendingCallWatcher *w
         i.next();
 
         const int value = i.value();
-        if (value >= index)
+        if (value >= index) {
             i.setValue(value + 1);
+        }
     }
 
     activityIndex[info.id] = index;
@@ -215,8 +218,9 @@ void ActivityModel::Private::activityAdded(const QString &activity)
 
 void ActivityModel::Private::activityRemoved(const QString &activity)
 {
-    if (!activityIndex.contains(activity))
+    if (!activityIndex.contains(activity)) {
         return;
+    }
 
     int index = activityIndex[activity];
     model_remove m(q, QModelIndex(), index, index);
@@ -229,8 +233,9 @@ void ActivityModel::Private::activityRemoved(const QString &activity)
         i.next();
 
         const int value = i.value();
-        if (value > index)
+        if (value > index) {
             i.setValue(value - 1);
+        }
     }
 }
 
@@ -260,16 +265,18 @@ int ActivityModel::rowCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent);
 
-    if (!d->valid)
+    if (!d->valid) {
         return 0;
+    }
 
     return d->activities.size();
 }
 
 QVariant ActivityModel::data(const QModelIndex &index, int role) const
 {
-    if (!d->valid)
+    if (!d->valid) {
         return QVariant();
+    }
 
     const int row = index.row();
 

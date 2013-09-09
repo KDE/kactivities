@@ -240,8 +240,9 @@ void KSMServer::Private::stopCallFinished(QDBusPendingCallWatcher *call)
 
 void KSMServer::Private::subSessionSendEvent(int event)
 {
-    if (processingActivity.isEmpty())
+    if (processingActivity.isEmpty()) {
         return;
+    }
 
     emit q->activitySessionStateChanged(processingActivity, event);
 
