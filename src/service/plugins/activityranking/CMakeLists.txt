@@ -8,7 +8,6 @@ include_directories (
    ${CMAKE_CURRENT_SOURCE_DIR}
    ${CMAKE_CURRENT_SOURCE_DIR}/../..
    ${CMAKE_CURRENT_BINARY_DIR}
-   ${KDE4_INCLUDES}
    )
 
 set (
@@ -30,17 +29,16 @@ qt4_add_dbus_interface (
    LocationManagerInterface
    )
 
-kde4_add_plugin (
-   activitymanager_plugin_activityranking
+add_library (
+   activitymanager_plugin_activityranking SHARED
    ${activityranking_SRCS}
    )
 
 target_link_libraries (
    activitymanager_plugin_activityranking
    ${QT_QTSQL_LIBRARIES}
-   ${KDE4_KDECORE_LIBS}
    )
 
-install (TARGETS activitymanager_plugin_activityranking DESTINATION ${PLUGIN_INSTALL_DIR})
-install (FILES activitymanager-plugin-activityranking.desktop DESTINATION ${SERVICES_INSTALL_DIR})
+install (TARGETS activitymanager_plugin_activityranking DESTINATION ${KAMD_PLUGIN_DIR})
+# install (FILES activitymanager-plugin-activityranking.desktop DESTINATION ${SERVICES_INSTALL_DIR})
 

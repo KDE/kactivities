@@ -32,6 +32,6 @@ set_target_properties(
    PROPERTIES PREFIX ""
    )
 
-install (TARGETS activitymanager_plugin_virtualdesktopswitch DESTINATION ${PLUGIN_INSTALL_DIR})
-install (FILES activitymanager-plugin-virtualdesktopswitch.desktop DESTINATION ${SERVICES_INSTALL_DIR})
+install (TARGETS activitymanager_plugin_virtualdesktopswitch DESTINATION ${KAMD_PLUGIN_DIR})
+# install (FILES activitymanager-plugin-virtualdesktopswitch.desktop DESTINATION ${SERVICES_INSTALL_DIR})
 
