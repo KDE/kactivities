@@ -30,6 +30,27 @@ struct ActivityInfo {
     QString name;
     QString icon;
     int state;
+
+    ActivityInfo(const QString & id = QString(),
+                 const QString & name = QString(),
+                 const QString & icon = QString(),
+                 int state = 0)
+        : id(id)
+        , name(name)
+        , icon(icon)
+        , state(state)
+    {
+    }
+
+    bool operator<(const ActivityInfo &other) const
+    {
+        return id < other.id;
+    }
+
+    bool operator==(const ActivityInfo &other) const
+    {
+        return id == other.id;
+    }
 };
 
 typedef QList<ActivityInfo> ActivityInfoList;

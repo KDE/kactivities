@@ -77,7 +77,7 @@ class KACTIVITIES_EXPORT Consumer : public QObject {
     Q_OBJECT
 
     Q_PROPERTY(QString currentActivity READ currentActivity NOTIFY currentActivityChanged)
-    Q_PROPERTY(QStringList activities READ listActivities)
+    Q_PROPERTY(QStringList activities READ listActivities NOTIFY activitiesChanged)
 
 public:
     /**
@@ -85,7 +85,8 @@ public:
      */
     enum ServiceStatus {
         NotRunning, ///< Service is not running
-        Running
+        Unknown,    ///< Unable to determine the status of the service
+        Running     ///< Service is running properly
     };
 
     explicit Consumer(QObject *parent = Q_NULLPTR);
@@ -151,6 +152,12 @@ Q_SIGNALS:
      * @param id id of the removed activity
      */
     void activityRemoved(const QString &id);
+
+    /**
+     * This signal is emitted when the activity list changes
+     * @param activities list of activities
+     */
+    void activitiesChanged(const QStringList & activities);
 
 private:
     ConsumerPrivate *const d;
