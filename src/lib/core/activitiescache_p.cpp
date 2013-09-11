@@ -24,6 +24,8 @@
 
 namespace KActivities {
 
+static QString nulluuid = QStringLiteral("00000000-0000-0000-0000-000000000000");
+
 QWeakPointer<ActivitiesCache> ActivitiesCache::s_instance;
 
 QSharedPointer<ActivitiesCache> ActivitiesCache::self()
@@ -37,7 +39,7 @@ QSharedPointer<ActivitiesCache> ActivitiesCache::self()
 }
 
 ActivitiesCache::ActivitiesCache()
-    : m_loaded(false)
+    : m_status(Consumer::NotRunning)
 {
     qDebug() << "Creating a new instance";
 
@@ -55,12 +57,35 @@ ActivitiesCache::ActivitiesCache()
     connect(activities, SIGNAL(CurrentActivityChanged(QString)),
             this, SLOT(setCurrentActivity(QString)));
 
-    updateAllActivities();
+    connect(Manager::self(), SIGNAL(serviceStatusChanged(bool)),
+            this, SLOT(setServicePresent(bool)));
+
+    setServicePresent(Manager::self()->isServicePresent());
 }
 
-bool ActivitiesCache::isLoaded() const
+void ActivitiesCache::setServicePresent(bool present)
 {
-    return m_loaded;
+    loadOfflineDefaults();
+
+    if (present) {
+        updateAllActivities();
+    }
+}
+
+void ActivitiesCache::loadOfflineDefaults()
+{
+    m_status = Consumer::NotRunning;
+
+    m_activities.clear();
+    m_activities << ActivityInfo(nulluuid, QString(), QString(), Info::Running);
+    m_currentActivity = nulluuid;
+
+    emit serviceStatusChanged(m_status);
+}
+
+ActivitiesCache::~ActivitiesCache()
+{
+    qDebug() << "Destroying the instance";
 }
 
 void ActivitiesCache::removeActivity(const QString &id)
@@ -78,6 +103,8 @@ void ActivitiesCache::removeActivity(const QString &id)
 void ActivitiesCache::updateAllActivities()
 {
     qDebug() << "Updating all";
+    m_status = Consumer::Unknown;
+    emit serviceStatusChanged(m_status);
 
     // Loading the current activity
     auto call = Manager::self()->activities()->asyncCall(
@@ -85,7 +112,7 @@ void ActivitiesCache::updateAllActivities()
     auto watcher = new QDBusPendingCallWatcher(call, this);
 
     connect(watcher, SIGNAL(finished(QDBusPendingCallWatcher *)),
-            this, SLOT(setCurrentActivity(QDBusPendingCallWatcher *)));
+            this, SLOT(setCurrentActivityFromReply(QDBusPendingCallWatcher *)));
 
     // Loading all the activities
     call = Manager::self()->activities()->asyncCall(
@@ -186,10 +213,8 @@ void ActivitiesCache::setAllActivities(const ActivityInfoList &_activities)
         m_activities << info;
     }
 
-    if (!m_loaded) {
-        m_loaded = true;
-        emit activitiesLoaded();
-    }
+    m_status = Consumer::Running;
+    emit serviceStatusChanged(m_status);
 }
 
 void ActivitiesCache::setCurrentActivity(const QString &activity)

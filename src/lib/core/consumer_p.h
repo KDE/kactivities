@@ -22,8 +22,10 @@
 #include "consumer.h"
 
 #include <QSet>
+#include <QSharedPointer>
 
 #include "utils_p.h"
+#include "activitiescache_p.h"
 
 class QDBusPendingCallWatcher;
 
@@ -33,39 +35,53 @@ class ConsumerPrivate : public QObject {
     Q_OBJECT
 
 public:
-    static ConsumerPrivate *self(QObject *consumer);
-    void free(QObject *consumer);
+    ConsumerPrivate();
+
+    QSharedPointer<ActivitiesCache> cache;
 
 public Q_SLOTS:
-    void setServicePresent(bool present);
-    void initializeCachedData();
-
-    void currentActivityCallFinished(QDBusPendingCallWatcher *call);
-    void listActivitiesCallFinished(QDBusPendingCallWatcher *call);
-    void runningActivitiesCallFinished(QDBusPendingCallWatcher *call);
-
-    void setCurrentActivity(const QString &activity);
-    void addActivity(const QString &activity);
-    void removeActivity(const QString &activity);
-    void setActivityState(const QString &activity, int state);
+    void setServiceStatus(Consumer::ServiceStatus status);
 
 Q_SIGNALS:
-    void serviceStatusChanged(KActivities::Consumer::ServiceStatus status);
+    void serviceStatusChanged(Consumer::ServiceStatus status);
 
-    void currentActivityChanged(const QString &id);
-    void activityAdded(const QString &id);
-    void activityRemoved(const QString &id);
-
-public:
-    KAMD_REMOTE_VALUE_CUSTOM_HANDLER(QString, currentActivity);
-    KAMD_REMOTE_VALUE_CUSTOM_HANDLER(QStringList, listActivities);
-    KAMD_REMOTE_VALUE_CUSTOM_HANDLER(QStringList, runningActivities);
-
-    QSet<QObject *> consumers;
-
-private:
-    ConsumerPrivate();
-    static ConsumerPrivate *s_instance;
+//     : public QObject {
+//     Q_OBJECT
+//
+// public:
+//     static ConsumerPrivate *self(QObject *consumer);
+//     void free(QObject *consumer);
+//
+// public Q_SLOTS:
+//     void setServicePresent(bool present);
+//     void initializeCachedData();
+//
+//     void currentActivityCallFinished(QDBusPendingCallWatcher *call);
+//     void listActivitiesCallFinished(QDBusPendingCallWatcher *call);
+//     void runningActivitiesCallFinished(QDBusPendingCallWatcher *call);
+//
+//     void setCurrentActivity(const QString &activity);
+//     void addActivity(const QString &activity);
+//     void removeActivity(const QString &activity);
+//     void setActivityState(const QString &activity, int state);
+//
+// Q_SIGNALS:
+//     void serviceStatusChanged(KActivities::Consumer::ServiceStatus status);
+//
+//     void currentActivityChanged(const QString &id);
+//     void activityAdded(const QString &id);
+//     void activityRemoved(const QString &id);
+//
+// public:
+//     KAMD_REMOTE_VALUE_CUSTOM_HANDLER(QString, currentActivity);
+//     KAMD_REMOTE_VALUE_CUSTOM_HANDLER(QStringList, listActivities);
+//     KAMD_REMOTE_VALUE_CUSTOM_HANDLER(QStringList, runningActivities);
+//
+//     QSet<QObject *> consumers;
+//
+// private:
+//     ConsumerPrivate();
+//     static ConsumerPrivate *s_instance;
 };
 
 } // namespace KActivities
