@@ -26,6 +26,7 @@
 #include <common/dbus/org.kde.ActivityManager.Activities.h>
 
 #include "activities_interface.h"
+#include "consumer.h"
 
 namespace KActivities {
 
@@ -35,18 +36,20 @@ class ActivitiesCache : public QObject {
 public:
     static QSharedPointer<ActivitiesCache> self();
 
-    bool isLoaded() const;
+    ~ActivitiesCache();
 
 Q_SIGNALS:
-    void activitiesLoaded();
     void activityAdded(const QString &id);
     void activityChanged(const QString &id);
     void activityRemoved(const QString &id);
     void activityStateChanged(const QString &id, int state);
     void currentActivityChanged(const QString &id);
+    void serviceStatusChanged(Consumer::ServiceStatus status);
 
 private Q_SLOTS:
     void updateAllActivities();
+    void loadOfflineDefaults();
+
     void updateActivity(const QString &id);
     void updateActivityState(const QString &id, int state);
     void removeActivity(const QString &id);
@@ -59,7 +62,9 @@ private Q_SLOTS:
     void setAllActivities(const ActivityInfoList &activities);
     void setCurrentActivity(const QString &activity);
 
-private:
+    void setServicePresent(bool present);
+
+public:
     template <typename _Result, typename _Functor>
     void passInfoFromReply(QDBusPendingCallWatcher *watcher, _Functor f);
 
@@ -68,7 +73,7 @@ private:
 
     QList<ActivityInfo> m_activities;
     QString m_currentActivity;
-    bool m_loaded;
+    Consumer::ServiceStatus m_status;
 };
 
 } // namespace KActivities

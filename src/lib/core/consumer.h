@@ -22,6 +22,7 @@
 #include <QObject>
 #include <QString>
 #include <QStringList>
+#include <QScopedPointer>
 
 #include "info.h"
 
@@ -37,29 +38,25 @@ class ConsumerPrivate;
  * and "what am I doing?".
  *
  * Activities deal with the last one - "what am I doing?". The current activity
- * refers to what the user is doing at the moment, while the other activities represent
- * things that he/she was doing before, and probably will be doing again.
+ * refers to what the user is doing at the moment, while the other activities
+ * represent things that he/she was doing before, and probably will be doing
+ * again.
  *
- * Activity is an abstract concept whose meaning can differ from one user to another.
- * Typical examples of activities are "developing a KDE project", "studying the
- * 19th century art", "composing music", "lazing on a Sunday afternoon" etc.
+ * Activity is an abstract concept whose meaning can differ from one user to
+ * another. Typical examples of activities are "developing a KDE project",
+ * "studying the 19th century art", "composing music", "lazing on a Sunday
+ * afternoon" etc.
  *
- * Every activity can have applications, documents, or other types of resources
- * assigned to it.
+ * Consumer provides read-only information about activities.
  *
- * Consumer provides an entry-level API for supporting activities in an
- * application - to react to the changes to the current activity as well as
- * registering the resources with its windows.
+ * Before relying on the values retrieved by the class, make sure that the
+ * serviceStatus is set to Running. Otherwise, you can get invalid data either
+ * because the service is not functioning properly (or at all) or because
+ * the class did not have enough time to synchronize with it.
  *
- * Resource can be anything that is identifiable by an URI (for example,
- * a local file or a web page)
+ * For example, if this is the only existing instance of the Consumer class,
+ * the listActivities method will return an empty list.
  *
- * The API of the class is synchronous, but the most used properties
- * are pre-fetched and cached. This means that, in order to get the least
- * amount of d-bus related locks, you should declare long-lived instances
- * of this class.
- *
- * For example, this is wrong (works, but blocks):
  * @code
  * void someMethod() {
  *     Consumer c;
@@ -67,9 +64,8 @@ class ConsumerPrivate;
  * }
  * @endcode
  *
- * The methods that are cached are marked as 'pre-fetched and cached'.
- * Methods that will block until the response from the service is returned
- * are marked as 'blocking'.
+ * Instances of the Consumer class should be long-lived. For example, members
+ * of the classes that use them.
  *
  * @since 4.5
  */
@@ -77,7 +73,8 @@ class KACTIVITIES_EXPORT Consumer : public QObject {
     Q_OBJECT
 
     Q_PROPERTY(QString currentActivity READ currentActivity NOTIFY currentActivityChanged)
-    Q_PROPERTY(QStringList activities READ listActivities NOTIFY activitiesChanged)
+    Q_PROPERTY(QStringList activities READ activities NOTIFY activitiesChanged)
+    Q_PROPERTY(ServiceStatus serviceStatus READ serviceStatus NOTIFY serviceStatusChanged)
 
 public:
     /**
@@ -110,7 +107,7 @@ public:
      *     activity will be returned.
      * @note This method is <b>pre-fetched and cached only for the Info::Running state</b>
      */
-    QStringList listActivities(Info::State state) const;
+    QStringList activities(Info::State state) const;
 
     /**
      * @returns the list of all existing activities
@@ -118,12 +115,12 @@ public:
      *     activity will be returned.
      * @note This method is <b>pre-fetched and cached</b>
      */
-    QStringList listActivities() const;
+    QStringList activities() const;
 
     /**
      * @returns status of the activities service
      */
-    static ServiceStatus serviceStatus();
+    ServiceStatus serviceStatus();
 
 Q_SIGNALS:
     /**
@@ -138,7 +135,7 @@ Q_SIGNALS:
      * goes online or offline
      * @param status new status of the service
      */
-    void serviceStatusChanged(KActivities::Consumer::ServiceStatus status);
+    void serviceStatusChanged(Consumer::ServiceStatus status);
 
     /**
      * This signal is emitted when a new activity is added
@@ -160,7 +157,7 @@ Q_SIGNALS:
     void activitiesChanged(const QStringList & activities);
 
 private:
-    ConsumerPrivate *const d;
+    const QScopedPointer<ConsumerPrivate> d;
 };
 
 } // namespace KActivities
