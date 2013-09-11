@@ -47,7 +47,8 @@ public:
     static Service::Features *features();
 
 public Q_SLOTS:
-    void serviceOwnerChanged(const QString &serviceName, const QString &oldOwner, const QString &newOwner);
+    void serviceOwnerChanged(const QString &serviceName,
+                             const QString &oldOwner, const QString &newOwner);
 
 Q_SIGNALS:
     void servicePresenceChanged(bool present);

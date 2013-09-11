@@ -57,12 +57,17 @@ set (KACTIVITIES_LIB_SO_VERSION_STRING "${KACTIVITIES_LIB_SO_CUR_VERSION}.${KACT
 
 set (
    kactivities_LIB_SRCS
+
    ${CMAKE_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.Activities.cpp
+
    consumer.cpp
    controller.cpp
    info.cpp
-   manager_p.cpp
    resourceinstance.cpp
+
+   manager_p.cpp
+   activitiescache_p.cpp
+
    version.cpp
    )
 
