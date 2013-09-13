@@ -31,7 +31,7 @@ ConsumerPrivate::ConsumerPrivate()
 
 void ConsumerPrivate::setServiceStatus(Consumer::ServiceStatus status)
 {
-    emit serviceStatusChanged(Consumer::Running);
+    emit serviceStatusChanged(status);
 }
 
 Consumer::Consumer(QObject *parent)

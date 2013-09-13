@@ -62,11 +62,24 @@ private Q_SLOTS:
     void setAllActivities(const ActivityInfoList &activities);
     void setCurrentActivity(const QString &activity);
 
-    void setServicePresent(bool present);
+    void setServiceStatus(bool status);
 
 public:
     template <typename _Result, typename _Functor>
     void passInfoFromReply(QDBusPendingCallWatcher *watcher, _Functor f);
+
+    inline
+    const ActivityInfo * cfind(const QString & id)
+    {
+        auto where = std::lower_bound(
+            m_activities.begin(), m_activities.end(), ActivityInfo(id));
+
+        if (where != m_activities.end() && where->id == id) {
+            return &(*where);
+        }
+
+        return Q_NULLPTR;
+    }
 
     ActivitiesCache();
     static QWeakPointer<ActivitiesCache> s_instance;
