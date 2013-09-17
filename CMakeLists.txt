@@ -44,6 +44,7 @@ set (
 
 
 add_subdirectory (src)
+add_subdirectory (tests)
 
 # Write out the features
 feature_summary (WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)
