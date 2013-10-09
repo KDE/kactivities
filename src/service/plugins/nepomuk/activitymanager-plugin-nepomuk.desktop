@@ -2,6 +2,7 @@
 Name=Nepomuk Feeder
 Name[bs]=Nepomuk Feeder
 Name[ca]=Alimentador del Nepomuk
+Name[ca@valencia]=Alimentador del Nepomuk
 Name[da]=Nepomuk-feeder
 Name[de]=Nepomuk Feeder
 Name[el]=Τροφοδότης του Nepomuk
@@ -41,6 +42,7 @@ Name[zh_TW]=Nepomuk Feeder
 Comment=Plugin to synchronize data with Nepomuk
 Comment[bs]=Dodatak za sinhronizaciju podataka s Nepomuk-om
 Comment[ca]=Connector per sincronitzar dades amb el Nepomuk
+Comment[ca@valencia]=Connector per sincronitzar dades amb el Nepomuk
 Comment[cs]=Modul pro synchronizaci dat s Nepomukem
 Comment[da]=Plugin til at synkronisere data med Nepomuk
 Comment[de]=Modul zum Abgleichen von Daten in Nepomuk
