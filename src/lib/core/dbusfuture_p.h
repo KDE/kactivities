@@ -24,6 +24,7 @@
 #include <QDBusServiceWatcher>
 #include <QDBusAbstractInterface>
 #include <QDBusPendingCallWatcher>
+#include <QFutureInterface>
 
 #include <QDebug>
 
@@ -40,17 +41,7 @@ public:
     {
     }
 
-    void callFinished()
-    {
-        deleteLater();
-
-        qDebug() << "This is call end";
-        if (!reply.isError()) {
-            this->reportResult(reply.value());
-        }
-
-        this->reportFinished();
-    }
+    void callFinished();
 
     QFuture<_Result> start()
     {
@@ -73,6 +64,22 @@ private:
     QDBusPendingReply<_Result> reply;
     QDBusPendingCallWatcher * replyWatcher;
 };
+
+template <typename _Result>
+void DBusCallFutureInterface<_Result>::callFinished()
+{
+    deleteLater();
+
+    qDebug() << "This is call end";
+    if (!reply.isError()) {
+        this->reportResult(reply.value());
+    }
+
+    this->reportFinished();
+}
+
+template <>
+void DBusCallFutureInterface<void>::callFinished();
 
 template <typename _Result>
 class ValueFutureInterface : public QObject, QFutureInterface<_Result> {
