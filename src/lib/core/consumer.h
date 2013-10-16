@@ -52,20 +52,22 @@ class ConsumerPrivate;
  * Before relying on the values retrieved by the class, make sure that the
  * serviceStatus is set to Running. Otherwise, you can get invalid data either
  * because the service is not functioning properly (or at all) or because
- * the class did not have enough time to synchronize with it.
+ * the class did not have enough time to synchronize the data with it.
  *
  * For example, if this is the only existing instance of the Consumer class,
  * the listActivities method will return an empty list.
  *
  * @code
  * void someMethod() {
+ *     // This does not work!
  *     Consumer c;
  *     doSomethingWith(c.listActivities());
  * }
  * @endcode
  *
  * Instances of the Consumer class should be long-lived. For example, members
- * of the classes that use them.
+ * of the classes that use them, and you should listen for the changes in the
+ * provided properties.
  *
  * @since 4.5
  */
@@ -92,28 +94,24 @@ public:
 
     /**
      * @returns the id of the current activity
-     * @note Activity ID is a UUID-formatted string. If the activities
-     *     service is not running, or there was some error, the
-     *     method will return null UUID. The ID can also be an empty
-     *     string in the case there is no current activity.
-     * @note This method is <b>pre-fetched and cached</b>
+     * @note Activity ID is a UUID-formatted string. If the serviceStatus
+     *       is not Running, a null UUID is returned. The ID can also be an empty
+     *       string in the case there is no current activity.
      */
     QString currentActivity() const;
 
     /**
      * @returns the list of activities filtered by state
      * @param state state of the activity
-     * @note If the activities service is not running, only a null
-     *     activity will be returned.
-     * @note This method is <b>pre-fetched and cached only for the Info::Running state</b>
+     * @note If the serviceStatus is not Running, only a null activity will be
+     *       returned.
      */
     QStringList activities(Info::State state) const;
 
     /**
      * @returns the list of all existing activities
-     * @note If the activities service is not running, only a null
-     *     activity will be returned.
-     * @note This method is <b>pre-fetched and cached</b>
+     * @note If the serviceStatus is not Running, only a null activity will be
+     *       returned.
      */
     QStringList activities() const;
 
@@ -124,15 +122,14 @@ public:
 
 Q_SIGNALS:
     /**
-     * This signal is emitted when the global
-     * activity is changed
+     * This signal is emitted when the current activity is changed
      * @param id id of the new current activity
      */
     void currentActivityChanged(const QString &id);
 
     /**
-     * This signal is emitted when the activity service
-     * goes online or offline
+     * This signal is emitted when the activity service goes online or offline,
+     * or when the class manages to synchronise the data with the service.
      * @param status new status of the service
      */
     void serviceStatusChanged(Consumer::ServiceStatus status);
@@ -144,8 +141,7 @@ Q_SIGNALS:
     void activityAdded(const QString &id);
 
     /**
-     * This signal is emitted when the activity
-     * is removed
+     * This signal is emitted when an activity has been removed
      * @param id id of the removed activity
      */
     void activityRemoved(const QString &id);
