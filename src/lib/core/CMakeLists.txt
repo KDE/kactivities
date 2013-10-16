@@ -67,6 +67,7 @@ set (
 
    manager_p.cpp
    activitiescache_p.cpp
+   dbusfuture_p.cpp
 
    version.cpp
    )

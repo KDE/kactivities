@@ -178,10 +178,8 @@ QFuture<bool> Info::isResourceLinked(const QString &resourceUri)
 {
     // return Manager::resourcesLinking()->IsResourceLinkedToActivity(resourceUri, d->id);
     return DBusFuture::asyncCall<bool>(
-            Manager::resourcesLinking(),
-            QStringLiteral("IsResourceLinkedToActivity"),
-            resourceUri,
-            d->id);
+        Manager::resourcesLinking(),
+        QStringLiteral("IsResourceLinkedToActivity"), resourceUri, d->id);
 }
 
 } // namespace KActivities
