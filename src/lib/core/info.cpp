@@ -19,6 +19,7 @@
 #include "info.h"
 #include "info_p.h"
 #include "manager_p.h"
+#include "dbusfuture_p.h"
 
 #include <QFileSystemWatcher>
 
@@ -173,9 +174,14 @@ void Info::unlinkResource(const QString &resourceUri)
     Manager::resourcesLinking()->UnlinkResourceFromActivity(resourceUri, d->id);
 }
 
-bool Info::isResourceLinked(const QString &resourceUri)
+QFuture<bool> Info::isResourceLinked(const QString &resourceUri)
 {
-    return Manager::resourcesLinking()->IsResourceLinkedToActivity(resourceUri, d->id);
+    // return Manager::resourcesLinking()->IsResourceLinkedToActivity(resourceUri, d->id);
+    return DBusFuture::asyncCall<bool>(
+            Manager::resourcesLinking(),
+            QStringLiteral("IsResourceLinkedToActivity"),
+            resourceUri,
+            d->id);
 }
 
 } // namespace KActivities
