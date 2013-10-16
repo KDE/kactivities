@@ -59,7 +59,7 @@ class ConsumerPrivate;
  *
  * @code
  * void someMethod() {
- *     // This does not work!
+ *     // Do not copy. This approach is not a good one!
  *     Consumer c;
  *     doSomethingWith(c.listActivities());
  * }

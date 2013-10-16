@@ -65,8 +65,8 @@ Manager::Manager()
                 this)
             )
 {
-    connect(&m_watcher, SIGNAL(serviceOwnerChanged(const QString &, const QString &, const QString &)),
-            this, SLOT(serviceOwnerChanged(const QString &, const QString &, const QString &)));
+    connect(&m_watcher, &QDBusServiceWatcher::serviceOwnerChanged,
+            this, &Manager::serviceOwnerChanged);
 }
 
 Manager *Manager::self()

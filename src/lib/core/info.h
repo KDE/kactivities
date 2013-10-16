@@ -22,7 +22,7 @@
 #include <QObject>
 #include <QString>
 #include <QStringList>
-// #include <QFuture>
+#include <QFuture>
 
 #include "kactivities_export.h"
 
@@ -31,10 +31,10 @@ namespace KActivities {
 class InfoPrivate;
 
 /**
- * This class provides info about an activity. Most methods in it
- * require a Nepomuk backend running.
+ * This class provides info about an activity. Most methods in it require a
+ * semantic backend running to function properly.
  *
- * This class is not thread-safe
+ * This class is not thread-safe.
  *
  * @see Consumer for info about activities
  *
@@ -43,17 +43,26 @@ class InfoPrivate;
  * amount of d-bus related locks, you should declare long-lived instances
  * of this class.
  *
+ * Before relying on the values retrieved by the class, make sure that the
+ * state is not Info::Unknown. You can get invalid data either because the
+ * service is not functioning properly (or at all) or because the class did
+ * not have enough time to synchronize the data with it.
+ *
+ * For example, if this is the only existing instance of the Info class, the
+ * name method will return an empty string.
+ *
  * For example, this is wrong (works, but blocks):
  * @code
  * void someMethod(const QString & activity) {
+ *     // Do not copy. This approach is not a good one!
  *     Info info(activity);
  *     doSomethingWith(info.name());
  * }
  * @endcode
  *
- * The methods that are cached are marked as 'pre-fetched and cached'.
- * Methods that will block until the response from the service is returned
- * are marked as 'blocking'.
+ * Instances of the Info class should be long-lived. For example, members
+ * of the classes that use them, and you should listen for the changes in the
+ * provided properties.
  *
  * @since 4.5
  */
@@ -101,8 +110,8 @@ public:
     Availability availability() const;
 
     /**
-     * @returns the URI of this activity. The same URI is used by
-     * activities KIO slave.
+     * @returns the URI of this activity. The same URI is used by activities
+     * KIO slave.
      */
     QString uri() const;
 
@@ -113,54 +122,43 @@ public:
 
     /**
      * @returns the name of the activity
-     * @note Functional when availability is BasicInfo or Everything
-     * @note This method is <b>pre-fetched and cached</b>
      */
     QString name() const;
 
     /**
-     * @returns the icon of the activity. Icon can be a
-     * freedesktop.org name or a file path. Or empty if
-     * no icon is set.
-     * @note Functional only when availability is Everything
-     * @note This method is <b>pre-fetched and cached</b>
+     * @returns the icon of the activity. Icon can be a freedesktop.org name or
+     * a file path. Or empty if no icon is set.
      */
     QString icon() const;
 
     /**
      * @returns the state of the activity
-     * @note This method is <b>cached</b>
      */
     State state() const;
 
     /**
      * Links the specified resource to the activity
      * @param resourceUri resource URI
-     * @note This method is <b>asynchronous</b>
+     * @note This method is <b>asynchronous</b>. It will return before the
+     * resource is actually linked to the activity.
      */
     void linkResource(const QString &resourceUri);
 
     /**
      * Unlinks the specified resource from the activity
      * @param resourceUri resource URI
-     * @note This method is <b>asynchronous</b>
+     * @note This method is <b>asynchronous</b>. It will return before the
+     * resource is actually unlinked from the activity.
      */
     void unlinkResource(const QString &resourceUri);
 
     /**
      * @returns whether a resource is linked to this activity
-     * @note this method is <b>blocking</b>
-     * @since 4.11
+     * @note This QFuture is not thread-based, you can not call synchronous
+     * methods like waitForFinished, cancel, pause on it.
+     * @since 5.0
      */
-    bool isResourceLinked(const QString &resourceUri);
-
-    /**
-     * This function is provided for convenience.
-     * @returns the name of the specified activity
-     * @param id id of the activity
-     * @note This method is <b>blocking</b>, you should use Info::name()
-     */
-    // static QFuture<QString> name(const QString &id);
+    QFuture<bool> isResourceLinked(const QString &resourceUri);
 
 Q_SIGNALS:
     /**
