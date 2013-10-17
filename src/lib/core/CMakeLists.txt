@@ -101,7 +101,7 @@ qt5_add_dbus_interface (
    )
 
 add_library (
-   kactivities SHARED
+   KActivities SHARED
    ${kactivities_LIB_SRCS}
    )
 
@@ -113,21 +113,21 @@ include_directories (
    )
 
 set_target_properties (
-   kactivities
+   KActivities
    PROPERTIES
    VERSION ${KACTIVITIES_LIB_SO_VERSION_STRING}
    SOVERSION ${KACTIVITIES_LIB_SO_CUR_VERSION}
    )
 
 target_link_libraries (
-   kactivities
+   KActivities
    Qt5::Core
    Qt5::DBus
    KF5::KDBusAddons
    )
 
 # install
-generate_export_header(kactivities)
+generate_export_header(KActivities)
 
 set (
    kactivities_LIB_HEADERS
@@ -161,7 +161,7 @@ install (
    )
 
 install (
-   TARGETS kactivities
+   TARGETS KActivities
    EXPORT kactivitiesLibraryTargets
    ${INSTALL_TARGETS_DEFAULT_ARGS}
    )
@@ -170,6 +170,7 @@ install (
    EXPORT kactivitiesLibraryTargets
    DESTINATION ${LIB_INSTALL_DIR}/cmake/KActivities
    FILE KActivitiesLibraryTargets.cmake
+   NAMESPACE KF5::
    )
 
 if (NOT WIN32)
@@ -177,20 +178,23 @@ if (NOT WIN32)
    install (FILES ${CMAKE_CURRENT_BINARY_DIR}/libkactivities.pc DESTINATION ${LIB_INSTALL_DIR}/pkgconfig )
 endif ()
 
-# TODO:
-# configure_file (KActivitiesConfig.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/KActivitiesConfig.cmake @ONLY)
-# macro_write_basic_cmake_version_file (
-#     ${CMAKE_CURRENT_BINARY_DIR}/KActivitiesConfigVersion.cmake
-#     ${KACTIVITIES_LIB_MAJOR_VERSION}
-#     ${KACTIVITIES_LIB_MINOR_VERSION}
-#     ${KACTIVITIES_LIB_PATCH_VERSION}
-#     )
-#
-# install (
-#     FILES
-#     ${CMAKE_CURRENT_BINARY_DIR}/KActivitiesConfig.cmake
-#     ${CMAKE_CURRENT_BINARY_DIR}/KActivitiesConfigVersion.cmake
-#     DESTINATION
-#     ${LIB_INSTALL_DIR}/cmake/KActivities
-# )
+ecm_setup_version(5.0.0 VARIABLE_PREFIX KACTIVITIES
+                        VERSION_HEADER "${CMAKE_CURRENT_BINARY_DIR}/kactivities_version.h"
+                        PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/KActivitiesConfigVersion.cmake")
+
+# create a Config.cmake and a ConfigVersion.cmake file and install them
+set(CMAKECONFIG_INSTALL_DIR "${CMAKECONFIG_INSTALL_PREFIX}/KActivities")
+
+configure_package_config_file("${CMAKE_CURRENT_SOURCE_DIR}/KActivitiesConfig.cmake.in"
+                              "${CMAKE_CURRENT_BINARY_DIR}/KActivitiesConfig.cmake"
+                              INSTALL_DESTINATION  ${CMAKECONFIG_INSTALL_DIR}
+                              PATH_VARS  INCLUDE_INSTALL_DIR CMAKE_INSTALL_PREFIX )
+
+install(FILES  "${CMAKE_CURRENT_BINARY_DIR}/KActivitiesConfig.cmake"
+               "${CMAKE_CURRENT_BINARY_DIR}/KActivitiesConfigVersion.cmake"
+        DESTINATION "${CMAKECONFIG_INSTALL_DIR}"
+        COMPONENT Devel )
+
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/kactivities_version.h
+        DESTINATION ${INCLUDE_INSTALL_DIR} COMPONENT Devel )
 
