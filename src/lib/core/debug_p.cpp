@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2012 Ivan Cukic <ivan.cukic(at)kde.org>
+ *   Copyright (C) 2013 Ivan Cukic <ivan.cukic(at)kde.org>
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License version 2,
@@ -17,11 +17,9 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef UTILS_P_H
-#define UTILS_P_H
+#include "debug_p.h"
 
-#include <QDBusPendingCallWatcher>
+Q_LOGGING_CATEGORY(KAMD_CORELIB, "org.kde.KActivities.core")
 
-#include <QMutex>
 
-#endif // UTILS_P_H
+

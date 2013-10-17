@@ -20,7 +20,7 @@
 #include "manager_p.h"
 
 #include <QDBusConnection>
-#include <QDebug>
+#include "debug_p.h"
 
 // #include <ktoolinvocation.h>
 #include <kdbusconnectionpool.h>
@@ -71,6 +71,9 @@ Manager::Manager()
 
 Manager *Manager::self()
 {
+    qDebug() << "MANAGERIAL STUFF";
+    qCDebug(KAMD_CORELIB) << "MANAGERIAL STUFF";
+
     if (!s_instance) {
         // check if the activity manager is already running
         if (!isServiceRunning()) {
@@ -80,16 +83,24 @@ Manager *Manager::self()
 
             // int ret = KToolInvocation::startServiceByDesktopPath("kactivitymanagerd.desktop", QStringList(), &error);
             // if (ret > 0) {
-            //     qDebug() << "Activity: Couldn't start kactivitymanagerd: " << error << endl;
+            //     qCDebug(KAMD_CORELIB) << "Activity: Couldn't start kactivitymanagerd: " << error << endl;
             // }
 
             // if (!KDBusConnectionPool::threadConnection().interface()->isServiceRegistered(ACTIVITY_MANAGER_DBUS_PATH)) {
-            //     qDebug() << "Activity: The kactivitymanagerd service is still not registered";
+            //     qCDebug(KAMD_CORELIB) << "Activity: The kactivitymanagerd service is still not registered";
             // } else {
-            //     qDebug() << "Activity: The kactivitymanagerd service has been registered";
+            //     qCDebug(KAMD_CORELIB) << "Activity: The kactivitymanagerd service has been registered";
             // }
 
+            #if defined(DEBUG)
+            if (!QCoreApplication::property(KAMD_CORELIB ".disableAutostart").toBool()) {
+                qCDebug(KAMD_CORELIB) << "Starting the activity manager daemon";
+                QProcess::startDetached(QStringLiteral("kactivitymanagerd"));
+            }
+
+            #else
             QProcess::startDetached(QStringLiteral("kactivitymanagerd"));
+            #endif
         }
 
         // creating a new instance of the class
