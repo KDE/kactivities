@@ -20,7 +20,7 @@
 #include "consumer_p.h"
 #include "manager_p.h"
 
-#include <QDebug>
+#include "debug_p.h"
 
 namespace KActivities {
 
@@ -38,7 +38,7 @@ Consumer::Consumer(QObject *parent)
     : QObject(parent)
     , d(new ConsumerPrivate())
 {
-    qDebug() << "Creating a consumer";
+    qCDebug(KAMD_CORELIB) << "Creating a consumer";
 
     connect(d->cache.data(), SIGNAL(currentActivityChanged(QString)),
             this, SIGNAL(currentActivityChanged(QString)));
@@ -58,7 +58,7 @@ Consumer::Consumer(QObject *parent)
 
 Consumer::~Consumer()
 {
-    qDebug() << "Killing the consumer";
+    qCDebug(KAMD_CORELIB) << "Killing the consumer";
 }
 
 QString Consumer::currentActivity() const

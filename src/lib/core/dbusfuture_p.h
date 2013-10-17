@@ -26,7 +26,7 @@
 #include <QDBusPendingCallWatcher>
 #include <QFutureInterface>
 
-#include <QDebug>
+#include "debug_p.h"
 
 namespace DBusFuture {
 
@@ -55,7 +55,7 @@ public:
             this->callFinished();
         }
 
-        qDebug() << "Returning a future";
+        qCDebug(KAMD_CORELIB) << "Returning a future";
         return this->future();
 
     }
@@ -70,7 +70,7 @@ void DBusCallFutureInterface<_Result>::callFinished()
 {
     deleteLater();
 
-    qDebug() << "This is call end";
+    qCDebug(KAMD_CORELIB) << "This is call end";
     if (!reply.isError()) {
         this->reportResult(reply.value());
     }

@@ -22,7 +22,6 @@
 #include "dbusfuture_p.h"
 
 #include <QObject>
-#include <QDebug>
 
 namespace KActivities {
 
