@@ -71,9 +71,6 @@ Manager::Manager()
 
 Manager *Manager::self()
 {
-    qDebug() << "MANAGERIAL STUFF";
-    qCDebug(KAMD_CORELIB) << "MANAGERIAL STUFF";
-
     if (!s_instance) {
         // check if the activity manager is already running
         if (!isServiceRunning()) {
@@ -92,8 +89,13 @@ Manager *Manager::self()
             //     qCDebug(KAMD_CORELIB) << "Activity: The kactivitymanagerd service has been registered";
             // }
 
-            #if defined(DEBUG)
-            if (!QCoreApplication::property(KAMD_CORELIB ".disableAutostart").toBool()) {
+            #if defined(QT_DEBUG)
+            QLoggingCategory::setFilterRules(QStringLiteral("org.kde.KActivities.core.debug=true"));
+
+            qCDebug(KAMD_CORELIB) << "Should we start the daemon?";
+            if (!QCoreApplication::instance()
+                     ->property("org.kde.KActivities.core.disableAutostart")
+                     .toBool()) {
                 qCDebug(KAMD_CORELIB) << "Starting the activity manager daemon";
                 QProcess::startDetached(QStringLiteral("kactivitymanagerd"));
             }

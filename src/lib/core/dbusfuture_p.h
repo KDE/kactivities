@@ -25,6 +25,7 @@
 #include <QDBusAbstractInterface>
 #include <QDBusPendingCallWatcher>
 #include <QFutureInterface>
+#include <QFuture>
 
 #include "debug_p.h"
 
@@ -106,6 +107,29 @@ private:
 
 };
 
+template <>
+class ValueFutureInterface<void> : public QObject, QFutureInterface<void> {
+public:
+    ValueFutureInterface();
+
+    QFuture<void> start();
+    // {
+    //     auto future = this->future();
+
+    //     this->reportFinished();
+
+    //     deleteLater();
+
+    //     return future;
+    // }
+};
+
+// template <>
+// ValueFutureInterface<void>::ValueFutureInterface();
+//
+// template <>
+// QFuture<void> ValueFutureInterface<void>::start();
+
 }
 
 template <typename _Result>
@@ -127,7 +151,7 @@ asyncCall(QDBusAbstractInterface *interface, const QString &method,
 
 template <typename _Result>
 QFuture<_Result>
-fromValue(_Result & value)
+fromValue(const _Result & value)
 {
     using namespace detail;
 
@@ -135,6 +159,8 @@ fromValue(_Result & value)
 
     return valueFutureInterface->start();
 }
+
+QFuture<void> fromVoid();
 
 } // namespace DBusFuture
 

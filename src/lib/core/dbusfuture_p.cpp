@@ -31,6 +31,32 @@ void DBusCallFutureInterface<void>::callFinished()
     this->reportFinished();
 }
 
+ValueFutureInterface<void>::ValueFutureInterface()
+{
+}
+
+QFuture<void> ValueFutureInterface<void>::start()
+{
+    auto future = this->future();
+
+    this->reportFinished();
+
+    deleteLater();
+
+    return future;
+}
+
 } // namespace detail
+
+QFuture<void>
+fromVoid()
+{
+    using namespace detail;
+
+    auto valueFutureInterface = new ValueFutureInterface<void>();
+
+    return valueFutureInterface->start();
+}
+
 } // namespace DBusFuture
 
