@@ -6,12 +6,14 @@ find_package(Qt5 REQUIRED NO_MODULE COMPONENTS Test Core DBus)
 include_directories(
    ${CMAKE_SOURCE_DIR}/src/lib/core/
    ${CMAKE_BINARY_DIR}/src/lib/core/
+   ${CMAKE_SOURCE_DIR}/tests/
    )
 
 set (
    KActivitiesTest_SRCS
    main.cpp
-   ConsumerTest.cpp
+   OfflineTest.cpp
+   ${CMAKE_SOURCE_DIR}/tests/common/test.cpp
    )
 
 add_executable (

@@ -102,7 +102,7 @@ public:
     QFuture<void> startActivity(const QString &id);
 
 private:
-    const QScopedPointer<ControllerPrivate> d;
+    // const QScopedPointer<ControllerPrivate> d;
 };
 
 } // namespace KActivities

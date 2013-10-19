@@ -17,28 +17,38 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef CONSUMERTEST_H
-#define CONSUMERTEST_H
+#include "test.h"
 
-#include <QObject>
+#include <QDBusConnection>
+#include <QDBusConnectionInterface>
 
-#include <consumer.h>
+Test::Test(QObject *parent)
+    : QObject(parent)
+{
 
-class ConsumerTest : public QObject {
-    Q_OBJECT
-public:
+}
 
+bool Test::inEmptySession()
+{
+    QStringList services =
+        QDBusConnection::sessionBus().interface()->registeredServiceNames();
 
-private Q_SLOTS:
-    void testOfflineActivityListing();
+    foreach (const QString & service, services) {
+        bool kdeServiceAndNotKAMD =
+            service.startsWith(QStringLiteral("org.kde")) &&
+            service != QStringLiteral("org.kde.ActivityManager");
 
-private:
-    void ensureRunningJailed();
+        if (kdeServiceAndNotKAMD) {
+            return false;
+        }
+    }
 
-    KActivities::Consumer activities;
+    return true;
+}
 
-};
-
-
-#endif /* CONSUMERTEST_H */
+bool Test::isActivityManagerRunning()
+{
+    return QDBusConnection::sessionBus().interface()->isServiceRegistered(
+        QStringLiteral("org.kde.ActivityManager"));
+}
 

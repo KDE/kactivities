@@ -17,9 +17,34 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#include <QtTest/QtTest>
+#ifndef OFFLINETEST_H
+#define OFFLINETEST_H
 
-#include "ConsumerTest.h"
+#include <common/test.h>
 
-QTEST_MAIN(ConsumerTest)
+#include <controller.h>
+
+#include <QScopedPointer>
+
+class OfflineTest : public Test {
+    Q_OBJECT
+public:
+    OfflineTest(QObject *parent = nullptr);
+
+private Q_SLOTS:
+    void initTestCase();
+
+    void testOfflineActivityListing();
+    void testOfflineActivityControl();
+
+    void cleanupTestCase();
+
+private:
+
+    QScopedPointer<KActivities::Controller> activities;
+
+};
+
+
+#endif /* OFFLINETEST_H */
 
