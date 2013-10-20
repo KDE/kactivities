@@ -62,6 +62,14 @@ void OfflineTest::testOfflineActivityControl()
 
     inMethod = true;
 
+    continue_future(activities->setActivityName(QStringLiteral("Activity"),
+                                                QStringLiteral("Activity")),
+                    []() { QCOMPARE(inMethod, true); });
+    continue_future(activities->setActivityIcon(QStringLiteral("Activity"),
+                                                QStringLiteral("Activity")),
+                    []() { QCOMPARE(inMethod, true); });
+    continue_future(activities->removeActivity(QStringLiteral("Activity")),
+                    [] () { QCOMPARE(inMethod, true); });
     continue_future(activities->startActivity(QStringLiteral("Activity")),
                     [] () { QCOMPARE(inMethod, true); });
     continue_future(activities->stopActivity(QStringLiteral("Activity")),
