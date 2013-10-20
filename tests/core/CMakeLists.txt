@@ -12,6 +12,7 @@ include_directories(
 set (
    KActivitiesTest_SRCS
    main.cpp
+   Process.cpp
    OfflineTest.cpp
    ${CMAKE_SOURCE_DIR}/tests/common/test.cpp
    )
