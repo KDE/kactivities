@@ -109,11 +109,7 @@ qt5_add_dbus_interface (
 
 add_library (
    KActivities SHARED
-<<<<<<< HEAD
-   ${kactivities_LIB_SRCS}
-=======
    ${KActivities_LIB_SRCS}
->>>>>>> Info class ported to the new cache
    )
 
 include_directories (
@@ -173,11 +169,7 @@ install (
 
 install (
    TARGETS KActivities
-<<<<<<< HEAD
-   EXPORT kactivitiesLibraryTargets
-=======
    EXPORT KActivitiesLibraryTargets
->>>>>>> Info class ported to the new cache
    ${INSTALL_TARGETS_DEFAULT_ARGS}
    )
 
