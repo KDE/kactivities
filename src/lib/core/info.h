@@ -22,6 +22,7 @@
 #include <QObject>
 #include <QString>
 #include <QStringList>
+// #include <QFuture>
 
 #include "kactivities_export.h"
 
@@ -62,6 +63,7 @@ class KACTIVITIES_EXPORT Info : public QObject {
     Q_PROPERTY(QString id READ id)
     Q_PROPERTY(QString name READ name NOTIFY nameChanged)
     Q_PROPERTY(QString icon READ icon NOTIFY iconChanged)
+    Q_PROPERTY(Info::State state READ state NOTIFY stateChanged)
 
 public:
     explicit Info(const QString &activity, QObject *parent = Q_NULLPTR);
@@ -76,7 +78,7 @@ public:
      * Specifies which parts of this class are functional
      */
     enum Availability {
-        Nothing = 0, ///< No activity info provided (isValid is false)
+        Nothing = 0,   ///< No activity info provided (isValid is false)
         BasicInfo = 1, ///< Basic info is provided
         Everything = 2 ///< Everything is available
     };
@@ -85,11 +87,12 @@ public:
      * State of the activity
      */
     enum State {
-        Invalid = 0,
-        Running = 2,
-        Starting = 3,
-        Stopped = 4,
-        Stopping = 5
+        Invalid = 0,  ///< This activity does not exist
+        Unknown = 1,  ///< Information is not yet retrieved from the service
+        Running = 2,  ///< Activity is running
+        Starting = 3, ///< Activity is begin started
+        Stopped = 4,  ///< Activity is stopped
+        Stopping = 5  ///< Activity is begin started
     };
 
     /**
@@ -131,14 +134,6 @@ public:
     State state() const;
 
     /**
-     * This function is provided for convenience.
-     * @returns the name of the specified activity
-     * @param id id of the activity
-     * @note This method is <b>blocking</b>, you should use Info::name()
-     */
-    static QString name(const QString &id);
-
-    /**
      * Links the specified resource to the activity
      * @param resourceUri resource URI
      * @note This method is <b>asynchronous</b>
@@ -158,6 +153,14 @@ public:
      * @since 4.11
      */
     bool isResourceLinked(const QString &resourceUri);
+
+    /**
+     * This function is provided for convenience.
+     * @returns the name of the specified activity
+     * @param id id of the activity
+     * @note This method is <b>blocking</b>, you should use Info::name()
+     */
+    // static QFuture<QString> name(const QString &id);
 
 Q_SIGNALS:
     /**
@@ -212,9 +215,7 @@ private:
     Q_PRIVATE_SLOT(d, void infoChanged(const QString &))
     Q_PRIVATE_SLOT(d, void nameChanged(const QString &, const QString &))
     Q_PRIVATE_SLOT(d, void iconChanged(const QString &, const QString &))
-    Q_PRIVATE_SLOT(d, void setServicePresent(bool))
-    Q_PRIVATE_SLOT(d, void nameCallFinished(QDBusPendingCallWatcher *))
-    Q_PRIVATE_SLOT(d, void iconCallFinished(QDBusPendingCallWatcher *))
+    Q_PRIVATE_SLOT(d, void setServiceStatus(Consumer::ServiceStatus))
 
     friend class InfoPrivate;
 };

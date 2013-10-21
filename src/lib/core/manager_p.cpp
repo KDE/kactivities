@@ -73,7 +73,7 @@ Manager *Manager::self()
 {
     if (!s_instance) {
         // check if the activity manager is already running
-        if (!isServicePresent()) {
+        if (!isServiceRunning()) {
 
             // not running, trying to launch it
             // QString error;
@@ -99,7 +99,7 @@ Manager *Manager::self()
     return s_instance;
 }
 
-bool Manager::isServicePresent()
+bool Manager::isServiceRunning()
 {
     return KDBusConnectionPool::threadConnection().interface()->isServiceRegistered(ACTIVITY_MANAGER_DBUS_PATH);
 }
@@ -109,7 +109,7 @@ void Manager::serviceOwnerChanged(const QString &serviceName, const QString &old
     Q_UNUSED(oldOwner)
 
     if (serviceName == ACTIVITY_MANAGER_DBUS_PATH) {
-        emit servicePresenceChanged(!newOwner.isEmpty());
+        emit serviceStatusChanged(!newOwner.isEmpty());
     }
 }
 

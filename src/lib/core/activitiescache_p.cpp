@@ -42,32 +42,33 @@ ActivitiesCache::ActivitiesCache()
     : m_status(Consumer::NotRunning)
 {
     qDebug() << "Creating a new instance";
+    using org::kde::ActivityManager::Activities;
 
     auto activities = Manager::self()->activities();
 
-    connect(activities, SIGNAL(ActivityAdded(QString)),
-            this, SLOT(updateActivity(QString)));
-    connect(activities, SIGNAL(ActivityChanged(QString)),
-            this, SLOT(updateActivity(QString)));
-    connect(activities, SIGNAL(ActivityRemoved(QString)),
-            this, SLOT(removeActivity(QString)));
+    connect(activities, &Activities::ActivityAdded,
+            this, &ActivitiesCache::updateActivity);
+    connect(activities, &Activities::ActivityChanged,
+            this, &ActivitiesCache::updateActivity);
+    connect(activities, &Activities::ActivityRemoved,
+            this, &ActivitiesCache::removeActivity);
 
-    connect(activities, SIGNAL(ActivityStateChanged(QString, int)),
-            this, SLOT(updateActivityState(QString, int)));
-    connect(activities, SIGNAL(CurrentActivityChanged(QString)),
-            this, SLOT(setCurrentActivity(QString)));
+    connect(activities, &Activities::ActivityStateChanged,
+            this, &ActivitiesCache::updateActivityState);
+    connect(activities, &Activities::CurrentActivityChanged,
+            this, &ActivitiesCache::setCurrentActivity);
 
-    connect(Manager::self(), SIGNAL(serviceStatusChanged(bool)),
-            this, SLOT(setServicePresent(bool)));
+    connect(Manager::self(), &Manager::serviceStatusChanged,
+            this, &ActivitiesCache::setServiceStatus);
 
-    setServicePresent(Manager::self()->isServicePresent());
+    setServiceStatus(Manager::self()->isServiceRunning());
 }
 
-void ActivitiesCache::setServicePresent(bool present)
+void ActivitiesCache::setServiceStatus(bool status)
 {
     loadOfflineDefaults();
 
-    if (present) {
+    if (status) {
         updateAllActivities();
     }
 }
