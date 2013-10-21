@@ -66,7 +66,7 @@ static void initializeInterface(QDBusInterface *&service,
     // Creating the new dbus interface
     service = new QDBusInterface(servicePath, path, object);
 
-    qDebug() << path << "is valid?" << service->isValid();
+    // qDebug() << path << "is valid?" << service->isValid();
 
     // If the service is valid, initialize it
     // otherwise delete the object
@@ -137,7 +137,7 @@ void KSMServer::stopActivitySession(const QString &activity)
 
 void KSMServer::Private::processLater(const QString &activity, bool start)
 {
-    qDebug() << "Scheduling" << activity << "to be" << (start ? "started" : "stopped");
+    // qDebug() << "Scheduling" << activity << "to be" << (start ? "started" : "stopped");
 
     foreach (const auto &item, queue) {
         if (item.first == activity) {
@@ -164,7 +164,7 @@ void KSMServer::Private::process()
     const auto item = queue.takeFirst();
     processingActivity = item.first;
 
-    qDebug() << "Processing" << item;
+    // qDebug() << "Processing" << item;
 
     makeRunning(item.second);
 
@@ -175,7 +175,7 @@ void KSMServer::Private::process()
 void KSMServer::Private::makeRunning(bool value)
 {
     if (!kwin) {
-        qDebug() << "There is no KWin";
+        // qDebug() << "There is no KWin";
         subSessionSendEvent(value ? KSMServer::Started : KSMServer::Stopped);
         return;
     }
@@ -199,7 +199,7 @@ void KSMServer::Private::startCallFinished(QDBusPendingCallWatcher *call)
     QDBusPendingReply<bool> reply = *call;
 
     if (reply.isError()) {
-        qDebug() << "Session starting call failed, but we are returning success";
+        // qDebug() << "Session starting call failed, but we are returning success";
         emit q->activitySessionStateChanged(processingActivity, KSMServer::Started);
 
     } else {
@@ -207,7 +207,7 @@ void KSMServer::Private::startCallFinished(QDBusPendingCallWatcher *call)
         // and it didn't start our activity
         const auto retval = reply.argumentAt<0>();
 
-        qDebug() << "Did we start the activity successfully:" << retval;
+        // qDebug() << "Did we start the activity successfully:" << retval;
         if (!retval) {
             subSessionSendEvent(KSMServer::Stopped);
         }
@@ -221,7 +221,7 @@ void KSMServer::Private::stopCallFinished(QDBusPendingCallWatcher *call)
     QDBusPendingReply<bool> reply = *call;
 
     if (reply.isError()) {
-        qDebug() << "Session stopping call failed, but we are returning success";
+        // qDebug() << "Session stopping call failed, but we are returning success";
         emit q->activitySessionStateChanged(processingActivity, KSMServer::Stopped);
 
     } else {
@@ -229,7 +229,7 @@ void KSMServer::Private::stopCallFinished(QDBusPendingCallWatcher *call)
         // and it didn't stop our activity
         const auto retval = reply.argumentAt<0>();
 
-        qDebug() << "Did we stop the activity successfully:" << retval;
+        // qDebug() << "Did we stop the activity successfully:" << retval;
         if (!retval) {
             subSessionSendEvent(KSMServer::FailedToStop);
         }

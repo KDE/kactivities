@@ -83,7 +83,7 @@ void BlacklistedApplicationsModel::load()
     d->database.setDatabaseName(path);
 
     if (!d->database.open()) {
-        qDebug() << "Failed to open the database" << path << d->database.lastError();
+        // qDebug() << "Failed to open the database" << path << d->database.lastError();
         return;
     }
 

@@ -54,7 +54,7 @@ StatsPlugin::StatsPlugin(QObject *parent, const QVariantList &args)
 
 bool StatsPlugin::init(const QHash<QString, QObject *> &modules)
 {
-    qDebug() << "These are the registered modules: " << modules.keys();
+    // qDebug() << "These are the registered modules: " << modules.keys();
 
     m_activities = modules[QStringLiteral("activities")];
     m_resources = modules[QStringLiteral("resources")];

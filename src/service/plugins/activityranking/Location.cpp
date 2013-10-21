@@ -58,7 +58,7 @@ Location::Location(QObject *parent)
     : QObject(parent)
     , d()
 {
-    qDebug() << "Location object initializing";
+    // qDebug() << "Location object initializing";
 
     d->watcher = new QDBusServiceWatcher(
         LOCATION_MANAGER_SERVICE,

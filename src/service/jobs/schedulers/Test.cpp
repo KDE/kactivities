@@ -37,10 +37,12 @@ Test::~Test()
 
 void Test::jobFinished(int result)
 {
-    qDebug() << "Returned" << result << "expected" << m_expectedResult;
+    // qDebug() << "Returned" << result << "expected" << m_expectedResult;
 
     returnResult(m_expectedResult == result ? 0 : 1);
 }
+
+
 
 } // namespace Schedulers
 } // namespace Jobs

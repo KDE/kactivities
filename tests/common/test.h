@@ -23,6 +23,9 @@
 #include <QObject>
 #include <QFuture>
 #include <QFutureWatcher>
+#include <QDate>
+#include <QCoreApplication>
+#include <QTest>
 
 class Test: public QObject {
     Q_OBJECT
@@ -43,10 +46,12 @@ protected:
         if (!future.isFinished()) {
             auto watcher = new QFutureWatcher<decltype(future.result())>();
             QObject::connect(watcher, &QFutureWatcherBase::finished,
+                watcher,
                 [=] {
                     continuation(watcher->result());
                     watcher->deleteLater();
-                }
+                },
+                Qt::QueuedConnection
             );
 
             watcher->setFuture(future);
@@ -64,10 +69,12 @@ protected:
         if (!future.isFinished()) {
             auto watcher = new QFutureWatcher<void>();
             QObject::connect(watcher, &QFutureWatcherBase::finished,
+                watcher,
                 [=] {
                     continuation();
                     watcher->deleteLater();
-                }
+                },
+                Qt::QueuedConnection
             );
 
             watcher->setFuture(future);
@@ -77,6 +84,26 @@ protected:
 
         }
     }
+
+    template <typename T>
+    static inline
+    void wait_until(T condition, const char * msg, int msecs = 300)
+    {
+        auto start = QTime::currentTime();
+
+        while (!condition()) {
+            QCoreApplication::processEvents();
+
+            auto now = QTime::currentTime();
+            QVERIFY2(start.msecsTo(now) < msecs, msg);
+            if (start.msecsTo(now) >= msecs) break;
+        }
+    }
+
+#define TEST_WAIT_UNTIL(C)                                                     \
+    wait_until([&] () -> bool { return C; }, "Timeout waiting for: " #C);
+#define TEST_WAIT_UNTIL_WITH_TIMEOUT(C, T)                                     \
+    wait_until([&] () ->bool { return C; }, "Timeout waiting for: " #C, T);
 
 
     template <typename T>

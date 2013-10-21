@@ -40,8 +40,8 @@ public:
 ResourceScoreCache::ResourceScoreCache(const QString &activity, const QString &application, const QString &resource)
     : d()
 {
-    qDebug() << "Going to update score for"
-             << activity << application << resource;
+    // qDebug() << "Going to update score for"
+             // << activity << application << resource;
 
     d->activity = activity;
     d->application = application;
@@ -61,7 +61,7 @@ void ResourceScoreCache::updateScore()
         d->activity, d->application, d->resource,
         score, lastUpdate);
 
-    qDebug() << "Sending resourceScoreUpdated event";
+    // qDebug() << "Sending resourceScoreUpdated event";
     QMetaObject::invokeMethod(StatsPlugin::self(), "resourceScoreUpdated",
                               Q_ARG(QString, d->activity),
                               Q_ARG(QString, d->application),

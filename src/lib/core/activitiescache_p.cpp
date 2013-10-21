@@ -41,7 +41,7 @@ QSharedPointer<ActivitiesCache> ActivitiesCache::self()
 ActivitiesCache::ActivitiesCache()
     : m_status(Consumer::NotRunning)
 {
-    qDebug() << "Creating a new instance";
+    // qDebug() << "Creating a new instance";
     using org::kde::ActivityManager::Activities;
 
     auto activities = Manager::self()->activities();
@@ -66,6 +66,7 @@ ActivitiesCache::ActivitiesCache()
 
 void ActivitiesCache::setServiceStatus(bool status)
 {
+    // qDebug() << "Setting service status to:" << status;
     loadOfflineDefaults();
 
     if (status) {
@@ -86,12 +87,12 @@ void ActivitiesCache::loadOfflineDefaults()
 
 ActivitiesCache::~ActivitiesCache()
 {
-    qDebug() << "Destroying the instance";
+    // qDebug() << "Destroying the instance";
 }
 
 void ActivitiesCache::removeActivity(const QString &id)
 {
-    qDebug() << "Removing the activity";
+    // qDebug() << "Removing the activity";
 
     auto where = std::lower_bound(
         m_activities.begin(), m_activities.end(), ActivityInfo(id));
@@ -103,7 +104,7 @@ void ActivitiesCache::removeActivity(const QString &id)
 
 void ActivitiesCache::updateAllActivities()
 {
-    qDebug() << "Updating all";
+    // qDebug() << "Updating all";
     m_status = Consumer::Unknown;
     emit serviceStatusChanged(m_status);
 
@@ -126,7 +127,7 @@ void ActivitiesCache::updateAllActivities()
 
 void ActivitiesCache::updateActivity(const QString &id)
 {
-    qDebug() << "Updating activity" << id;
+    // qDebug() << "Updating activity" << id;
 
     auto call = Manager::self()->activities()->asyncCall(
         QStringLiteral("ActivityInformation"), id);
@@ -138,7 +139,7 @@ void ActivitiesCache::updateActivity(const QString &id)
 
 void ActivitiesCache::updateActivityState(const QString &id, int state)
 {
-    qDebug() << "Updating activity state" << id << "to" << state;
+    // qDebug() << "Updating activity state" << id << "to" << state;
 
     auto where = std::lower_bound(
         m_activities.begin(), m_activities.end(), ActivityInfo(id));
@@ -157,7 +158,7 @@ void ActivitiesCache::passInfoFromReply(QDBusPendingCallWatcher *watcher, _Funct
 
     if (!reply.isError()) {
         auto replyValue = reply.template argumentAt <0>();
-        qDebug() << "Got some reply" << replyValue;
+        // qDebug() << "Got some reply" << replyValue;
 
         ((*this).*f)(replyValue);
     }
@@ -167,25 +168,25 @@ void ActivitiesCache::passInfoFromReply(QDBusPendingCallWatcher *watcher, _Funct
 
 void ActivitiesCache::setActivityInfoFromReply(QDBusPendingCallWatcher *watcher)
 {
-    qDebug() << "reply...";
+    // qDebug() << "reply...";
     passInfoFromReply<ActivityInfo>(watcher, &ActivitiesCache::setActivityInfo);
 }
 
 void ActivitiesCache::setAllActivitiesFromReply(QDBusPendingCallWatcher *watcher)
 {
-    qDebug() << "reply...";
+    // qDebug() << "reply...";
     passInfoFromReply<ActivityInfoList>(watcher, &ActivitiesCache::setAllActivities);
 }
 
 void ActivitiesCache::setCurrentActivityFromReply(QDBusPendingCallWatcher *watcher)
 {
-    qDebug() << "reply...";
+    // qDebug() << "reply...";
     passInfoFromReply<QString>(watcher, &ActivitiesCache::setCurrentActivity);
 }
 
 void ActivitiesCache::setActivityInfo(const ActivityInfo &info)
 {
-    qDebug() << "Setting activity info" << info.id;
+    // qDebug() << "Setting activity info" << info.id;
 
     auto where
         = std::lower_bound(m_activities.begin(), m_activities.end(), info);
@@ -202,7 +203,7 @@ void ActivitiesCache::setActivityInfo(const ActivityInfo &info)
 
 void ActivitiesCache::setAllActivities(const ActivityInfoList &_activities)
 {
-    qDebug() << "Setting all activities";
+    // qDebug() << "Setting all activities";
 
     m_activities.clear();
 
@@ -220,7 +221,7 @@ void ActivitiesCache::setAllActivities(const ActivityInfoList &_activities)
 
 void ActivitiesCache::setCurrentActivity(const QString &activity)
 {
-    qDebug() << "Setting current activity to" << activity;
+    // qDebug() << "Setting current activity to" << activity;
 
     if (m_currentActivity == activity) {
         return;

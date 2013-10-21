@@ -25,6 +25,7 @@
 
 #include "Process.h"
 #include "OfflineTest.h"
+#include "CleanOnlineTest.h"
 
 class TestRunner: public QObject {
 public:
@@ -85,6 +86,8 @@ int main(int argc, char *argv[])
     TestRunner &runner = *(new TestRunner());
 
     (runner
+        << Process::exec(Process::Kill)
+
         // Running the tests for when the service is offline
         << new OfflineTest()
 
@@ -94,6 +97,22 @@ int main(int argc, char *argv[])
 
         // Starting the manager
         << Process::exec(Process::Start)
+
+        // Starting the online tests
+        << new CleanOnlineTest()
+        << new CleanOnlineSetup()
+        << new OnlineTest()
+
+        // Starting the manager
+        << Process::exec(Process::Stop)
+
+        << new OfflineTest()
+        << new OfflineTest()
+
+        << Process::exec(Process::Start)
+        << new OnlineTest()
+
+        << Process::exec(Process::Stop)
 
     ).start();
 

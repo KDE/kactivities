@@ -128,7 +128,7 @@ void Resources::Private::addEvent(const Event &newEvent)
         WindowData &data = windows[newEvent.wid];
         const QString &kuri(newEvent.uri);
 
-        qDebug() << kuri << data.focussedResource;
+        // qDebug() << kuri << data.focussedResource;
 
         data.application = newEvent.application;
 
@@ -162,7 +162,7 @@ void Resources::Private::addEvent(const Event &newEvent)
 
             case Event::Closed:
 
-                qDebug() << data.focussedResource << kuri;
+                // qDebug() << data.focussedResource << kuri;
 
                 if (data.focussedResource == kuri) {
                     // If we are closing a document that is in focus,

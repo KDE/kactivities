@@ -54,7 +54,7 @@ public:
         : q(parent)
         , valid(false)
     {
-        qDebug() << "Manager isServicePresent" << Manager::isServicePresent();
+        // qDebug() << "Manager isServicePresent" << Manager::isServicePresent();
         if (Manager::isServicePresent()) {
             fetchActivityList();
         }
@@ -116,27 +116,27 @@ void ActivityModel::Private::servicePresenceChanged(bool present)
 
 void ActivityModel::Private::fetchActivityList()
 {
-    qDebug() << "getting the list of activities";
+    // qDebug() << "getting the list of activities";
     KAMD_RETRIEVE_REMOTE_VALUE(listActivities, ListActivitiesWithInformation(), q);
 }
 
 void ActivityModel::Private::fetchActivityInfo(const QString &activity)
 {
     QDBusPendingCallWatcher *activityInfoCallWatcher;
-    qDebug() << "getting info for " << activity;
+    // qDebug() << "getting info for " << activity;
     KAMD_RETRIEVE_REMOTE_VALUE(activityInfo, ActivityInformation(activity), q);
 }
 
 void ActivityModel::Private::listActivitiesCallFinished(QDBusPendingCallWatcher *watcher)
 {
-    qDebug() << "got the activities";
+    // qDebug() << "got the activities";
     model_reset m(q);
 
     QDBusPendingReply<ActivityInfoList> reply = *watcher;
 
     if (reply.isError()) {
         valid = false;
-        qDebug() << "we got some kind of error" << reply.error();
+        // qDebug() << "we got some kind of error" << reply.error();
         return;
     }
 
@@ -150,20 +150,20 @@ void ActivityModel::Private::listActivitiesCallFinished(QDBusPendingCallWatcher 
 
     valid = true;
 
-    qDebug() << activities.size();
+    // qDebug() << activities.size();
 
     watcher->deleteLater();
 }
 
 void ActivityModel::Private::activityInfoCallFinished(QDBusPendingCallWatcher *watcher)
 {
-    qDebug() << "got the activities";
+    // qDebug() << "got the activities";
 
     QDBusPendingReply<ActivityInfo> reply = *watcher;
 
     if (reply.isError()) {
         valid = false;
-        qDebug() << "we got some kind of error" << reply.error();
+        // qDebug() << "we got some kind of error" << reply.error();
         return;
     }
 
@@ -243,7 +243,7 @@ ActivityModel::ActivityModel(QObject *parent)
     : QAbstractListModel(parent)
     , d(new Private(this))
 {
-    qDebug() << "################";
+    // qDebug() << "################";
     d->valid = false;
 
     QHash<int, QByteArray> roles;

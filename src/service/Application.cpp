@@ -142,9 +142,9 @@ void Application::loadPlugins()
         QDir::Files);
 
     foreach (const auto & pluginFile, pluginFiles) {
-        qDebug() << "Loading a plugin: "
-                 << pluginFile
-                 << "(" << pluginsDir.absoluteFilePath(pluginFile) << ")";
+        // qDebug() << "Loading a plugin: "
+                 // << pluginFile
+                 // << "(" << pluginsDir.absoluteFilePath(pluginFile) << ")";
 
         QPluginLoader loader(pluginsDir.absoluteFilePath(pluginFile));
 

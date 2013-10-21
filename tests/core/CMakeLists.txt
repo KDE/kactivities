@@ -14,6 +14,7 @@ set (
    main.cpp
    Process.cpp
    OfflineTest.cpp
+   CleanOnlineTest.cpp
    ${CMAKE_SOURCE_DIR}/tests/common/test.cpp
    )
 
