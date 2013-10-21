@@ -138,7 +138,7 @@ MainConfigurationWidget::MainConfigurationWidget(QWidget *parent, QVariantList a
 
     engine->rootContext()->setContextProperty("applicationModel", d->blacklistedApplicationsModel);
     QDeclarativeComponent component(engine, QUrl(QString(KAMD_DATA_DIR) + "workspace/settings/BlacklistApplicationView.qml"));
-    qDebug() << "Errors: " << component.errors();
+    // qDebug() << "Errors: " << component.errors();
     d->viewBlacklistedApplicationsRoot = qobject_cast<QGraphicsObject *>(component.create());
     d->viewBlacklistedApplicationsRoot->setProperty("width", d->viewBlacklistedApplications->width());
     scene->addItem(d->viewBlacklistedApplicationsRoot);

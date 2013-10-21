@@ -57,7 +57,7 @@ RankingsUpdateThread::~RankingsUpdateThread()
 
 void RankingsUpdateThread::run()
 {
-    qDebug() << "This is the activity we want the results for:" << m_activity;
+    // qDebug() << "This is the activity we want the results for:" << m_activity;
 
     static const auto query = QStringLiteral(
         "SELECT targettedResource, cachedScore "

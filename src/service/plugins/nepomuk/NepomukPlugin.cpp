@@ -58,7 +58,7 @@ public:
     template <typename Fn>
     void doWithActivity(const QString &_activity, Fn fn)
     {
-        qDebug() << "Doing something sinister with nepomuk, is it here? " << nepomukPresent;
+        // qDebug() << "Doing something sinister with nepomuk, is it here? " << nepomukPresent;
 
         if (!nepomukPresent) {
             return;
@@ -67,8 +67,8 @@ public:
         const auto currentActivityId = Plugin::callOn<QString, Qt::DirectConnection>(activities, "CurrentActivity", "QString");
         const auto activity = _activity.isEmpty() ? currentActivityId : _activity;
 
-        qDebug() << "The current activity is: " << currentActivityId
-                 << "We need to set the linking for: " << activity;
+        // qDebug() << "The current activity is: " << currentActivityId
+                 // << "We need to set the linking for: " << activity;
 
         // JIC checking that the service hasn't returned an empty activity
         if (activity.isEmpty()) {
@@ -350,7 +350,7 @@ void NepomukPlugin::deleteRecentStats(const QString &activity, int count, const 
                                .arg(activityCheck)
                                .arg(QString());
 
-        qDebug() << "This are the results we need to delete: " << query;
+        // qDebug() << "This are the results we need to delete: " << query;
 
         d->deleteFromQuery(query);
 
@@ -380,7 +380,7 @@ void NepomukPlugin::deleteRecentStats(const QString &activity, int count, const 
                                .arg(
                                     timeChecking.arg(Soprano::Node::literalToN3(now)));
 
-        qDebug() << "This are the results we need to delete: " << query;
+        // qDebug() << "This are the results we need to delete: " << query;
 
         d->deleteFromQuery(query);
     }
@@ -419,7 +419,7 @@ void NepomukPlugin::deleteEarlierStats(const QString &activity, int months)
                            .arg(
                                 timeChecking.arg(Soprano::Node::literalToN3(time)));
 
-    qDebug() << "This are the results we need to delete: " << query;
+    // qDebug() << "This are the results we need to delete: " << query;
 
     d->deleteFromQuery(query);
 #endif
@@ -432,7 +432,7 @@ void NepomukPlugin::LinkResourceToActivity(const QString &uri, const QString &ac
     d->doWithActivity(activity,
                       [uri](const QString & activity) {
             // linking the resource to the specified activity
-            qDebug() << "Adding the triple " << activity << " isRelated " << uri;
+            // qDebug() << "Adding the triple " << activity << " isRelated " << uri;
             activityResource(activity).addIsRelated(Nepomuk::Resource(uri));
     });
 }
@@ -444,7 +444,7 @@ void NepomukPlugin::UnlinkResourceFromActivity(const QString &uri, const QString
     d->doWithActivity(activity,
                       [uri](const QString & activity) {
             // unlinking the resource from the specified activity
-            qDebug() << "Removing the triple " << activity << " isRelated " << uri;
+            // qDebug() << "Removing the triple " << activity << " isRelated " << uri;
             activityResource(activity).removeProperty(NAO::isRelated(), Nepomuk::Resource(uri));
     });
 }
@@ -472,7 +472,7 @@ bool NepomukPlugin::IsResourceLinkedToActivity(const QString &uri, const QString
     const auto query = _query.arg(Soprano::Node::resourceToN3(uri))
                            .arg(Soprano::Node::literalToN3(activity));
 
-    qDebug() << "So, this is the query that should get the linked resource " << query;
+    // qDebug() << "So, this is the query that should get the linked resource " << query;
 
     Soprano::QueryResultIterator it
         = Nepomuk::ResourceManager::instance()->mainModel()->executeQuery(

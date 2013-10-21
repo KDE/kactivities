@@ -36,6 +36,10 @@ Manager *Manager::s_instance = Q_NULLPTR;
 
 Manager::Manager()
     : QObject()
+    , m_watcher(
+            ACTIVITY_MANAGER_DBUS_PATH,
+            KDBusConnectionPool::threadConnection()
+            )
     , m_activities(
             new org::kde::ActivityManager::Activities(
                 ACTIVITY_MANAGER_DBUS_PATH,
@@ -120,6 +124,8 @@ bool Manager::isServiceRunning()
 void Manager::serviceOwnerChanged(const QString &serviceName, const QString &oldOwner, const QString &newOwner)
 {
     Q_UNUSED(oldOwner)
+
+    // qDebug() << "Service: " << serviceName;
 
     if (serviceName == ACTIVITY_MANAGER_DBUS_PATH) {
         emit serviceStatusChanged(!newOwner.isEmpty());

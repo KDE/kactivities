@@ -44,7 +44,7 @@ void Module::registerModule(const QString &name, QObject *module)
 {
     if (!name.isEmpty()) {
         Private::s_modules[name] = module;
-        qDebug() << "Module " << name << "is registered";
+        // qDebug() << "Module " << name << "is registered";
     }
 }
 
@@ -57,11 +57,11 @@ QObject *Module::get(const QString &name)
     Q_ASSERT(!name.isEmpty());
 
     if (Private::s_modules.contains(name)) {
-        qDebug() << "Returning a valid module object for:" << name;
+        // qDebug() << "Returning a valid module object for:" << name;
         return Private::s_modules[name];
     }
 
-    qDebug() << "The requested module doesn't exist:" << name;
+    // qDebug() << "The requested module doesn't exist:" << name;
     return Q_NULLPTR;
 }
 

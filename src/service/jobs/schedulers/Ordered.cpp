@@ -50,16 +50,16 @@ Ordered &Ordered::operator<<(Job *job)
 void Ordered::jobFinished(int result)
 {
     if (result != 0) {
-        qDebug() << "So... we got an error" << result;
+        // qDebug() << "So... we got an error" << result;
         setError(result);
         emitResult();
 
     } else if (lastJobStarted() == jobCount() - 1) {
-        qDebug() << "no error, no jobs";
+        // qDebug() << "no error, no jobs";
         emitResult();
 
     } else {
-        qDebug() << "next job please";
+        // qDebug() << "next job please";
         startJob(lastJobStarted() + 1);
     }
 }

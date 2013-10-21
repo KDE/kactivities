@@ -212,6 +212,11 @@ QString Activities::AddActivity(const QString &name)
     emit ActivityAdded(activity);
 
     d->scheduleConfigSync(true);
+
+    if (d->activities.size() == 1) {
+        SetCurrentActivity(activity);
+    }
+
     return activity;
 }
 
@@ -227,7 +232,7 @@ void Activities::RemoveActivity(const QString &activity)
 
 void Activities::Private::removeActivity(const QString &activity)
 {
-    qDebug() << activities << activity;
+    // qDebug() << activities << activity;
     Q_ASSERT(!activity.isEmpty());
     Q_ASSERT(activities.contains(activity));
 
@@ -299,7 +304,7 @@ void Activities::Private::configSync()
 
 QStringList Activities::ListActivities() const
 {
-    qDebug() << "This is the current thread id for Activities" << QThread::currentThreadId() << QThread::currentThread();
+    // qDebug() << "This is the current thread id for Activities" << QThread::currentThreadId() << QThread::currentThread();
     return d->activities.keys();
 }
 
@@ -385,7 +390,7 @@ void Activities::SetActivityIcon(const QString &activity, const QString &icon)
 
 void Activities::Private::setActivityState(const QString &activity, Activities::State state)
 {
-    qDebug() << activities << activity;
+    // qDebug() << activities << activity;
     Q_ASSERT(activities.contains(activity));
 
     if (activities.value(activity) == state) {
@@ -428,7 +433,7 @@ void Activities::Private::ensureCurrentActivityIsRunning()
     const auto runningActivities = q->ListActivities(Activities::Running);
 
     if (!runningActivities.contains(currentActivity) && runningActivities.size() > 0) {
-        qDebug() << "Somebody called ensureCurrentActivityIsRunning?";
+        // qDebug() << "Somebody called ensureCurrentActivityIsRunning?";
         setCurrentActivity(runningActivities.first());
     }
 }
@@ -441,7 +446,7 @@ void Activities::StartActivity(const QString &activity)
         return;
     }
 
-    qDebug() << "Starting the session";
+    // qDebug() << "Starting the session";
     d->setActivityState(activity, Starting);
     d->ksmserver->startActivitySession(activity);
 }
@@ -452,7 +457,7 @@ void Activities::StopActivity(const QString &activity)
         return;
     }
 
-    qDebug() << "Stopping the session";
+    // qDebug() << "Stopping the session";
     d->setActivityState(activity, Stopping);
     d->ksmserver->stopActivitySession(activity);
 }

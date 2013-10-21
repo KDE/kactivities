@@ -243,10 +243,10 @@ DatabaseConnection::DatabaseConnection()
 
     d->initialized = d->database.open();
 
-    if (!d->initialized) {
-        qDebug() << "Failed to open the database" << databaseDir
-                 << d->database.lastError();
-    }
+    // if (!d->initialized) {
+    //     qDebug() << "Failed to open the database" << databaseDir
+    //              << d->database.lastError();
+    // }
 
     initDatabaseSchema();
 }
@@ -271,7 +271,7 @@ void DatabaseConnection::initDatabaseSchema()
     }
 
     if (dbSchemaVersion < QStringLiteral("1.0")) {
-        qDebug() << "The database doesn't exist, it is being created";
+        // qDebug() << "The database doesn't exist, it is being created";
 
         query.exec(QStringLiteral("CREATE TABLE IF NOT EXISTS SchemaInfo (key text PRIMARY KEY, value text)"));
         query.exec(Private::insertSchemaInfoQuery.arg(QStringLiteral("version"), QStringLiteral("1.0")));
@@ -298,7 +298,7 @@ void DatabaseConnection::initDatabaseSchema()
     }
 
     if (dbSchemaVersion < QStringLiteral("1.01")) {
-        qDebug() << "Upgrading the database version to 1.01";
+        // qDebug() << "Upgrading the database version to 1.01";
 
         // Adding the firstUpdate field so that we can have
         // a crude way of deleting the score caches when

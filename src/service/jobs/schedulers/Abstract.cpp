@@ -34,7 +34,7 @@ Abstract::Private::Private(Abstract *parent)
 
 void Abstract::Private::jobFinished(KJob *job)
 {
-    qDebug() << "Job has finished with this result" << job->error();
+    // qDebug() << "Job has finished with this result" << job->error();
     q->jobFinished(job->error());
 }
 
@@ -123,7 +123,7 @@ bool Abstract::hasJob(int index) const
 
 void Abstract::returnResult(int result)
 {
-    qDebug() << "Returning" << result;
+    // qDebug() << "Returning" << result;
     setError(result);
     emitResult();
 }

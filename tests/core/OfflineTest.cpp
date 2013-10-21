@@ -40,7 +40,7 @@ void OfflineTest::testOfflineActivityListing()
 {
     // The service is not running
 
-    QCOMPARE(activities->serviceStatus(), KActivities::Consumer::NotRunning);
+    TEST_WAIT_UNTIL(activities->serviceStatus() == KActivities::Consumer::NotRunning);
     QCOMPARE(activities->currentActivity(), nulluuid);
 
     QCOMPARE(activities->activities(), QStringList() << nulluuid);

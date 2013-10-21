@@ -54,12 +54,12 @@ void Change::setSlot(const QString &slot)
 void Change::start()
 {
     if (m_receiver) {
-        qDebug() << ">>> Calling the method to set activity" << m_activity << "slot" << m_slot;
+        // qDebug() << ">>> Calling the method to set activity" << m_activity << "slot" << m_slot;
         bool ret = QMetaObject::invokeMethod(m_receiver, m_slot.toAscii(), Qt::QueuedConnection, Q_ARG(QString, m_activity));
-        qDebug() << ret;
+        // qDebug() << ret;
 
     } else {
-        qDebug() << ">>> Receiver is nullptr, failing";
+        // qDebug() << ">>> Receiver is nullptr, failing";
         setError(1);
         setErrorText("There is no receiver registered to signal the change activity");
     }

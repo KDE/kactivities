@@ -80,9 +80,12 @@ Info::Info(const QString &activity, QObject *parent)
     PASS_SIGNAL_HANDLER(activityChanged, infoChanged)
     // PASS_SIGNAL_HANDLER(nameChanged)
     // PASS_SIGNAL_HANDLER(iconChanged)
-    PASS_SIGNAL_HANDLER(activityStateChanged, activityStateChanged)
 
 #undef PASS_SIGNAL_HANDLER
+
+    connect(d->cache.data(), SIGNAL(activityStateChanged(QString, int)),
+            this,            SLOT(activityStateChanged(QString, int)));
+
 }
 
 Info::~Info()

@@ -28,6 +28,13 @@
 #include <QProcess>
 #include <QRegularExpression>
 
+#include <QDBusConnection>
+
+#include "../../src/kactivities-features.h"
+
+#include <sys/types.h>
+#include <signal.h>
+
 namespace Process {
 
 QProcess *Modifier::s_process = nullptr;
@@ -46,18 +53,7 @@ Modifier::Modifier(Action action)
             qFatal("Can not create a temporary dir");
         }
 
-        QRegularExpression nonxdg(QStringLiteral("^[^X][^D][^G].*$"));
-
-        auto env
-            = QProcessEnvironment::systemEnvironment().toStringList()
-              .filter(nonxdg)
-              << QStringLiteral("XDG_DATA_HOME=") + s_tempDir->path()
-              << QStringLiteral("XDG_CONFIG_HOME=") + s_tempDir->path()
-              << QStringLiteral("XDG_CACHE_HOME=") + s_tempDir->path();
-
-        qDebug() << "environment" << env;
-
-        s_process->setEnvironment(env);
+        qDebug() << "Running KAMD in " << s_tempDir->path();
         s_process->setProcessChannelMode(QProcess::ForwardedChannels);
     }
 }
@@ -68,30 +64,62 @@ void Modifier::initTestCase()
 
     if (state != QProcess::NotRunning && m_action == Start) {
         qFatal("Already running");
-    } else if (state != QProcess::Running && m_action != Start) {
-        qFatal("Not running");
     }
 
     switch (m_action) {
         case Start:
+        {
             qDebug() << "Starting...";
-            s_process->start(QStringLiteral("kactivitymanagerd"));
+
+            QRegularExpression nonxdg(QStringLiteral("^[^X][^D][^G].*$"));
+
+            auto env
+                = QProcessEnvironment::systemEnvironment().toStringList()
+                  .filter(nonxdg)
+                  << QStringLiteral("XDG_DATA_HOME=") + s_tempDir->path() + QStringLiteral("/")
+                  << QStringLiteral("XDG_CONFIG_HOME=") + s_tempDir->path() + QStringLiteral("/")
+                  << QStringLiteral("XDG_CACHE_HOME=") + s_tempDir->path() + QStringLiteral("/");
+
+            // qDebug() << env;
+
+            s_process->setEnvironment(env);
+            s_process->start(QStringLiteral(KAMD_INSTALL_PREFIX "/bin/kactivitymanagerd"));
             s_process->waitForStarted();
+
+
             break;
+        }
 
         case Stop:
-            qDebug() << "Stopping...";
-            s_process->terminate();
-            break;
-
         case Kill:
-            qDebug() << "Killing...";
-            s_process->kill();
-            break;
-
         case Crash:
-            break;
+        {
+            qDebug() << "Stopping...";
 
+            const auto dbus = QDBusConnection::sessionBus().interface();
+            const auto kamd = QStringLiteral("org.kde.ActivityManager");
+
+            if (!dbus->isServiceRegistered(kamd)) break;
+
+            uint pid = dbus->servicePid(kamd);
+
+            ::kill(pid,
+                    m_action == Stop ? SIGQUIT :
+                    m_action == Kill ? SIGKILL :
+                    /* else */         SIGSEGV
+                    );
+
+            while (Test::isActivityManagerRunning()) {
+                QCoreApplication::processEvents();
+            }
+
+            if (s_process->state() == QProcess::Running) {
+                s_process->terminate();
+                s_process->waitForFinished();
+            }
+
+            break;
+        }
     }
 }
 
