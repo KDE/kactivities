@@ -28,6 +28,6 @@ target_link_libraries (
    Qt5::Core
    Qt5::Test
    Qt5::DBus
-   ${CMAKE_BINARY_DIR}/src/lib/core/libKActivities.so
+   KActivities
    )
 
