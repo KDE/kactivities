@@ -1,6 +1,6 @@
 # vim:set softtabstop=3 shiftwidth=3 tabstop=3 expandtab:
 
-project (kactivities)
+project (KActivities)
 
 # =======================================================
 # Information to update before to release this library.
@@ -43,9 +43,9 @@ set (KACTIVITIES_INCLUDE_DIR
    "Location of libkactivities headers" FORCE)
 
 set (KACTIVITIES_LIBS
-   "kactivities"
+   "KActivities"
    CACHE STRING
-   "Location of libkactivities binary" FORCE)
+   "Location of libKActivities binary" FORCE)
 
 set (KACTIVITIES_LIB_VERSION_STRING "${KACTIVITIES_LIB_MAJOR_VERSION}.${KACTIVITIES_LIB_MINOR_VERSION}.${KACTIVITIES_LIB_PATCH_VERSION}${KACTIVITIES_LIB_SUFFIX_VERSION}")
 set (KACTIVITIES_LIB_VERSION_ID "0x0${KACTIVITIES_LIB_MAJOR_VERSION}0${KACTIVITIES_LIB_MINOR_VERSION}0${KACTIVITIES_LIB_PATCH_VERSION}")
@@ -56,13 +56,20 @@ set (KACTIVITIES_LIB_SO_VERSION_STRING "${KACTIVITIES_LIB_SO_CUR_VERSION}.${KACT
 # with the library definition
 
 set (
-   kactivities_LIB_SRCS
+   KActivities_LIB_SRCS
+
    ${CMAKE_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.Activities.cpp
+
    consumer.cpp
    controller.cpp
    info.cpp
-   manager_p.cpp
    resourceinstance.cpp
+
+   manager_p.cpp
+   activitiescache_p.cpp
+   dbusfuture_p.cpp
+   debug_p.cpp
+
    version.cpp
    )
 
@@ -73,28 +80,28 @@ set_source_files_properties (
    )
 
 qt5_add_dbus_interface (
-   kactivities_LIB_SRCS
+   KActivities_LIB_SRCS
 
    ${CMAKE_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.Activities.xml
    activities_interface
    )
 
 qt5_add_dbus_interface (
-   kactivities_LIB_SRCS
+   KActivities_LIB_SRCS
 
    ${CMAKE_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.Resources.xml
    resources_interface
    )
 
 qt5_add_dbus_interface (
-   kactivities_LIB_SRCS
+   KActivities_LIB_SRCS
 
    ${CMAKE_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.Features.xml
    features_interface
    )
 
 qt5_add_dbus_interface (
-   kactivities_LIB_SRCS
+   KActivities_LIB_SRCS
 
    ${CMAKE_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.ResourcesLinking.xml
    resources_linking_interface
@@ -102,7 +109,7 @@ qt5_add_dbus_interface (
 
 add_library (
    KActivities SHARED
-   ${kactivities_LIB_SRCS}
+   ${KActivities_LIB_SRCS}
    )
 
 include_directories (
@@ -130,7 +137,7 @@ target_link_libraries (
 generate_export_header(KActivities)
 
 set (
-   kactivities_LIB_HEADERS
+   KActivities_LIB_HEADERS
    consumer.h
    controller.h
    info.h
@@ -140,7 +147,7 @@ set (
    )
 
 set (
-   kactivities_LIB_PRETTY_HEADERS
+   KActivities_LIB_PRETTY_HEADERS
    includes/KActivities/Consumer
    includes/KActivities/Controller
    includes/KActivities/Info
@@ -149,33 +156,33 @@ set (
    )
 
 install (
-   FILES ${kactivities_LIB_HEADERS}
+   FILES ${KActivities_LIB_HEADERS}
    DESTINATION ${INCLUDE_INSTALL_DIR}/kactivities
    COMPONENT Devel
    )
 
 install (
-   FILES ${kactivities_LIB_PRETTY_HEADERS}
+   FILES ${KActivities_LIB_PRETTY_HEADERS}
    DESTINATION ${INCLUDE_INSTALL_DIR}/KDE/KActivities
    COMPONENT Devel
    )
 
 install (
    TARGETS KActivities
-   EXPORT kactivitiesLibraryTargets
+   EXPORT KActivitiesLibraryTargets
    ${INSTALL_TARGETS_DEFAULT_ARGS}
    )
 
 install (
-   EXPORT kactivitiesLibraryTargets
+   EXPORT KActivitiesLibraryTargets
    DESTINATION ${LIB_INSTALL_DIR}/cmake/KActivities
    FILE KActivitiesLibraryTargets.cmake
    NAMESPACE KF5::
    )
 
 if (NOT WIN32)
-   configure_file (${CMAKE_CURRENT_SOURCE_DIR}/libkactivities.pc.cmake ${CMAKE_CURRENT_BINARY_DIR}/libkactivities.pc)
-   install (FILES ${CMAKE_CURRENT_BINARY_DIR}/libkactivities.pc DESTINATION ${LIB_INSTALL_DIR}/pkgconfig )
+   configure_file (${CMAKE_CURRENT_SOURCE_DIR}/libKActivities.pc.cmake ${CMAKE_CURRENT_BINARY_DIR}/libKActivities.pc)
+   install (FILES ${CMAKE_CURRENT_BINARY_DIR}/libKActivities.pc DESTINATION ${LIB_INSTALL_DIR}/pkgconfig )
 endif ()
 
 ecm_setup_version(5.0.0 VARIABLE_PREFIX KACTIVITIES

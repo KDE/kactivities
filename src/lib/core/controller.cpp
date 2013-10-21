@@ -19,26 +19,22 @@
 #include "controller.h"
 #include "consumer_p.h"
 #include "manager_p.h"
+#include "dbusfuture_p.h"
 
 #include <QObject>
-#include <QDebug>
 
 namespace KActivities {
 
-class ControllerPrivate : public QObject {
-public:
-    ControllerPrivate(Controller *parent)
-        : q(parent)
-    {
-    }
-
-private:
-    Controller *const q;
-};
+// class ControllerPrivate : public QObject {
+// public:
+//     ControllerPrivate(Controller *parent)
+//     {
+//     }
+// };
 
 Controller::Controller(QObject *parent)
     : Consumer(parent)
-    , d(new ControllerPrivate(this))
+    // , d(new ControllerPrivate())
 {
 }
 
@@ -46,39 +42,76 @@ Controller::~Controller()
 {
 }
 
-void Controller::setActivityName(const QString &id, const QString &name)
+QFuture<void> Controller::setActivityName(const QString &id, const QString &name)
 {
-    Manager::activities()->SetActivityName(id, name);
+    // Manager::activities()->SetActivityName(id, name);
+    return Manager::isServiceRunning() ?
+        DBusFuture::asyncCall<void>(
+            Manager::activities(), QStringLiteral("SetActivityName"), id, name)
+        :
+        DBusFuture::fromVoid();
 }
 
-void Controller::setActivityIcon(const QString &id, const QString &icon)
+QFuture<void> Controller::setActivityIcon(const QString &id,
+                                          const QString &icon)
 {
-    Manager::activities()->SetActivityIcon(id, icon);
+    // Manager::activities()->SetActivityIcon(id, icon);
+    return Manager::isServiceRunning() ?
+        DBusFuture::asyncCall<void>(
+            Manager::activities(), QStringLiteral("SetActivityIcon"), id, icon)
+        :
+        DBusFuture::fromVoid();
+
 }
 
-bool Controller::setCurrentActivity(const QString &id)
+QFuture<bool> Controller::setCurrentActivity(const QString &id)
 {
-    return Manager::activities()->SetCurrentActivity(id);
+    // return Manager::activities()->SetCurrentActivity(id);
+    return Manager::isServiceRunning() ?
+        DBusFuture::asyncCall<bool>(
+            Manager::activities(), QStringLiteral("SetCurrentActivity"), id)
+        :
+        DBusFuture::fromValue(false);
 }
 
-QString Controller::addActivity(const QString &name)
+QFuture<QString> Controller::addActivity(const QString &name)
 {
-    return Manager::activities()->AddActivity(name);
+    // return Manager::activities()->AddActivity(name);
+    return Manager::isServiceRunning() ?
+        DBusFuture::asyncCall<QString>(
+            Manager::activities(), QStringLiteral("AddActivity"), name)
+        :
+        DBusFuture::fromValue(QString());
 }
 
-void Controller::removeActivity(const QString &id)
+QFuture<void> Controller::removeActivity(const QString &id)
 {
-    Manager::activities()->RemoveActivity(id);
+    // Manager::activities()->RemoveActivity(id);
+    return Manager::isServiceRunning() ?
+        DBusFuture::asyncCall<void>(
+            Manager::activities(), QStringLiteral("RemoveActivity"), id)
+        :
+        DBusFuture::fromVoid();
 }
 
-void Controller::stopActivity(const QString &id)
+QFuture<void> Controller::stopActivity(const QString &id)
 {
-    Manager::activities()->StopActivity(id);
+    // Manager::activities()->StopActivity(id);
+    return Manager::isServiceRunning() ?
+        DBusFuture::asyncCall<void>(
+            Manager::activities(), QStringLiteral("StopActivity"), id)
+        :
+        DBusFuture::fromVoid();
 }
 
-void Controller::startActivity(const QString &id)
+QFuture<void> Controller::startActivity(const QString &id)
 {
-    Manager::activities()->StartActivity(id);
+    // Manager::activities()->StartActivity(id);
+    return Manager::isServiceRunning() ?
+        DBusFuture::asyncCall<void>(
+            Manager::activities(), QStringLiteral("StartActivity"), id)
+        :
+        DBusFuture::fromVoid();
 }
 
 } // namespace KActivities

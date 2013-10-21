@@ -75,14 +75,14 @@ void Call::setWaitFinished(bool value)
 void Call::start()
 {
     if (m_receiver) {
-        qDebug() << ">>> Calling the method" << m_slot << "with" << m_argument;
+        // qDebug() << ">>> Calling the method" << m_slot << "with" << m_argument;
 
         QMetaObject::invokeMethod(m_receiver, m_slot.toLatin1().constData(),
                                   (m_waitFinished ? Qt::QueuedConnection : Qt::DirectConnection),
                                   Q_ARG(QString, m_argument));
 
     } else {
-        qDebug() << ">>> Receiver is nullptr, failing";
+        // qDebug() << ">>> Receiver is nullptr, failing";
         setError(1);
         setErrorText(QStringLiteral("There is no receiver registered to call"));
     }

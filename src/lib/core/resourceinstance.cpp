@@ -21,7 +21,7 @@
 #include "manager_p.h"
 
 #include <QCoreApplication>
-#include <QDebug>
+#include "debug_p.h"
 
 namespace KActivities {
 
@@ -65,7 +65,7 @@ ResourceInstance::ResourceInstance(quintptr wid, QObject *parent)
     : QObject(parent)
     , d(new ResourceInstancePrivate())
 {
-    qDebug() << "Creating ResourceInstance: empty for now";
+    qCDebug(KAMD_CORELIB) << "Creating ResourceInstance: empty for now";
     d->wid = wid;
     d->application = QCoreApplication::instance()->applicationName();
 }
@@ -74,7 +74,7 @@ ResourceInstance::ResourceInstance(quintptr wid, const QString &application, QOb
     : QObject(parent)
     , d(new ResourceInstancePrivate())
 {
-    qDebug() << "Creating ResourceInstance: empty for now";
+    qCDebug(KAMD_CORELIB) << "Creating ResourceInstance: empty for now";
     d->wid = wid;
     d->application = application.isEmpty() ? QCoreApplication::instance()->applicationName() : application;
 }
@@ -84,7 +84,7 @@ ResourceInstance::ResourceInstance(quintptr wid, QUrl resourceUri, const QString
     : QObject(parent)
     , d(new ResourceInstancePrivate())
 {
-    qDebug() << "Creating ResourceInstance: " << resourceUri;
+    qCDebug(KAMD_CORELIB) << "Creating ResourceInstance: " << resourceUri;
     d->wid = wid;
     d->uri = resourceUri;
     d->application = application.isEmpty() ? QCoreApplication::instance()->applicationName() : application;
@@ -143,7 +143,7 @@ void ResourceInstance::setMimetype(const QString &mimetype)
 
 void ResourceInstance::setTitle(const QString &title)
 {
-    qDebug() << "Setting the title: " << title;
+    qCDebug(KAMD_CORELIB) << "Setting the title: " << title;
     if (title.isEmpty()) {
         return;
     }

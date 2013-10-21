@@ -64,7 +64,7 @@ bool ActivityRankingPlugin::init(const QHash<QString, QObject *> &modules)
     d->ranking->moveToThread(thread);
     thread->start();
 
-    qDebug() << "running in thread" << d->ranking->metaObject()->className();
+    // qDebug() << "running in thread" << d->ranking->metaObject()->className();
 
     return true;
 }

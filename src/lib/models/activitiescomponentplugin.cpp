@@ -32,7 +32,7 @@
 
 void ActivitiesComponentDataPlugin::registerTypes(const char *uri)
 {
-    qDebug() << "###########";
+    // qDebug() << "###########";
     Q_ASSERT(uri == QLatin1String("org.kde.activities.models"));
 
     qmlRegisterType<KActivities::Models::ResourceModel>(uri, 0, 1, "ResourceModel");

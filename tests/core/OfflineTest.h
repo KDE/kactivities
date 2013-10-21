@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2012 Ivan Cukic <ivan.cukic(at)kde.org>
+ *   Copyright (C) 2013 Ivan Cukic <ivan.cukic(at)kde.org>
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License version 2,
@@ -17,11 +17,34 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef UTILS_P_H
-#define UTILS_P_H
+#ifndef OFFLINETEST_H
+#define OFFLINETEST_H
 
-#include <QDBusPendingCallWatcher>
+#include <common/test.h>
 
-#include <QMutex>
+#include <controller.h>
 
-#endif // UTILS_P_H
+#include <QScopedPointer>
+
+class OfflineTest : public Test {
+    Q_OBJECT
+public:
+    OfflineTest(QObject *parent = nullptr);
+
+private Q_SLOTS:
+    void initTestCase();
+
+    void testOfflineActivityListing();
+    void testOfflineActivityControl();
+
+    void cleanupTestCase();
+
+private:
+
+    QScopedPointer<KActivities::Controller> activities;
+
+};
+
+
+#endif /* OFFLINETEST_H */
+

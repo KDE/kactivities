@@ -25,6 +25,8 @@
 #include <QDBusConnection>
 #include <QUuid>
 #include <QDebug>
+#include <QStandardPaths>
+#include <QMetaObject>
 
 #include <kdbusconnectionpool.h>
 #include <kactivities-features.h>
@@ -45,6 +47,15 @@ Activities::Private::Private(Activities *parent)
     : config(QStringLiteral("activitymanagerrc"))
     , q(parent)
 {
+    qDebug() << "Using this configuration file:"
+        << config.name()
+        << config.locationType()
+        << QStandardPaths::standardLocations(config.locationType())
+        ;
+
+    KConfigGroup cg(&config, "Test");
+    cg.writeEntry("Test", "1");
+    cg.sync();
 }
 
 Activities::Private::~Private()
@@ -201,6 +212,11 @@ QString Activities::AddActivity(const QString &name)
     emit ActivityAdded(activity);
 
     d->scheduleConfigSync(true);
+
+    if (d->activities.size() == 1) {
+        SetCurrentActivity(activity);
+    }
+
     return activity;
 }
 
@@ -216,7 +232,7 @@ void Activities::RemoveActivity(const QString &activity)
 
 void Activities::Private::removeActivity(const QString &activity)
 {
-    qDebug() << activities << activity;
+    // qDebug() << activities << activity;
     Q_ASSERT(!activity.isEmpty());
     Q_ASSERT(activities.contains(activity));
 
@@ -266,34 +282,29 @@ QString Activities::Private::activityIcon(const QString &activity)
 
 void Activities::Private::scheduleConfigSync(const bool soon)
 {
-    static const auto shortInterval = 5 * 1000;
+    static const auto shortInterval = 1000;
     static const auto longInterval = 2 * 60 * 1000;
 
-    // short interval has priority to the long one
-    if (soon) {
-        if (configSyncTimer.interval() != shortInterval) {
-            // always change to shortInterval if the current one is longInterval.
-            configSyncTimer.stop();
-            configSyncTimer.setInterval(shortInterval);
-        }
-    } else if (configSyncTimer.interval() != longInterval && !configSyncTimer.isActive()) {
-        configSyncTimer.setInterval(longInterval);
-    }
+    // If the timer is not running, or has a longer interval than we need,
+    // start it
+    if ((soon && configSyncTimer.interval() > shortInterval)
+            || !configSyncTimer.isActive()) {
 
-    if (!configSyncTimer.isActive()) {
-        configSyncTimer.start();
+        QMetaObject::invokeMethod(
+            &configSyncTimer, "start", Qt::QueuedConnection,
+            Q_ARG(int, soon ? shortInterval : longInterval));
     }
 }
 
 void Activities::Private::configSync()
 {
-    configSyncTimer.stop();
+    QMetaObject::invokeMethod(&configSyncTimer, "stop", Qt::QueuedConnection);
     config.sync();
 }
 
 QStringList Activities::ListActivities() const
 {
-    qDebug() << "This is the current thread id for Activities" << QThread::currentThreadId() << QThread::currentThread();
+    // qDebug() << "This is the current thread id for Activities" << QThread::currentThreadId() << QThread::currentThread();
     return d->activities.keys();
 }
 
@@ -348,7 +359,7 @@ void Activities::SetActivityName(const QString &activity, const QString &name)
 
     d->activitiesConfig().writeEntry(activity, name);
 
-    d->scheduleConfigSync();
+    d->scheduleConfigSync(true);
 
     emit ActivityNameChanged(activity, name);
     emit ActivityChanged(activity);
@@ -379,7 +390,7 @@ void Activities::SetActivityIcon(const QString &activity, const QString &icon)
 
 void Activities::Private::setActivityState(const QString &activity, Activities::State state)
 {
-    qDebug() << activities << activity;
+    // qDebug() << activities << activity;
     Q_ASSERT(activities.contains(activity));
 
     if (activities.value(activity) == state) {
@@ -422,7 +433,7 @@ void Activities::Private::ensureCurrentActivityIsRunning()
     const auto runningActivities = q->ListActivities(Activities::Running);
 
     if (!runningActivities.contains(currentActivity) && runningActivities.size() > 0) {
-        qDebug() << "Somebody called ensureCurrentActivityIsRunning?";
+        // qDebug() << "Somebody called ensureCurrentActivityIsRunning?";
         setCurrentActivity(runningActivities.first());
     }
 }
@@ -435,7 +446,7 @@ void Activities::StartActivity(const QString &activity)
         return;
     }
 
-    qDebug() << "Starting the session";
+    // qDebug() << "Starting the session";
     d->setActivityState(activity, Starting);
     d->ksmserver->startActivitySession(activity);
 }
@@ -446,7 +457,7 @@ void Activities::StopActivity(const QString &activity)
         return;
     }
 
-    qDebug() << "Stopping the session";
+    // qDebug() << "Stopping the session";
     d->setActivityState(activity, Stopping);
     d->ksmserver->stopActivitySession(activity);
 }
