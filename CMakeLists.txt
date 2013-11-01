@@ -16,18 +16,18 @@ endif ()
 
 # Extra CMake stuff
 find_package (ECM 0.0.9 REQUIRED NO_MODULE)
-set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH})
+set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH} ${ECM_KDE_MODULE_DIR})
 
+include(KDEInstallDirs)
+include(KDECMakeSettings)
+include(KDECompilerSettings)
 
 # Qt
 set (CMAKE_AUTOMOC ON)
 find_package (Qt5 REQUIRED NO_MODULE COMPONENTS Core DBus)
 
 # KDE Frameworks
-find_package (KF5 REQUIRED MODULE
-   COMPONENTS
-   CMake Compiler InstallDirs KDBusAddons
-   )
+find_package (KF5 CONFIG REQUIRED KDBusAddons)
 
 # Enable C++11
 if (UNIX)

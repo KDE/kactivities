@@ -8,7 +8,7 @@ set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH})
 
 find_package (Qt5 REQUIRED NO_MODULE COMPONENTS Sql)
 
-find_package (KF5 REQUIRED MODULE COMPONENTS KWindowSystem KCoreAddons KConfig)
+find_package (KF5 CONFIG REQUIRED KWindowSystem KCoreAddons KConfig)
 
 # Standard stuff
 
