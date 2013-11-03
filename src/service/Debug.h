@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2012 Ivan Cukic <ivan.cukic(at)kde.org>
+ *   Copyright (C) 2013 Ivan Cukic <ivan.cukic(at)kde.org>
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License version 2,
@@ -17,32 +17,14 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef JOBS_SCHEDULER_ABSTRACT_P_H
-#define JOBS_SCHEDULER_ABSTRACT_P_H
+#ifndef ACTIVITIES_DEBUG_P_H
+#define ACTIVITIES_DEBUG_P_H
 
-#include "Abstract.h"
+#include <QLoggingCategory>
 
-#include <QList>
+Q_DECLARE_LOGGING_CATEGORY(KAMD_ACTIVITIES)
+Q_DECLARE_LOGGING_CATEGORY(KAMD_RESOURCES)
+Q_DECLARE_LOGGING_CATEGORY(KAMD_APPLICATION)
 
-namespace Jobs {
-namespace Schedulers {
+#endif /* ACTIVITIES_DEBUG_P_H */
 
-class Abstract::Private : public QObject {
-    Q_OBJECT
-public:
-    Private(Abstract *parent);
-
-    QList<JobFactory *> jobs;
-    int lastJobStarted;
-
-public Q_SLOTS:
-    void jobFinished(KJob *job);
-
-public:
-    Abstract *const q;
-};
-
-} // namespace Schedulers
-} // namespace Jobs
-
-#endif // JOBS_SCHEDULER_ABSTRACT_P_H

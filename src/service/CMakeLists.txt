@@ -41,20 +41,7 @@ set (activity_manager_SRCS
 
    Event.cpp
 
-   jobs/Job.cpp
-   jobs/JobFactory.cpp
-
-   jobs/schedulers/Abstract.cpp
-   jobs/schedulers/Ordered.cpp
-   jobs/schedulers/Fallible.cpp
-   jobs/schedulers/Given.cpp
-   jobs/schedulers/Retry.cpp
-   jobs/schedulers/Switch.cpp
-   jobs/schedulers/Test.cpp
-
-   jobs/general/Call.cpp
-
-   jobs/ksmserver/KSMServer.cpp
+   ksmserver/KSMServer.cpp
    )
 
 qt5_add_dbus_adaptor (

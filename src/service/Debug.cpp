@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2012 Ivan Cukic <ivan.cukic(at)kde.org>
+ *   Copyright (C) 2013 Ivan Cukic <ivan.cukic(at)kde.org>
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License version 2,
@@ -17,9 +17,11 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef JOBS_GENERAL_ALL_H
-#define JOBS_GENERAL_ALL_H
+#include "debug_p.h"
 
-#include "Call.h"
+Q_LOGGING_CATEGORY(KAMD_ACTIVITIES,  "org.kde.kactivities.activities")
+Q_LOGGING_CATEGORY(KAMD_RESOURCES,   "org.kde.kactivities.resources")
+Q_LOGGING_CATEGORY(KAMD_APPLICATION, "org.kde.kactivities.application")
 
-#endif // JOBS_GENERAL_ALL_H
+
+

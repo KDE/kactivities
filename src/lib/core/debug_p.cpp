@@ -19,7 +19,5 @@
 
 #include "debug_p.h"
 
-Q_LOGGING_CATEGORY(KAMD_CORELIB, "org.kde.kactivities.core")
-
-
+Q_LOGGING_CATEGORY(KAMD_CORELIB, "org.kde.kactivities.lib.core")
 

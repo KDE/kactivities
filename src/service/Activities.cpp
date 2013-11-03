@@ -31,10 +31,7 @@
 #include <kdbusconnectionpool.h>
 #include <kactivities-features.h>
 
-#include "jobs/activity/all.h"
-#include "jobs/general/all.h"
-#include "jobs/schedulers/all.h"
-#include "jobs/ksmserver/KSMServer.h"
+#include "ksmserver/KSMServer.h"
 
 #include "common.h"
 
@@ -132,9 +129,6 @@ bool Activities::SetCurrentActivity(const QString &activity)
 
 bool Activities::Private::setCurrentActivity(const QString &activity)
 {
-    using namespace Jobs;
-    using namespace Jobs::General;
-
     // If the activity is empty, this means we are entering a limbo state
     if (activity.isEmpty()) {
         currentActivity.clear();

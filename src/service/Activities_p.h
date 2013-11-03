@@ -31,7 +31,6 @@
 class KSMServer;
 
 class QDBusInterface;
-class KJob;
 
 class Activities::Private : public QObject {
     Q_OBJECT
