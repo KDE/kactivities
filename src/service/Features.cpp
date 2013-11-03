@@ -73,19 +73,6 @@ bool Features::IsFeatureOperational(const QString &key) const
                                    return module->isFeatureOperational(params););
 }
 
-bool Features::IsFeatureEnabled(const QString &key) const
-{
-    return FEATURES_PASS_TO_MODULE(bool, false,
-                                   return module->isFeatureEnabled(params););
-}
-
-void Features::SetFeatureEnabled(const QString &key, bool value)
-{
-    FEATURES_PASS_TO_MODULE(bool, false,
-                            module->setFeatureEnabled(params, value);
-                            return true;);
-}
-
 QStringList Features::ListFeatures(const QString &key) const
 {
     if (key.isEmpty()) {

@@ -46,13 +46,6 @@ public Q_SLOTS:
      */
     bool IsFeatureOperational(const QString &feature) const;
 
-    /**
-     * Is the feature currently usable?
-     */
-    bool IsFeatureEnabled(const QString &feature) const;
-
-    void SetFeatureEnabled(const QString &feature, bool value);
-
     QStringList ListFeatures(const QString &module) const;
 
     QDBusVariant GetValue(const QString &property) const;

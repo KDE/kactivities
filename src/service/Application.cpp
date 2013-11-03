@@ -143,8 +143,8 @@ void Application::loadPlugins()
 
     foreach (const auto & pluginFile, pluginFiles) {
         // qDebug() << "Loading a plugin: "
-                 // << pluginFile
-                 // << "(" << pluginsDir.absoluteFilePath(pluginFile) << ")";
+        //          << pluginFile
+        //          << "(" << pluginsDir.absoluteFilePath(pluginFile) << ")";
 
         QPluginLoader loader(pluginsDir.absoluteFilePath(pluginFile));
 
@@ -152,6 +152,11 @@ void Application::loadPlugins()
 
         if (plugin) {
             plugin->init(Module::get());
+        }
+
+        if (!plugin) {
+            qWarning() << "Failed loading: " << pluginFile
+                       << loader.errorString();
         }
     }
 
