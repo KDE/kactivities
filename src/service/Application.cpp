@@ -142,9 +142,9 @@ void Application::loadPlugins()
         QDir::Files);
 
     foreach (const auto & pluginFile, pluginFiles) {
-        qCDebug(KAMD_APPLICATION) << "Loading a plugin: "
-                 << pluginFile
-                 << "(" << pluginsDir.absoluteFilePath(pluginFile) << ")";
+        // qCDebug(KAMD_APPLICATION) << "Loading a plugin: "
+        //          << pluginFile
+        //          << "(" << pluginsDir.absoluteFilePath(pluginFile) << ")";
 
         QPluginLoader loader(pluginsDir.absoluteFilePath(pluginFile));
 
@@ -152,11 +152,12 @@ void Application::loadPlugins()
 
         if (plugin) {
             plugin->init(Module::get());
-        }
+            qCDebug(KAMD_APPLICATION)   << "[   OK   ] loaded:  " << pluginFile;
 
-        if (!plugin) {
-            qWarning() << "Failed loading: " << pluginFile
+        } else {
+            qCWarning(KAMD_APPLICATION) << "[ FAILED ] loading: " << pluginFile
                        << loader.errorString();
+            // TODO: Show a notification
         }
     }
 
@@ -264,6 +265,11 @@ int main(int argc, char **argv)
     // KCmdLineArgs::init(argc, argv, &about);
 
     KDBusService service(KDBusService::Unique);
+
+    QLoggingCategory::setFilterRules(QStringLiteral("org.kde.kactivities.activities.debug=true"));
+    QLoggingCategory::setFilterRules(QStringLiteral("org.kde.kactivities.resources.debug=true"));
+    QLoggingCategory::setFilterRules(QStringLiteral("org.kde.kactivities.application.debug=true"));
+
 
     return application.exec();
 }

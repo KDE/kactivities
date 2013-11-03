@@ -29,6 +29,7 @@ class QFileSystemWatcher;
 class StatsPlugin : public Plugin {
     Q_OBJECT
     Q_CLASSINFO("D-Bus Interface", "org.kde.ActivityManager.Resources.Scoring")
+    Q_PLUGIN_METADATA(IID "org.kde.ActivityManager.plugins.sqlite")
 
 public:
     explicit StatsPlugin(QObject *parent = Q_NULLPTR, const QVariantList &args = QVariantList());

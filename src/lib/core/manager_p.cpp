@@ -94,7 +94,7 @@ Manager *Manager::self()
             // }
 
             #if defined(QT_DEBUG)
-            QLoggingCategory::setFilterRules(QStringLiteral("org.kde.KActivities.core.debug=true"));
+            QLoggingCategory::setFilterRules(QStringLiteral("org.kde.kactivities.lib.core.debug=true"));
 
             qCDebug(KAMD_CORELIB) << "Should we start the daemon?";
             if (!QCoreApplication::instance()

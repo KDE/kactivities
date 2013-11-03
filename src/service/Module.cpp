@@ -44,7 +44,6 @@ void Module::registerModule(const QString &name, QObject *module)
 {
     if (!name.isEmpty()) {
         Private::s_modules[name] = module;
-        qCDebug(KAMD_APPLICATION) << "Module " << name << "is registered";
     }
 }
 
