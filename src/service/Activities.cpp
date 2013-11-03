@@ -24,9 +24,10 @@
 
 #include <QDBusConnection>
 #include <QUuid>
-#include <QDebug>
 #include <QStandardPaths>
 #include <QMetaObject>
+
+#include <Debug.h>
 
 #include <kdbusconnectionpool.h>
 #include <kactivities-features.h>
@@ -44,7 +45,7 @@ Activities::Private::Private(Activities *parent)
     : config(QStringLiteral("activitymanagerrc"))
     , q(parent)
 {
-    qDebug() << "Using this configuration file:"
+    qCDebug(KAMD_ACTIVITIES) << "Using this configuration file:"
         << config.name()
         << config.locationType()
         << QStandardPaths::standardLocations(config.locationType())
@@ -66,9 +67,9 @@ Activities::Activities(QObject *parent)
     : Module(QStringLiteral("activities"), parent)
     , d(this)
 {
-    qDebug() << "\n\n-------------------------------------------------------";
-    qDebug() << "Starting the KDE Activity Manager daemon" << QDateTime::currentDateTime();
-    qDebug() << "-------------------------------------------------------";
+    qCDebug(KAMD_ACTIVITIES) << "\n\n-------------------------------------------------------";
+    qCDebug(KAMD_ACTIVITIES) << "Starting the KDE Activity Manager daemon" << QDateTime::currentDateTime();
+    qCDebug(KAMD_ACTIVITIES) << "-------------------------------------------------------";
 
     // Basic initialization //////////////////////////////////////////////////////////////////////////////////
 
@@ -226,7 +227,6 @@ void Activities::RemoveActivity(const QString &activity)
 
 void Activities::Private::removeActivity(const QString &activity)
 {
-    // qDebug() << activities << activity;
     Q_ASSERT(!activity.isEmpty());
     Q_ASSERT(activities.contains(activity));
 
@@ -298,7 +298,6 @@ void Activities::Private::configSync()
 
 QStringList Activities::ListActivities() const
 {
-    // qDebug() << "This is the current thread id for Activities" << QThread::currentThreadId() << QThread::currentThread();
     return d->activities.keys();
 }
 
@@ -384,7 +383,6 @@ void Activities::SetActivityIcon(const QString &activity, const QString &icon)
 
 void Activities::Private::setActivityState(const QString &activity, Activities::State state)
 {
-    // qDebug() << activities << activity;
     Q_ASSERT(activities.contains(activity));
 
     if (activities.value(activity) == state) {
@@ -427,7 +425,6 @@ void Activities::Private::ensureCurrentActivityIsRunning()
     const auto runningActivities = q->ListActivities(Activities::Running);
 
     if (!runningActivities.contains(currentActivity) && runningActivities.size() > 0) {
-        // qDebug() << "Somebody called ensureCurrentActivityIsRunning?";
         setCurrentActivity(runningActivities.first());
     }
 }
@@ -440,7 +437,6 @@ void Activities::StartActivity(const QString &activity)
         return;
     }
 
-    // qDebug() << "Starting the session";
     d->setActivityState(activity, Starting);
     d->ksmserver->startActivitySession(activity);
 }
@@ -451,7 +447,6 @@ void Activities::StopActivity(const QString &activity)
         return;
     }
 
-    // qDebug() << "Stopping the session";
     d->setActivityState(activity, Stopping);
     d->ksmserver->stopActivitySession(activity);
 }

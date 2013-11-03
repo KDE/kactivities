@@ -18,6 +18,7 @@ set (plugin_implementation_SRCS
    ${CMAKE_CURRENT_SOURCE_DIR}/Plugin.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/Module.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/Event.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/Debug.cpp
    )
 
 add_subdirectory (plugins)

@@ -17,7 +17,7 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#include "debug_p.h"
+#include "Debug.h"
 
 Q_LOGGING_CATEGORY(KAMD_ACTIVITIES,  "org.kde.kactivities.activities")
 Q_LOGGING_CATEGORY(KAMD_RESOURCES,   "org.kde.kactivities.resources")

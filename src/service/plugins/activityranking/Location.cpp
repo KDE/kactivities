@@ -21,10 +21,10 @@
 #include "LocationManagerInterface.h"
 
 #include <QDBusServiceWatcher>
-#include <QDebug>
 
 #include <kdbusconnectionpool.h>
 
+#include <Debug.h>
 #include <config-features.h>
 #include <utils/d_ptr_implementation.h>
 
@@ -58,8 +58,6 @@ Location::Location(QObject *parent)
     : QObject(parent)
     , d()
 {
-    // qDebug() << "Location object initializing";
-
     d->watcher = new QDBusServiceWatcher(
         LOCATION_MANAGER_SERVICE,
         KDBusConnectionPool::threadConnection(),

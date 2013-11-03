@@ -18,7 +18,7 @@
  */
 
 #include "Plugin.h"
-#include <QDebug>
+#include <Debug.h>
 
 #include <ksharedconfig.h>
 

@@ -26,13 +26,13 @@
 #include <QSqlError>
 #include <QSqlRecord>
 #include <QSqlTableModel>
-#include <QDebug>
 
 #include <KStandardDirs>
 #include <kdbusconnectionpool.h>
 
 #include "Plugin.h"
 #include "Location.h"
+#include "Debug.h"
 
 #include <utils/for_each_assoc.h>
 #include <utils/d_ptr_implementation.h>

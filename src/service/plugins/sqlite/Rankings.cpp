@@ -23,11 +23,11 @@
 #include <QDBusConnection>
 #include <QVariantList>
 #include <QSqlQuery>
-#include <QDebug>
 
 #include "ResourceScoreCache.h"
 #include "DatabaseConnection.h"
 #include "StatsPlugin.h"
+#include "Debug.h"
 
 #include <utils/for_each_assoc.h>
 #include <utils/remove_if.h>
@@ -57,8 +57,6 @@ RankingsUpdateThread::~RankingsUpdateThread()
 
 void RankingsUpdateThread::run()
 {
-    // qDebug() << "This is the activity we want the results for:" << m_activity;
-
     static const auto query = QStringLiteral(
         "SELECT targettedResource, cachedScore "
         "FROM kext_ResourceScoreCache " // this should be kao_ResourceScoreCache, but lets leave it

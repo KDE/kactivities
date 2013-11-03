@@ -18,7 +18,7 @@
 #include "VirtualDesktopSwitchPlugin.h"
 
 #include <QString>
-#include <QDebug>
+#include <Debug.h>
 
 // #include <KWindowSystem>
 

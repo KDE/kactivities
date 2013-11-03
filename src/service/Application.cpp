@@ -19,7 +19,6 @@
 
 #include <Application.h>
 
-#include <QDebug>
 #include <QDBusConnection>
 #include <QThread>
 #include <QDir>
@@ -37,6 +36,7 @@
 #include <Resources.h>
 #include <Features.h>
 #include <Plugin.h>
+#include <Debug.h>
 
 #include <signal.h>
 #include <stdlib.h>
@@ -142,9 +142,9 @@ void Application::loadPlugins()
         QDir::Files);
 
     foreach (const auto & pluginFile, pluginFiles) {
-        // qDebug() << "Loading a plugin: "
-                 // << pluginFile
-                 // << "(" << pluginsDir.absoluteFilePath(pluginFile) << ")";
+        qCDebug(KAMD_APPLICATION) << "Loading a plugin: "
+                 << pluginFile
+                 << "(" << pluginsDir.absoluteFilePath(pluginFile) << ")";
 
         QPluginLoader loader(pluginsDir.absoluteFilePath(pluginFile));
 
@@ -165,7 +165,7 @@ void Application::loadPlugins()
     //     }
     // }
 
-    // qDebug() << "These are the disabled plugins:" << disabledPlugins;
+    // qCDebug(KAMD_APPLICATION) << "These are the disabled plugins:" << disabledPlugins;
 
     // // Loading plugins and initializing them
     // foreach (const auto & service, offers) {
@@ -183,7 +183,7 @@ void Application::loadPlugins()
     //     const auto plugin = factory->create < Plugin > (this);
 
     //     if (plugin) {
-    //         qDebug() << "Got the plugin: " << service->library();
+    //         qCDebug(KAMD_APPLICATION) << "Got the plugin: " << service->library();
     //         d->plugins << plugin;
     //     }
     // }

@@ -25,7 +25,8 @@
 #include <QThread>
 #include <QMutex>
 #include <QMutexLocker>
-#include <QDebug>
+
+#include <Debug.h>
 
 // #include <kwindowsystem.h>
 #include <kdbusconnectionpool.h>
@@ -64,7 +65,6 @@ void Resources::Private::run()
             QMutexLocker locker(&events_mutex);
 
             if (events.count() == 0) {
-                // qDebug() << "No more events to process, exiting.";
                 return;
             }
 
@@ -128,8 +128,6 @@ void Resources::Private::addEvent(const Event &newEvent)
         WindowData &data = windows[newEvent.wid];
         const QString &kuri(newEvent.uri);
 
-        // qDebug() << kuri << data.focussedResource;
-
         data.application = newEvent.application;
 
         switch (newEvent.type) {
@@ -161,8 +159,6 @@ void Resources::Private::addEvent(const Event &newEvent)
                 break;
 
             case Event::Closed:
-
-                // qDebug() << data.focussedResource << kuri;
 
                 if (data.focussedResource == kuri) {
                     // If we are closing a document that is in focus,

@@ -21,6 +21,7 @@
 
 #include "StatsPlugin.h"
 #include "ResourceScoreMaintainer.h"
+#include "Debug.h"
 #include "scoringadaptor.h"
 
 #include "../../Event.h"
@@ -28,7 +29,6 @@
 
 #include <QFileSystemWatcher>
 #include <QSqlQuery>
-#include <QDebug>
 
 #include <kconfig.h>
 
@@ -54,8 +54,6 @@ StatsPlugin::StatsPlugin(QObject *parent, const QVariantList &args)
 
 bool StatsPlugin::init(const QHash<QString, QObject *> &modules)
 {
-    // qDebug() << "These are the registered modules: " << modules.keys();
-
     m_activities = modules[QStringLiteral("activities")];
     m_resources = modules[QStringLiteral("resources")];
 

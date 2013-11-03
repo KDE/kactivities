@@ -19,7 +19,7 @@
 
 #include "Event.h"
 
-#include <QDebug>
+#include <Debug.h>
 #include <common.h>
 
 Event::Event()

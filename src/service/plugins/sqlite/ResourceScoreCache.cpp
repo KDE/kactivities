@@ -20,8 +20,7 @@
 #include "ResourceScoreCache.h"
 #include "StatsPlugin.h"
 #include "DatabaseConnection.h"
-
-#include <QDebug>
+#include "Debug.h"
 
 #include <kactivities-features.h>
 
@@ -40,9 +39,6 @@ public:
 ResourceScoreCache::ResourceScoreCache(const QString &activity, const QString &application, const QString &resource)
     : d()
 {
-    // qDebug() << "Going to update score for"
-             // << activity << application << resource;
-
     d->activity = activity;
     d->application = application;
     d->resource = resource;
@@ -61,7 +57,6 @@ void ResourceScoreCache::updateScore()
         d->activity, d->application, d->resource,
         score, lastUpdate);
 
-    // qDebug() << "Sending resourceScoreUpdated event";
     QMetaObject::invokeMethod(StatsPlugin::self(), "resourceScoreUpdated",
                               Q_ARG(QString, d->activity),
                               Q_ARG(QString, d->application),

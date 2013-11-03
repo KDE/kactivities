@@ -27,7 +27,6 @@
 
 #include "kao.h"
 
-#include <QDebug>
 #include <QDBusConnection>
 
 #include <Nepomuk2/Resource>
@@ -38,6 +37,7 @@
 #include <KDirNotify>
 #include <kdbusconnectionpool.h>
 
+#include <Debug.h>
 #include <utils/d_ptr_implementation.h>
 
 namespace Nepomuk = Nepomuk2;
