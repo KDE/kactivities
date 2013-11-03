@@ -22,6 +22,7 @@
 
 #include <QObject>
 #include <QString>
+#include <QDBusVariant>
 
 #include <Module.h>
 
@@ -40,13 +41,23 @@ public:
     virtual ~Features();
 
 public Q_SLOTS:
+    /**
+     * Is the feature backend available?
+     */
     bool IsFeatureOperational(const QString &feature) const;
 
+    /**
+     * Is the feature currently usable?
+     */
     bool IsFeatureEnabled(const QString &feature) const;
 
     void SetFeatureEnabled(const QString &feature, bool value);
 
     QStringList ListFeatures(const QString &module) const;
+
+    QDBusVariant GetValue(const QString &property) const;
+
+    void SetValue(const QString &property, const QDBusVariant &value);
 
 private:
     D_PTR;
