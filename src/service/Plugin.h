@@ -66,7 +66,8 @@ public:
      * Convenience meta-method to provide prettier invocation of QMetaObject::invokeMethod
      */
     template <typename ReturnType, Qt::ConnectionType connection>
-    inline static ReturnType callOn(QObject *object, const char *method, const char *returnTypeName)
+    inline static ReturnType callOn(QObject *object, const char *method,
+                                    const char *returnTypeName)
     {
         ReturnType result;
 
@@ -77,8 +78,11 @@ public:
         return result;
     }
 
-    template <typename ReturnType, Qt::ConnectionType connection, typename... Args>
-    inline static ReturnType callOnWithArgs(QObject *object, const char *method, const char *returnTypeName, Args... args)
+    template
+        <typename ReturnType, Qt::ConnectionType connection, typename... Args>
+    inline static ReturnType callOnWithArgs(QObject *object, const char *method,
+                                            const char *returnTypeName,
+                                            Args... args)
     {
         ReturnType result;
 

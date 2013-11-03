@@ -23,6 +23,7 @@
 #include <QObject>
 #include <QString>
 #include <QStringList>
+#include <QDBusVariant>
 
 #include <utils/d_ptr.h>
 
@@ -43,6 +44,9 @@ public:
     virtual bool isFeatureEnabled(const QStringList &feature) const;
     virtual void setFeatureEnabled(const QStringList &feature, bool value);
     virtual QStringList listFeatures(const QStringList &feature) const;
+
+    virtual QDBusVariant value(const QStringList &property) const;
+    virtual void setValue(const QStringList &property, const QDBusVariant &value);
 
 protected:
     static void registerModule(const QString &name, QObject *module);

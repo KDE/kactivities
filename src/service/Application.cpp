@@ -153,6 +153,11 @@ void Application::loadPlugins()
         if (plugin) {
             plugin->init(Module::get());
         }
+
+        if (!plugin) {
+            qWarning() << "Failed loading: " << pluginFile
+                       << loader.errorString();
+        }
     }
 
     // const auto offers = KServiceTypeTrader::self()->query(QStringLiteral("ActivityManager/Plugin"));

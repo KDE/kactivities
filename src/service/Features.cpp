@@ -45,9 +45,13 @@ Features::~Features()
 // This is a convenience method to pass the request down to the module
 
 template <typename RetType, typename Function>
-static RetType passToModule(const QString &feature, RetType defaultResult, Function f)
+static RetType passToModule(const QString &key, RetType defaultResult, Function f)
 {
-    const auto params = feature.split(QLatin1Char('/'));
+    if (key.isEmpty()) {
+        return defaultResult;
+    }
+
+    const auto params = key.split(QLatin1Char('/'));
     const auto module = Module::get(params.first());
 
     if (!module) {
@@ -57,51 +61,40 @@ static RetType passToModule(const QString &feature, RetType defaultResult, Funct
     return f(static_cast<Module *>(module), params.mid(1));
 }
 
-#define FEATURES_PASS_TO_MODULE(RetType, DefaultResult, What)                          \
-    passToModule(feature, DefaultResult,                                               \
-                              [=](Module *module, const QStringList &params)->RetType{ \
-                                  What                                                 \
-                              });
+#define FEATURES_PASS_TO_MODULE(RetType, DefaultResult, What)                  \
+    passToModule(key, DefaultResult,                                           \
+                 [=](Module *module, const QStringList &params)->RetType{      \
+                     What                                                      \
+                 });
 
-bool Features::IsFeatureOperational(const QString &feature) const
+bool Features::IsFeatureOperational(const QString &key) const
 {
-    if (feature.isEmpty()) {
-        return false;
-    }
-
     return FEATURES_PASS_TO_MODULE(bool, false,
                                    return module->isFeatureOperational(params););
 }
 
-bool Features::IsFeatureEnabled(const QString &feature) const
+QStringList Features::ListFeatures(const QString &key) const
 {
-    if (feature.isEmpty()) {
-        return false;
-    }
-
-    return FEATURES_PASS_TO_MODULE(bool, false,
-                                   return module->isFeatureEnabled(params););
-}
-
-void Features::SetFeatureEnabled(const QString &feature, bool value)
-{
-    if (feature.isEmpty()) {
-        return;
-    }
-
-    FEATURES_PASS_TO_MODULE(bool, false,
-                            module->setFeatureEnabled(params, value);
-                            return true;);
-}
-
-QStringList Features::ListFeatures(const QString &feature) const
-{
-    if (feature.isEmpty()) {
+    if (key.isEmpty()) {
         return Module::get().keys();
     }
 
     return FEATURES_PASS_TO_MODULE(QStringList, QStringList(),
                                    return module->listFeatures(params););
+}
+
+QDBusVariant Features::GetValue(const QString &key) const
+{
+    return FEATURES_PASS_TO_MODULE(QDBusVariant, QDBusVariant(),
+                                   return module->value(params););
+}
+
+void Features::SetValue(const QString &key, const QDBusVariant &value)
+{
+    FEATURES_PASS_TO_MODULE(bool, true,
+                            module->setValue(params, value);
+                            return true;
+                            );
 }
 
 #undef FEATURES_PASS_TO_MODULE
