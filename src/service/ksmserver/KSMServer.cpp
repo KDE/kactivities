@@ -136,7 +136,7 @@ void KSMServer::stopActivitySession(const QString &activity)
 
 void KSMServer::Private::processLater(const QString &activity, bool start)
 {
-    foreach (const auto &item, queue) {
+    for (const auto &item: queue) {
         if (item.first == activity) {
             return;
         }

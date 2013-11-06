@@ -205,7 +205,7 @@ void Resources::Private::windowClosed(quintptr windowId)
 
     // Closing all the resources that the window registered
 
-    foreach (const QString & uri, windows[windowId].resources) {
+    for (const QString &uri: windows[windowId].resources) {
         q->RegisterResourceEvent(windows[windowId].application,
                                  windowId, uri, Event::Closed);
     }

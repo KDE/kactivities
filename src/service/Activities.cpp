@@ -102,7 +102,7 @@ Activities::Activities(QObject *parent)
               .readEntry("runningActivities", d->activities.keys())
               .toSet();
 
-    foreach (const auto & activity, d->activitiesConfig().keyList()) {
+    for (const auto & activity: d->activitiesConfig().keyList()) {
         d->activities[activity] = runningActivities.contains(activity)
                                       ? Activities::Running
                                       : Activities::Stopped;

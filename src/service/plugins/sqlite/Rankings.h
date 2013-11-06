@@ -107,8 +107,9 @@ class RankingsUpdateThread : public QThread {
     Q_OBJECT
 
 public:
-    RankingsUpdateThread(const QString &activity, QVector<Rankings::ResultItem> *listptr,
-                         QHash<Rankings::Activity, qreal> *scoreTrashold);
+    RankingsUpdateThread(const QString &activity,
+                         QVector<Rankings::ResultItem> &listptr,
+                         QHash<Rankings::Activity, qreal> &scoreTrashold);
     virtual ~RankingsUpdateThread();
 
     void run();
@@ -118,8 +119,8 @@ Q_SIGNALS:
 
 private:
     QString m_activity;
-    QVector<Rankings::ResultItem> *m_listptr;
-    QHash<Rankings::Activity, qreal> *m_scoreTrashold;
+    QVector<Rankings::ResultItem> &m_listptr;
+    QHash<Rankings::Activity, qreal> &m_scoreTrashold;
 };
 
 #endif // PLUGINS_SQLITE_RANKINGS_H

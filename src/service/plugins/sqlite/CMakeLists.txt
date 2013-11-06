@@ -8,26 +8,21 @@ set (
    StatsPlugin.cpp
    ResourceScoreCache.cpp
    ResourceScoreMaintainer.cpp
+   Rankings.cpp
+   ${CMAKE_SOURCE_DIR}/src/utils/qsqlquery.cpp
    ${plugin_implementation_SRCS}
    )
-
-# TODO: We don't really have users of this one
-# If we get them, enable this again in non debug builds
-message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
-if (
-      (CMAKE_BUILD_TYPE STREQUAL "Debug") OR
-      (CMAKE_BUILD_TYPE STREQUAL "DebugFull")
-   )
-   set (sqliteplugin_SRCS
-      ${sqliteplugin_SRCS}
-      Rankings.cpp
-      )
-endif ()
 
 qt5_add_dbus_adaptor (
    sqliteplugin_SRCS
    org.kde.ActivityManager.Resources.Scoring.xml
    StatsPlugin.h StatsPlugin
+   )
+
+qt5_add_dbus_adaptor (
+   sqliteplugin_SRCS
+   org.kde.ActivityManager.Rankings.xml
+   Rankings.h Rankings
    )
 
 include_directories (

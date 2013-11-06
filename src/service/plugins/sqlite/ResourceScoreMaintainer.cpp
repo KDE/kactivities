@@ -44,12 +44,9 @@ public:
     QMutex openResources_mutex;
 
     void run();
-    void processActivity(const ActivityID &activity, const Applications &applications);
-
-    static ResourceScoreMaintainer *s_instance;
+    void processActivity(const ActivityID &activity,
+                         const Applications &applications);
 };
-
-ResourceScoreMaintainer *ResourceScoreMaintainer::Private::s_instance = Q_NULLPTR;
 
 void ResourceScoreMaintainer::Private::run()
 {
@@ -62,8 +59,7 @@ void ResourceScoreMaintainer::Private::run()
 
         {
             QMutexLocker lock(&openResources_mutex);
-            resources = openResources;
-            openResources.clear();
+            std::swap(resources, openResources);
         }
 
         const auto activity = StatsPlugin::self()->currentActivity();
@@ -77,29 +73,32 @@ void ResourceScoreMaintainer::Private::run()
         }
 
         kamd::utils::for_each_assoc(resources,
-                                    [this](const ActivityID & activity, const Applications & applications) {
-                processActivity(activity, applications);
+                                    [this](const ActivityID & activity,
+                                           const Applications & applications) {
+            processActivity(activity, applications);
         });
     }
 }
 
-void ResourceScoreMaintainer::Private::processActivity(const ActivityID &activity, const Applications &applications)
+void ResourceScoreMaintainer::Private::processActivity(const ActivityID
+                                                       &activity,
+                                                       const Applications
+                                                       &applications)
 {
     kamd::utils::for_each_assoc(applications,
-                                [activity](const ApplicationName & application, const ResourceList & resources) {
-            foreach (const auto &resource, resources) {
-                ResourceScoreCache(activity, application, resource).updateScore();
-            }
+                                [activity](const ApplicationName & application,
+                                           const ResourceList & resources) {
+        for (const auto &resource: resources)
+        {
+            ResourceScoreCache(activity, application, resource).updateScore();
+        }
     });
 }
 
 ResourceScoreMaintainer *ResourceScoreMaintainer::self()
 {
-    if (!Private::s_instance) {
-        Private::s_instance = new ResourceScoreMaintainer();
-    }
-
-    return Private::s_instance;
+    static ResourceScoreMaintainer instance;
+    return &instance;
 }
 
 ResourceScoreMaintainer::ResourceScoreMaintainer()

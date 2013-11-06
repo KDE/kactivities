@@ -282,17 +282,20 @@ void NepomukPlugin::Private::syncActivities(const QStringList &activitys)
 
     // If we got an empty list, it means we should synchronize
     // all the activities known by the service
-    foreach (const auto & activity,
-                (activitys.isEmpty()
-                    ? Plugin::callOn<QStringList, Qt::DirectConnection>(activities, "ListActivities", "QStringList")
-                    : activitys))
+    for (const auto &activity :
+         (activitys.isEmpty()
+             ? Plugin::callOn<QStringList, Qt::DirectConnection>(
+                 activities, "ListActivities", "QStringList")
+             : activitys))
     {
         // Notifying KIO of the update
         org::kde::KDirNotify::emitFilesAdded("activities:/" + activity);
 
         // Getting the activity info from the service
-        const auto name = Plugin::callOnWithArgs<QString, Qt::DirectConnection>(activities, "ActivityName", "QString", Q_ARG(QString, activity));
-        const auto icon = Plugin::callOnWithArgs<QString, Qt::DirectConnection>(activities, "ActivityIcon", "QString", Q_ARG(QString, activity));
+        const auto name = Plugin::callOnWithArgs<QString, Qt::DirectConnection>(
+            activities, "ActivityName", "QString", Q_ARG(QString, activity));
+        const auto icon = Plugin::callOnWithArgs<QString, Qt::DirectConnection>(
+            activities, "ActivityIcon", "QString", Q_ARG(QString, activity));
 
         // Setting the nepomuk resource properties - id, name, icon
         auto resource = activityResource(activity);
@@ -310,7 +313,9 @@ void NepomukPlugin::Private::syncActivities(const QStringList &activitys)
             // have one in nepomuk, send it to the service
             const auto symbols = resource.symbols();
             if (symbols.size() > 0) {
-                Plugin::callOnWithArgs<QString, Qt::DirectConnection>(activities, "SetActivityIcon", "QString", Q_ARG(QString, activity), Q_ARG(QString, symbols.at(0)));
+                Plugin::callOnWithArgs<QString, Qt::DirectConnection>(
+                    activities, "SetActivityIcon", "QString",
+                    Q_ARG(QString, activity), Q_ARG(QString, symbols.at(0)));
             }
         }
     }
@@ -495,7 +500,7 @@ QStringList NepomukPlugin::ResourcesLinkedToActivity(const QString &activity) co
 
     QStringList result;
 
-    foreach (const Nepomuk::Resource & resource, activityResource(activity).isRelateds()) {
+    for (const Nepomuk::Resource &resource: activityResource(activity).isRelateds()) {
         if (resource.hasProperty(NIE::url())) {
             result << resource.property(NIE::url()).toUrl().toString();
 

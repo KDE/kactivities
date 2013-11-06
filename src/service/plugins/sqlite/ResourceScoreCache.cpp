@@ -36,8 +36,9 @@ public:
     QString resource;
 };
 
-ResourceScoreCache::ResourceScoreCache(const QString &activity, const QString &application, const QString &resource)
-    : d()
+ResourceScoreCache::ResourceScoreCache(const QString &activity,
+                                       const QString &application,
+                                       const QString &resource)
 {
     d->activity = activity;
     d->application = application;
@@ -54,8 +55,7 @@ void ResourceScoreCache::updateScore()
     qreal score;
 
     DatabaseConnection::self()->getResourceScoreCache(
-        d->activity, d->application, d->resource,
-        score, lastUpdate);
+        d->activity, d->application, d->resource, score, lastUpdate);
 
     QMetaObject::invokeMethod(StatsPlugin::self(), "resourceScoreUpdated",
                               Q_ARG(QString, d->activity),

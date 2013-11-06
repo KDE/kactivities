@@ -143,7 +143,7 @@ void Application::loadPlugins()
     const auto availablePlugins = plugins
             | filtered(std::bind(Private::isPluginEnabled, config, _1));
 
-    foreach (const auto & plugin, availablePlugins) {
+    for (const auto &plugin: availablePlugins) {
         QPluginLoader loader(pluginsDir.absoluteFilePath(plugin));
 
         auto pluginInstance = dynamic_cast<Plugin *>(loader.instance());
@@ -161,7 +161,7 @@ void Application::loadPlugins()
 
     // const auto offers = KServiceTypeTrader::self()->query(QStringLiteral("ActivityManager/Plugin"));
 
-    // foreach (const auto & service, offers) {
+    // for (const auto &service: offers) {
     //     if (!disabledPlugins.contains(service->library())) {
     //         disabledPlugins.append(
     //                 service->property("X-ActivityManager-PluginOverrides", QVariant::StringList).toStringList()
@@ -172,7 +172,7 @@ void Application::loadPlugins()
     // qCDebug(KAMD_APPLICATION) << "These are the disabled plugins:" << disabledPlugins;
 
     // // Loading plugins and initializing them
-    // foreach (const auto & service, offers) {
+    // for (const auto &service: offers) {
     //     if (disabledPlugins.contains(service->library()) ||
     //             disabledPlugins.contains(service->property("X-KDE-PluginInfo-Name").toString() + "Enabled")) {
     //         continue;
@@ -192,18 +192,18 @@ void Application::loadPlugins()
     //     }
     // }
 
-    // foreach (Plugin * plugin, d->plugins) {
+    // for (Plugin * plugin: d->plugins) {
     //     plugin->init(Module::get());
     // }
 }
 
 Application::~Application()
 {
-    foreach (const auto plugin, d->plugins) {
+    for (const auto plugin: d->plugins) {
         delete plugin;
     }
 
-    foreach (const auto thread, s_moduleThreads) {
+    for (const auto thread: s_moduleThreads) {
         thread->quit();
         thread->wait();
 
