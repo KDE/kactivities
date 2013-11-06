@@ -108,7 +108,7 @@ void Resources::Private::addEvent(const Event &newEvent)
         // Deleting previously registered Accessed events if
         // the current one has the same application and uri
         if (newEvent.type != Event::Accessed) {
-            kamd::utils::remove_if(events, [&newEvent](const Event & event)->bool {
+            kamd::utils::remove_if(events, [&newEvent](const Event &event)->bool {
                 return
                     event.application == newEvent.application &&
                     event.uri         == newEvent.uri

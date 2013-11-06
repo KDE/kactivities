@@ -29,7 +29,6 @@
 #include "StatsPlugin.h"
 #include "Debug.h"
 
-#include <utils/for_each_assoc.h>
 #include <utils/remove_if.h>
 
 #define RESULT_COUNT_LIMIT \

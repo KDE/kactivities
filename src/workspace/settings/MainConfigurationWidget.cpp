@@ -80,8 +80,8 @@ MainConfigurationWidget::MainConfigurationWidget(QWidget *parent, QVariantList a
     const auto offers = KServiceTypeTrader::self()->query("ActivityManager/Plugin");
     const auto plugins = KPluginInfo::fromServices(offers);
 
-    d->mainConfig = KSharedConfig::openConfig("activitymanagerrc");
-    d->pluginConfig = KSharedConfig::openConfig("activitymanager-pluginsrc");
+    d->mainConfig = KSharedConfig::openConfig("kactivitymanagerdrc");
+    d->pluginConfig = KSharedConfig::openConfig("kactivitymanagerd-pluginsrc");
 
     d->pluginSelector = new KPluginSelector(this);
     d->pluginSelector->addPlugins(

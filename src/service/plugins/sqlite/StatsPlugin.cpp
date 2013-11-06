@@ -75,7 +75,7 @@ void StatsPlugin::loadConfiguration()
 {
     config().config()->reparseConfiguration();
 
-    const QString configFile = QStandardPaths::writableLocation(QStandardPaths::ConfigLocation) + QStringLiteral("activitymanager-pluginsrc");
+    const QString configFile = QStandardPaths::writableLocation(QStandardPaths::ConfigLocation) + QStringLiteral("kactivitymanagerd-pluginsrc");
 
     if (m_configWatcher) {
         // When saving a config file, KConfig deletes the old,
@@ -126,14 +126,13 @@ void StatsPlugin::addEvents(const EventList &events)
         return;
     }
 
-    for (int i = 0; i < events.size(); i++) {
-        const auto &event = events[i];
+    const auto currentActivity = Plugin::callOn<QString, Qt::DirectConnection>(m_activities, "CurrentActivity", "QString");
+
+    foreach (const auto &event, events) {
 
         if (event.uri.startsWith(QLatin1String("about"))) {
             continue;
         }
-
-        const auto currentActivity = Plugin::callOn<QString, Qt::DirectConnection>(m_activities, "CurrentActivity", "QString");
 
         // if blocked by default, the list contains allowed applications
         //     ignore event if the list doesn't contain the application

@@ -32,6 +32,8 @@
 #include <kdbusconnectionpool.h>
 #include <kdbusservice.h>
 
+#include <boost/range/adaptor/filtered.hpp>
+
 #include <Activities.h>
 #include <Resources.h>
 #include <Features.h>
@@ -93,6 +95,12 @@ public:
     {
     }
 
+    static inline bool isPluginEnabled(const KConfigGroup &config,
+                                const QString &plugin)
+    {
+        return config.readEntry(plugin, true);
+    }
+
     Resources *resources;
     Activities *activities;
     Features *features;
@@ -107,7 +115,8 @@ Application *Application::Private::s_instance = Q_NULLPTR;
 Application::Application(int &argc, char **argv)
     : QCoreApplication(argc, argv)
 {
-    if (!KDBusConnectionPool::threadConnection().registerService(QStringLiteral("org.kde.ActivityManager"))) {
+    if (!KDBusConnectionPool::threadConnection().registerService(
+             QStringLiteral("org.kde.ActivityManager"))) {
         exit(0);
     }
 
@@ -121,41 +130,30 @@ Application::Application(int &argc, char **argv)
 
 void Application::loadPlugins()
 {
+    using namespace boost::adaptors;
+    using namespace std::placeholders;
+
     // TODO: Return the plugin system
-
-    const auto config = KSharedConfig::openConfig(QStringLiteral("activitymanagerrc"));
-    auto disabledPlugins = config->group("Global").readEntry("disabledPlugins", QStringList());
-
-    const auto pluginsGroup = config->group("Plugins");
-    foreach (const QString & plugin, pluginsGroup.keyList()) {
-        if (!pluginsGroup.readEntry(plugin, true)) {
-            disabledPlugins << plugin;
-        }
-    }
-
-    // Adding overridden plugins into the list of disabled ones
     // TODO: Properly load plugins when KF5::KService becomes more stable
-    QDir pluginsDir(QStringLiteral(KAMD_INSTALL_PREFIX "/" KAMD_PLUGIN_DIR));
 
-    const auto pluginFiles = pluginsDir.entryList(
-        QStringList() << QStringLiteral("activitymanager*.so"),
-        QDir::Files);
+    const QDir pluginsDir(QStringLiteral(KAMD_INSTALL_PREFIX "/" KAMD_PLUGIN_DIR));
+    const auto plugins = pluginsDir.entryList(QStringList{ QStringLiteral("activitymanager*.so") }, QDir::Files);
+    const auto config = KSharedConfig::openConfig(QStringLiteral("kactivitymanagerdrc"))->group("Plugins");
 
-    foreach (const auto & pluginFile, pluginFiles) {
-        // qCDebug(KAMD_APPLICATION) << "Loading a plugin: "
-        //          << pluginFile
-        //          << "(" << pluginsDir.absoluteFilePath(pluginFile) << ")";
+    const auto availablePlugins = plugins
+            | filtered(std::bind(Private::isPluginEnabled, config, _1));
 
-        QPluginLoader loader(pluginsDir.absoluteFilePath(pluginFile));
+    foreach (const auto & plugin, availablePlugins) {
+        QPluginLoader loader(pluginsDir.absoluteFilePath(plugin));
 
-        auto plugin = dynamic_cast<Plugin *>(loader.instance());
+        auto pluginInstance = dynamic_cast<Plugin *>(loader.instance());
 
-        if (plugin) {
-            plugin->init(Module::get());
-            qCDebug(KAMD_APPLICATION)   << "[   OK   ] loaded:  " << pluginFile;
+        if (pluginInstance) {
+            pluginInstance->init(Module::get());
+            qCDebug(KAMD_APPLICATION)   << "[   OK   ] loaded:  " << plugin;
 
         } else {
-            qCWarning(KAMD_APPLICATION) << "[ FAILED ] loading: " << pluginFile
+            qCWarning(KAMD_APPLICATION) << "[ FAILED ] loading: " << plugin
                        << loader.errorString();
             // TODO: Show a notification
         }
@@ -230,15 +228,6 @@ Resources &Application::resources() const
 {
     return *d->resources;
 }
-
-// Application * Application::self()
-// {
-//     if (!Private::s_instance) {
-//         Private::s_instance = new Application();
-//     }
-//
-//     return Private::s_instance;
-// }
 
 void Application::quit()
 {

@@ -31,7 +31,6 @@ set (KACTIVITIES_ONTOLOGIES_DIR ${CMAKE_INSTALL_PREFIX}/share/ontology/kde)
 # Boosting us a bit
 
 find_package (Boost 1.54)
-include_directories (${Boost_INCLUDE_DIR})
 
 # Testing for C++0x/C++11 features
 include (CheckCxxFeatures)
@@ -91,6 +90,8 @@ if (NOT HAVE_CXX11_VARIADIC_TEMPLATES OR NOT HAVE_CXX11_INITIALIZER_LISTS)
 endif ()
 
 if (BUILD_EVERYTHING)
+   include_directories (${Boost_INCLUDE_DIR})
+
    # The compiler is good enough
    if (CXX_COMPILER_IS_MODERN)
       message (STATUS

@@ -173,8 +173,8 @@ void ActivityRanking::Private::processWeekData(const QString &activity, const QS
                 auto record = query.record();
                 const auto iFirstColumn = record.indexOf("s00");
 
-#define SEGMENTS \
-    8
+#define SEGMENTS 8
+
                 for (int day = currentStart.date().dayOfWeek(); day <= currentEnd.date().dayOfWeek(); day++) {
 
                     const auto startSegment = floor(currentStart.time().hour() / 3.0);

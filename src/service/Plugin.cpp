@@ -53,7 +53,7 @@ KConfigGroup Plugin::config()
     }
 
     if (!d->config) {
-        d->config = KSharedConfig::openConfig(QStringLiteral("activitymanager-pluginsrc"));
+        d->config = KSharedConfig::openConfig(QStringLiteral("kactivitymanagerd-pluginsrc"));
     }
 
     return d->config->group(QStringLiteral("Plugin-") + d->name);
