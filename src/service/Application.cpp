@@ -17,37 +17,43 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#include <Application.h>
+// Self
+#include <kactivities-features.h>
+#include "Application.h"
 
+// Qt
 #include <QDBusConnection>
 #include <QThread>
 #include <QDir>
 
+// KDE
 // #include <KCrash>
 // #include <KAboutData>
 // #include <KCmdLineArgs>
-#include <kservicetypetrader.h>
-#include <ksharedconfig.h>
-
+#include <KDE/KServiceTypeTrader>
+#include <KDE/KSharedConfig>
 #include <kdbusconnectionpool.h>
 #include <kdbusservice.h>
 
-#include <Activities.h>
-#include <Resources.h>
-#include <Features.h>
-#include <Plugin.h>
-#include <Debug.h>
+// Boost and utils
+#include <boost/range/adaptor/filtered.hpp>
+#include <utils/d_ptr_implementation.h>
 
+// System
 #include <signal.h>
 #include <stdlib.h>
 #include <memory>
 
-#include <utils/d_ptr_implementation.h>
+// Local
+#include "Activities.h"
+#include "Resources.h"
+#include "Features.h"
+#include "Plugin.h"
+#include "Debug.h"
 
-#include <kactivities-features.h>
 
 namespace {
-QList<QThread *> s_moduleThreads;
+    QList<QThread *> s_moduleThreads;
 }
 
 // Runs a QObject inside a QThread
@@ -93,6 +99,12 @@ public:
     {
     }
 
+    static inline bool isPluginEnabled(const KConfigGroup &config,
+                                const QString &plugin)
+    {
+        return config.readEntry(plugin, true);
+    }
+
     Resources *resources;
     Activities *activities;
     Features *features;
@@ -107,7 +119,8 @@ Application *Application::Private::s_instance = Q_NULLPTR;
 Application::Application(int &argc, char **argv)
     : QCoreApplication(argc, argv)
 {
-    if (!KDBusConnectionPool::threadConnection().registerService(QStringLiteral("org.kde.ActivityManager"))) {
+    if (!KDBusConnectionPool::threadConnection().registerService(
+             QStringLiteral("org.kde.ActivityManager"))) {
         exit(0);
     }
 
@@ -121,41 +134,30 @@ Application::Application(int &argc, char **argv)
 
 void Application::loadPlugins()
 {
+    using namespace boost::adaptors;
+    using namespace std::placeholders;
+
     // TODO: Return the plugin system
-
-    const auto config = KSharedConfig::openConfig(QStringLiteral("activitymanagerrc"));
-    auto disabledPlugins = config->group("Global").readEntry("disabledPlugins", QStringList());
-
-    const auto pluginsGroup = config->group("Plugins");
-    foreach (const QString & plugin, pluginsGroup.keyList()) {
-        if (!pluginsGroup.readEntry(plugin, true)) {
-            disabledPlugins << plugin;
-        }
-    }
-
-    // Adding overridden plugins into the list of disabled ones
     // TODO: Properly load plugins when KF5::KService becomes more stable
-    QDir pluginsDir(QStringLiteral(KAMD_INSTALL_PREFIX "/" KAMD_PLUGIN_DIR));
 
-    const auto pluginFiles = pluginsDir.entryList(
-        QStringList() << QStringLiteral("activitymanager*.so"),
-        QDir::Files);
+    const QDir pluginsDir(QStringLiteral(KAMD_INSTALL_PREFIX "/" KAMD_PLUGIN_DIR));
+    const auto plugins = pluginsDir.entryList(QStringList{ QStringLiteral("activitymanager*.so") }, QDir::Files);
+    const auto config = KSharedConfig::openConfig(QStringLiteral("kactivitymanagerdrc"))->group("Plugins");
 
-    foreach (const auto & pluginFile, pluginFiles) {
-        // qCDebug(KAMD_APPLICATION) << "Loading a plugin: "
-        //          << pluginFile
-        //          << "(" << pluginsDir.absoluteFilePath(pluginFile) << ")";
+    const auto availablePlugins = plugins
+            | filtered(std::bind(Private::isPluginEnabled, config, _1));
 
-        QPluginLoader loader(pluginsDir.absoluteFilePath(pluginFile));
+    for (const auto &plugin: availablePlugins) {
+        QPluginLoader loader(pluginsDir.absoluteFilePath(plugin));
 
-        auto plugin = dynamic_cast<Plugin *>(loader.instance());
+        auto pluginInstance = dynamic_cast<Plugin *>(loader.instance());
 
-        if (plugin) {
-            plugin->init(Module::get());
-            qCDebug(KAMD_APPLICATION)   << "[   OK   ] loaded:  " << pluginFile;
+        if (pluginInstance) {
+            pluginInstance->init(Module::get());
+            qCDebug(KAMD_APPLICATION)   << "[   OK   ] loaded:  " << plugin;
 
         } else {
-            qCWarning(KAMD_APPLICATION) << "[ FAILED ] loading: " << pluginFile
+            qCWarning(KAMD_APPLICATION) << "[ FAILED ] loading: " << plugin
                        << loader.errorString();
             // TODO: Show a notification
         }
@@ -163,7 +165,7 @@ void Application::loadPlugins()
 
     // const auto offers = KServiceTypeTrader::self()->query(QStringLiteral("ActivityManager/Plugin"));
 
-    // foreach (const auto & service, offers) {
+    // for (const auto &service: offers) {
     //     if (!disabledPlugins.contains(service->library())) {
     //         disabledPlugins.append(
     //                 service->property("X-ActivityManager-PluginOverrides", QVariant::StringList).toStringList()
@@ -174,7 +176,7 @@ void Application::loadPlugins()
     // qCDebug(KAMD_APPLICATION) << "These are the disabled plugins:" << disabledPlugins;
 
     // // Loading plugins and initializing them
-    // foreach (const auto & service, offers) {
+    // for (const auto &service: offers) {
     //     if (disabledPlugins.contains(service->library()) ||
     //             disabledPlugins.contains(service->property("X-KDE-PluginInfo-Name").toString() + "Enabled")) {
     //         continue;
@@ -194,18 +196,18 @@ void Application::loadPlugins()
     //     }
     // }
 
-    // foreach (Plugin * plugin, d->plugins) {
+    // for (Plugin * plugin: d->plugins) {
     //     plugin->init(Module::get());
     // }
 }
 
 Application::~Application()
 {
-    foreach (const auto plugin, d->plugins) {
+    for (const auto plugin: d->plugins) {
         delete plugin;
     }
 
-    foreach (const auto thread, s_moduleThreads) {
+    for (const auto thread: s_moduleThreads) {
         thread->quit();
         thread->wait();
 
@@ -230,15 +232,6 @@ Resources &Application::resources() const
 {
     return *d->resources;
 }
-
-// Application * Application::self()
-// {
-//     if (!Private::s_instance) {
-//         Private::s_instance = new Application();
-//     }
-//
-//     return Private::s_instance;
-// }
 
 void Application::quit()
 {

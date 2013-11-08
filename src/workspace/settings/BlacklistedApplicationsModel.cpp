@@ -62,7 +62,7 @@ BlacklistedApplicationsModel::BlacklistedApplicationsModel(QObject *parent)
     setRoleNames(roles);
 
     d->enabled = false;
-    d->pluginConfig = KSharedConfig::openConfig("activitymanager-pluginsrc");
+    d->pluginConfig = KSharedConfig::openConfig("kactivitymanagerd-pluginsrc");
 }
 
 void BlacklistedApplicationsModel::load()

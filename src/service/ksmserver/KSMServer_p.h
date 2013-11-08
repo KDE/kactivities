@@ -20,8 +20,10 @@
 #ifndef KSMSERVER_P_H
 #define KSMSERVER_P_H
 
+// Self
 #include "KSMServer.h"
 
+// Qt
 #include <QPair>
 
 class QDBusServiceWatcher;

@@ -15,8 +15,10 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+// Self
 #include "TemplatesPlugin.h"
 
+// Qt
 #include <QStringList>
 #include <QString>
 

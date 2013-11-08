@@ -23,3 +23,4 @@
     QStringLiteral(ACTIVITY_MANAGER_SERVICE #A)
 #define ACTIVITY_MANAGER_OBJECT_PATH(A) \
     QStringLiteral("/ActivityManager/" #A)
+

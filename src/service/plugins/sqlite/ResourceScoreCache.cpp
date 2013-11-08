@@ -17,14 +17,18 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+// Self
+#include <kactivities-features.h>
 #include "ResourceScoreCache.h"
+
+// Utils
+#include <utils/d_ptr_implementation.h>
+
+// Local
+#include "Debug.h"
 #include "StatsPlugin.h"
 #include "DatabaseConnection.h"
-#include "Debug.h"
 
-#include <kactivities-features.h>
-
-#include <utils/d_ptr_implementation.h>
 
 /**
  *
@@ -36,8 +40,9 @@ public:
     QString resource;
 };
 
-ResourceScoreCache::ResourceScoreCache(const QString &activity, const QString &application, const QString &resource)
-    : d()
+ResourceScoreCache::ResourceScoreCache(const QString &activity,
+                                       const QString &application,
+                                       const QString &resource)
 {
     d->activity = activity;
     d->application = application;
@@ -54,8 +59,7 @@ void ResourceScoreCache::updateScore()
     qreal score;
 
     DatabaseConnection::self()->getResourceScoreCache(
-        d->activity, d->application, d->resource,
-        score, lastUpdate);
+        d->activity, d->application, d->resource, score, lastUpdate);
 
     QMetaObject::invokeMethod(StatsPlugin::self(), "resourceScoreUpdated",
                               Q_ARG(QString, d->activity),

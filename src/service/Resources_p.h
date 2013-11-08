@@ -20,11 +20,16 @@
 #ifndef RESOURCES_P_H
 #define RESOURCES_P_H
 
+// Self
 #include "Resources.h"
-#include "resourcesadaptor.h"
 
+// Qt
 #include <QString>
 #include <QList>
+
+// Local
+#include "resourcesadaptor.h"
+
 
 class Resources::Private : public QThread {
     Q_OBJECT

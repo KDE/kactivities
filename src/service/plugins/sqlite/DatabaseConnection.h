@@ -20,9 +20,12 @@
 #ifndef PLUGINS_SQLITE_DATABASE_CONNECTION_H
 #define PLUGINS_SQLITE_DATABASE_CONNECTION_H
 
+// Qt
 #include <QObject>
 #include <QDateTime>
+#include <QSqlQuery>
 
+// Utils
 #include <utils/d_ptr.h>
 
 class QDateTime;
@@ -34,17 +37,30 @@ class DatabaseConnection : public QObject {
 public:
     static DatabaseConnection *self();
 
-    void openDesktopEvent(const QString &usedActivity, const QString &initiatingAgent,
-                          const QString &targettedResource, const QDateTime &start, const QDateTime &end = QDateTime());
-    void closeDesktopEvent(const QString &usedActivity, const QString &initiatingAgent,
-                           const QString &targettedResource, const QDateTime &end);
+    inline static QSqlQuery exec(const QString &query)
+    {
+        return self()->database().exec(query);
+    }
 
-    void getResourceScoreCache(const QString &usedActivity, const QString &initiatingAgent,
-                               const QString &targettedResource, qreal &score, QDateTime &lastUpdate);
+    void openDesktopEvent(const QString &usedActivity,
+                          const QString &initiatingAgent,
+                          const QString &targettedResource,
+                          const QDateTime &start,
+                          const QDateTime &end = QDateTime());
 
-    QSqlDatabase &database();
+    void closeDesktopEvent(const QString &usedActivity,
+                           const QString &initiatingAgent,
+                           const QString &targettedResource,
+                           const QDateTime &end);
+
+    void getResourceScoreCache(const QString &usedActivity,
+                               const QString &initiatingAgent,
+                               const QString &targettedResource, qreal &score,
+                               QDateTime &lastUpdate);
 
 private:
+    QSqlDatabase &database();
+
     static DatabaseConnection *s_instance;
 
     DatabaseConnection();

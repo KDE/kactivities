@@ -20,12 +20,15 @@
 #ifndef MODULE_H
 #define MODULE_H
 
+// Qt
 #include <QObject>
 #include <QString>
 #include <QStringList>
 #include <QDBusVariant>
 
+// Utils
 #include <utils/d_ptr.h>
+
 
 /**
  * Module

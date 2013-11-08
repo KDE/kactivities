@@ -20,13 +20,17 @@
 #ifndef FEATURES_H
 #define FEATURES_H
 
+// Qt
 #include <QObject>
 #include <QString>
 #include <QDBusVariant>
 
-#include <Module.h>
-
+// Utils
 #include <utils/d_ptr.h>
+
+// Local
+#include "Module.h"
+
 
 /**
  * Features object provides one interface for clients

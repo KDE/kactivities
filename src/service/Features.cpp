@@ -17,13 +17,19 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#include <Features.h>
-#include "featuresadaptor.h"
+// Self
+#include "Features.h"
 
-#include "common.h"
+// KDE
 #include <kdbusconnectionpool.h>
 
+// Utils
 #include <utils/d_ptr_implementation.h>
+
+// Local
+#include "common.h"
+#include "featuresadaptor.h"
+
 
 class Features::Private {
 };

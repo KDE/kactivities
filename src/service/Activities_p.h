@@ -20,13 +20,17 @@
 #ifndef ACTIVITIES_P_H
 #define ACTIVITIES_P_H
 
+// Self
+#include "Activities.h"
+
+// Qt
 #include <QString>
 #include <QTimer>
 
+// KDE
 #include <KDE/KConfig>
 #include <KDE/KConfigGroup>
 
-#include "Activities.h"
 
 class KSMServer;
 
@@ -65,11 +69,30 @@ public:
     KSMServer *ksmserver;
 
 public:
-    KConfigGroup activitiesConfig();
-    KConfigGroup activityIconsConfig();
-    KConfigGroup mainConfig();
-    QString activityName(const QString &activity);
-    QString activityIcon(const QString &activity);
+    inline KConfigGroup activitiesConfig()
+    {
+        return KConfigGroup(&config, "activities");
+    }
+
+    inline KConfigGroup activityIconsConfig()
+    {
+        return KConfigGroup(&config, "activities-icons");
+    }
+
+    inline KConfigGroup mainConfig()
+    {
+        return KConfigGroup(&config, "main");
+    }
+
+    inline QString activityName(const QString &activity)
+    {
+        return activitiesConfig().readEntry(activity, QString());
+    }
+
+    inline QString activityIcon(const QString &activity)
+    {
+        return activityIconsConfig().readEntry(activity, QString());
+    }
 
 public Q_SLOTS:
     // Schedules config syncing to be done after

@@ -17,14 +17,20 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+// Self
 #include "Module.h"
 
+// Qt
 #include <QHash>
 #include <QString>
 #include <QObject>
-#include <Debug.h>
 
+// Utils
 #include <utils/d_ptr_implementation.h>
+
+// Local
+#include "Debug.h"
+
 
 class Module::Private {
 public:

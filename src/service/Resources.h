@@ -20,13 +20,17 @@
 #ifndef RESOURCES_H
 #define RESOURCES_H
 
+// Qt
 #include <QString>
 #include <QStringList>
 
-#include <Module.h>
-#include <Event.h>
-
+// Utils
 #include <utils/d_ptr.h>
+
+// Local
+#include "Module.h"
+#include "Event.h"
+
 
 /**
  * Resources

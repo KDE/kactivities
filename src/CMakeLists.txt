@@ -28,6 +28,10 @@ set (KACTIVITIES_ONTOLOGIES_DIR ${CMAKE_INSTALL_PREFIX}/share/ontology/kde)
 #     set (HAVE_NEPOMUK 1)
 # endif ()
 
+# Boosting us a bit
+
+find_package (Boost 1.54)
+
 # Testing for C++0x/C++11 features
 include (CheckCxxFeatures)
 cxx_check_feature ("c++11" "auto"               "N2546" HAVE_CXX11_AUTO               "${ADDITIONAL_DEFINITIONS}")
@@ -69,13 +73,25 @@ include_directories(
 
 string (COMPARE EQUAL "${CXX_FEATURES_UNSUPPORTED}" "" CXX_COMPILER_IS_MODERN)
 
+set (BUILD_EVERYTHING true)
+
+if (NOT Boost_FOUND)
+   message (WARNING
+      "REQUIRED: You need boost.range in order to build the Activity Manager daemon"
+      )
+   set (BUILD_EVERYTHING false)
+endif ()
+
 if (NOT HAVE_CXX11_VARIADIC_TEMPLATES OR NOT HAVE_CXX11_INITIALIZER_LISTS)
-   # The compiler is a crappy old one
-   message (SEND_ERROR
+   message (WARNING
       "REQUIRED: You need a more modern compiler in order to build the Activity Manager daemon"
       )
+   set (BUILD_EVERYTHING false)
+endif ()
 
-else ()
+if (BUILD_EVERYTHING)
+   include_directories (${Boost_INCLUDE_DIR})
+
    # The compiler is good enough
    if (CXX_COMPILER_IS_MODERN)
       message (STATUS

@@ -22,16 +22,21 @@
 
 #include <kactivities_export.h>
 
+// Qt
 #include <QObject>
 #include <QMetaObject>
 
+// KDE
 // #include <KPluginFactory>
-#include <kconfiggroup.h>
+#include <KDE/KConfigGroup>
 
+// Utils
+#include <utils/d_ptr.h>
+
+// Local
 #include "Event.h"
 #include "Module.h"
 
-#include <utils/d_ptr.h>
 
 #define KAMD_EXPORT_PLUGIN(ClassName, AboutData)                       \
     K_PLUGIN_FACTORY(ClassName##Factory, registerPlugin<ClassName>();) \

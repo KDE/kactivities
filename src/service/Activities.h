@@ -20,14 +20,17 @@
 #ifndef ACTIVITIES_H
 #define ACTIVITIES_H
 
+// Qt
 #include <QString>
 #include <QStringList>
 
-#include <Module.h>
-
+// Utils
 #include <utils/d_ptr.h>
 
+// Local
+#include "Module.h"
 #include <common/dbus/org.kde.ActivityManager.Activities.h>
+
 
 /**
  * Service for tracking the user actions and managing the

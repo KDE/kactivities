@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2012 Ivan Cukic <ivan.cukic(at)kde.org>
+ *   Copyright (C) 2013 Ivan Cukic <ivan.cukic(at)kde.org>
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License version 2,
@@ -17,44 +17,18 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef APPLICATION_H
-#define APPLICATION_H
+#include "qsqlquery.h"
 
-// Qt
-#include <QCoreApplication>
+NextValueIterator<QSqlQuery> begin(QSqlQuery &query)
+{
+    return NextValueIterator<QSqlQuery>(query);
+}
 
-// Utils
-#include <utils/d_ptr.h>
+NextValueIterator<QSqlQuery> end(QSqlQuery &query)
+{
+    return NextValueIterator
+        <QSqlQuery>(query, NextValueIterator<QSqlQuery>::EndIterator);
+}
 
 
-class Resources;
-class Activities;
-class Features;
 
-/**
- * Main application object
- */
-class Application : public QCoreApplication {
-    Q_OBJECT
-
-public:
-    Application(int &argc, char **argv);
-    virtual ~Application();
-
-    virtual int newInstance();
-
-    // static Application * self();
-    static void quit();
-
-    Resources &resources() const;
-    Activities &activities() const;
-    Features &features() const;
-
-private Q_SLOTS:
-    void loadPlugins();
-
-private:
-    D_PTR;
-};
-
-#endif // APPLICATION_H

@@ -29,12 +29,6 @@ find_package (Qt5 REQUIRED NO_MODULE COMPONENTS Core DBus)
 # KDE Frameworks
 find_package (KF5 CONFIG REQUIRED KDBusAddons)
 
-# Enable C++11
-if (UNIX)
-   add_definitions ("-Wall -std=c++0x")
-endif ()
-
-
 # Basic includes
 include (CPack)
 include (FeatureSummary)

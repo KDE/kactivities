@@ -18,11 +18,13 @@
 #ifndef PLUGINS_SQLITE_STATS_PLUGIN_H
 #define PLUGINS_SQLITE_STATS_PLUGIN_H
 
+// Qt
 #include <QObject>
 #include <QSet>
 
+// Local
 #include <Plugin.h>
-#include "Rankings.h"
+
 
 class QFileSystemWatcher;
 
@@ -60,7 +62,6 @@ private:
         NoApplications = 2
     };
 
-    Rankings *m_rankings;
     QObject *m_activities;
     QObject *m_resources;
     QFileSystemWatcher *m_configWatcher;

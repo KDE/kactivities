@@ -20,9 +20,12 @@
 #ifndef PLUGINS_SQLITE_RESOURCE_SCORE_CACHE_H
 #define PLUGINS_SQLITE_RESOURCE_SCORE_CACHE_H
 
+// Qt
 #include <QString>
 
+// Utils
 #include <utils/d_ptr.h>
+
 
 class ResourceScoreCachePrivate;
 

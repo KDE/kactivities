@@ -15,11 +15,18 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+// Self
 #include "SlcPlugin.h"
+
+// Qt
+#include <QDBusConnection>
+
+// KDE
+#include <kdbusconnectionpool.h>
+
+// Local
 #include "slcadaptor.h"
 
-#include <QDBusConnection>
-#include <kdbusconnectionpool.h>
 
 SlcPlugin::SlcPlugin(QObject *parent, const QVariantList &args)
     : Plugin(parent)

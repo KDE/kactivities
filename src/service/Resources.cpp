@@ -17,29 +17,34 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+// Self
 #include "Resources.h"
 #include "Resources_p.h"
-#include "resourcesadaptor.h"
 
+// Qt
 #include <QDBusConnection>
 #include <QThread>
 #include <QMutex>
 #include <QMutexLocker>
 
-#include <Debug.h>
-
+// KDE
 // #include <kwindowsystem.h>
 #include <kdbusconnectionpool.h>
 
-#include <Application.h>
-#include <Activities.h>
-
-#include <time.h>
-
-#include "common.h"
-
+// Utils
 #include <utils/d_ptr_implementation.h>
 #include <utils/remove_if.h>
+
+// System
+#include <time.h>
+
+// Local
+#include "Debug.h"
+#include "Application.h"
+#include "Activities.h"
+#include "common.h"
+#include "resourcesadaptor.h"
+
 
 Resources::Private::Private(Resources *parent)
     : QThread(parent)
@@ -108,7 +113,7 @@ void Resources::Private::addEvent(const Event &newEvent)
         // Deleting previously registered Accessed events if
         // the current one has the same application and uri
         if (newEvent.type != Event::Accessed) {
-            kamd::utils::remove_if(events, [&newEvent](const Event & event)->bool {
+            kamd::utils::remove_if(events, [&newEvent](const Event &event)->bool {
                 return
                     event.application == newEvent.application &&
                     event.uri         == newEvent.uri
@@ -205,7 +210,7 @@ void Resources::Private::windowClosed(quintptr windowId)
 
     // Closing all the resources that the window registered
 
-    foreach (const QString & uri, windows[windowId].resources) {
+    for (const QString &uri: windows[windowId].resources) {
         q->RegisterResourceEvent(windows[windowId].application,
                                  windowId, uri, Event::Closed);
     }
