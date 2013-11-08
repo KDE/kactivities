@@ -18,10 +18,13 @@
 #ifndef PLUGINS_SQLITE_STATS_PLUGIN_H
 #define PLUGINS_SQLITE_STATS_PLUGIN_H
 
+// Qt
 #include <QObject>
 #include <QSet>
 
+// Local
 #include <Plugin.h>
+
 
 class QFileSystemWatcher;
 

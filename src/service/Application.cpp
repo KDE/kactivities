@@ -17,39 +17,43 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#include <Application.h>
+// Self
+#include <kactivities-features.h>
+#include "Application.h"
 
+// Qt
 #include <QDBusConnection>
 #include <QThread>
 #include <QDir>
 
+// KDE
 // #include <KCrash>
 // #include <KAboutData>
 // #include <KCmdLineArgs>
-#include <kservicetypetrader.h>
-#include <ksharedconfig.h>
-
+#include <KDE/KServiceTypeTrader>
+#include <KDE/KSharedConfig>
 #include <kdbusconnectionpool.h>
 #include <kdbusservice.h>
 
+// Boost and utils
 #include <boost/range/adaptor/filtered.hpp>
+#include <utils/d_ptr_implementation.h>
 
-#include <Activities.h>
-#include <Resources.h>
-#include <Features.h>
-#include <Plugin.h>
-#include <Debug.h>
-
+// System
 #include <signal.h>
 #include <stdlib.h>
 #include <memory>
 
-#include <utils/d_ptr_implementation.h>
+// Local
+#include "Activities.h"
+#include "Resources.h"
+#include "Features.h"
+#include "Plugin.h"
+#include "Debug.h"
 
-#include <kactivities-features.h>
 
 namespace {
-QList<QThread *> s_moduleThreads;
+    QList<QThread *> s_moduleThreads;
 }
 
 // Runs a QObject inside a QThread

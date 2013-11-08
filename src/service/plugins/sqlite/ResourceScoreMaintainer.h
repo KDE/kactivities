@@ -20,7 +20,9 @@
 #ifndef PLUGINS_SQLITE_RESOURCE_SCORE_MAINTAINER_H
 #define PLUGINS_SQLITE_RESOURCE_SCORE_MAINTAINER_H
 
+// Utils
 #include <utils/d_ptr.h>
+
 
 class ResourceScoreMaintainerPrivate;
 class QString;

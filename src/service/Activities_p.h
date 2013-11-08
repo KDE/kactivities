@@ -20,13 +20,17 @@
 #ifndef ACTIVITIES_P_H
 #define ACTIVITIES_P_H
 
+// Self
+#include "Activities.h"
+
+// Qt
 #include <QString>
 #include <QTimer>
 
+// KDE
 #include <KDE/KConfig>
 #include <KDE/KConfigGroup>
 
-#include "Activities.h"
 
 class KSMServer;
 

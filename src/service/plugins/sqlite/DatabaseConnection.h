@@ -20,10 +20,12 @@
 #ifndef PLUGINS_SQLITE_DATABASE_CONNECTION_H
 #define PLUGINS_SQLITE_DATABASE_CONNECTION_H
 
+// Qt
 #include <QObject>
 #include <QDateTime>
 #include <QSqlQuery>
 
+// Utils
 #include <utils/d_ptr.h>
 
 class QDateTime;

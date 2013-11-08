@@ -15,23 +15,31 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+// Self
 #include "Rankings.h"
-#include "rankingsadaptor.h"
 
+// STL
 #include <algorithm>
 
+// Qt
 #include <QDBusConnection>
 #include <QVariantList>
 #include <QSqlQuery>
 
+// KDE
+#include <kdbusconnectionpool.h>
+
+// Utils
+#include <utils/remove_if.h>
+#include <utils/qsqlquery.h>
+
+// Local
+#include "Debug.h"
 #include "ResourceScoreCache.h"
 #include "DatabaseConnection.h"
 #include "StatsPlugin.h"
-#include "Debug.h"
-#include <kdbusconnectionpool.h>
+#include "rankingsadaptor.h"
 
-#include <utils/remove_if.h>
-#include <utils/qsqlquery.h>
 
 #define RESULT_COUNT_LIMIT 10
 #define COALESCE_ACTIVITY(Activity) \

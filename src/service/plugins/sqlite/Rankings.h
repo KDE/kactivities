@@ -18,11 +18,13 @@
 #ifndef PLUGINS_SQLITE_RANKINGS_H
 #define PLUGINS_SQLITE_RANKINGS_H
 
+// Qt
 #include <QHash>
 #include <QObject>
 #include <QString>
 #include <QStringList>
 #include <QThread>
+
 
 class Rankings : public QObject {
     Q_OBJECT

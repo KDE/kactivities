@@ -17,23 +17,26 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+// Self
 #include <kactivities-features.h>
-
 #include "StatsPlugin.h"
-#include "ResourceScoreMaintainer.h"
-#include "Debug.h"
-#include "Rankings.h"
-#include "scoringadaptor.h"
 
-#include "../../Event.h"
-#include <kdbusconnectionpool.h>
-
+// Qt
 #include <QFileSystemWatcher>
 #include <QSqlQuery>
 
-#include <kconfig.h>
+// KDE
+#include <KDE/KConfig>
+#include <kdbusconnectionpool.h>
 
+// Local
+#include "Debug.h"
 #include "DatabaseConnection.h"
+#include "ResourceScoreMaintainer.h"
+#include "Rankings.h"
+#include "scoringadaptor.h"
+#include "../../Event.h"
+
 
 StatsPlugin *StatsPlugin::s_instance = Q_NULLPTR;
 

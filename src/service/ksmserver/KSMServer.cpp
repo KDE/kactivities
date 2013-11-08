@@ -17,25 +17,28 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+// Self
 #include "KSMServer.h"
 #include "KSMServer_p.h"
 
+// Qt
 #include <QDBusConnection>
 #include <QDBusServiceWatcher>
 #include <QDBusInterface>
 #include <QDBusPendingReply>
 #include <QDBusPendingCallWatcher>
 
-#include <Debug.h>
-
+// KDE
 #include <kdbusconnectionpool.h>
 
+// Utils
 #include <utils/d_ptr_implementation.h>
 
-#define KWIN_SERVICE \
-    QStringLiteral("org.kde.kwin")
-#define KSMSERVER_SERVICE \
-    QStringLiteral("org.kde.ksmserver")
+// Local
+#include <Debug.h>
+
+#define KWIN_SERVICE QStringLiteral("org.kde.kwin")
+#define KSMSERVER_SERVICE QStringLiteral("org.kde.ksmserver")
 
 KSMServer::Private::Private(KSMServer *parent)
     : serviceWatcher(Q_NULLPTR)

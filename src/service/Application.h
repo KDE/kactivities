@@ -20,8 +20,12 @@
 #ifndef APPLICATION_H
 #define APPLICATION_H
 
+// Qt
 #include <QCoreApplication>
+
+// Utils
 #include <utils/d_ptr.h>
+
 
 class Resources;
 class Activities;

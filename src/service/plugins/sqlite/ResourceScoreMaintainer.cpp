@@ -17,19 +17,25 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+// Self
 #include "ResourceScoreMaintainer.h"
 
+// Qt
 #include <QList>
 #include <QMutex>
 #include <QThread>
 
+// System
 #include <time.h>
 
+// Utils
+#include <utils/for_each_assoc.h>
+#include <utils/d_ptr_implementation.h>
+
+// Local
 #include "StatsPlugin.h"
 #include "ResourceScoreCache.h"
 
-#include <utils/for_each_assoc.h>
-#include <utils/d_ptr_implementation.h>
 
 class ResourceScoreMaintainer::Private : public QThread {
 public:

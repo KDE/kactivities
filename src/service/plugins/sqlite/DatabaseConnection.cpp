@@ -17,8 +17,11 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+// Self
+#include <kactivities-features.h>
 #include "DatabaseConnection.h"
 
+// Qt
 #include <QDir>
 #include <QSqlDatabase>
 #include <QSqlError>
@@ -26,13 +29,15 @@
 #include <QStandardPaths>
 #include <QVariant>
 
-#include <cmath>
-
-#include <Debug.h>
-#include <kactivities-features.h>
-
+// Utils
 #include <utils/d_ptr_implementation.h>
 #include <utils/qsqlquery.h>
+
+// System
+#include <cmath>
+
+// Local
+#include "Debug.h"
 
 class DatabaseConnection::Private {
 public:

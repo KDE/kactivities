@@ -17,29 +17,31 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+// Self
+#include <kactivities-features.h>
 #include "Activities.h"
 #include "Activities_p.h"
 
-#include "activitiesadaptor.h"
-
+// Qt
 #include <QDBusConnection>
-#include <QUuid>
-#include <QStandardPaths>
 #include <QMetaObject>
+#include <QStandardPaths>
+#include <QUuid>
 
-#include <Debug.h>
-
-#include <utils/range.h>
-
+// KDE
 #include <kdbusconnectionpool.h>
-#include <kactivities-features.h>
 
-#include "ksmserver/KSMServer.h"
-
-#include "common.h"
-
+// Utils
 #include <utils/d_ptr_implementation.h>
 #include <utils/find_if_assoc.h>
+#include <utils/range.h>
+
+// Local
+#include "Debug.h"
+#include "activitiesadaptor.h"
+#include "common.h"
+#include "ksmserver/KSMServer.h"
+
 
 // Private
 

@@ -17,12 +17,18 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+// Self
 #include "Plugin.h"
-#include <Debug.h>
 
+// KDE
 #include <ksharedconfig.h>
 
+// Utils
 #include <utils/d_ptr_implementation.h>
+
+// Local
+#include "Debug.h"
+
 
 class Plugin::Private {
 public:

@@ -17,29 +17,34 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+// Self
 #include "Resources.h"
 #include "Resources_p.h"
-#include "resourcesadaptor.h"
 
+// Qt
 #include <QDBusConnection>
 #include <QThread>
 #include <QMutex>
 #include <QMutexLocker>
 
-#include <Debug.h>
-
+// KDE
 // #include <kwindowsystem.h>
 #include <kdbusconnectionpool.h>
 
-#include <Application.h>
-#include <Activities.h>
-
-#include <time.h>
-
-#include "common.h"
-
+// Utils
 #include <utils/d_ptr_implementation.h>
 #include <utils/remove_if.h>
+
+// System
+#include <time.h>
+
+// Local
+#include "Debug.h"
+#include "Application.h"
+#include "Activities.h"
+#include "common.h"
+#include "resourcesadaptor.h"
+
 
 Resources::Private::Private(Resources *parent)
     : QThread(parent)

@@ -17,10 +17,13 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+// Self
 #include "Event.h"
 
-#include <Debug.h>
-#include <common.h>
+// Local
+#include "Debug.h"
+#include "common.h"
+
 
 Event::Event()
     : wid(0)
