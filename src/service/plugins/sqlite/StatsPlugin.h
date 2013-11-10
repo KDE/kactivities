@@ -20,7 +20,9 @@
 
 // Qt
 #include <QObject>
-#include <QSet>
+
+// Boost
+#include <boost/container/flat_set.hpp>
 
 // Local
 #include <Plugin.h>
@@ -56,6 +58,8 @@ private Q_SLOTS:
     void loadConfiguration();
 
 private:
+    inline bool acceptedEvent(const Event &event);
+
     enum WhatToRemember {
         AllApplications = 0,
         SpecificApplications = 1,
@@ -66,7 +70,7 @@ private:
     QObject *m_resources;
     QFileSystemWatcher *m_configWatcher;
 
-    QSet<QString> m_apps;
+    boost::container::flat_set<QString> m_apps;
 
     bool m_blockedByDefault : 1;
     bool m_blockAll : 1;

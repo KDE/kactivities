@@ -162,22 +162,20 @@ void DatabaseConnection::getResourceScoreCache(const QString &usedActivity,
                                                qreal &score,
                                                QDateTime &lastUpdate)
 {
-    // This can fail if we have the cache already made
-
-    exec(
+    auto results = exec(
+        // This can fail if we have the cache already made
         Private::createResourceScoreCacheQuery
             .arg(usedActivity)
             .arg(initiatingAgent)
             .arg(targettedResource)
-            .arg(QDateTime::currentDateTime().toTime_t()));
+            .arg(QDateTime::currentDateTime().toTime_t()),
 
-    // Getting the old score
-
-    auto results = exec(
+        // Getting the old score
         Private::getResourceScoreCacheQuery
             .arg(usedActivity)
             .arg(initiatingAgent)
-            .arg(targettedResource));
+            .arg(targettedResource)
+    );
 
     // Only and always one result
 
@@ -290,46 +288,48 @@ void DatabaseConnection::initDatabaseSchema()
     }
 
     if (dbSchemaVersion < QStringLiteral("1.0")) {
-        exec(QStringLiteral("CREATE TABLE IF NOT EXISTS SchemaInfo "
-                            "(key text PRIMARY KEY, value text)"));
-        exec(Private::insertSchemaInfoQuery.arg(QStringLiteral("version"),
-                                                QStringLiteral("1.0")));
+        exec(
+            QStringLiteral("CREATE TABLE IF NOT EXISTS SchemaInfo "
+                           "(key text PRIMARY KEY, value text)"),
 
-        exec(QStringLiteral(
-            "CREATE TABLE IF NOT EXISTS nuao_DesktopEvent ("
-            "usedActivity TEXT, "
-            "initiatingAgent TEXT, "
-            "targettedResource TEXT, "
-            "start INTEGER, "
-            "end INTEGER "
-            ")"));
+            Private::insertSchemaInfoQuery.arg(QStringLiteral("version"),
+                                                QStringLiteral("1.0")),
 
-        exec(QStringLiteral(
-            "CREATE TABLE IF NOT EXISTS kext_ResourceScoreCache ("
-            "usedActivity TEXT, "
-            "initiatingAgent TEXT, "
-            "targettedResource TEXT, "
-            "scoreType INTEGER, "
-            "cachedScore FLOAT, "
-            "lastUpdate INTEGER, "
-            "PRIMARY KEY(usedActivity, initiatingAgent, targettedResource)"
-            ")"));
+            QStringLiteral("CREATE TABLE IF NOT EXISTS nuao_DesktopEvent ("
+                           "usedActivity TEXT, "
+                           "initiatingAgent TEXT, "
+                           "targettedResource TEXT, "
+                           "start INTEGER, "
+                           "end INTEGER "
+                           ")"),
+
+            QStringLiteral("CREATE TABLE IF NOT EXISTS kext_ResourceScoreCache ("
+                           "usedActivity TEXT, "
+                           "initiatingAgent TEXT, "
+                           "targettedResource TEXT, "
+                           "scoreType INTEGER, "
+                           "cachedScore FLOAT, "
+                           "lastUpdate INTEGER, "
+                           "PRIMARY KEY(usedActivity, initiatingAgent, targettedResource)"
+                           ")")
+        );
     }
 
     if (dbSchemaVersion < QStringLiteral("1.01")) {
         // Adding the firstUpdate field so that we can have
         // a crude way of deleting the score caches when
         // the user requests a partial history deletion
+        const auto now = QDateTime::currentDateTime().toTime_t();
 
-        exec(Private::updateSchemaInfoQuery.arg(QStringLiteral("version"),
-                                                QStringLiteral("1.01")));
+        exec(
+            Private::updateSchemaInfoQuery.arg(QStringLiteral("version"),
+                                               QStringLiteral("1.01")),
 
-        exec(QStringLiteral(
-            "ALTER TABLE kext_ResourceScoreCache "
-            "ADD COLUMN firstUpdate INTEGER"));
+            QStringLiteral("ALTER TABLE kext_ResourceScoreCache "
+                           "ADD COLUMN firstUpdate INTEGER"),
 
-        exec(QStringLiteral("UPDATE kext_ResourceScoreCache "
-                            "SET firstUpdate = ")
-             + QString::number(QDateTime::currentDateTime().toTime_t()));
+            QStringLiteral("UPDATE kext_ResourceScoreCache "
+                           "SET firstUpdate = ") + QString::number(now)
+        );
     }
 }

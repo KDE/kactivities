@@ -29,6 +29,10 @@
 #include <KDE/KConfig>
 #include <kdbusconnectionpool.h>
 
+// Boost
+#include <boost/range/algorithm/binary_search.hpp>
+#include <utils/range.h>
+
 // Local
 #include "Debug.h"
 #include "DatabaseConnection.h"
@@ -105,11 +109,11 @@ void StatsPlugin::loadConfiguration()
     m_apps.clear();
 
     if (m_whatToRemember == SpecificApplications) {
-        m_apps = config()
-                     .readEntry(m_blockedByDefault ? "allowed-applications"
-                                                   : "blocked-applications",
-                                QStringList())
-                     .toSet();
+        auto apps = config().readEntry(
+            m_blockedByDefault ? "allowed-applications" : "blocked-applications",
+            QStringList());
+
+        m_apps.insert(apps.cbegin(), apps.cend());
     }
 
     // Delete old events, as per configuration
@@ -129,8 +133,26 @@ QString StatsPlugin::currentActivity() const
         m_activities, "CurrentActivity", "QString");
 }
 
+bool StatsPlugin::acceptedEvent(const Event &event)
+{
+    return !(
+        event.uri.startsWith(QStringLiteral("about")) ||
+
+        // if blocked by default, the list contains allowed applications
+        //     ignore event if the list doesn't contain the application
+        // if not blocked by default, the list contains blocked applications
+        //     ignore event if the list contains the application
+        (m_whatToRemember == SpecificApplications
+            && m_blockedByDefault
+                != boost::binary_search(m_apps, event.application))
+    );
+}
+
 void StatsPlugin::addEvents(const EventList &events)
 {
+    using namespace kamd::utils;
+    using namespace std::placeholders;
+
     if (m_blockAll || m_whatToRemember == NoApplications) {
         return;
     }
@@ -138,20 +160,8 @@ void StatsPlugin::addEvents(const EventList &events)
     const auto currentActivity = Plugin::callOn<QString, Qt::DirectConnection>(
         m_activities, "CurrentActivity", "QString");
 
-    for (const auto &event: events) {
-
-        if (event.uri.startsWith(QLatin1String("about"))) {
-            continue;
-        }
-
-        // if blocked by default, the list contains allowed applications
-        //     ignore event if the list doesn't contain the application
-        // if not blocked by default, the list contains blocked applications
-        //     ignore event if the list contains the application
-        if ((m_whatToRemember == SpecificApplications)
-            && (m_blockedByDefault != m_apps.contains(event.application))) {
-            continue;
-        }
+    for (const auto &event :
+            events | filtered(this, &StatsPlugin::acceptedEvent)) {
 
         switch (event.type) {
             case Event::Accessed:
@@ -204,27 +214,20 @@ void StatsPlugin::deleteRecentStats(const QString &activity, int count,
 
     if (what == QStringLiteral("everything")) {
         DatabaseConnection::exec(
-            QStringLiteral("DELETE FROM kext_ResourceScoreCache WHERE ")
-            + activityCheck);
-        DatabaseConnection::exec(
-            QStringLiteral("DELETE FROM nuao_DesktopEvent WHERE ")
-            + activityCheck);
+            QStringLiteral("DELETE FROM kext_ResourceScoreCache WHERE ") + activityCheck,
+            QStringLiteral("DELETE FROM nuao_DesktopEvent WHERE ") + activityCheck
+        );
 
     } else {
 
         // Deleting a specified length of time
 
-        auto now = QDateTime::currentDateTime();
+        auto since = QDateTime::currentDateTime();
 
-        if (what == QStringLiteral("h")) {
-            now = now.addSecs(-count * 60 * 60);
-
-        } else if (what == QStringLiteral("d")) {
-            now = now.addDays(-count);
-
-        } else if (what == QStringLiteral("m")) {
-            now = now.addMonths(-count);
-        }
+        since = (what[0] == QLatin1Char('h')) ? since.addSecs(-count * 60 * 60)
+              : (what[0] == QLatin1Char('d')) ? since.addDays(-count)
+              : (what[0] == QLatin1Char('m')) ? since.addMonths(-count)
+              : since;
 
         // Maybe we should decrease the scores for the previosuly
         // cached items. Thkinking it is not that important -
@@ -240,13 +243,9 @@ void StatsPlugin::deleteRecentStats(const QString &activity, int count,
             " AND end > %2 ");
 
         DatabaseConnection::exec(
-            queryRSC
-                .arg(activityCheck)
-                .arg(now.toTime_t()));
-        DatabaseConnection::exec(
-            queryDE
-                .arg(activityCheck)
-                .arg(now.toTime_t()));
+            queryRSC.arg(activityCheck).arg(since.toTime_t()),
+            queryDE.arg(activityCheck).arg(since.toTime_t())
+        );
     }
 
     emit recentStatsDeleted(activity, count, what);
@@ -258,7 +257,10 @@ void StatsPlugin::deleteEarlierStats(const QString &activity, int months)
         return;
     }
 
-    const auto activityCheck = activity.isEmpty() ? QStringLiteral(" 1 ") : QStringLiteral(" usedActivity = '") + activity + QStringLiteral("' ");
+    const auto activityCheck = activity.isEmpty()
+                                   ? QStringLiteral(" 1 ")
+                                   : QStringLiteral(" usedActivity = '")
+                                     + activity + QStringLiteral("' ");
 
     // Deleting a specified length of time
 
@@ -274,14 +276,9 @@ void StatsPlugin::deleteEarlierStats(const QString &activity, int months)
         " AND start < %2 ");
 
     DatabaseConnection::exec(
-        queryRSC
-            .arg(activityCheck)
-            .arg(time.toTime_t()));
-
-    DatabaseConnection::exec(
-        queryDE
-            .arg(activityCheck)
-            .arg(time.toTime_t()));
+        queryRSC.arg(activityCheck).arg(time.toTime_t()),
+        queryDE.arg(activityCheck).arg(time.toTime_t())
+    );
 
     emit earlierStatsDeleted(activity, months);
 }

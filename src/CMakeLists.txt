@@ -77,7 +77,7 @@ set (BUILD_EVERYTHING true)
 
 if (NOT Boost_FOUND)
    message (WARNING
-      "REQUIRED: You need boost.range in order to build the Activity Manager daemon"
+      "REQUIRED: You need boost libraries (range and containers) in order to build the Activity Manager daemon"
       )
    set (BUILD_EVERYTHING false)
 endif ()

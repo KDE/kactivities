@@ -22,6 +22,7 @@
 
 #include <boost/range/algorithm/copy.hpp>
 #include <boost/range/adaptor/transformed.hpp>
+#include <boost/range/adaptor/filtered.hpp>
 
 /********************************************************************
  *  Syntactic sugar for converting ranges to collections            *
@@ -46,6 +47,17 @@ __inline auto transformed(Class *const self, Member member)
                 std::bind(member, self, std::placeholders::_1)))
 {
     return boost::adaptors::transformed(
+        std::bind(member, self, std::placeholders::_1)
+    );
+
+}
+
+template <typename Class, typename Member>
+__inline auto filtered(Class *const self, Member member)
+    -> decltype(boost::adaptors::filtered(
+                std::bind(member, self, std::placeholders::_1)))
+{
+    return boost::adaptors::filtered(
         std::bind(member, self, std::placeholders::_1)
     );
 

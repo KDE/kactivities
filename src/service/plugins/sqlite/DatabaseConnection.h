@@ -24,6 +24,8 @@
 #include <QObject>
 #include <QDateTime>
 #include <QSqlQuery>
+#include <QString>
+#include <QStringList>
 
 // Utils
 #include <utils/d_ptr.h>
@@ -37,10 +39,20 @@ class DatabaseConnection : public QObject {
 public:
     static DatabaseConnection *self();
 
-    inline static QSqlQuery exec(const QString &query)
+    template <typename T>
+    inline static QSqlQuery exec(const T &query)
     {
         return self()->database().exec(query);
     }
+
+    template <typename T1, typename T2, typename... Ts>
+    inline static QSqlQuery exec(const T1 &query1, const T2 &query2,
+                          const Ts &... queries)
+    {
+        exec(query1);
+        return exec(query2, queries...);
+    }
+
 
     void openDesktopEvent(const QString &usedActivity,
                           const QString &initiatingAgent,
