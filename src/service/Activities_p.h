@@ -28,8 +28,8 @@
 #include <QTimer>
 
 // KDE
-#include <KDE/KConfig>
-#include <KDE/KConfigGroup>
+#include <kconfig.h>
+#include <kconfiggroup.h>
 
 
 class KSMServer;

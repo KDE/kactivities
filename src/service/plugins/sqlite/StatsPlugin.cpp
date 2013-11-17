@@ -26,7 +26,7 @@
 #include <QSqlQuery>
 
 // KDE
-#include <KDE/KConfig>
+#include <kconfig.h>
 #include <kdbusconnectionpool.h>
 
 // Boost

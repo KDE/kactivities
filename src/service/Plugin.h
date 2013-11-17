@@ -28,7 +28,7 @@
 
 // KDE
 // #include <KPluginFactory>
-#include <KDE/KConfigGroup>
+#include <kconfiggroup.h>
 
 // Utils
 #include <utils/d_ptr.h>

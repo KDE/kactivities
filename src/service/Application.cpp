@@ -30,8 +30,8 @@
 // #include <KCrash>
 // #include <KAboutData>
 // #include <KCmdLineArgs>
-#include <KDE/KServiceTypeTrader>
-#include <KDE/KSharedConfig>
+#include <kservicetypetrader.h>
+#include <ksharedconfig.h>
 #include <kdbusconnectionpool.h>
 #include <kdbusservice.h>
 
