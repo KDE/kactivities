@@ -4,6 +4,8 @@
 # it is used in both ontology/ and lib/ subdirectories.
 set (KACTIVITIES_ONTOLOGIES_DIR ${CMAKE_INSTALL_PREFIX}/share/ontology/kde)
 
+option (KACTIVITIES_LIBRARY_ONLY "If true, compiles only the kactivities library, without the service and other modules." OFF)
+
 # TODO: Add support for Nepomuk when it comes to Qt5 world
 # # Checking for Nepomuk
 # macro_optional_find_package (NepomukCore)
@@ -30,7 +32,9 @@ set (KACTIVITIES_ONTOLOGIES_DIR ${CMAKE_INSTALL_PREFIX}/share/ontology/kde)
 
 # Boosting us a bit
 
-find_package (Boost 1.54)
+if (NOT KACTIVITIES_LIBRARY_ONLY)
+   find_package (Boost 1.54 REQUIRED)
+endif ()
 
 # Testing for C++0x/C++11 features
 include (CheckCxxFeatures)
@@ -73,23 +77,20 @@ include_directories(
 
 string (COMPARE EQUAL "${CXX_FEATURES_UNSUPPORTED}" "" CXX_COMPILER_IS_MODERN)
 
-set (BUILD_EVERYTHING true)
+if (NOT KACTIVITIES_LIBRARY_ONLY)
 
-if (NOT Boost_FOUND)
-   message (WARNING
-      "REQUIRED: You need boost libraries (range and containers) in order to build the Activity Manager daemon"
-      )
-   set (BUILD_EVERYTHING false)
-endif ()
+   if (NOT Boost_FOUND)
+      message (FATAL_ERROR
+         "REQUIRED: You need boost libraries (range and containers) in order to build the Activity Manager daemon. If you want to build only the library, set the KACTIVITIES_LIBRARY_ONLY option to ON."
+         )
+   endif ()
 
-if (NOT HAVE_CXX11_VARIADIC_TEMPLATES OR NOT HAVE_CXX11_INITIALIZER_LISTS)
-   message (WARNING
-      "REQUIRED: You need a more modern compiler in order to build the Activity Manager daemon"
-      )
-   set (BUILD_EVERYTHING false)
-endif ()
+   if (NOT HAVE_CXX11_VARIADIC_TEMPLATES OR NOT HAVE_CXX11_INITIALIZER_LISTS)
+      message (FATAL_ERROR
+         "REQUIRED: You need a more modern compiler in order to build the Activity Manager daemon. If you want to build only the library, set the KACTIVITIES_LIBRARY_ONLY option to ON."
+         )
+   endif ()
 
-if (BUILD_EVERYTHING)
    include_directories (${Boost_INCLUDE_DIR})
 
    # The compiler is good enough
