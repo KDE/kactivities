@@ -33,7 +33,7 @@ option (KACTIVITIES_LIBRARY_ONLY "If true, compiles only the kactivities library
 # Boosting us a bit
 
 if (NOT KACTIVITIES_LIBRARY_ONLY)
-   find_package (Boost 1.54 REQUIRED)
+   find_package (Boost 1.49 REQUIRED)
 endif ()
 
 # Testing for C++0x/C++11 features
