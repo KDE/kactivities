@@ -30,6 +30,9 @@
 // Utils
 #include <utils/d_ptr.h>
 
+// Local
+#include <Debug.h>
+
 class QDateTime;
 class QSqlDatabase;
 
@@ -40,13 +43,13 @@ public:
     static DatabaseConnection *self();
 
     template <typename T>
-    inline static QSqlQuery exec(const T &query)
+    inline QSqlQuery exec(const T &query)
     {
-        return self()->database().exec(query);
+        return database()->exec(query);
     }
 
     template <typename T1, typename T2, typename... Ts>
-    inline static QSqlQuery exec(const T1 &query1, const T2 &query2,
+    inline QSqlQuery exec(const T1 &query1, const T2 &query2,
                           const Ts &... queries)
     {
         exec(query1);
@@ -71,9 +74,7 @@ public:
                                QDateTime &lastUpdate);
 
 private:
-    QSqlDatabase &database();
-
-    static DatabaseConnection *s_instance;
+    QSqlDatabase *database();
 
     DatabaseConnection();
     ~DatabaseConnection();

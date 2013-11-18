@@ -213,7 +213,7 @@ void StatsPlugin::deleteRecentStats(const QString &activity, int count,
     // no need to bother with the count and the date
 
     if (what == QStringLiteral("everything")) {
-        DatabaseConnection::exec(
+        DatabaseConnection::self()->exec(
             QStringLiteral("DELETE FROM kext_ResourceScoreCache WHERE ") + activityCheck,
             QStringLiteral("DELETE FROM nuao_DesktopEvent WHERE ") + activityCheck
         );
@@ -242,7 +242,7 @@ void StatsPlugin::deleteRecentStats(const QString &activity, int count,
             " WHERE %1 "
             " AND end > %2 ");
 
-        DatabaseConnection::exec(
+        DatabaseConnection::self()->exec(
             queryRSC.arg(activityCheck).arg(since.toTime_t()),
             queryDE.arg(activityCheck).arg(since.toTime_t())
         );
@@ -275,7 +275,7 @@ void StatsPlugin::deleteEarlierStats(const QString &activity, int months)
         " WHERE %1 "
         " AND start < %2 ");
 
-    DatabaseConnection::exec(
+    DatabaseConnection::self()->exec(
         queryRSC.arg(activityCheck).arg(time.toTime_t()),
         queryDE.arg(activityCheck).arg(time.toTime_t())
     );

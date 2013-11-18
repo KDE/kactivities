@@ -72,7 +72,7 @@ void RankingsUpdateThread::run()
         "AND cachedScore > 0 "
         "ORDER BY cachedScore DESC LIMIT 30");
 
-    auto results = DatabaseConnection::exec(query.arg(m_activity));
+    auto results = DatabaseConnection::self()->exec(query.arg(m_activity));
 
     for (const auto &result: results) {
         const auto url = result[0].toString();

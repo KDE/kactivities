@@ -236,15 +236,10 @@ void DatabaseConnection::getResourceScoreCache(const QString &usedActivity,
             .arg(start));
 }
 
-DatabaseConnection *DatabaseConnection::s_instance = Q_NULLPTR;
-
 DatabaseConnection *DatabaseConnection::self()
 {
-    if (!s_instance) {
-        s_instance = new DatabaseConnection();
-    }
-
-    return s_instance;
+    static DatabaseConnection instance;
+    return &instance;
 }
 
 DatabaseConnection::DatabaseConnection()
@@ -271,9 +266,9 @@ DatabaseConnection::~DatabaseConnection()
 {
 }
 
-QSqlDatabase &DatabaseConnection::database()
+QSqlDatabase *DatabaseConnection::database()
 {
-    return d->database;
+    return &d->database;
 }
 
 void DatabaseConnection::initDatabaseSchema()
@@ -281,7 +276,9 @@ void DatabaseConnection::initDatabaseSchema()
     QString dbSchemaVersion = QStringLiteral("0.0");
 
     auto query = exec(
-        QStringLiteral("SELECT value FROM SchemaInfo WHERE key = 'version'"));
+        QStringLiteral("SELECT time()"),
+        QStringLiteral("SELECT value FROM SchemaInfo WHERE key = 'version'")
+        );
 
     if (query.next()) {
         dbSchemaVersion = query.value(0).toString();
