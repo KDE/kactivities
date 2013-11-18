@@ -30,6 +30,7 @@
 
 // KDE
 #include <kdbusconnectionpool.h>
+#include <klocalizedstring.h>
 
 // Utils
 #include <utils/d_ptr_implementation.h>
@@ -110,6 +111,12 @@ Activities::Activities(QObject *parent)
                                       : Activities::Stopped;
     }
 
+    // Is this our first start?
+    if (d->activities.isEmpty()) {
+        AddActivity(i18n("Default"));
+    }
+
+    // Loading the last used activity, if possible
     d->loadLastActivity();
 }
 
@@ -232,6 +239,11 @@ void Activities::Private::removeActivity(const QString &activity)
 {
     Q_ASSERT(!activity.isEmpty());
     Q_ASSERT(activities.contains(activity));
+
+    // Is somebody trying to remove the last activity?
+    if (activities.size() == 1) {
+        return;
+    }
 
     // If the activity is running, stash it
     q->StopActivity(activity);
@@ -420,7 +432,8 @@ void Activities::StartActivity(const QString &activity)
 void Activities::StopActivity(const QString &activity)
 {
     if (!d->activities.contains(activity)
-            || d->activities[activity] == Stopped) {
+            || d->activities[activity] == Stopped
+            || d->activities.size() == 1) {
         return;
     }
 
