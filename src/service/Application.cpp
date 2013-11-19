@@ -117,7 +117,7 @@ public:
 Application *Application::Private::s_instance = Q_NULLPTR;
 
 Application::Application(int &argc, char **argv)
-    : QCoreApplication(argc, argv)
+    : QApplication(argc, argv)
 {
     if (!KDBusConnectionPool::threadConnection().registerService(
              QStringLiteral("org.kde.ActivityManager"))) {

@@ -6,7 +6,7 @@ project (ActivityManager)
 find_package (ECM 0.0.8 REQUIRED NO_MODULE)
 set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH})
 
-find_package (Qt5 REQUIRED NO_MODULE COMPONENTS Sql Gui)
+find_package (Qt5 REQUIRED NO_MODULE COMPONENTS Sql Gui Widgets)
 
 find_package (KF5 CONFIG REQUIRED KWindowSystem KCoreAddons KConfig KI18n)
 
@@ -61,6 +61,7 @@ add_executable (activity-manager ${activity_manager_SRCS})
 target_link_libraries (activity-manager
    Qt5::Core
    Qt5::DBus
+   Qt5::Widgets
    KF5::KDBusAddons
    KF5::KCoreAddons
    KF5::KConfigCore
