@@ -36,11 +36,11 @@
 class QDateTime;
 class QSqlDatabase;
 
-class DatabaseConnection : public QObject {
+class Database : public QObject {
     Q_OBJECT
 
 public:
-    static DatabaseConnection *self();
+    static Database *self();
 
     template <typename T>
     inline QSqlQuery exec(const T &query)
@@ -76,8 +76,8 @@ public:
 private:
     QSqlDatabase *database();
 
-    DatabaseConnection();
-    ~DatabaseConnection();
+    Database();
+    ~Database();
 
     void initDatabaseSchema();
 

@@ -2,24 +2,23 @@
 <node>
   <interface name="org.kde.ActivityManager.Rankings">
     <method name="registerClient">
-      <arg name="client" type="s" direction="in"/>
-      <arg name="activity" type="s" direction="in"/>
-      <arg name="type" type="s" direction="in"/>
-    </method>
-    <method name="registerClient">
-      <arg name="client" type="s" direction="in"/>
-      <arg name="activity" type="s" direction="in"/>
-    </method>
-    <method name="registerClient">
-      <arg name="client" type="s" direction="in"/>
-    </method>
-    <method name="deregisterClient">
-      <arg name="client" type="s" direction="in"/>
-    </method>
-    <method name="requestScoreUpdate">
+      <arg name="dbusPath" type="s" direction="in"/>
+      <arg name="requestId" type="s" direction="in"/>
       <arg name="activity" type="s" direction="in"/>
       <arg name="application" type="s" direction="in"/>
-      <arg name="resource" type="s" direction="in"/>
+    </method>
+    <method name="registerClient">
+      <arg name="dbusPath" type="s" direction="in"/>
+      <arg name="requestId" type="s" direction="in"/>
+      <arg name="activity" type="s" direction="in"/>
+    </method>
+    <method name="registerClient">
+      <arg name="dbusPath" type="s" direction="in"/>
+      <arg name="requestId" type="s" direction="in"/>
+    </method>
+    <method name="deregisterClient">
+      <arg name="dbusPath" type="s" direction="in"/>
+      <arg name="requestId" type="s" direction="in"/>
     </method>
   </interface>
 </node>

@@ -35,7 +35,7 @@
 
 // Local
 #include "Debug.h"
-#include "DatabaseConnection.h"
+#include "Database.h"
 #include "ResourceScoreMaintainer.h"
 #include "Rankings.h"
 #include "scoringadaptor.h"
@@ -65,11 +65,8 @@ bool StatsPlugin::init(const QHash<QString, QObject *> &modules)
     m_activities = modules[QStringLiteral("activities")];
     m_resources = modules[QStringLiteral("resources")];
 
-    DatabaseConnection::self();
-    Rankings::init(this);
-
-    connect(m_activities, SIGNAL(CurrentActivityChanged(QString)),
-            Rankings::self(), SLOT(setCurrentActivity(QString)));
+    Database::self();
+    Rankings::self();
 
     connect(m_resources, SIGNAL(ProcessedResourceEvents(EventList)),
             this, SLOT(addEvents(EventList)));
@@ -157,16 +154,13 @@ void StatsPlugin::addEvents(const EventList &events)
         return;
     }
 
-    const auto currentActivity = Plugin::callOn<QString, Qt::DirectConnection>(
-        m_activities, "CurrentActivity", "QString");
-
     for (const auto &event :
-            events | filtered(this, &StatsPlugin::acceptedEvent)) {
+            events | filtered(&StatsPlugin::acceptedEvent, this)) {
 
         switch (event.type) {
             case Event::Accessed:
-                DatabaseConnection::self()->openDesktopEvent(
-                    currentActivity, event.application, event.uri,
+                Database::self()->openDesktopEvent(
+                    currentActivity(), event.application, event.uri,
                     event.timestamp, event.timestamp);
                 ResourceScoreMaintainer::self()->processResource(
                     event.uri, event.application);
@@ -174,15 +168,15 @@ void StatsPlugin::addEvents(const EventList &events)
                 break;
 
             case Event::Opened:
-                DatabaseConnection::self()->openDesktopEvent(
-                    currentActivity, event.application, event.uri,
+                Database::self()->openDesktopEvent(
+                    currentActivity(), event.application, event.uri,
                     event.timestamp);
 
                 break;
 
             case Event::Closed:
-                DatabaseConnection::self()->closeDesktopEvent(
-                    currentActivity, event.application, event.uri,
+                Database::self()->closeDesktopEvent(
+                    currentActivity(), event.application, event.uri,
                     event.timestamp);
                 ResourceScoreMaintainer::self()->processResource(
                     event.uri, event.application);
@@ -213,7 +207,7 @@ void StatsPlugin::deleteRecentStats(const QString &activity, int count,
     // no need to bother with the count and the date
 
     if (what == QStringLiteral("everything")) {
-        DatabaseConnection::self()->exec(
+        Database::self()->exec(
             QStringLiteral("DELETE FROM kext_ResourceScoreCache WHERE ") + activityCheck,
             QStringLiteral("DELETE FROM nuao_DesktopEvent WHERE ") + activityCheck
         );
@@ -242,7 +236,7 @@ void StatsPlugin::deleteRecentStats(const QString &activity, int count,
             " WHERE %1 "
             " AND end > %2 ");
 
-        DatabaseConnection::self()->exec(
+        Database::self()->exec(
             queryRSC.arg(activityCheck).arg(since.toTime_t()),
             queryDE.arg(activityCheck).arg(since.toTime_t())
         );
@@ -275,7 +269,7 @@ void StatsPlugin::deleteEarlierStats(const QString &activity, int months)
         " WHERE %1 "
         " AND start < %2 ");
 
-    DatabaseConnection::self()->exec(
+    Database::self()->exec(
         queryRSC.arg(activityCheck).arg(time.toTime_t()),
         queryDE.arg(activityCheck).arg(time.toTime_t())
     );

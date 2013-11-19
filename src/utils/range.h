@@ -41,13 +41,24 @@ __inline Collection as_collection(Range range)
     return result;
 }
 
-template <typename Class, typename Member>
-__inline auto transformed(Class *const self, Member member)
+template <typename Member, typename ...Args>
+__inline auto transformed(Member member, Args... args)
     -> decltype(boost::adaptors::transformed(
-                std::bind(member, self, std::placeholders::_1)))
+                std::bind(member, args..., std::placeholders::_1)))
 {
     return boost::adaptors::transformed(
-        std::bind(member, self, std::placeholders::_1)
+        std::bind(member, args..., std::placeholders::_1)
+    );
+
+}
+
+template <typename Member, typename ...Args>
+__inline auto filtered(Member member, Args... args)
+    -> decltype(boost::adaptors::filtered(
+                std::bind(member, args..., std::placeholders::_1)))
+{
+    return boost::adaptors::filtered(
+        std::bind(member, args..., std::placeholders::_1)
     );
 
 }

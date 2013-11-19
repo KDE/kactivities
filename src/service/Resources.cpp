@@ -28,7 +28,7 @@
 #include <QMutexLocker>
 
 // KDE
-// #include <kwindowsystem.h>
+#include <kwindowsystem.h>
 #include <kdbusconnectionpool.h>
 
 // Utils
@@ -97,7 +97,7 @@ void Resources::Private::insertEvent(const Event &newEvent)
     emit q->RegisteredResourceEvent(newEvent);
 }
 
-void Resources::Private::addEvent(const QString &application, quintptr wid, const QString &uri,
+void Resources::Private::addEvent(const QString &application, WId wid, const QString &uri,
                                   int type)
 {
     Event newEvent(application, wid, uri, type);
@@ -196,7 +196,7 @@ void Resources::Private::addEvent(const Event &newEvent)
     start();
 }
 
-void Resources::Private::windowClosed(quintptr windowId)
+void Resources::Private::windowClosed(WId windowId)
 {
     // Testing whether the window is a registered one
 
@@ -218,7 +218,7 @@ void Resources::Private::windowClosed(quintptr windowId)
     windows.remove(windowId);
 }
 
-void Resources::Private::activeWindowChanged(quintptr windowId)
+void Resources::Private::activeWindowChanged(WId windowId)
 {
     // If the focused window has changed, we need to create a
     // FocussedOut event for the resource it contains,
@@ -255,17 +255,17 @@ Resources::Resources(QObject *parent)
 {
     qRegisterMetaType<Event>("Event");
     qRegisterMetaType<EventList>("EventList");
-    qRegisterMetaType<quintptr>("WId");
+    qRegisterMetaType<WId>("WId");
 
     new ResourcesAdaptor(this);
     KDBusConnectionPool::threadConnection().registerObject(
         ACTIVITY_MANAGER_OBJECT_PATH(Resources), this);
 
     // TODO:
-    // d->connect(KWindowSystem::self(), SIGNAL(windowRemoved(WId)),
-    //         SLOT(windowClosed(WId)));
-    // d->connect(KWindowSystem::self(), SIGNAL(activeWindowChanged(WId)),
-    //         SLOT(activeWindowChanged(WId)));
+    d->connect(KWindowSystem::self(), SIGNAL(windowRemoved(WId)),
+            SLOT(windowClosed(WId)));
+    d->connect(KWindowSystem::self(), SIGNAL(activeWindowChanged(WId)),
+            SLOT(activeWindowChanged(WId)));
 }
 
 Resources::~Resources()
@@ -286,7 +286,7 @@ void Resources::RegisterResourceEvent(QString application, uint _windowId,
     }
 
     QString kuri(uri);
-    quintptr windowId = (quintptr)_windowId;
+    WId windowId = (WId)_windowId;
 
     d->addEvent(application, windowId, kuri, (Event::Type)event);
 }

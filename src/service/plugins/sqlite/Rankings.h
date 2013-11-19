@@ -24,6 +24,10 @@
 #include <QString>
 #include <QStringList>
 #include <QThread>
+#include <QDBusInterface>
+
+// Boost
+#include <boost/container/flat_set.hpp>
 
 
 class Rankings : public QObject {
@@ -31,98 +35,89 @@ class Rankings : public QObject {
     Q_CLASSINFO("D-Bus Interface", "org.kde.ActivityManager.Rankings")
 
 public:
-    static void init(QObject *parent = Q_NULLPTR);
     static Rankings *self();
 
     void resourceScoreUpdated(const QString &activity,
-                              const QString &application, const QString &uri, qreal score);
+                              const QString &application,
+                              const QString &resource, qreal score);
 
     ~Rankings();
 
 public Q_SLOTS:
     /**
      * Registers a new client for the specified activity and application
-     * @param client d-bus name
-     * @param activity activity to track. If empty, uses the default activity.
-     * @param application application to track. If empty, all applications are aggregated
-     * @param type resource type that the client is interested in
-     * @note If the activity is left empty - the results are always related to the current activity,
-     *     not the activity that was current when calling this method.
+     * @param dbusPath d-bus name
+     * @param requestId applications can have interest in different items
+     * @param activity activity to track. If empty, all activities are
+     *                 aggregated
+     * @param application application to track. If empty, all applications are
+     *                    aggregated
      */
-    void registerClient(const QString &client,
+    void registerClient(const QString &dbusPath,
+                        const QString &requestId,
                         const QString &activity = QString(),
-                        const QString &type = QString());
+                        const QString &application = QString());
 
     /**
-     * Deregisters a client
+     * Deregisters a dbusPath
      */
-    void deregisterClient(const QString &client);
-
-    /**
-     * Don't use this, will be removed
-     */
-    void requestScoreUpdate(const QString &activity, const QString &application, const QString &resource);
-
-private Q_SLOTS:
-    void setCurrentActivity(const QString &activity);
+    void deregisterClient(const QString &dbusPath,
+                          const QString &requestId);
 
 private:
-    Rankings(QObject *parent = Q_NULLPTR);
-    void updateScoreTrashold(const QString &activity);
+    Rankings();
 
     static Rankings *s_instance;
 
-public:
-    class ResultItem {
-    public:
-        ResultItem(
-            const QString &_uri = QString(),
-            qreal _score = 0)
-            : uri(_uri)
-            , score(_score)
-        {
-        }
-
-        bool operator<(const ResultItem &other) const
-        {
-            return score < other.score;
-        }
-
+    struct ResultItem {
         QString uri;
         qreal score;
     };
 
-    typedef QString Activity;
-    typedef QString Client;
+    struct ClientPattern {
+        ClientPattern(const QString &dbusPath, const QString &requestId,
+                      const QString &activity = QString(),
+                      const QString &application = QString())
+            : dbusPath(dbusPath)
+            , requestId(requestId)
+            , activity(activity)
+            , application(application)
+        {
+        }
 
-private Q_SLOTS:
-    void initResults(const QString &activity);
-    void notifyResultsUpdated(const QString &activity, QStringList clients = QStringList());
+        QString dbusPath;
+        QString requestId;
+        QString activity;
+        QString application;
+
+        bool operator<(const ClientPattern &other) const
+        {
+            return dbusPath < other.dbusPath ||
+                   (dbusPath == other.dbusPath && requestId < other.requestId);
+        }
+
+        bool operator==(const ClientPattern &other) const
+        {
+            return dbusPath == other.dbusPath && requestId == other.requestId;
+        }
+
+        static inline bool matches(const QString &activity,
+                                   const QString &application,
+                                   const ClientPattern &dbusPath)
+        {
+            return
+                (
+                    dbusPath.activity.isEmpty() ||
+                    activity == dbusPath.activity
+                ) && (
+                    dbusPath.application.isEmpty() ||
+                    application == dbusPath.application
+                );
+        }
+    };
 
 private:
-    QHash<Activity, QStringList> m_clients;
-    QHash<Activity, QVector<ResultItem>> m_results;
-    QHash<Activity, qreal> m_resultScoreTreshold;
-};
-
-class RankingsUpdateThread : public QThread {
-    Q_OBJECT
-
-public:
-    RankingsUpdateThread(const QString &activity,
-                         QVector<Rankings::ResultItem> &listptr,
-                         QHash<Rankings::Activity, qreal> &scoreTrashold);
-    virtual ~RankingsUpdateThread();
-
-    void run();
-
-Q_SIGNALS:
-    void loaded(const QString &activity);
-
-private:
-    QString m_activity;
-    QVector<Rankings::ResultItem> &m_listptr;
-    QHash<Rankings::Activity, qreal> &m_scoreTrashold;
+    boost::container::flat_set<ClientPattern> m_clients;
 };
 
 #endif // PLUGINS_SQLITE_RANKINGS_H

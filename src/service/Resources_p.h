@@ -26,6 +26,7 @@
 // Qt
 #include <QString>
 #include <QList>
+#include <QWidgetList> // for WId
 
 // Local
 #include "resourcesadaptor.h"
@@ -43,7 +44,7 @@ public:
     void insertEvent(const Event &newEvent);
 
     // Processes the event and inserts it into the queue
-    void addEvent(const QString &application, quintptr wid, const QString &uri,
+    void addEvent(const QString &application, WId wid, const QString &uri,
                   int type);
 
     // Processes the event and inserts it into the queue
@@ -51,11 +52,11 @@ public:
 
     QStringList resourcesLinkedToActivity(const QString &activity) const;
 
-private Q_SLOTS:
+public Q_SLOTS:
     // Reacting to window manager signals
-    void windowClosed(quintptr windowId);
+    void windowClosed(WId windowId);
 
-    void activeWindowChanged(quintptr windowId);
+    void activeWindowChanged(WId windowId);
 
 private:
     struct WindowData {
@@ -65,11 +66,9 @@ private:
     };
 
     Event lastEvent;
-    // EventList events;
-    // QMutex events_mutex;
 
-    QHash<quintptr, WindowData> windows;
-    quintptr focussedWindow;
+    QHash<WId, WindowData> windows;
+    WId focussedWindow;
 
     Resources *const q;
 };

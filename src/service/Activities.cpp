@@ -304,7 +304,7 @@ QList<ActivityInfo> Activities::ListActivitiesWithInformation() const
 
     return as_collection<QList<ActivityInfo>>(
         ListActivities()
-            | transformed(this, &Activities::ActivityInformation)
+            | transformed(&Activities::ActivityInformation, this)
     );
 }
 

@@ -6,7 +6,7 @@ project (ActivityManager)
 find_package (ECM 0.0.8 REQUIRED NO_MODULE)
 set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH})
 
-find_package (Qt5 REQUIRED NO_MODULE COMPONENTS Sql)
+find_package (Qt5 REQUIRED NO_MODULE COMPONENTS Sql Gui)
 
 find_package (KF5 CONFIG REQUIRED KWindowSystem KCoreAddons KConfig KI18n)
 
@@ -22,13 +22,6 @@ set (plugin_implementation_SRCS
    )
 
 add_subdirectory (plugins)
-
-# include_directories (
-#    ${KDBusAddons_INCLUDE_DIR}
-#    ${KConfig_INCLUDE_DIR}
-#    ${KCoreAddons_INCLUDE_DIR}
-#    ${KWindowSystem_INCLUDE_DIR}
-#    )
 
 set (activity_manager_SRCS
    Application.cpp
@@ -72,6 +65,7 @@ target_link_libraries (activity-manager
    KF5::KCoreAddons
    KF5::KConfigCore
    KF5::KI18n
+   KF5::KWindowSystem
    )
 
 set_target_properties (activity-manager

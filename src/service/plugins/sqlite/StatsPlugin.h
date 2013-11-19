@@ -36,7 +36,8 @@ class StatsPlugin : public Plugin {
     Q_PLUGIN_METADATA(IID "org.kde.ActivityManager.plugins.sqlite")
 
 public:
-    explicit StatsPlugin(QObject *parent = Q_NULLPTR, const QVariantList &args = QVariantList());
+    explicit StatsPlugin(QObject *parent = Q_NULLPTR,
+                         const QVariantList &args = QVariantList());
 
     static StatsPlugin *self();
 
@@ -45,12 +46,18 @@ public:
     QString currentActivity() const;
 
 Q_SIGNALS:
-    void resourceScoreUpdated(const QString &activity, const QString &client, const QString &resource, double score);
-    void recentStatsDeleted(const QString &activity, int count, const QString &what);
+    void resourceScoreUpdated(const QString &activity, const QString &client,
+                              const QString &resource, double score);
+
+    void recentStatsDeleted(const QString &activity, int count,
+                            const QString &what);
+
     void earlierStatsDeleted(const QString &activity, int months);
 
 public Q_SLOTS:
-    void deleteRecentStats(const QString &activity, int count, const QString &what);
+    void deleteRecentStats(const QString &activity, int count,
+                           const QString &what);
+
     void deleteEarlierStats(const QString &activity, int months);
 
 private Q_SLOTS:

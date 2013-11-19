@@ -30,220 +30,98 @@
 #include <kdbusconnectionpool.h>
 
 // Utils
+#include <utils/range.h>
 #include <utils/remove_if.h>
 #include <utils/qsqlquery.h>
 
 // Local
 #include "Debug.h"
 #include "ResourceScoreCache.h"
-#include "DatabaseConnection.h"
+#include "Database.h"
 #include "StatsPlugin.h"
 #include "rankingsadaptor.h"
 
 
-#define RESULT_COUNT_LIMIT 10
-#define COALESCE_ACTIVITY(Activity) \
-    ((Activity.isEmpty()) ? (StatsPlugin::self()->currentActivity()) : (Activity))
-
-Rankings *Rankings::s_instance = Q_NULLPTR;
-
-/**
- *
- */
-RankingsUpdateThread::RankingsUpdateThread(
-    const QString &activity, QVector<Rankings::ResultItem> &listptr,
-    QHash<Rankings::Activity, qreal> &scoreTrashold)
-    : m_activity(activity)
-    , m_listptr(listptr)
-    , m_scoreTrashold(scoreTrashold)
-{
-}
-
-RankingsUpdateThread::~RankingsUpdateThread()
-{
-}
-
-void RankingsUpdateThread::run()
-{
-    static const auto query = QStringLiteral(
-        "SELECT targettedResource, cachedScore "
-        "FROM kext_ResourceScoreCache " // this should be kao_ResourceScoreCache, but lets leave it
-        "WHERE usedActivity = '%1' "
-        "AND cachedScore > 0 "
-        "ORDER BY cachedScore DESC LIMIT 30");
-
-    auto results = DatabaseConnection::self()->exec(query.arg(m_activity));
-
-    for (const auto &result: results) {
-        const auto url = result[0].toString();
-        const auto score = result[1].toReal();
-
-        if (score > m_scoreTrashold[m_activity]) {
-            m_listptr << Rankings::ResultItem(url, score);
-        }
-    }
-
-    emit loaded(m_activity);
-}
-
-void Rankings::init(QObject *parent)
-{
-    if (s_instance) {
-        return;
-    }
-
-    s_instance = new Rankings(parent);
-}
+#define clientInterface(dbusPath)                                              \
+    QDBusInterface(dbusPath, QStringLiteral("/RankingsClient"),                \
+                   QStringLiteral("org.kde.ActivityManager.RankingsClient"))
 
 Rankings *Rankings::self()
 {
-    return s_instance;
+    static Rankings instance;
+    return &instance;
 }
 
-Rankings::Rankings(QObject *parent)
-    : QObject(parent)
+Rankings::Rankings()
 {
     new RankingsAdaptor(this);
     KDBusConnectionPool::threadConnection().registerObject(
         QStringLiteral("/Rankings"), this);
-
-    initResults(QString());
 }
 
 Rankings::~Rankings()
 {
 }
 
-void Rankings::registerClient(const QString &client,
-                              const QString &activity, const QString &type)
+void Rankings::registerClient(const QString &client, const QString &requestId,
+                              const QString &activity,
+                              const QString &application)
 {
-    Q_UNUSED(type);
+    m_clients.insert(ClientPattern(client, requestId, activity, application));
 
-    if (!m_clients.contains(activity)) {
-        initResults(COALESCE_ACTIVITY(activity));
+    static const auto query = QStringLiteral(
+        "SELECT targettedResource, cachedScore "
+        "FROM kext_ResourceScoreCache " // this should be kao_ResourceScoreCache, but lets leave it
+        "WHERE %1 AND %2 "
+        "AND cachedScore > 0 "
+        "ORDER BY cachedScore DESC LIMIT 30");
+
+    static const auto usedActivity = QStringLiteral("usedActivity = '%1'");
+    static const auto initiatingAgent = QStringLiteral("initiatingAgent = '%1'");
+
+    auto results = Database::self()->exec(
+        query.arg(activity.isEmpty() ? QStringLiteral("1")
+                                     : usedActivity.arg(activity))
+             .arg(application.isEmpty() ? QStringLiteral("1")
+                                        : initiatingAgent.arg(application)));
+
+    QHash<QString, QVariant> update;
+
+    for (const auto &result: results) {
+        const auto url = result[0].toString();
+        const auto score = result[1].toReal();
+
+        update[url] = score;
     }
 
-    if (!m_clients[activity].contains(client)) {
-        m_clients[activity] << client;
-    }
-
-    notifyResultsUpdated(activity, QStringList() << client);
+    clientInterface(client).asyncCall(QStringLiteral("updated"), requestId,
+                                      QStringLiteral("replace"),
+                                      QVariant(update));
 }
 
-void Rankings::deregisterClient(const QString &client)
+void Rankings::deregisterClient(const QString &client, const QString &requestId)
 {
-    QMutableHashIterator<Activity, QStringList> i(m_clients);
-
-    while (i.hasNext()) {
-        i.next();
-
-        i.value().removeAll(client);
-        if (i.value().isEmpty()) {
-            i.remove();
-        }
-    }
-}
-
-void Rankings::setCurrentActivity(const QString &activity)
-{
-    // We need to update scores for items that have no
-    // activity specified
-
-    initResults(activity);
-}
-
-void Rankings::initResults(const QString &_activity)
-{
-    const auto activity = COALESCE_ACTIVITY(_activity);
-
-    m_results[activity].clear();
-    notifyResultsUpdated(activity);
-    updateScoreTrashold(activity);
-
-    const auto thread = new RankingsUpdateThread(
-        activity, m_results[activity], m_resultScoreTreshold);
-
-    connect(thread, SIGNAL(loaded(QString)),
-            this, SLOT(notifyResultsUpdated(QString)));
-    connect(thread, SIGNAL(terminated()),
-            thread, SLOT(deleteLater()));
-
-    thread->start();
+    m_clients.erase(ClientPattern(client, requestId));
 }
 
 void Rankings::resourceScoreUpdated(const QString &activity,
                                     const QString &application,
-                                    const QString &uri, qreal score)
+                                    const QString &resource, qreal score)
 {
+    using namespace kamd::utils;
+
     Q_UNUSED(application);
 
-    if (score <= m_resultScoreTreshold[activity]) {
-        return;
-    }
+    QHash<QString, QVariant> update;
 
-    auto &results = m_results[activity];
+    update[resource] = score;
 
-    // Removing the item from the list if it is already in it
-
-    kamd::utils::remove_if(results, [&uri](const ResultItem &item) {
-        return item.uri == uri;
-    });
-
-    // Adding the item
-
-    ResultItem item(uri, score);
-
-    auto insertionPoint
-        = std::lower_bound(results.begin(), results.end(), item);
-
-    results.insert(insertionPoint, item);
-
-    results.resize(std::min(results.size(), RESULT_COUNT_LIMIT));
-
-    notifyResultsUpdated(activity);
-}
-
-void Rankings::updateScoreTrashold(const QString &activity)
-{
-    m_resultScoreTreshold[activity]
-        = (m_results[activity].size() >= RESULT_COUNT_LIMIT)
-              ? m_results[activity].last().score
-              : 0;
-}
-
-void Rankings::notifyResultsUpdated(const QString &_activity,
-                                    QStringList clients)
-{
-    const auto activity = COALESCE_ACTIVITY(_activity);
-
-    updateScoreTrashold(activity);
-
-    QVariantList data;
-    for (const auto &item : m_results[activity]) {
-        data << item.uri;
-    }
-
-    if (clients.isEmpty()) {
-        clients = m_clients[activity];
-
-        if (activity == StatsPlugin::self()->currentActivity()) {
-            clients.append(m_clients[QString()]);
-        }
-    }
-
-    // TODO: We don't really have users of this one
-    // If we get them, enable this again:
-    for (const auto &client : clients) {
-        QDBusInterface(
-            client, QStringLiteral("/RankingsClient"),
-            QStringLiteral("org.kde.ActivityManager.RankingsClient")
-        ).asyncCall(QStringLiteral("updated"), data);
+    for (const auto &client :
+            m_clients | filtered(ClientPattern::matches, activity, application)
+    ) {
+        clientInterface(client.dbusPath)
+            .asyncCall(QStringLiteral("updated"), client.requestId,
+                       QStringLiteral("incremental"), QVariant(update));
     }
 }
 
-void Rankings::requestScoreUpdate(const QString &activity,
-                                  const QString &application,
-                                  const QString &resource)
-{
-    ResourceScoreCache(activity, application, resource).updateScore();
-}

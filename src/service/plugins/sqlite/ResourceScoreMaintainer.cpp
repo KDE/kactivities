@@ -43,11 +43,11 @@ public:
     typedef QString ActivityID;
     typedef QList<QString> ResourceList;
 
-    typedef QMap<ApplicationName, ResourceList> Applications;
-    typedef QMap<ActivityID, Applications> ResourceTree;
+    typedef QHash<ApplicationName, ResourceList> Applications;
+    typedef QHash<ActivityID, Applications> ResourceTree;
 
-    ResourceTree openResources;
-    QMutex openResources_mutex;
+    ResourceTree scheduledResources;
+    QMutex scheduledResources_mutex;
 
     void run();
     void processActivity(const ActivityID &activity,
@@ -56,16 +56,17 @@ public:
 
 void ResourceScoreMaintainer::Private::run()
 {
-    forever
-    {
+    using namespace kamd::utils;
+
+    forever {
         // initial delay before processing the resources
         sleep(5);
 
         ResourceTree resources;
 
         {
-            QMutexLocker lock(&openResources_mutex);
-            std::swap(resources, openResources);
+            QMutexLocker lock(&scheduledResources_mutex);
+            std::swap(resources, scheduledResources);
         }
 
         const auto activity = StatsPlugin::self()->currentActivity();
@@ -78,11 +79,11 @@ void ResourceScoreMaintainer::Private::run()
             resources.remove(activity);
         }
 
-        kamd::utils::for_each_assoc(resources,
-                                    [this](const ActivityID & activity,
-                                           const Applications & applications) {
-            processActivity(activity, applications);
-        });
+        for_each_assoc(resources,
+            [this](const ActivityID & activity, const Applications & applications) {
+                processActivity(activity, applications);
+            }
+        );
     }
 }
 
@@ -91,14 +92,15 @@ void ResourceScoreMaintainer::Private::processActivity(const ActivityID
                                                        const Applications
                                                        &applications)
 {
-    kamd::utils::for_each_assoc(applications,
-                                [activity](const ApplicationName & application,
-                                           const ResourceList & resources) {
-        for (const auto &resource: resources)
-        {
-            ResourceScoreCache(activity, application, resource).updateScore();
+    using namespace kamd::utils;
+
+    for_each_assoc(applications,
+        [&](const ApplicationName &application, const ResourceList &resources) {
+            for (const auto &resource : resources) {
+                ResourceScoreCache(activity, application, resource).update();
+            }
         }
-    });
+    );
 }
 
 ResourceScoreMaintainer *ResourceScoreMaintainer::self()
@@ -116,21 +118,24 @@ ResourceScoreMaintainer::~ResourceScoreMaintainer()
 {
 }
 
-void ResourceScoreMaintainer::processResource(const QString &resource, const QString &application)
+void ResourceScoreMaintainer::processResource(const QString &resource,
+                                              const QString &application)
 {
-    QMutexLocker lock(&d->openResources_mutex);
+    QMutexLocker lock(&d->scheduledResources_mutex);
 
     // Checking whether the item is already scheduled for
     // processing
 
     const auto activity = StatsPlugin::self()->currentActivity();
 
-    if (d->openResources.contains(activity) && d->openResources[activity].contains(application) && d->openResources[activity][application].contains(resource)) {
+    if (d->scheduledResources.contains(activity)
+        && d->scheduledResources[activity].contains(application)
+        && d->scheduledResources[activity][application].contains(resource)) {
 
         // Nothing
 
     } else {
-        d->openResources[activity][application] << resource;
+        d->scheduledResources[activity][application] << resource;
     }
 
     d->start();

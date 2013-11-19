@@ -19,7 +19,7 @@
 
 // Self
 #include <kactivities-features.h>
-#include "DatabaseConnection.h"
+#include "Database.h"
 
 // Qt
 #include <QDir>
@@ -39,7 +39,7 @@
 // Local
 #include "Debug.h"
 
-class DatabaseConnection::Private {
+class Database::Private {
 public:
     QSqlDatabase database;
     bool initialized : 1;
@@ -68,13 +68,13 @@ public:
     }
 };
 
-const QString DatabaseConnection::Private::insertSchemaInfoQuery
+const QString Database::Private::insertSchemaInfoQuery
     = QStringLiteral("INSERT INTO schemaInfo VALUES ('%1', '%2')");
 
-const QString DatabaseConnection::Private::updateSchemaInfoQuery
+const QString Database::Private::updateSchemaInfoQuery
     = QStringLiteral("UPDATE schemaInfo SET value = '%2' WHERE key = '%1'");
 
-const QString DatabaseConnection::Private::openDesktopEventQuery
+const QString Database::Private::openDesktopEventQuery
     = QStringLiteral("INSERT INTO nuao_DesktopEvent VALUES ("
                      "'%1', " // usedActivity
                      "'%2', " // initiatingAgent
@@ -83,7 +83,7 @@ const QString DatabaseConnection::Private::openDesktopEventQuery
                      "%5" // end
                      ")");
 
-const QString DatabaseConnection::Private::closeDesktopEventQuery
+const QString Database::Private::closeDesktopEventQuery
     = QStringLiteral("UPDATE nuao_DesktopEvent SET "
                      "end = %4 "
                      "WHERE "
@@ -92,7 +92,7 @@ const QString DatabaseConnection::Private::closeDesktopEventQuery
                      "'%3' = targettedResource AND "
                      "end IS NULL");
 
-const QString DatabaseConnection::Private::createResourceScoreCacheQuery
+const QString Database::Private::createResourceScoreCacheQuery
     = QStringLiteral("INSERT INTO kext_ResourceScoreCache VALUES("
                      "'%1', " // usedActivity
                      "'%2', " // initiatingAgent
@@ -103,14 +103,14 @@ const QString DatabaseConnection::Private::createResourceScoreCacheQuery
                      "%4" // firstUpdate
                      ")");
 
-const QString DatabaseConnection::Private::getResourceScoreCacheQuery
+const QString Database::Private::getResourceScoreCacheQuery
     = QStringLiteral("SELECT cachedScore, lastUpdate FROM kext_ResourceScoreCache "
                      "WHERE "
                      "'%1' = usedActivity AND "
                      "'%2' = initiatingAgent AND "
                      "'%3' = targettedResource ");
 
-const QString DatabaseConnection::Private::updateResourceScoreCacheQuery
+const QString Database::Private::updateResourceScoreCacheQuery
     = QStringLiteral("UPDATE kext_ResourceScoreCache SET "
                      "cachedScore = %4, "
                      "lastUpdate = %5 "
@@ -119,7 +119,7 @@ const QString DatabaseConnection::Private::updateResourceScoreCacheQuery
                      "'%2' = initiatingAgent AND "
                      "'%3' = targettedResource ");
 
-const QString DatabaseConnection::Private::getScoreAdditionQuery
+const QString Database::Private::getScoreAdditionQuery
     = QStringLiteral("SELECT start, end FROM nuao_DesktopEvent "
                      "WHERE "
                      "'%1' = usedActivity AND "
@@ -127,7 +127,7 @@ const QString DatabaseConnection::Private::getScoreAdditionQuery
                      "'%3' = targettedResource AND "
                      "start > %4");
 
-void DatabaseConnection::openDesktopEvent(const QString &usedActivity,
+void Database::openDesktopEvent(const QString &usedActivity,
                                           const QString &initiatingAgent,
                                           const QString &targettedResource,
                                           const QDateTime &start,
@@ -143,7 +143,7 @@ void DatabaseConnection::openDesktopEvent(const QString &usedActivity,
                 QStringLiteral("NULL") : QString::number(end.toTime_t())));
 }
 
-void DatabaseConnection::closeDesktopEvent(const QString &usedActivity,
+void Database::closeDesktopEvent(const QString &usedActivity,
                                            const QString &initiatingAgent,
                                            const QString &targettedResource,
                                            const QDateTime &end)
@@ -156,7 +156,7 @@ void DatabaseConnection::closeDesktopEvent(const QString &usedActivity,
             .arg(end.toTime_t()));
 }
 
-void DatabaseConnection::getResourceScoreCache(const QString &usedActivity,
+void Database::getResourceScoreCache(const QString &usedActivity,
                                                const QString &initiatingAgent,
                                                const QString &targettedResource,
                                                qreal &score,
@@ -236,13 +236,13 @@ void DatabaseConnection::getResourceScoreCache(const QString &usedActivity,
             .arg(start));
 }
 
-DatabaseConnection *DatabaseConnection::self()
+Database *Database::self()
 {
-    static DatabaseConnection instance;
+    static Database instance;
     return &instance;
 }
 
-DatabaseConnection::DatabaseConnection()
+Database::Database()
     : d()
 {
     const QString databaseDir
@@ -262,16 +262,16 @@ DatabaseConnection::DatabaseConnection()
     initDatabaseSchema();
 }
 
-DatabaseConnection::~DatabaseConnection()
+Database::~Database()
 {
 }
 
-QSqlDatabase *DatabaseConnection::database()
+QSqlDatabase *Database::database()
 {
     return &d->database;
 }
 
-void DatabaseConnection::initDatabaseSchema()
+void Database::initDatabaseSchema()
 {
     QString dbSchemaVersion = QStringLiteral("0.0");
 

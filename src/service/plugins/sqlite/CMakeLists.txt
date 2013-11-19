@@ -4,7 +4,7 @@ project (activitymanager-plugin-sqlite)
 
 set (
    sqliteplugin_SRCS
-   DatabaseConnection.cpp
+   Database.cpp
    StatsPlugin.cpp
    ResourceScoreCache.cpp
    ResourceScoreMaintainer.cpp
