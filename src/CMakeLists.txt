@@ -4,7 +4,8 @@
 # it is used in both ontology/ and lib/ subdirectories.
 set (KACTIVITIES_ONTOLOGIES_DIR ${CMAKE_INSTALL_PREFIX}/share/ontology/kde)
 
-option (KACTIVITIES_LIBRARY_ONLY "If true, compiles only the kactivities library, without the service and other modules." OFF)
+option (KACTIVITIES_LIBRARY_ONLY "If true, compiles only the KActivities library, without the service and other modules." OFF)
+option (KACTIVITIES_ENABLE_EXCEPTIONS "If you have Boost 1.53, you need to build KActivities with exceptions enabled. This is UNTESTED and EXPERIMENTAL!" OFF)
 
 # TODO: Add support for Nepomuk when it comes to Qt5 world
 # # Checking for Nepomuk
@@ -34,7 +35,22 @@ option (KACTIVITIES_LIBRARY_ONLY "If true, compiles only the kactivities library
 
 if (NOT KACTIVITIES_LIBRARY_ONLY)
    find_package (Boost 1.49 REQUIRED)
+
+   string (REGEX MATCH "1053.." BOOST_VERSION_BLACKLISTED ${Boost_VERSION})
+
+   if (BOOST_VERSION_BLACKLISTED AND NOT KACTIVITIES_ENABLE_EXCEPTIONS)
+      message(
+         FATAL_ERROR
+         "Boost.Container 1.53 has issues when exceptions are disabled. "
+         "You will need a different version of Boost in order to build KActivities, "
+         "or set the KACTIVITIES_ENABLE_EXCEPTIONS option."
+      )
+   endif()
 endif ()
+
+if (KACTIVITIES_ENABLE_EXCEPTIONS)
+   add_definitions(-fexceptions)
+endif()
 
 # Testing for C++0x/C++11 features
 include (CheckCxxFeatures)
