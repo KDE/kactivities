@@ -28,6 +28,7 @@
 #include <QHash>
 #include <QIcon>
 #include <QList>
+#include <QFutureWatcher>
 #include <QModelIndex>
 
 // KDE
@@ -38,6 +39,7 @@
 
 // Local
 #include "utils/remove_if.h"
+// #include "utils/continuator.h"
 #include "utils_p.h"
 
 
@@ -52,15 +54,15 @@ ActivityModel::ActivityModel(QObject *parent)
     : QAbstractListModel(parent)
 {
     // Initializing role names for qml
-    connect(&m_consumer, &Consumer::serviceStatusChanged,
-            this,        &ActivityModel::setServiceStatus);
+    connect(&m_service, &Consumer::serviceStatusChanged,
+            this,       &ActivityModel::setServiceStatus);
 
-    connect(&m_consumer, &Consumer::activityAdded,
-            this,        &ActivityModel::addActivity);
-    connect(&m_consumer, &Consumer::activityRemoved,
-            this,        &ActivityModel::removeActivity);
+    connect(&m_service, &Consumer::activityAdded,
+            this,       &ActivityModel::onActivityAdded);
+    connect(&m_service, &Consumer::activityRemoved,
+            this,       &ActivityModel::onActivityRemoved);
 
-    setServiceStatus(m_consumer.serviceStatus());
+    setServiceStatus(m_service.serviceStatus());
 }
 
 ActivityModel::~ActivityModel()
@@ -80,7 +82,7 @@ QHash<int, QByteArray> ActivityModel::roleNames() const
 
 void ActivityModel::setServiceStatus(Consumer::ServiceStatus)
 {
-    replaceActivities(m_consumer.activities());
+    replaceActivities(m_service.activities());
 }
 
 void ActivityModel::replaceActivities(const QStringList &activities)
@@ -94,7 +96,7 @@ void ActivityModel::replaceActivities(const QStringList &activities)
     }
 }
 
-void ActivityModel::addActivity(const QString &id)
+void ActivityModel::onActivityAdded(const QString &id)
 {
     // Private::model_reset m(this);
 
@@ -104,7 +106,7 @@ void ActivityModel::addActivity(const QString &id)
             insertionPosition, insertionPosition);
 }
 
-void ActivityModel::removeActivity(const QString &id)
+void ActivityModel::onActivityRemoved(const QString &id)
 {
     // Private::model_reset m(this);
 
@@ -130,11 +132,11 @@ unsigned int ActivityModel::addActivitySilently(const QString &id)
     auto activity = new Info(id);
 
     connect(activity, &Info::nameChanged,
-            this,     &ActivityModel::setActivityName);
+            this,     &ActivityModel::onActivityNameChanged);
     connect(activity, &Info::iconChanged,
-            this,     &ActivityModel::setActivityIcon);
+            this,     &ActivityModel::onActivityIconChanged);
     connect(activity, &Info::stateChanged,
-            this,     &ActivityModel::setActivityState);
+            this,     &ActivityModel::onActivityStateChanged);
 
     auto insertion = m_activities.insert(std::unique_ptr<Info>(activity));
 
@@ -142,24 +144,27 @@ unsigned int ActivityModel::addActivitySilently(const QString &id)
            - m_activities.begin();
 }
 
-void ActivityModel::setActivityName(const QString &name)
+void ActivityModel::onActivityNameChanged(const QString &name)
 {
+    // TODO: Implement this properly
     // const auto activity = static_cast<Info*> (sender());
 
     Private::model_reset m(this);
 
 }
 
-void ActivityModel::setActivityIcon(const QString &icon)
+void ActivityModel::onActivityIconChanged(const QString &icon)
 {
+    // TODO: Implement this properly
     // auto activity = static_cast<Info*> (sender());
 
     Private::model_reset m(this);
 
 }
 
-void ActivityModel::setActivityState(Info::State state)
+void ActivityModel::onActivityStateChanged(Info::State state)
 {
+    // TODO: Implement this properly
     // auto activity = static_cast<Info*> (sender());
 
     Private::model_reset m(this);
@@ -206,6 +211,78 @@ QVariant ActivityModel::headerData(int section, Qt::Orientation orientation, int
 
     return QVariant();
 }
+
+namespace {
+    template <typename _ReturnType>
+    void continue_with(const QFuture<_ReturnType> &future, QJSValue handler)
+    {
+        auto watcher = new QFutureWatcher<_ReturnType>();
+        QObject::connect(watcher, &QFutureWatcherBase::finished,
+                [=] () mutable {
+                    handler.call(QJSValueList() << future.result());
+                }
+            );
+        watcher->setFuture(future);
+    }
+
+    template <>
+    void continue_with(const QFuture<void> &future, QJSValue handler)
+    {
+        auto watcher = new QFutureWatcher<void>();
+        QObject::connect(watcher, &QFutureWatcherBase::finished,
+                [=] () mutable {
+                    handler.call(QJSValueList());
+                }
+            );
+        watcher->setFuture(future);
+    }
+} // namespace
+
+// QFuture<void> Controller::setActivityName(id, name)
+void ActivityModel::setActivityName(const QString &id, const QString &name,
+                                    const QJSValue &callback)
+{
+    continue_with(m_service.setActivityName(id, name), callback);
+}
+
+// QFuture<void> Controller::setActivityIcon(id, icon)
+void ActivityModel::setActivityIcon(const QString &id, const QString &icon,
+                                    const QJSValue &callback)
+{
+    continue_with(m_service.setActivityIcon(id, icon), callback);
+}
+
+// QFuture<bool> Controller::setCurrentActivity(id)
+void ActivityModel::setCurrentActivity(const QString &id,
+                                       const QJSValue &callback)
+{
+    continue_with(m_service.setCurrentActivity(id), callback);
+}
+
+// QFuture<QString> Controller::addActivity(name)
+void ActivityModel::addActivity(const QString &name, const QJSValue &callback)
+{
+    continue_with(m_service.addActivity(name), callback);
+}
+
+// QFuture<void> Controller::removeActivity(id)
+void ActivityModel::removeActivity(const QString &id, const QJSValue &callback)
+{
+    continue_with(m_service.removeActivity(id), callback);
+}
+
+// QFuture<void> Controller::stopActivity(id)
+void ActivityModel::stopActivity(const QString &id, const QJSValue &callback)
+{
+    continue_with(m_service.stopActivity(id), callback);
+}
+
+// QFuture<void> Controller::startActivity(id)
+void ActivityModel::startActivity(const QString &id, const QJSValue &callback)
+{
+    continue_with(m_service.startActivity(id), callback);
+}
+
 
 } // namespace Models
 } // namespace KActivities

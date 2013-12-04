@@ -23,12 +23,14 @@
 // Qt
 #include <QObject>
 #include <QAbstractListModel>
+#include <QJSValue>
 
 // STL and Boost
 #include <boost/container/flat_set.hpp>
 #include <memory>
 
 // Local
+#include <lib/core/controller.h>
 #include <lib/core/consumer.h>
 #include <lib/core/info.h>
 
@@ -68,19 +70,33 @@ public:
         Stopping = 5
     };
 
+public Q_SLOTS:
+    void setActivityName(const QString &id, const QString &name,
+                         const QJSValue &callback);
+    void setActivityIcon(const QString &id, const QString &icon,
+                         const QJSValue &callback);
+
+    void setCurrentActivity(const QString &id, const QJSValue &callback);
+
+    void addActivity(const QString &name, const QJSValue &callback);
+    void removeActivity(const QString &id, const QJSValue &callback);
+
+    void stopActivity(const QString &id, const QJSValue &callback);
+    void startActivity(const QString &id, const QJSValue &callback);
+
 private Q_SLOTS:
-    void setActivityName(const QString &name);
-    void setActivityIcon(const QString &icon);
-    void setActivityState(KActivities::Info::State state);
+    void onActivityNameChanged(const QString &name);
+    void onActivityIconChanged(const QString &icon);
+    void onActivityStateChanged(KActivities::Info::State state);
 
     void replaceActivities(const QStringList &activities);
-    void addActivity(const QString &id);
-    void removeActivity(const QString &id);
+    void onActivityAdded(const QString &id);
+    void onActivityRemoved(const QString &id);
 
     void setServiceStatus(KActivities::Consumer::ServiceStatus status);
 
 private:
-    KActivities::Consumer m_consumer;
+    KActivities::Controller m_service;
 
     typedef std::unique_ptr<Info> InfoPtr;
 
