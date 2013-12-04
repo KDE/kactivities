@@ -62,11 +62,11 @@ QObject *Module::get(const QString &name)
     Q_ASSERT(!name.isEmpty());
 
     if (Private::s_modules.contains(name)) {
-        qCDebug(KAMD_APPLICATION) << "Returning a valid module object for:" << name;
+        qCDebug(KAMD_LOG_APPLICATION) << "Returning a valid module object for:" << name;
         return Private::s_modules[name];
     }
 
-    qCDebug(KAMD_APPLICATION) << "The requested module doesn't exist:" << name;
+    qCDebug(KAMD_LOG_APPLICATION) << "The requested module doesn't exist:" << name;
     return Q_NULLPTR;
 }
 

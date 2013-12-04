@@ -1,0 +1,22 @@
+[Desktop Entry]
+Name=List activities test
+Comment=Strange, but not a Clock
+
+Icon=preferences-system-time
+Type=Service
+X-KDE-ServiceTypes=Plasma/Applet
+
+X-Plasma-API=declarativeappletscript
+X-Plasma-MainScript=ui/main.qml
+X-Plasma-DefaultSize=250,250
+
+X-KDE-PluginInfo-Author=Ivan
+X-KDE-PluginInfo-Email=
+X-KDE-PluginInfo-Name=org.kde.listactivitiestest
+X-KDE-PluginInfo-Version=1.0
+X-KDE-PluginInfo-Website=http://userbase.kde.org/Plasma/Clocks
+X-KDE-PluginInfo-Category=Date and Time
+X-KDE-PluginInfo-Depends=
+X-KDE-PluginInfo-License=GPL
+X-KDE-PluginInfo-EnabledByDefault=true
+

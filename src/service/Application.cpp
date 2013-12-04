@@ -149,15 +149,16 @@ void Application::loadPlugins()
 
     for (const auto &plugin: availablePlugins) {
         QPluginLoader loader(pluginsDir.absoluteFilePath(plugin));
+        qDebug() << pluginsDir.absoluteFilePath(plugin);
 
         auto pluginInstance = dynamic_cast<Plugin *>(loader.instance());
 
         if (pluginInstance) {
             pluginInstance->init(Module::get());
-            qCDebug(KAMD_APPLICATION)   << "[   OK   ] loaded:  " << plugin;
+            qCDebug(KAMD_LOG_APPLICATION)   << "[   OK   ] loaded:  " << plugin;
 
         } else {
-            qCWarning(KAMD_APPLICATION) << "[ FAILED ] loading: " << plugin
+            qCWarning(KAMD_LOG_APPLICATION) << "[ FAILED ] loading: " << plugin
                        << loader.errorString();
             // TODO: Show a notification
         }
@@ -259,9 +260,12 @@ int main(int argc, char **argv)
 
     KDBusService service(KDBusService::Unique);
 
-    QLoggingCategory::setFilterRules(QStringLiteral("org.kde.kactivities.activities.debug=true"));
-    QLoggingCategory::setFilterRules(QStringLiteral("org.kde.kactivities.resources.debug=true"));
-    QLoggingCategory::setFilterRules(QStringLiteral("org.kde.kactivities.application.debug=true"));
+    KAMD_LOG_APPLICATION().setEnabled(QtDebugMsg, true);
+    KAMD_LOG_RESOURCES()  .setEnabled(QtDebugMsg, true);
+    KAMD_LOG_ACTIVITIES() .setEnabled(QtDebugMsg, true);
+    KAMD_LOG_APPLICATION().setEnabled(QtWarningMsg, true);
+    KAMD_LOG_RESOURCES()  .setEnabled(QtWarningMsg, true);
+    KAMD_LOG_ACTIVITIES() .setEnabled(QtWarningMsg, true);
 
 
     return application.exec();

@@ -38,8 +38,6 @@ bool TemplatesPlugin::init(const QHash<QString, QObject *> &modules)
 {
     m_activities = modules[QStringLiteral("activities")];
 
-    setName(QStringLiteral("org.kde.ActivityManager.ActivityTemplates"));
-
     return true;
 }
 

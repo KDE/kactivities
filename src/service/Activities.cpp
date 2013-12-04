@@ -50,15 +50,11 @@ Activities::Private::Private(Activities *parent)
     : config(QStringLiteral("kactivitymanagerdrc"))
     , q(parent)
 {
-    qCDebug(KAMD_ACTIVITIES) << "Using this configuration file:"
-        << config.name()
-        << config.locationType()
-        << QStandardPaths::standardLocations(config.locationType())
-        ;
-
-    KConfigGroup cg(&config, "Test");
-    cg.writeEntry("Test", "1");
-    cg.sync();
+    // qCDebug(KAMD_ACTIVITIES) << "Using this configuration file:"
+    //     << config.name()
+    //     << config.locationType()
+    //     << QStandardPaths::standardLocations(config.locationType())
+    //     ;
 }
 
 Activities::Private::~Private()
@@ -72,10 +68,8 @@ Activities::Activities(QObject *parent)
     : Module(QStringLiteral("activities"), parent)
     , d(this)
 {
-    qCDebug(KAMD_ACTIVITIES) << "\n\n-----------------------------------------";
-    qCDebug(KAMD_ACTIVITIES) << "Starting the KDE Activity Manager daemon"
-                             << QDateTime::currentDateTime();
-    qCDebug(KAMD_ACTIVITIES) << "-----------------------------------------";
+    qCDebug(KAMD_LOG_ACTIVITIES) << "Starting the KDE Activity Manager daemon"
+                                 << QDateTime::currentDateTime();
 
     // Basic initialization ////////////////////////////////////////////////////
 
@@ -88,7 +82,8 @@ Activities::Activities(QObject *parent)
     // Initializing config
 
     d->connect(&d->configSyncTimer, SIGNAL(timeout()),
-               SLOT(configSync()));
+               SLOT(configSync()),
+               Qt::QueuedConnection);
 
     d->configSyncTimer.setSingleShot(true);
 
@@ -261,7 +256,9 @@ void Activities::Private::removeActivity(const QString &activity)
     }
 
     emit q->ActivityRemoved(activity);
-    configSync();
+    QMetaObject::invokeMethod(q, "ActivityRemoved", Qt::QueuedConnection, Q_ARG(QString, activity));
+
+    QMetaObject::invokeMethod(this, "configSync", Qt::QueuedConnection);
 }
 
 void Activities::Private::scheduleConfigSync(const bool soon)
@@ -464,7 +461,7 @@ void Activities::Private::activitySessionStateChanged(const QString &activity,
             break;
     }
 
-    configSync();
+    QMetaObject::invokeMethod(this, "configSync", Qt::QueuedConnection);
 }
 
 int Activities::ActivityState(const QString &activity) const

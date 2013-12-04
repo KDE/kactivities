@@ -99,6 +99,7 @@ void ActivitiesCache::removeActivity(const QString &id)
 
     if (where != m_activities.end() && where->id == id) {
         m_activities.erase(where);
+        emit activityRemoved(id);
     }
 }
 

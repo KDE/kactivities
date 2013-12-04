@@ -122,6 +122,7 @@ if (NOT KACTIVITIES_LIBRARY_ONLY)
          )
    endif ()
 
+   add_subdirectory (imports)
    add_subdirectory (service)
 
    # No point in having workspace addons without the service

@@ -19,9 +19,9 @@
 
 #include "Debug.h"
 
-Q_LOGGING_CATEGORY(KAMD_ACTIVITIES,  "org.kde.kactivities.activities")
-Q_LOGGING_CATEGORY(KAMD_RESOURCES,   "org.kde.kactivities.resources")
-Q_LOGGING_CATEGORY(KAMD_APPLICATION, "org.kde.kactivities.application")
+Q_LOGGING_CATEGORY(KAMD_LOG_ACTIVITIES,  "org.kde.kactivities.activities")
+Q_LOGGING_CATEGORY(KAMD_LOG_RESOURCES,   "org.kde.kactivities.resources")
+Q_LOGGING_CATEGORY(KAMD_LOG_APPLICATION, "org.kde.kactivities.application")
 
 
 
