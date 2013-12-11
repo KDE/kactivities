@@ -130,7 +130,7 @@ target_link_libraries (
    KActivities
    Qt5::Core
    Qt5::DBus
-   KF5::KDBusAddons
+   KF5::DBusAddons
    )
 
 if(IS_ABSOLUTE "${INCLUDE_INSTALL_DIR}")

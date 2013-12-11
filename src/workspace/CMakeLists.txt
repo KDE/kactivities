@@ -10,7 +10,7 @@ if (NepomukCore_FOUND)
    add_subdirectory (kio)
 endif ()
 
-find_package (KDeclarative)
+find_package(KF5Declarative)
 
 macro_log_feature (
    KDeclarative_FOUND "libkdeclarative" "KDE Declarative (QML) support from kdelibs is needed for the settings module" "http://www.kde.org"

@@ -33,8 +33,8 @@ target_link_libraries (
    activitymanager_plugin_slc
    Qt5::Core
    Qt5::DBus
-   KF5::KConfigCore
-   KF5::KDBusAddons
+   KF5::ConfigCore
+   KF5::DBusAddons
    )
 
 set_target_properties(
