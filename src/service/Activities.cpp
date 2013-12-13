@@ -26,6 +26,7 @@
 #include <QUuid>
 #include <QDebug>
 
+#include <kauthorized.h>
 #include <kdbusconnectionpool.h>
 #include <config-features.h>
 
@@ -173,6 +174,10 @@ void Activities::Private::emitCurrentActivityChanged(const QString & activity)
 
 QString Activities::AddActivity(const QString & name)
 {
+    if (!KAuthorized::authorize("plasma-desktop/add_activities")) {
+        return QString();
+    }
+
     if (name.isEmpty()) {
         Q_ASSERT(!name.isEmpty());
         return QString();
@@ -204,6 +209,10 @@ QString Activities::AddActivity(const QString & name)
 
 void Activities::RemoveActivity(const QString & activity)
 {
+    if (!KAuthorized::authorize("plasma-desktop/add_activities")) {
+        return;
+    }
+
     // Sanity checks
     if (!d->activities.contains(activity)) {
         return;
