@@ -8,7 +8,7 @@ set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH})
 
 find_package (Qt5 REQUIRED NO_MODULE COMPONENTS Sql Gui Widgets)
 
-find_package (KF5 CONFIG REQUIRED WindowSystem CoreAddons Config I18n)
+find_package (KF5 CONFIG REQUIRED COMPONENTS WindowSystem CoreAddons Config I18n Service)
 
 # Standard stuff
 
@@ -66,6 +66,7 @@ target_link_libraries (activity-manager
    KF5::CoreAddons
    KF5::ConfigCore
    KF5::I18n
+   KF5::Service
    KF5::WindowSystem
    )
 
