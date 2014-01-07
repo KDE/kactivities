@@ -21,6 +21,7 @@ set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH} ${ECM_KDE_MODULE_
 include(KDEInstallDirs)
 include(KDECMakeSettings)
 include(KDECompilerSettings)
+include(GenerateExportHeader)
 
 # Qt
 set (CMAKE_AUTOMOC ON)
