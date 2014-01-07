@@ -2,6 +2,7 @@ project (KACTIVITIES)
 
 find_package (KDE4 REQUIRED)
 
+include (GenerateExportHeader)
 include (KDE4Defaults)
 include (MacroLibrary)
 include (MacroOptionalAddSubdirectory)
