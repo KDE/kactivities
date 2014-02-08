@@ -75,7 +75,8 @@ configure_package_config_file("${CMAKE_CURRENT_SOURCE_DIR}/KF5ActivitiesConfig.c
         DESTINATION "${CMAKECONFIG_INSTALL_DIR}"
         COMPONENT Devel )
 
-
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/kactivities_version.h
+        DESTINATION ${INCLUDE_INSTALL_DIR} COMPONENT Devel )
 
 # Write out the features
 feature_summary (WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)

@@ -125,6 +125,3 @@ if (NOT WIN32)
    install (FILES ${CMAKE_CURRENT_BINARY_DIR}/libKActivities.pc DESTINATION ${LIB_INSTALL_DIR}/pkgconfig )
 endif ()
 
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/kactivities_version.h
-        DESTINATION ${INCLUDE_INSTALL_DIR} COMPONENT Devel )
-
