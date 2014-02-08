@@ -28,7 +28,8 @@ set (CMAKE_AUTOMOC ON)
 find_package (Qt5 REQUIRED NO_MODULE COMPONENTS Core DBus)
 
 # KDE Frameworks
-find_package (KF5 CONFIG REQUIRED DBusAddons)
+set(KF5_VERSION "4.96.0")
+find_package (KF5DBusAddons ${KF5_VERSION} CONFIG REQUIRED)
 
 # Basic includes
 include (CPack)
