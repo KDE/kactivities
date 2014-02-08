@@ -28,6 +28,6 @@ target_link_libraries (
    Qt5::Core
    Qt5::Test
    Qt5::DBus
-   KActivities
+   KF5::Activities
    )
 

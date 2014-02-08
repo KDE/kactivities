@@ -24,7 +24,7 @@ target_link_libraries (
    Qt5::Qml
    KF5::I18n
    KF5::DBusAddons
-   KActivities
+   KF5::Activities
    )
 
 ## install

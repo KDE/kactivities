@@ -1,55 +1,12 @@
 # vim:set softtabstop=3 shiftwidth=3 tabstop=3 expandtab:
+cmake_minimum_required(VERSION 2.8.12)
 
 project (KActivities)
 
 # =======================================================
 # Information to update before to release this library.
 
-# Library version history:
-# API      ABI
-# 0.1.0 => 0.1.0
-# 0.1.1 => 0.1.1
-# 0.2.0 => 0.2.0
-# 6.1.0 => 6.1.0
-# 6.2.0 => 6.2.0
-
-# Library API version
-set (KACTIVITIES_LIB_MAJOR_VERSION "7")
-set (KACTIVITIES_LIB_MINOR_VERSION "0")
-set (KACTIVITIES_LIB_PATCH_VERSION "0")
-
-# Suffix to add at end of version string. Usual values are:
-# "-git"   : alpha code unstable from git. Do not use in production
-# "-beta1" : beta1 release.
-# "-beta2" : beta2 release.
-# "-beta3" : beta3 release.
-# "-rc"    : release candidate.
-# ""       : final relase. Can be used in production.
-set (KACTIVITIES_LIB_SUFFIX_VERSION "")
-
-# Library ABI version used by linker.
-# For details : http://www.gnu.org/software/libtool/manual/libtool.html#Updating-version-info
-set (KACTIVITIES_LIB_SO_CUR_VERSION "7")
-set (KACTIVITIES_LIB_SO_REV_VERSION "0")
-set (KACTIVITIES_LIB_SO_AGE_VERSION "0")
-
-# =======================================================
-# Set env. variables accordinly.
-
-set (KACTIVITIES_INCLUDE_DIR
-   "${CMAKE_CURRENT_SOURCE_DIR}/.."
-   "${CMAKE_CURRENT_SOURCE_DIR}/"
-   CACHE STRING
-   "Location of libkactivities headers" FORCE)
-
-set (KACTIVITIES_LIBS
-   "KActivities"
-   CACHE STRING
-   "Location of libKActivities binary" FORCE)
-
-set (KACTIVITIES_LIB_VERSION_STRING "${KACTIVITIES_LIB_MAJOR_VERSION}.${KACTIVITIES_LIB_MINOR_VERSION}.${KACTIVITIES_LIB_PATCH_VERSION}${KACTIVITIES_LIB_SUFFIX_VERSION}")
-set (KACTIVITIES_LIB_VERSION_ID "0x0${KACTIVITIES_LIB_MAJOR_VERSION}0${KACTIVITIES_LIB_MINOR_VERSION}0${KACTIVITIES_LIB_PATCH_VERSION}")
-set (KACTIVITIES_LIB_SO_VERSION_STRING "${KACTIVITIES_LIB_SO_CUR_VERSION}.${KACTIVITIES_LIB_SO_REV_VERSION}.${KACTIVITIES_LIB_SO_AGE_VERSION}")
+set(KF5_VERSION "4.96.0")
 
 # =======================================================
 # Now that we finished with the boilerplate, start
@@ -108,105 +65,65 @@ qt5_add_dbus_interface (
    )
 
 add_library (
-   KActivities SHARED
+   KF5Activities SHARED
    ${KActivities_LIB_SRCS}
    )
+add_library(KF5::Activities ALIAS KF5Activities)
 
 include_directories (
    ${CMAKE_SOURCE_DIR}/src
-   ${CMAKE_CURRENT_SOURCE_DIR}
-   ${CMAKE_CURRENT_BINARY_DIR}
    ${KDBusAddons_INCLUDE_DIR}
    )
 
 set_target_properties (
-   KActivities
+   KF5Activities
    PROPERTIES
-   VERSION ${KACTIVITIES_LIB_SO_VERSION_STRING}
-   SOVERSION ${KACTIVITIES_LIB_SO_CUR_VERSION}
+   VERSION ${KACTIVITIES_VERSION_STRING}
+   SOVERSION ${KACTIVITIES_SOVERSION}
+   EXPORT_NAME Activities
    )
 
 target_link_libraries (
-   KActivities
+   KF5Activities
    Qt5::Core
    Qt5::DBus
    KF5::DBusAddons
    )
 
-if(IS_ABSOLUTE "${INCLUDE_INSTALL_DIR}")
-  target_include_directories(KActivities INTERFACE "$<INSTALL_INTERFACE:${INCLUDE_INSTALL_DIR}>" )
-else()
-  target_include_directories(KActivities INTERFACE "$<INSTALL_INTERFACE:${CMAKE_INSTALL_PREFIX}/${INCLUDE_INSTALL_DIR}>" )
-endif()
+target_include_directories(KF5Activities INTERFACE "$<INSTALL_INTERFACE:${INCLUDE_INSTALL_DIR}/KActivities>" )
 
 # install
-generate_export_header(KActivities)
+generate_export_header(KF5Activities BASE_NAME KActivities)
 
-set (
-   KActivities_LIB_HEADERS
-   consumer.h
-   controller.h
-   info.h
-   resourceinstance.h
-   version.h
+ecm_generate_headers (
+  Consumer
+  Controller
+  Info
+  ResourceInstance
+  Version
+  MODULE_NAME KActivities
+  PREFIX KActivities
+  REQUIRED_HEADERS KActivities_HEADERS
+)
+install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/KActivities DESTINATION ${INCLUDE_INSTALL_DIR} COMPONENT Devel)
+
+install(FILES
+   ${KActivities_HEADERS}
    ${CMAKE_CURRENT_BINARY_DIR}/kactivities_export.h
-   )
-
-set (
-   KActivities_LIB_PRETTY_HEADERS
-   includes/KActivities/Consumer
-   includes/KActivities/Controller
-   includes/KActivities/Info
-   includes/KActivities/ResourceInstance
-   includes/KActivities/Version
-   )
-
-install (
-   FILES ${KActivities_LIB_HEADERS}
-   DESTINATION ${INCLUDE_INSTALL_DIR}/kactivities
+   DESTINATION ${INCLUDE_INSTALL_DIR}/KActivities/kactivities
    COMPONENT Devel
    )
 
-install (
-   FILES ${KActivities_LIB_PRETTY_HEADERS}
-   DESTINATION ${INCLUDE_INSTALL_DIR}/KDE/KActivities
-   COMPONENT Devel
-   )
-
-install (
-   TARGETS KActivities
-   EXPORT KActivitiesLibraryTargets
+install(TARGETS KF5Activities
+   EXPORT KF5ActivitiesLibraryTargets
    ${INSTALL_TARGETS_DEFAULT_ARGS}
    )
 
-install (
-   EXPORT KActivitiesLibraryTargets
-   DESTINATION ${LIB_INSTALL_DIR}/cmake/KActivities
-   FILE KActivitiesLibraryTargets.cmake
-   NAMESPACE KF5::
-   )
 
 if (NOT WIN32)
    configure_file (${CMAKE_CURRENT_SOURCE_DIR}/libKActivities.pc.cmake ${CMAKE_CURRENT_BINARY_DIR}/libKActivities.pc)
    install (FILES ${CMAKE_CURRENT_BINARY_DIR}/libKActivities.pc DESTINATION ${LIB_INSTALL_DIR}/pkgconfig )
 endif ()
-
-ecm_setup_version(5.0.0 VARIABLE_PREFIX KACTIVITIES
-                        VERSION_HEADER "${CMAKE_CURRENT_BINARY_DIR}/kactivities_version.h"
-                        PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/KActivitiesConfigVersion.cmake")
-
-# create a Config.cmake and a ConfigVersion.cmake file and install them
-set(CMAKECONFIG_INSTALL_DIR "${CMAKECONFIG_INSTALL_PREFIX}/KActivities")
-
-configure_package_config_file("${CMAKE_CURRENT_SOURCE_DIR}/KActivitiesConfig.cmake.in"
-                              "${CMAKE_CURRENT_BINARY_DIR}/KActivitiesConfig.cmake"
-                              INSTALL_DESTINATION  ${CMAKECONFIG_INSTALL_DIR}
-                              PATH_VARS  INCLUDE_INSTALL_DIR CMAKE_INSTALL_PREFIX )
-
-install(FILES  "${CMAKE_CURRENT_BINARY_DIR}/KActivitiesConfig.cmake"
-               "${CMAKE_CURRENT_BINARY_DIR}/KActivitiesConfigVersion.cmake"
-        DESTINATION "${CMAKECONFIG_INSTALL_DIR}"
-        COMPONENT Devel )
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/kactivities_version.h
         DESTINATION ${INCLUDE_INSTALL_DIR} COMPONENT Devel )
