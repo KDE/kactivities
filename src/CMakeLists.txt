@@ -130,5 +130,5 @@ if (NOT KACTIVITIES_LIBRARY_ONLY)
 
 endif ()
 
-add_subdirectory (ontologies)
+#add_subdirectory (ontologies)
 
