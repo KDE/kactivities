@@ -95,17 +95,17 @@ target_include_directories(KF5Activities INTERFACE "$<INSTALL_INTERFACE:${INCLUD
 # install
 generate_export_header(KF5Activities BASE_NAME KActivities)
 
-ecm_generate_headers (
+ecm_generate_headers(KActivities_CamelCase_HEADERS
+  HEADER_NAMES
   Consumer
   Controller
   Info
   ResourceInstance
   Version
-  MODULE_NAME KActivities
   PREFIX KActivities
   REQUIRED_HEADERS KActivities_HEADERS
 )
-install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/KActivities DESTINATION ${INCLUDE_INSTALL_DIR} COMPONENT Devel)
+install(FILES ${KActivities_CamelCase_HEADERS} DESTINATION ${INCLUDE_INSTALL_DIR}/KActivities/KActivities COMPONENT Devel)
 
 install(FILES
    ${KActivities_HEADERS}
