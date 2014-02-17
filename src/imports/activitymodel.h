@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2012 Ivan Cukic <ivan.cukic(at)kde.org>
+ *   Copyright (C) 2012, 2013, 2014 Ivan Cukic <ivan.cukic(at)kde.org>
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License version 2,
@@ -47,6 +47,9 @@ namespace Models {
 class ActivityModel : public QAbstractListModel {
     Q_OBJECT
 
+    Q_ENUMS(State)
+    Q_PROPERTY(State shownState READ shownState WRITE setShownState NOTIFY shownStateChanged)
+
 public:
     ActivityModel(QObject *parent = 0);
     virtual ~ActivityModel();
@@ -63,6 +66,7 @@ public:
     };
 
     enum State {
+        All = 0,
         Invalid = 0,
         Running = 2,
         Starting = 3,
@@ -84,32 +88,44 @@ public Q_SLOTS:
     void stopActivity(const QString &id, const QJSValue &callback);
     void startActivity(const QString &id, const QJSValue &callback);
 
+    void setShownState(State state);
+    State shownState() const;
+
+Q_SIGNALS:
+    void shownStateChanged(State state);
+
 private Q_SLOTS:
     void onActivityNameChanged(const QString &name);
     void onActivityIconChanged(const QString &icon);
     void onActivityStateChanged(KActivities::Info::State state);
 
     void replaceActivities(const QStringList &activities);
-    void onActivityAdded(const QString &id);
+    void onActivityAdded(const QString &id, bool notifyClients = true);
     void onActivityRemoved(const QString &id);
 
     void setServiceStatus(KActivities::Consumer::ServiceStatus status);
 
 private:
     KActivities::Controller m_service;
+    State m_shownState;
 
     typedef std::unique_ptr<Info> InfoPtr;
 
     struct InfoPtrComparator {
+        template <typename InfoPtr>
         bool operator() (const InfoPtr& left, const InfoPtr& right) const
         {
             return left->name().toLower() < right->name().toLower();
         }
     };
 
-    boost::container::flat_set<InfoPtr, InfoPtrComparator> m_activities;
+    boost::container::flat_set<InfoPtr, InfoPtrComparator> m_registeredActivities;
+    boost::container::flat_set<Info*, InfoPtrComparator> m_shownActivities;
 
-    unsigned int addActivitySilently(const QString &id);
+    Info *registerActivity(const QString &id);
+    void unregisterActivity(const QString &id);
+    void showActivity(Info *activityInfo, bool notifyClients);
+    void hideActivity(const QString &id);
 
     class Private;
     friend class Private;

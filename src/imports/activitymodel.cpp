@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2012 Ivan Cukic <ivan.cukic(at)kde.org>
+ *   Copyright (C) 2012, 2013, 2014 Ivan Cukic <ivan.cukic(at)kde.org>
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License version 2,
@@ -36,10 +36,10 @@
 
 // Boost
 #include <boost/range/algorithm/find_if.hpp>
+#include <boost/optional.hpp>
 
 // Local
 #include "utils/remove_if.h"
-// #include "utils/continuator.h"
 #include "utils_p.h"
 
 
@@ -48,19 +48,106 @@ namespace Models {
 
 struct ActivityModel::Private {
     DECLARE_RAII_MODEL_UPDATERS(ActivityModel)
+
+    /**
+     * Returns whether the the activity has a desired state.
+     * If the state is 0, returns true
+     */
+    static inline bool matchingState(const QString &activityId,
+                                     ActivityModel::State state)
+    {
+        // Are we filtering activities on their states?
+        if (state) {
+            // This is usually not advised (short-lived Info instance
+            // but it comes with no cost since we have an already created
+            // long-lived Controller instance
+            Info activityInfo(activityId);
+            if (activityInfo.state() != state)
+                return false;
+        }
+
+        return true;
+    }
+    /**
+     * Returns whether the the activity has a desired state.
+     * If the state is 0, returns true
+     */
+    static inline bool matchingState(Info * activity,
+                                     ActivityModel::State state)
+    {
+        // Are we filtering activities on their states?
+        if (state) {
+            if (activity->state() != state)
+                return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Searches for the activity.
+     * Returns an option(index, iterator) for the found activity.
+     */
+    template <typename _Container>
+    static inline
+    boost::optional<
+        std::pair<unsigned int, typename _Container::const_iterator>
+    >
+    activityPosition(const _Container &container, const QString &activityId)
+    {
+        using ActivityPosition =
+                decltype(activityPosition(container, activityId));
+        using ContainerElement =
+                typename _Container::value_type;
+
+        auto position = boost::find_if(container,
+            [&] (const ContainerElement &activity) {
+                return activity->id() == activityId;
+            }
+        );
+
+        return (position != container.end()) ?
+            ActivityPosition(
+                std::make_pair(position - container.begin(), position)
+            ) :
+            ActivityPosition();
+    }
+
+    /**
+     * Notifies the model that an activity was updated
+     */
+    template <typename _Model, typename _Container>
+    static inline
+    void emitActivityUpdated(_Model * model,
+                             const _Container &container,
+                             QObject * activityInfo, int role)
+    {
+        const auto activity = static_cast<Info*> (activityInfo);
+
+        auto position = Private::activityPosition(container, activity->id());
+
+        if (position) {
+            emit model->dataChanged(
+                model->index(position->first),
+                model->index(position->first),
+                QVector<int> {role}
+            );
+    }
+
+    }
 };
 
 ActivityModel::ActivityModel(QObject *parent)
-    : QAbstractListModel(parent)
+    : QAbstractListModel(parent), m_shownState(All)
 {
     // Initializing role names for qml
     connect(&m_service, &Consumer::serviceStatusChanged,
             this,       &ActivityModel::setServiceStatus);
 
-    connect(&m_service, &Consumer::activityAdded,
-            this,       &ActivityModel::onActivityAdded);
-    connect(&m_service, &Consumer::activityRemoved,
-            this,       &ActivityModel::onActivityRemoved);
+    connect(&m_service, SIGNAL(Consumer::activityAdded(QString)),
+            this,       SLOT(ActivityModel::onActivityAdded(QString)));
+    connect(&m_service, SIGNAL(Consumer::activityRemoved(QString)),
+            this,       SLOT(ActivityModel::onActivityRemoved(QString)));
 
     setServiceStatus(m_service.serviceStatus());
 }
@@ -89,77 +176,99 @@ void ActivityModel::replaceActivities(const QStringList &activities)
 {
     Private::model_reset m(this);
 
-    m_activities.clear();
+    m_registeredActivities.clear();
+    m_shownActivities.clear();
 
-    for (const QString& activity: activities) {
-        addActivitySilently(activity);
+    for (const QString &activity: activities) {
+        onActivityAdded(activity, false);
     }
 }
 
-void ActivityModel::onActivityAdded(const QString &id)
+void ActivityModel::onActivityAdded(const QString &id, bool notifyClients)
 {
-    // Private::model_reset m(this);
+    auto info = registerActivity(id);
 
-    auto insertionPosition = addActivitySilently(id);
-
-    Private::model_insert(this, QModelIndex(),
-            insertionPosition, insertionPosition);
+    showActivity(info, notifyClients);
 }
 
 void ActivityModel::onActivityRemoved(const QString &id)
 {
-    // Private::model_reset m(this);
-
-    using namespace kamd::utils;
-
-    auto position = boost::find_if(m_activities, [&] (std::unique_ptr<Info> &activity) {
-        return activity->id() == id;
-    });
-
-    if (position != m_activities.end()) {
-        auto insertionPosition = position - m_activities.begin();
-
-        Private::model_remove(this, QModelIndex(),
-            insertionPosition, insertionPosition);
-
-        m_activities.erase(position);
-    }
-
+    hideActivity(id);
+    unregisterActivity(id);
 }
 
-unsigned int ActivityModel::addActivitySilently(const QString &id)
+Info *ActivityModel::registerActivity(const QString &id)
 {
-    auto activity = new Info(id);
+    auto position = Private::activityPosition(m_registeredActivities, id);
 
-    connect(activity, &Info::nameChanged,
-            this,     &ActivityModel::onActivityNameChanged);
-    connect(activity, &Info::iconChanged,
-            this,     &ActivityModel::onActivityIconChanged);
-    connect(activity, &Info::stateChanged,
-            this,     &ActivityModel::onActivityStateChanged);
+    if (position) {
+        return position->second->get();
 
-    auto insertion = m_activities.insert(std::unique_ptr<Info>(activity));
+    } else {
+        auto activityInfo = new Info(id);
 
-    return (insertion.second ? insertion.first : m_activities.end())
-           - m_activities.begin();
+        connect(activityInfo, &Info::nameChanged,
+                this,         &ActivityModel::onActivityNameChanged);
+        connect(activityInfo, &Info::iconChanged,
+                this,         &ActivityModel::onActivityIconChanged);
+        connect(activityInfo, &Info::stateChanged,
+                this,         &ActivityModel::onActivityStateChanged);
+
+        m_registeredActivities.insert(InfoPtr(activityInfo));
+
+        return activityInfo;
+    }
+}
+
+void ActivityModel::unregisterActivity(const QString &id)
+{
+    auto position = Private::activityPosition(m_registeredActivities, id);
+
+    if (position) {
+        m_registeredActivities.erase(position->second);
+    }
+}
+
+void ActivityModel::showActivity(Info *activityInfo, bool notifyClients)
+{
+    if (!Private::matchingState(activityInfo, m_shownState)) return;
+
+    auto position = m_shownActivities.insert(activityInfo);
+
+    if (notifyClients) {
+        unsigned int index =
+            (position.second ? position.first : m_shownActivities.end())
+            - m_shownActivities.begin();
+
+        Private::model_insert(this, QModelIndex(), index, index);
+    }
+}
+
+void ActivityModel::hideActivity(const QString &id)
+{
+    auto position = Private::activityPosition(m_shownActivities, id);
+
+    if (position) {
+        Private::model_remove(this, QModelIndex(),
+            position->first, position->first);
+        m_shownActivities.erase(position->second);
+    }
 }
 
 void ActivityModel::onActivityNameChanged(const QString &name)
 {
-    // TODO: Implement this properly
-    // const auto activity = static_cast<Info*> (sender());
+    Q_UNUSED(name)
 
-    Private::model_reset m(this);
-
+    Private::emitActivityUpdated(this, m_shownActivities, sender(),
+                                 Qt::DisplayRole);
 }
 
 void ActivityModel::onActivityIconChanged(const QString &icon)
 {
-    // TODO: Implement this properly
-    // auto activity = static_cast<Info*> (sender());
+    Q_UNUSED(icon)
 
-    Private::model_reset m(this);
-
+    Private::emitActivityUpdated(this, m_shownActivities, sender(),
+                                 Qt::DecorationRole);
 }
 
 void ActivityModel::onActivityStateChanged(Info::State state)
@@ -167,21 +276,46 @@ void ActivityModel::onActivityStateChanged(Info::State state)
     // TODO: Implement this properly
     // auto activity = static_cast<Info*> (sender());
 
-    Private::model_reset m(this);
+    if (m_shownState == 0) {
+        Private::emitActivityUpdated(this, m_shownActivities, sender(),
+                                     ActivityState);
 
+    } else {
+        auto info = static_cast<Info*> (sender());
+
+        if (state == m_shownState) {
+            showActivity(info, true);
+        } else {
+            hideActivity(info->id());
+        }
+    }
+}
+
+void ActivityModel::setShownState(State state)
+{
+    m_shownState = state;
+
+    replaceActivities(m_service.activities());
+
+    emit shownStateChanged(state);
+}
+
+ActivityModel::State ActivityModel::shownState() const
+{
+    return m_shownState;
 }
 
 int ActivityModel::rowCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent);
 
-    return m_activities.size();
+    return m_shownActivities.size();
 }
 
 QVariant ActivityModel::data(const QModelIndex &index, int role) const
 {
     const int row = index.row();
-    const auto &item = *(m_activities.cbegin() + row);
+    const auto &item = *(m_shownActivities.cbegin() + row);
 
     switch (role) {
     case Qt::DisplayRole:
@@ -201,7 +335,8 @@ QVariant ActivityModel::data(const QModelIndex &index, int role) const
     }
 }
 
-QVariant ActivityModel::headerData(int section, Qt::Orientation orientation, int role) const
+QVariant ActivityModel::headerData(int section, Qt::Orientation orientation,
+                                   int role) const
 {
     Q_UNUSED(orientation)
 
