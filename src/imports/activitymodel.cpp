@@ -144,10 +144,10 @@ ActivityModel::ActivityModel(QObject *parent)
     connect(&m_service, &Consumer::serviceStatusChanged,
             this,       &ActivityModel::setServiceStatus);
 
-    connect(&m_service, SIGNAL(Consumer::activityAdded(QString)),
-            this,       SLOT(ActivityModel::onActivityAdded(QString)));
-    connect(&m_service, SIGNAL(Consumer::activityRemoved(QString)),
-            this,       SLOT(ActivityModel::onActivityRemoved(QString)));
+    connect(&m_service, SIGNAL(activityAdded(QString)),
+            this,       SLOT(onActivityAdded(QString)));
+    connect(&m_service, SIGNAL(activityRemoved(QString)),
+            this,       SLOT(onActivityRemoved(QString)));
 
     setServiceStatus(m_service.serviceStatus());
 }
