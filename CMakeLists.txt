@@ -35,7 +35,7 @@ find_package (KF5DBusAddons ${KF5_VERSION} CONFIG REQUIRED)
 # Basic includes
 include (CPack)
 include (FeatureSummary)
-include (ECMCMakePackageConfigHelpers)
+include (ECMPackageConfigHelpers)
 include (ECMSetupVersion)
 
 
