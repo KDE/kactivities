@@ -83,6 +83,7 @@ void ActivitiesCache::loadOfflineDefaults()
     m_currentActivity = nulluuid;
 
     emit serviceStatusChanged(m_status);
+    emit activityListChanged();
 }
 
 ActivitiesCache::~ActivitiesCache()
@@ -100,6 +101,7 @@ void ActivitiesCache::removeActivity(const QString &id)
     if (where != m_activities.end() && where->id == id) {
         m_activities.erase(where);
         emit activityRemoved(id);
+        emit activityListChanged();
     }
 }
 
@@ -195,7 +197,7 @@ void ActivitiesCache::setActivityInfo(const ActivityInfo &info)
     if (where == m_activities.end() || where->id != info.id) {
         m_activities.insert(where, info);
         emit activityAdded(info.id);
-
+        emit activityListChanged();
     } else {
         *where = info;
         emit activityChanged(info.id);
@@ -218,6 +220,7 @@ void ActivitiesCache::setAllActivities(const ActivityInfoList &_activities)
 
     m_status = Consumer::Running;
     emit serviceStatusChanged(m_status);
+    emit activityListChanged();
 }
 
 void ActivitiesCache::setCurrentActivity(const QString &activity)
