@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2010, 2011, 2012 Ivan Cukic <ivan.cukic(at)kde.org>
+ *   Copyright (C) 2010, 2011, 2012, 2013, 2014 Ivan Cukic <ivan.cukic(at)kde.org>
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU Lesser General Public License version 2,
@@ -23,11 +23,9 @@
 
 #include <QCoreApplication>
 #include <QDBusConnection>
-#include <QMetaObject>
 
 #include "debug_p.h"
-
-#include <kdbusconnectionpool.h>
+#include "mainthreadexecutor_p.h"
 
 namespace KActivities {
 
@@ -42,34 +40,34 @@ Manager::Manager()
     : QObject()
     , m_watcher(
             ACTIVITY_MANAGER_DBUS_PATH,
-            KDBusConnectionPool::threadConnection()
+            QDBusConnection::sessionBus()
             )
     , m_activities(
             new org::kde::ActivityManager::Activities(
                 ACTIVITY_MANAGER_DBUS_PATH,
                 ACTIVITY_MANAGER_DBUS_OBJECT("/Activities"),
-                KDBusConnectionPool::threadConnection(),
+                QDBusConnection::sessionBus(),
                 this)
             )
     , m_resources(
             new org::kde::ActivityManager::Resources(
                 ACTIVITY_MANAGER_DBUS_PATH,
                 ACTIVITY_MANAGER_DBUS_OBJECT("/Resources"),
-                KDBusConnectionPool::threadConnection(),
+                QDBusConnection::sessionBus(),
                 this)
             )
     , m_resourcesLinking(
             new org::kde::ActivityManager::ResourcesLinking(
                 ACTIVITY_MANAGER_DBUS_PATH,
                 ACTIVITY_MANAGER_DBUS_OBJECT("/Resources/Linking"),
-                KDBusConnectionPool::threadConnection(),
+                QDBusConnection::sessionBus(),
                 this)
             )
     , m_features(
             new org::kde::ActivityManager::Features(
                 ACTIVITY_MANAGER_DBUS_PATH,
                 ACTIVITY_MANAGER_DBUS_OBJECT("/Features"),
-                KDBusConnectionPool::threadConnection(),
+                QDBusConnection::sessionBus(),
                 this)
             )
 {
@@ -77,48 +75,46 @@ Manager::Manager()
             this, &Manager::serviceOwnerChanged);
 }
 
-void ManagerInstantiator::start()
-{
-    // check if the activity manager is already running
-    if (!Manager::isServiceRunning()) {
-
-        #if defined(QT_DEBUG)
-        QLoggingCategory::setFilterRules(QStringLiteral("org.kde.kactivities.lib.core.debug=true"));
-
-        qCDebug(KAMD_CORELIB) << "Should we start the daemon?";
-        if (!QCoreApplication::instance()
-                 ->property("org.kde.KActivities.core.disableAutostart")
-                 .toBool()) {
-            qCDebug(KAMD_CORELIB) << "Starting the activity manager daemon";
-            QProcess::startDetached(QStringLiteral("kactivitymanagerd"));
-        }
-
-        #else
-        QProcess::startDetached(QStringLiteral("kactivitymanagerd"));
-        #endif
-    }
-
-    // creating a new instance of the class
-    Manager::s_instance = new Manager();
-}
-
 Manager *Manager::self()
 {
-    static auto mainThread = QCoreApplication::instance()->thread();
-
     static std::mutex singleton;
     std::lock_guard<std::mutex> singleton_lock(singleton);
 
     if (!s_instance) {
+            qDebug() << "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$" << QThread::currentThreadId();
 
-        auto managerInstantiator = new ManagerInstantiator();
-        managerInstantiator->moveToThread(QCoreApplication::instance()->thread());
+        runInMainThread([] () {
+            // check if the activity manager is already running
+            if (!Manager::isServiceRunning()) {
 
-        QMetaObject::invokeMethod(managerInstantiator, "start",
-                QThread::currentThread() == mainThread ?
-                    Qt::DirectConnection :
-                    Qt::BlockingQueuedConnection
-                );
+                #if defined(QT_DEBUG)
+                QLoggingCategory::setFilterRules(QStringLiteral("org.kde.kactivities.lib.core.debug=true"));
+
+                qCDebug(KAMD_CORELIB) << "Should we start the daemon?";
+                if (!QCoreApplication::instance()
+                         ->property("org.kde.KActivities.core.disableAutostart")
+                         .toBool()) {
+                    qCDebug(KAMD_CORELIB) << "Starting the activity manager daemon";
+                    QProcess::startDetached(QStringLiteral("kactivitymanagerd"));
+                }
+
+                #else
+                QProcess::startDetached(QStringLiteral("kactivitymanagerd"));
+                #endif
+            }
+
+            qDebug() << "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$" << QThread::currentThreadId();
+            qDebug() << "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$";
+            qDebug() << "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$";
+            qDebug() << "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$";
+            qDebug() << "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$";
+            qDebug() << "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$";
+
+            // creating a new instance of the class
+            Manager::s_instance = new Manager();
+
+        });
+            qDebug() << "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$" << QThread::currentThreadId();
     }
 
     return s_instance;
@@ -126,7 +122,7 @@ Manager *Manager::self()
 
 bool Manager::isServiceRunning()
 {
-    return KDBusConnectionPool::threadConnection().interface()->isServiceRegistered(ACTIVITY_MANAGER_DBUS_PATH);
+    return QDBusConnection::sessionBus().interface()->isServiceRegistered(ACTIVITY_MANAGER_DBUS_PATH);
 }
 
 void Manager::serviceOwnerChanged(const QString &serviceName, const QString &oldOwner, const QString &newOwner)

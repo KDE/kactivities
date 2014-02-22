@@ -22,6 +22,7 @@ set (
    info.cpp
    resourceinstance.cpp
 
+   mainthreadexecutor_p.cpp
    manager_p.cpp
    activitiescache_p.cpp
    dbusfuture_p.cpp

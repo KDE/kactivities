@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2010, 2011, 2012 Ivan Cukic <ivan.cukic(at)kde.org>
+ *   Copyright (C) 2010, 2011, 2012, 2013, 2014 Ivan Cukic <ivan.cukic(at)kde.org>
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU Lesser General Public License version 2,
@@ -32,15 +32,6 @@
 namespace Service = org::kde::ActivityManager;
 
 namespace KActivities {
-
-// This class only serves to make an instance of the Manager class
-// to live in the main application thread
-class ManagerInstantiator: public QObject {
-    Q_OBJECT
-
-public:
-    Q_INVOKABLE void start();
-};
 
 class Manager : public QObject {
     Q_OBJECT
