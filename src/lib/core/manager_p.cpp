@@ -19,10 +19,14 @@
 
 #include "manager_p.h"
 
+#include <mutex>
+
+#include <QCoreApplication>
 #include <QDBusConnection>
+#include <QMetaObject>
+
 #include "debug_p.h"
 
-// #include <ktoolinvocation.h>
 #include <kdbusconnectionpool.h>
 
 namespace KActivities {
@@ -73,44 +77,48 @@ Manager::Manager()
             this, &Manager::serviceOwnerChanged);
 }
 
-Manager *Manager::self()
+void ManagerInstantiator::start()
 {
-    if (!s_instance) {
-        // check if the activity manager is already running
-        if (!isServiceRunning()) {
+    // check if the activity manager is already running
+    if (!Manager::isServiceRunning()) {
 
-            // not running, trying to launch it
-            // QString error;
+        #if defined(QT_DEBUG)
+        QLoggingCategory::setFilterRules(QStringLiteral("org.kde.kactivities.lib.core.debug=true"));
 
-            // int ret = KToolInvocation::startServiceByDesktopPath("kactivitymanagerd.desktop", QStringList(), &error);
-            // if (ret > 0) {
-            //     qCDebug(KAMD_CORELIB) << "Activity: Couldn't start kactivitymanagerd: " << error << endl;
-            // }
-
-            // if (!KDBusConnectionPool::threadConnection().interface()->isServiceRegistered(ACTIVITY_MANAGER_DBUS_PATH)) {
-            //     qCDebug(KAMD_CORELIB) << "Activity: The kactivitymanagerd service is still not registered";
-            // } else {
-            //     qCDebug(KAMD_CORELIB) << "Activity: The kactivitymanagerd service has been registered";
-            // }
-
-            #if defined(QT_DEBUG)
-            QLoggingCategory::setFilterRules(QStringLiteral("org.kde.kactivities.lib.core.debug=true"));
-
-            qCDebug(KAMD_CORELIB) << "Should we start the daemon?";
-            if (!QCoreApplication::instance()
-                     ->property("org.kde.KActivities.core.disableAutostart")
-                     .toBool()) {
-                qCDebug(KAMD_CORELIB) << "Starting the activity manager daemon";
-                QProcess::startDetached(QStringLiteral("kactivitymanagerd"));
-            }
-
-            #else
+        qCDebug(KAMD_CORELIB) << "Should we start the daemon?";
+        if (!QCoreApplication::instance()
+                 ->property("org.kde.KActivities.core.disableAutostart")
+                 .toBool()) {
+            qCDebug(KAMD_CORELIB) << "Starting the activity manager daemon";
             QProcess::startDetached(QStringLiteral("kactivitymanagerd"));
-            #endif
         }
 
-        // creating a new instance of the class
-        s_instance = new Manager();
+        #else
+        QProcess::startDetached(QStringLiteral("kactivitymanagerd"));
+        #endif
+    }
+
+    // creating a new instance of the class
+    Manager::s_instance = new Manager();
+}
+
+Manager *Manager::self()
+{
+    static auto mainThread = QCoreApplication::instance()->thread();
+
+    static std::mutex singleton;
+    std::lock_guard<std::mutex> singleton_lock(singleton);
+
+    if (!s_instance) {
+
+        auto managerInstantiator = new ManagerInstantiator();
+        managerInstantiator->moveToThread(QCoreApplication::instance()->thread());
+
+        QMetaObject::invokeMethod(managerInstantiator, "start",
+                QThread::currentThread() == mainThread ?
+                    Qt::DirectConnection :
+                    Qt::BlockingQueuedConnection
+                );
     }
 
     return s_instance;
