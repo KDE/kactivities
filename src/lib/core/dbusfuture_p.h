@@ -58,13 +58,14 @@ public:
                          &QDBusPendingCallWatcher::finished,
                          [this] () { callFinished(); });
 
+        this->reportStarted();
+
         if (reply.isFinished()) {
             this->callFinished();
         }
 
         qCDebug(KAMD_CORELIB) << "Returning a future";
         return this->future();
-
     }
 
 private:
