@@ -78,7 +78,7 @@ void DBusCallFutureInterface<_Result>::callFinished()
 {
     deleteLater();
 
-    qCDebug(KAMD_CORELIB) << "This is call end";
+    qCDebug(KAMD_CORELIB) << "This is call end" << reply.isError();
     if (!reply.isError()) {
         this->reportResult(reply.value());
     }
