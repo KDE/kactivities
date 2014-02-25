@@ -38,8 +38,14 @@ class DBusCallFutureInterface : public QObject,
                                 public QFutureInterface<_Result> {
 public:
     DBusCallFutureInterface(QDBusPendingReply<_Result> reply)
-        : reply(reply)
+        : reply(reply),
+          replyWatcher(nullptr)
     {
+    }
+
+    ~DBusCallFutureInterface()
+    {
+        delete replyWatcher;
     }
 
     void callFinished();
