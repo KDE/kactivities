@@ -38,8 +38,14 @@ class DBusCallFutureInterface : public QObject,
                                 public QFutureInterface<_Result> {
 public:
     DBusCallFutureInterface(QDBusPendingReply<_Result> reply)
-        : reply(reply)
+        : reply(reply),
+          replyWatcher(nullptr)
     {
+    }
+
+    ~DBusCallFutureInterface()
+    {
+        delete replyWatcher;
     }
 
     void callFinished();
@@ -52,13 +58,14 @@ public:
                          &QDBusPendingCallWatcher::finished,
                          [this] () { callFinished(); });
 
+        this->reportStarted();
+
         if (reply.isFinished()) {
             this->callFinished();
         }
 
         qCDebug(KAMD_CORELIB) << "Returning a future";
         return this->future();
-
     }
 
 private:
@@ -71,7 +78,7 @@ void DBusCallFutureInterface<_Result>::callFinished()
 {
     deleteLater();
 
-    qCDebug(KAMD_CORELIB) << "This is call end";
+    qCDebug(KAMD_CORELIB) << "This is call end" << reply.isError();
     if (!reply.isError()) {
         this->reportResult(reply.value());
     }
