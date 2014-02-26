@@ -81,7 +81,6 @@ Manager *Manager::self()
     std::lock_guard<std::mutex> singleton_lock(singleton);
 
     if (!s_instance) {
-            qDebug() << "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$" << QThread::currentThreadId();
 
         runInMainThread([] () {
             // check if the activity manager is already running
@@ -103,18 +102,10 @@ Manager *Manager::self()
                 #endif
             }
 
-            qDebug() << "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$" << QThread::currentThreadId();
-            qDebug() << "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$";
-            qDebug() << "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$";
-            qDebug() << "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$";
-            qDebug() << "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$";
-            qDebug() << "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$";
-
             // creating a new instance of the class
             Manager::s_instance = new Manager();
 
         });
-            qDebug() << "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$" << QThread::currentThreadId();
     }
 
     return s_instance;

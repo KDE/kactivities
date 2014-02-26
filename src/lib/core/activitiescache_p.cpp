@@ -20,7 +20,11 @@
 #include "activitiescache_p.h"
 #include "manager_p.h"
 
+#include <mutex>
+
 #include <QWeakPointer>
+
+#include "mainthreadexecutor_p.h"
 
 namespace KActivities {
 
@@ -30,9 +34,18 @@ QWeakPointer<ActivitiesCache> ActivitiesCache::s_instance;
 
 QSharedPointer<ActivitiesCache> ActivitiesCache::self()
 {
+    static std::mutex singleton;
+    std::lock_guard<std::mutex> singleton_lock(singleton);
+
     if (!s_instance) {
-        QSharedPointer<ActivitiesCache> instance(new ActivitiesCache());
-        s_instance = instance;
+
+        QSharedPointer<ActivitiesCache> instance(Q_NULLPTR);
+
+        runInMainThread([&instance] {
+            instance.reset(new ActivitiesCache());
+            s_instance = instance;
+        });
+
         return instance;
 
     } else return s_instance.toStrongRef();
