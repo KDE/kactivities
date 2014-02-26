@@ -6,7 +6,8 @@ set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH})
 
 find_package (Qt5 REQUIRED NO_MODULE COMPONENTS Sql Gui Widgets Qml)
 find_package (KF5DBusAddons ${KF5_VERSION} CONFIG REQUIRED)
-find_package (KF5I18n ${KF5_VERSION} CONFIG REQUIRED)
+find_package (KF5I18n       ${KF5_VERSION} CONFIG REQUIRED)
+find_package (KF5Config     ${KF5_VERSION} CONFIG REQUIRED)
 
 set (
    kactivities_imports_LIB_SRCS
@@ -26,6 +27,7 @@ target_link_libraries (
    KF5::I18n
    KF5::DBusAddons
    KF5::Activities
+   KF5::ConfigCore
    )
 
 ## install

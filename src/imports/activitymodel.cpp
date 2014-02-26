@@ -33,6 +33,8 @@
 
 // KDE
 #include <klocalizedstring.h>
+#include <kconfig.h>
+#include <kconfiggroup.h>
 
 // Boost
 #include <boost/range/algorithm/find_if.hpp>
@@ -143,6 +145,13 @@ struct ActivityModel::Private {
     }
 };
 
+static
+KConfigGroup _plasmaConfigContainments() {
+    static KConfig config("plasma-org.kde.desktop-appletsrc");
+    return config.group("Containments");
+}
+
+
 ActivityModel::ActivityModel(QObject *parent)
     : QAbstractListModel(parent)
 {
@@ -165,10 +174,11 @@ ActivityModel::~ActivityModel()
 QHash<int, QByteArray> ActivityModel::roleNames() const
 {
     QHash<int, QByteArray> roles;
-    roles[Qt::DisplayRole] = "name";
+    roles[Qt::DisplayRole]    = "name";
     roles[Qt::DecorationRole] = "icon";
-    roles[ActivityState] = "state";
-    roles[ActivityId] = "id";
+    roles[ActivityState]      = "state";
+    roles[ActivityId]         = "id";
+    roles[ActivityBackground] = "background";
     return roles;
 }
 
@@ -379,6 +389,30 @@ QVariant ActivityModel::data(const QModelIndex &index, int role) const
 
     case ActivityState:
         return item->state();
+
+    case ActivityBackground:
+        {
+            qDebug() << "GAGAGAGAGAG:" << _plasmaConfigContainments().groupList();
+            qDebug() << "Searching for activity: " << item->name() << " " << item->id();
+
+            for (const auto &group: _plasmaConfigContainments().groupList()) {
+                auto containmentGroup = _plasmaConfigContainments().group(group);
+
+                qDebug() << "Found: " << containmentGroup.readEntry("activityId");
+
+                if (containmentGroup.readEntry("activityId", QString()) == item->id()) {
+                    auto wallpaper = containmentGroup
+                        .group("Wallpaper")
+                        .group("General")
+                        .readEntry("Image", QString());
+
+                    if (!wallpaper.isEmpty())
+                        return wallpaper;
+                }
+            }
+
+            return "Gaga!";
+        }
 
     default:
         return QVariant();
