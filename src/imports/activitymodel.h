@@ -48,7 +48,7 @@ class ActivityModel : public QAbstractListModel {
     Q_OBJECT
 
     Q_ENUMS(State)
-    Q_PROPERTY(State shownState READ shownState WRITE setShownState NOTIFY shownStateChanged)
+    Q_PROPERTY(QString shownStates READ shownStates WRITE setShownStates NOTIFY shownStatesChanged)
 
 public:
     ActivityModel(QObject *parent = 0);
@@ -88,11 +88,11 @@ public Q_SLOTS:
     void stopActivity(const QString &id, const QJSValue &callback);
     void startActivity(const QString &id, const QJSValue &callback);
 
-    void setShownState(State state);
-    State shownState() const;
+    void setShownStates(const QString &states);
+    QString shownStates() const;
 
 Q_SIGNALS:
-    void shownStateChanged(State state);
+    void shownStatesChanged(const QString &state);
 
 private Q_SLOTS:
     void onActivityNameChanged(const QString &name);
@@ -107,7 +107,8 @@ private Q_SLOTS:
 
 private:
     KActivities::Controller m_service;
-    State m_shownState;
+    boost::container::flat_set<State> m_shownStates;
+    QString m_shownStatesString;
 
     typedef std::unique_ptr<Info> InfoPtr;
 

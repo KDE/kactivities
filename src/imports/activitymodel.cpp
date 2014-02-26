@@ -36,6 +36,7 @@
 
 // Boost
 #include <boost/range/algorithm/find_if.hpp>
+#include <boost/range/algorithm/binary_search.hpp>
 #include <boost/optional.hpp>
 
 // Local
@@ -53,16 +54,17 @@ struct ActivityModel::Private {
      * Returns whether the the activity has a desired state.
      * If the state is 0, returns true
      */
+    template <typename T>
     static inline bool matchingState(const QString &activityId,
-                                     ActivityModel::State state)
+                                     T states)
     {
         // Are we filtering activities on their states?
-        if (state) {
+        if (!states.empty()) {
             // This is usually not advised (short-lived Info instance
             // but it comes with no cost since we have an already created
             // long-lived Controller instance
             Info activityInfo(activityId);
-            if (activityInfo.state() != state)
+            if (!boost::binary_search(states, activityInfo.state()))
                 return false;
         }
 
@@ -72,12 +74,13 @@ struct ActivityModel::Private {
      * Returns whether the the activity has a desired state.
      * If the state is 0, returns true
      */
+    template <typename T>
     static inline bool matchingState(Info * activity,
-                                     ActivityModel::State state)
+                                     T states)
     {
         // Are we filtering activities on their states?
-        if (state) {
-            if (activity->state() != state)
+        if (!states.empty()) {
+            if (!boost::binary_search(states, activity->state()))
                 return false;
         }
 
@@ -138,7 +141,7 @@ struct ActivityModel::Private {
 };
 
 ActivityModel::ActivityModel(QObject *parent)
-    : QAbstractListModel(parent), m_shownState(All)
+    : QAbstractListModel(parent)
 {
     // Initializing role names for qml
     connect(&m_service, &Consumer::serviceStatusChanged,
@@ -231,7 +234,7 @@ void ActivityModel::unregisterActivity(const QString &id)
 
 void ActivityModel::showActivity(Info *activityInfo, bool notifyClients)
 {
-    if (!Private::matchingState(activityInfo, m_shownState)) return;
+    if (!Private::matchingState(activityInfo, m_shownStates)) return;
 
     auto position = m_shownActivities.insert(activityInfo);
 
@@ -276,14 +279,14 @@ void ActivityModel::onActivityStateChanged(Info::State state)
     // TODO: Implement this properly
     // auto activity = static_cast<Info*> (sender());
 
-    if (m_shownState == 0) {
+    if (m_shownStates.empty()) {
         Private::emitActivityUpdated(this, m_shownActivities, sender(),
                                      ActivityState);
 
     } else {
         auto info = static_cast<Info*> (sender());
 
-        if (state == m_shownState) {
+        if (boost::binary_search(m_shownStates, state)) {
             showActivity(info, true);
         } else {
             hideActivity(info->id());
@@ -291,18 +294,35 @@ void ActivityModel::onActivityStateChanged(Info::State state)
     }
 }
 
-void ActivityModel::setShownState(State state)
+void ActivityModel::setShownStates(const QString &states)
 {
-    m_shownState = state;
+    m_shownStates.clear();
+    m_shownStatesString = states;
+
+    for (const auto &state: states.split(',')) {
+        if (state == QStringLiteral("Running")) {
+            m_shownStates.insert(Running);
+
+        } else if (state == QStringLiteral("Starting")) {
+            m_shownStates.insert(Starting);
+
+        } else if (state == QStringLiteral("Stopped")) {
+            m_shownStates.insert(Stopped);
+
+        } else if (state == QStringLiteral("Stopping")) {
+            m_shownStates.insert(Stopping);
+
+        }
+    }
 
     replaceActivities(m_service.activities());
 
-    emit shownStateChanged(state);
+    emit shownStatesChanged(states);
 }
 
-ActivityModel::State ActivityModel::shownState() const
+QString ActivityModel::shownStates() const
 {
-    return m_shownState;
+    return m_shownStatesString;
 }
 
 int ActivityModel::rowCount(const QModelIndex &parent) const
