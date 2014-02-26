@@ -61,9 +61,10 @@ public:
     QHash<int, QByteArray> roleNames() const Q_DECL_OVERRIDE;
 
     enum Roles {
-        ActivityId = Qt::UserRole,
-        ActivityState = Qt::UserRole + 1,
-        ActivityBackground = Qt::UserRole + 2
+        ActivityId         = Qt::UserRole,
+        ActivityState      = Qt::UserRole + 1,
+        ActivityBackground = Qt::UserRole + 2,
+        ActivityCurrent    = Qt::UserRole + 3
     };
 
     enum State {

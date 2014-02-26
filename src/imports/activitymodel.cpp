@@ -179,6 +179,7 @@ QHash<int, QByteArray> ActivityModel::roleNames() const
     roles[ActivityState]      = "state";
     roles[ActivityId]         = "id";
     roles[ActivityBackground] = "background";
+    roles[ActivityCurrent]    = "current";
     return roles;
 }
 
@@ -389,6 +390,9 @@ QVariant ActivityModel::data(const QModelIndex &index, int role) const
 
     case ActivityState:
         return item->state();
+
+    case ActivityCurrent:
+        return m_service.currentActivity() == item->id();
 
     case ActivityBackground:
         {
