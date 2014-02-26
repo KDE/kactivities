@@ -127,6 +127,10 @@ struct ActivityModel::Private {
     {
         const auto activity = static_cast<Info*> (activityInfo);
 
+        // qDebug() << "Activity updated: " << activity->id()
+        //          << "name: " << activity->name()
+        //          ;
+
         auto position = Private::activityPosition(container, activity->id());
 
         if (position) {
@@ -135,8 +139,7 @@ struct ActivityModel::Private {
                 model->index(position->first),
                 QVector<int> {role}
             );
-    }
-
+        }
     }
 };
 
@@ -177,6 +180,9 @@ void ActivityModel::setServiceStatus(Consumer::ServiceStatus)
 
 void ActivityModel::replaceActivities(const QStringList &activities)
 {
+    // qDebug() << m_shownStatesString << "New list of activities: " << activities;
+    // qDebug() << m_shownStatesString << " -- RESET MODEL -- ";
+
     Private::model_reset m(this);
 
     m_registeredActivities.clear();
@@ -191,11 +197,15 @@ void ActivityModel::onActivityAdded(const QString &id, bool notifyClients)
 {
     auto info = registerActivity(id);
 
+    // qDebug() << m_shownStatesString << "Added a new activity:" << info->id() << " " << info->name();
+
     showActivity(info, notifyClients);
 }
 
 void ActivityModel::onActivityRemoved(const QString &id)
 {
+    // qDebug() << m_shownStatesString << "Removed an activity:" << id;
+
     hideActivity(id);
     unregisterActivity(id);
 }
@@ -203,6 +213,9 @@ void ActivityModel::onActivityRemoved(const QString &id)
 Info *ActivityModel::registerActivity(const QString &id)
 {
     auto position = Private::activityPosition(m_registeredActivities, id);
+
+    // qDebug() << m_shownStatesString << "Registering activity: " << id
+    //          << " new? not " << (bool)position;
 
     if (position) {
         return position->second->get();
@@ -225,6 +238,8 @@ Info *ActivityModel::registerActivity(const QString &id)
 
 void ActivityModel::unregisterActivity(const QString &id)
 {
+    // qDebug() << m_shownStatesString << "Deregistering activity: " << id;
+
     auto position = Private::activityPosition(m_registeredActivities, id);
 
     if (position) {
@@ -234,7 +249,14 @@ void ActivityModel::unregisterActivity(const QString &id)
 
 void ActivityModel::showActivity(Info *activityInfo, bool notifyClients)
 {
+    // Should it really be shown?
     if (!Private::matchingState(activityInfo, m_shownStates)) return;
+
+    // Is it already shown?
+    if (boost::binary_search(m_shownActivities, activityInfo, InfoPtrComparator())) return;
+
+    // qDebug() << m_shownStatesString << "Setting activity visibility to true: "
+    //     << activityInfo->id() << activityInfo->name();
 
     auto position = m_shownActivities.insert(activityInfo);
 
@@ -243,6 +265,7 @@ void ActivityModel::showActivity(Info *activityInfo, bool notifyClients)
             (position.second ? position.first : m_shownActivities.end())
             - m_shownActivities.begin();
 
+        // qDebug() << m_shownStatesString << " -- MODEL INSERT -- " << index;
         Private::model_insert(this, QModelIndex(), index, index);
     }
 }
@@ -251,7 +274,10 @@ void ActivityModel::hideActivity(const QString &id)
 {
     auto position = Private::activityPosition(m_shownActivities, id);
 
+    // qDebug() << m_shownStatesString << "Setting activity visibility to false: " << id;
+
     if (position) {
+        // qDebug() << m_shownStatesString << " -- MODEL REMOVE -- " << position->first;
         Private::model_remove(this, QModelIndex(),
             position->first, position->first);
         m_shownActivities.erase(position->second);
@@ -285,6 +311,10 @@ void ActivityModel::onActivityStateChanged(Info::State state)
 
     } else {
         auto info = static_cast<Info*> (sender());
+
+        // qDebug() << m_shownStatesString << "Activity state has changed: "
+        //          << info->id() << " " << info->name()
+        //          << " to: " << state;
 
         if (boost::binary_search(m_shownStates, state)) {
             showActivity(info, true);

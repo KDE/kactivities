@@ -116,7 +116,12 @@ private:
         template <typename InfoPtr>
         bool operator() (const InfoPtr& left, const InfoPtr& right) const
         {
-            return left->name().toLower() < right->name().toLower();
+            const QString &leftName = left->name().toLower();
+            const QString &rightName = right->name().toLower();
+
+            return
+                (leftName < rightName) ||
+                (leftName == rightName && left->id() < right->id());
         }
     };
 
