@@ -39,7 +39,7 @@ class DBusCallFutureInterface : public QObject,
 public:
     DBusCallFutureInterface(QDBusPendingReply<_Result> reply)
         : reply(reply),
-          replyWatcher(nullptr)
+          replyWatcher(Q_NULLPTR)
     {
     }
 
