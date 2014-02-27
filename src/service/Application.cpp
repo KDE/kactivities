@@ -260,13 +260,14 @@ int main(int argc, char **argv)
 
     KDBusService service(KDBusService::Unique);
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 3, 0)
     KAMD_LOG_APPLICATION().setEnabled(QtDebugMsg, true);
     KAMD_LOG_RESOURCES()  .setEnabled(QtDebugMsg, true);
     KAMD_LOG_ACTIVITIES() .setEnabled(QtDebugMsg, true);
     KAMD_LOG_APPLICATION().setEnabled(QtWarningMsg, true);
     KAMD_LOG_RESOURCES()  .setEnabled(QtWarningMsg, true);
     KAMD_LOG_ACTIVITIES() .setEnabled(QtWarningMsg, true);
-
+#endif
 
     return application.exec();
 }
