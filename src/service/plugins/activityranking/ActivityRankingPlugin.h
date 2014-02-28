@@ -20,23 +20,19 @@
 
 #include <Plugin.h>
 
-#include <utils/nullptr.h>
-#include <utils/override.h>
 #include <utils/d_ptr.h>
 
-class ActivityRankingPlugin: public Plugin
-{
+class ActivityRankingPlugin : public Plugin {
     Q_OBJECT
 
 public:
-    explicit ActivityRankingPlugin(QObject *parent = nullptr, const QVariantList & args = QVariantList());
+    explicit ActivityRankingPlugin(QObject *parent = Q_NULLPTR, const QVariantList &args = QVariantList());
     ~ActivityRankingPlugin();
 
-    virtual bool init(const QHash < QString, QObject * > & modules) _override;
+    virtual bool init(const QHash<QString, QObject *> &modules) Q_DECL_OVERRIDE;
 
 private:
     D_PTR;
 };
 
 #endif // PLUGINS_ACTIVITY_RANKING_ACTIVITY_RANKING_PLUGIN_H
-

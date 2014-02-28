@@ -20,36 +20,41 @@
 #ifndef RESOURCES_H
 #define RESOURCES_H
 
+// Qt
 #include <QString>
 #include <QStringList>
 
-#include <Module.h>
-#include <Event.h>
-
+// Utils
 #include <utils/d_ptr.h>
-#include <utils/nullptr.h>
+
+// Local
+#include "Module.h"
+#include "Event.h"
+
 
 /**
  * Resources
  */
-class Resources: public Module {
+class Resources : public Module {
     Q_OBJECT
     Q_CLASSINFO("D-Bus Interface", "org.kde.ActivityManager.Resources")
 
 public:
-    Resources(QObject * parent = nullptr);
+    Resources(QObject *parent = Q_NULLPTR);
     virtual ~Resources();
 
 public Q_SLOTS:
     /**
      * Registers a new event
-     * @param application the name of application that sent the event. Ignored if the event is not of type Opened
-     * @param windowId ID of the window that displays the resource. Ignored if the event is of type Accessed
+     * @param application the name of application that sent the event. Ignored
+     *                    if the event is not of type Opened
+     * @param windowId ID of the window that displays the resource. Ignored if
+     *                 the event is of type Accessed
      * @param uri URI of the resource on which the event happened
      * @param event type of the event
-     * @param reason reason for opening the resource
      */
-    void RegisterResourceEvent(QString application, uint windowId, const QString & uri, uint event, uint reason);
+    void RegisterResourceEvent(QString application, uint windowId,
+                               const QString &uri, uint event);
 
     /**
      * Registers resource's mimetype. If not manually specified, it will
@@ -58,32 +63,31 @@ public Q_SLOTS:
      * Note that this will be forgotten when the resource in question is closed.
      * @param uri URI of the resource
      */
-    void RegisterResourceMimeType(const QString & uri, const QString & mimetype);
+    void RegisterResourceMimeType(const QString &uri, const QString &mimetype);
 
     /**
-     * Registers resource's title. If not manually specified, it will be a shortened
-     * version of the uri
+     * Registers resource's title. If not manually specified, it will be a
+     * shortened version of the uri
      *
      * Note that this will be forgotten when the resource in question is closed.
      * @param uri URI of the resource
      */
-    void RegisterResourceTitle(const QString & uri, const QString & title);
+    void RegisterResourceTitle(const QString &uri, const QString &title);
 
 Q_SIGNALS:
-    void RegisteredResourceEvent(const Event & event);
-    void ProcessedResourceEvents(const EventList & events);
-    void RegisteredResourceMimeType(const QString & uri, const QString & mimetype);
-    void RegisteredResourceTitle(const QString & uri, const QString & title);
+    void RegisteredResourceEvent(const Event &event);
+    void ProcessedResourceEvents(const EventList &events);
+    void RegisteredResourceMimeType(const QString &uri, const QString &mimetype);
+    void RegisteredResourceTitle(const QString &uri, const QString &title);
 
 public:
-    virtual bool isFeatureOperational(const QStringList & feature) const _override;
-    virtual bool isFeatureEnabled(const QStringList & feature) const _override;
-    virtual void setFeatureEnabled(const QStringList & feature, bool value) _override;
-    virtual QStringList listFeatures(const QStringList & feature) const _override;
+    bool isFeatureOperational(const QStringList &feature) const Q_DECL_OVERRIDE;
+    bool isFeatureEnabled(const QStringList &feature) const Q_DECL_OVERRIDE;
+    void setFeatureEnabled(const QStringList &feature, bool value) Q_DECL_OVERRIDE;
+    QStringList listFeatures(const QStringList &feature) const Q_DECL_OVERRIDE;
 
 private:
     D_PTR;
 };
 
 #endif // RESOURCES_H
-

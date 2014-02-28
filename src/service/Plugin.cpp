@@ -17,16 +17,23 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+// Self
 #include "Plugin.h"
-#include <QDebug>
 
-#include <utils/nullptr.h>
+// KDE
+#include <ksharedconfig.h>
+
+// Utils
 #include <utils/d_ptr_implementation.h>
+
+// Local
+#include "Debug.h"
+
 
 class Plugin::Private {
 public:
     Private()
-        : config(nullptr)
+        : config(Q_NULLPTR)
     {
     }
 
@@ -34,19 +41,14 @@ public:
     KSharedConfig::Ptr config;
 };
 
-Plugin::Plugin(QObject * parent)
-    : Module(QString(), parent), d()
+Plugin::Plugin(QObject *parent)
+    : Module(QString(), parent)
+    , d()
 {
 }
 
 Plugin::~Plugin()
 {
-}
-
-bool Plugin::init(const QHash < QString, QObject * > & modules)
-{
-    Q_UNUSED(modules)
-    return true;
 }
 
 KConfigGroup Plugin::config()
@@ -57,13 +59,13 @@ KConfigGroup Plugin::config()
     }
 
     if (!d->config) {
-        d->config = KSharedConfig::openConfig("activitymanager-pluginsrc");
+        d->config = KSharedConfig::openConfig(QStringLiteral("kactivitymanagerd-pluginsrc"));
     }
 
-    return d->config->group("Plugin-" + d->name);
+    return d->config->group(QStringLiteral("Plugin-") + d->name);
 }
 
-void Plugin::setName(const QString & name)
+void Plugin::setName(const QString &name)
 {
     Q_ASSERT_X(d->name.isEmpty(), "Plugin::setName", "The name can not be set twice");
     Q_ASSERT_X(!name.isEmpty(), "Plugin::setName", "The name can not be empty");
@@ -76,4 +78,3 @@ QString Plugin::name() const
 {
     return d->name;
 }
-

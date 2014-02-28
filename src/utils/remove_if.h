@@ -20,7 +20,7 @@
 #ifndef UTILS_REMOVE_IF_H
 #define UTILS_REMOVE_IF_H
 
-#include <config-features.h>
+#include <kactivities-features.h>
 #include <algorithm>
 
 /********************************************************************
@@ -31,13 +31,12 @@ namespace kamd {
 namespace utils {
 
 template <typename Collection, typename Filter>
-__inline void remove_if(Collection & collection, Filter filter)
+__inline void remove_if(Collection &collection, Filter filter)
 {
     collection.erase(
         std::remove_if(
-            collection.begin(), collection.end(), filter
-        ), collection.end()
-    );
+            collection.begin(), collection.end(), filter),
+        collection.end());
 }
 
 } // namespace utils

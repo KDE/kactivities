@@ -1,32 +1,84 @@
+# vim:set softtabstop=3 shiftwidth=3 tabstop=3 expandtab:
+
+cmake_minimum_required (VERSION 2.8.11)
+
 project (KACTIVITIES)
 
-find_package (KDE4 REQUIRED)
+set(REQUIRED_QT_VERSION 5.2.0)
 
-include (GenerateExportHeader)
-include (KDE4Defaults)
-include (MacroLibrary)
-include (MacroOptionalAddSubdirectory)
-include (FindPackageHandleStandardArgs)
-
-# Until this is set by FindQt, we are defining the
-# QT_NO_DEBUG_OUTPUT if this is not a debug build
-
-string (TOLOWER ${CMAKE_BUILD_TYPE} CMAKE_BUILD_TYPE_TOLOWER)
-if (NOT CMAKE_BUILD_TYPE_TOLOWER MATCHES "debug")
-    add_definitions(-DQT_NO_DEBUG_OUTPUT)
-endif()
-
-
-set (
-    CMAKE_MODULE_PATH
-    ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules
-    ${CMAKE_MODULE_PATH}
-    )
-
-if (KAMD_PEDANTIC_COMPILATION)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wno-long-long -pedantic")
+# We don't build in-source
+if ("${CMAKE_SOURCE_DIR}" STREQUAL "${CMAKE_BINARY_DIR}")
+   message (
+      FATAL_ERROR
+      "kactivities require an out of source build. Please create a separate build directory and run 'cmake path_to_plasma [options]' there."
+   )
 endif ()
 
-add_subdirectory (src)
+# Extra CMake stuff
+find_package (ECM 0.0.9 REQUIRED NO_MODULE)
+set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH} ${ECM_KDE_MODULE_DIR})
 
-macro_display_feature_log ()
+include(KDEInstallDirs)
+include(KDECMakeSettings)
+include(KDECompilerSettings)
+include(GenerateExportHeader)
+include(ECMGenerateHeaders)
+
+# Qt
+set (CMAKE_AUTOMOC ON)
+find_package (Qt5 REQUIRED NO_MODULE COMPONENTS Core DBus)
+
+# KDE Frameworks
+set(KF5_VERSION "4.96.0")
+find_package (KF5DBusAddons ${KF5_VERSION} CONFIG REQUIRED)
+
+# Basic includes
+include (CPack)
+include (FeatureSummary)
+include (ECMPackageConfigHelpers)
+include (ECMSetupVersion)
+
+
+# Adding local CMake modules
+set (
+   CMAKE_MODULE_PATH
+   ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules
+   ${CMAKE_MODULE_PATH}
+)
+
+ecm_setup_version(${KF5_VERSION}
+                  VARIABLE_PREFIX KACTIVITIES
+                  VERSION_HEADER "${CMAKE_CURRENT_BINARY_DIR}/kactivities_version.h"
+                  PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/KF5ActivitiesConfigVersion.cmake")
+
+add_subdirectory (src)
+add_subdirectory (autotests)
+add_subdirectory (tests)
+
+set(CMAKECONFIG_INSTALL_DIR "${CMAKECONFIG_INSTALL_PREFIX}/KF5Activities")
+
+install(EXPORT KF5ActivitiesLibraryTargets
+   DESTINATION "${CMAKECONFIG_INSTALL_DIR}"
+   FILE KF5ActivitiesLibraryTargets.cmake
+   NAMESPACE KF5::
+   )
+
+# create a Config.cmake and a ConfigVersion.cmake file and install them
+set(CMAKECONFIG_INSTALL_DIR "${CMAKECONFIG_INSTALL_PREFIX}/KF5Activities")
+
+ecm_configure_package_config_file("${CMAKE_CURRENT_SOURCE_DIR}/KF5ActivitiesConfig.cmake.in"
+   "${CMAKE_CURRENT_BINARY_DIR}/KF5ActivitiesConfig.cmake"
+                              INSTALL_DESTINATION  ${CMAKECONFIG_INSTALL_DIR}
+                              PATH_VARS  INCLUDE_INSTALL_DIR CMAKE_INSTALL_PREFIX )
+
+                           install(FILES  "${CMAKE_CURRENT_BINARY_DIR}/KF5ActivitiesConfig.cmake"
+                              "${CMAKE_CURRENT_BINARY_DIR}/KF5ActivitiesConfigVersion.cmake"
+        DESTINATION "${CMAKECONFIG_INSTALL_DIR}"
+        COMPONENT Devel )
+
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/kactivities_version.h
+        DESTINATION ${INCLUDE_INSTALL_DIR} COMPONENT Devel )
+
+# Write out the features
+feature_summary (WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)
+

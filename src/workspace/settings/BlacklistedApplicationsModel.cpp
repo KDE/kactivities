@@ -34,8 +34,6 @@
 #include <KConfigGroup>
 
 #include <utils/d_ptr_implementation.h>
-#include <utils/val.h>
-
 
 class BlacklistedApplicationsModel::Private {
 public:
@@ -46,46 +44,46 @@ public:
         bool blocked;
     };
 
-    QList <ApplicationData> applications;
+    QList<ApplicationData> applications;
     QSqlDatabase database;
 
     KSharedConfig::Ptr pluginConfig;
     bool enabled;
 };
 
-BlacklistedApplicationsModel::BlacklistedApplicationsModel(QObject * parent)
+BlacklistedApplicationsModel::BlacklistedApplicationsModel(QObject *parent)
     : QAbstractListModel(parent)
 {
-    QHash < int, QByteArray > roles;
-    roles[ApplicationIdRole]       = "name";
-    roles[Qt::DecorationRole]      = "icon";
-    roles[Qt::DisplayRole]         = "title";
-    roles[BlockedApplicationRole]  = "blocked";
+    QHash<int, QByteArray> roles;
+    roles[ApplicationIdRole] = "name";
+    roles[Qt::DecorationRole] = "icon";
+    roles[Qt::DisplayRole] = "title";
+    roles[BlockedApplicationRole] = "blocked";
     setRoleNames(roles);
 
     d->enabled = false;
-    d->pluginConfig = KSharedConfig::openConfig("activitymanager-pluginsrc");
+    d->pluginConfig = KSharedConfig::openConfig("kactivitymanagerd-pluginsrc");
 }
 
 void BlacklistedApplicationsModel::load()
 {
     // Loading plugin configuration
 
-    val config = d->pluginConfig->group("Plugin-org.kde.kactivitymanager.resourcescoring");
+    const auto config = d->pluginConfig->group("Plugin-org.kde.kactivitymanager.resourcescoring");
 
-    val defaultBlockedValue = config.readEntry("blocked-by-default", false);
+    const auto defaultBlockedValue = config.readEntry("blocked-by-default", false);
     auto blockedApplications = QSet<QString>::fromList(config.readEntry("blocked-applications", QStringList()));
     auto allowedApplications = QSet<QString>::fromList(config.readEntry("allowed-applications", QStringList()));
 
     // Reading new applications from the database
 
-    val path = KStandardDirs::locateLocal("data", "activitymanager/resources/database", true);
+    const auto path = KStandardDirs::locateLocal("data", "activitymanager/resources/database", true);
 
     d->database = QSqlDatabase::addDatabase("QSQLITE", "plugins_sqlite_db_resources");
     d->database.setDatabaseName(path);
 
     if (!d->database.open()) {
-        qDebug() << "Failed to open the database" << path << d->database.lastError();
+        // qDebug() << "Failed to open the database" << path << d->database.lastError();
         return;
     }
 
@@ -98,14 +96,16 @@ void BlacklistedApplicationsModel::load()
     }
 
     while (query.next()) {
-        val name = query.value(0).toString();
+        const auto name = query.value(0).toString();
 
         if (defaultBlockedValue) {
-            if (!allowedApplications.contains(name))
+            if (!allowedApplications.contains(name)) {
                 blockedApplications << name;
+            }
         } else {
-            if (!blockedApplications.contains(name))
+            if (!blockedApplications.contains(name)) {
                 allowedApplications << name;
+            }
         }
     }
 
@@ -116,19 +116,20 @@ void BlacklistedApplicationsModel::load()
 
         beginInsertRows(QModelIndex(), 0, applications.length() - 1);
 
-        foreach (val & name, applications) {
-            val service = KService::serviceByDesktopName(name);
-            val blocked = blockedApplications.contains(name);
+        foreach(const auto & name, applications)
+        {
+            const auto service = KService::serviceByDesktopName(name);
+            const auto blocked = blockedApplications.contains(name);
 
             if (service) {
-                d->applications << Private::ApplicationData {
-                    name,
-                        service->name(),
-                        service->icon(),
-                        blocked
-                };
+                d->applications << Private::ApplicationData{
+                                       name,
+                                       service->name(),
+                                       service->icon(),
+                                       blocked
+                                   };
             } else {
-                d->applications << Private::ApplicationData { name, name, name, blocked };
+                d->applications << Private::ApplicationData{ name, name, name, blocked };
             }
         }
 
@@ -163,8 +164,9 @@ void BlacklistedApplicationsModel::defaults()
 
 void BlacklistedApplicationsModel::toggleApplicationBlocked(int index)
 {
-    if (index > rowCount())
+    if (index > rowCount()) {
         return;
+    }
 
     d->applications[index].blocked = !d->applications[index].blocked;
     dataChanged(QAbstractListModel::index(index),
@@ -181,34 +183,35 @@ QVariant BlacklistedApplicationsModel::headerData(int section, Qt::Orientation o
     return QVariant();
 }
 
-QVariant BlacklistedApplicationsModel::data(const QModelIndex & modelIndex, int role) const
+QVariant BlacklistedApplicationsModel::data(const QModelIndex &modelIndex, int role) const
 {
-    val index = modelIndex.row();
+    const auto index = modelIndex.row();
 
-    if (index > rowCount())
+    if (index > rowCount()) {
         return QVariant();
+    }
 
-    val & application = d->applications[index];
+    const auto &application = d->applications[index];
 
     switch (role) {
-        default:
-            return QVariant();
+    default:
+        return QVariant();
 
-        case ApplicationIdRole:
-            return application.name;
+    case ApplicationIdRole:
+        return application.name;
 
-        case Qt::DisplayRole:
-            return application.title;
+    case Qt::DisplayRole:
+        return application.title;
 
-        case Qt::DecorationRole:
-            return application.icon;
+    case Qt::DecorationRole:
+        return application.icon;
 
-        case BlockedApplicationRole:
-            return application.blocked;
+    case BlockedApplicationRole:
+        return application.blocked;
     }
 }
 
-int BlacklistedApplicationsModel::rowCount(const QModelIndex & parent) const
+int BlacklistedApplicationsModel::rowCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent)
     return d->applications.size();

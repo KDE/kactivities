@@ -30,6 +30,27 @@ struct ActivityInfo {
     QString name;
     QString icon;
     int state;
+
+    ActivityInfo(const QString & id = QString(),
+                 const QString & name = QString(),
+                 const QString & icon = QString(),
+                 int state = 0)
+        : id(id)
+        , name(name)
+        , icon(icon)
+        , state(state)
+    {
+    }
+
+    bool operator<(const ActivityInfo &other) const
+    {
+        return id < other.id;
+    }
+
+    bool operator==(const ActivityInfo &other) const
+    {
+        return id == other.id;
+    }
 };
 
 typedef QList<ActivityInfo> ActivityInfoList;
@@ -37,9 +58,9 @@ typedef QList<ActivityInfo> ActivityInfoList;
 Q_DECLARE_METATYPE(ActivityInfo)
 Q_DECLARE_METATYPE(ActivityInfoList)
 
-QDBusArgument & operator << (QDBusArgument & arg, const ActivityInfo);
-const QDBusArgument & operator >> (const QDBusArgument & arg, ActivityInfo & rec);
+QDBusArgument &operator<<(QDBusArgument &arg, const ActivityInfo);
+const QDBusArgument &operator>>(const QDBusArgument &arg, ActivityInfo &rec);
 
-QDebug operator << (QDebug dbg, const ActivityInfo & r);
+QDebug operator<<(QDebug dbg, const ActivityInfo &r);
 
 #endif // KAMD_ACTIVITIES_DBUS_H

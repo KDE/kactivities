@@ -7,7 +7,6 @@
       <arg name="windowId" type="u" direction="in"/>
       <arg name="uri" type="s" direction="in"/>
       <arg name="event" type="u" direction="in"/>
-      <arg name="reason" type="u" direction="in"/>
     </method>
 
     <method name="RegisterResourceMimeType">

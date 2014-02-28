@@ -17,38 +17,45 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+// Self
 #include "Resources.h"
 #include "Resources_p.h"
-#include "resourcesadaptor.h"
 
+// Qt
 #include <QDBusConnection>
 #include <QThread>
 #include <QMutex>
 #include <QMutexLocker>
-#include <QDebug>
 
-#include <KUrl>
-#include <KWindowSystem>
+// KDE
+#include <kwindowsystem.h>
 #include <kdbusconnectionpool.h>
 
-#include <Application.h>
-#include <Activities.h>
-
-#include <time.h>
-
-#include "common.h"
-
+// Utils
 #include <utils/d_ptr_implementation.h>
 #include <utils/remove_if.h>
 
-Resources::Private::Private(Resources * parent)
-    : QThread(parent), focussedWindow(0), q(parent)
+// System
+#include <time.h>
+
+// Local
+#include "Debug.h"
+#include "Application.h"
+#include "Activities.h"
+#include "common.h"
+#include "resourcesadaptor.h"
+
+
+Resources::Private::Private(Resources *parent)
+    : QThread(parent)
+    , focussedWindow(0)
+    , q(parent)
 {
 }
 
 namespace {
-    EventList events;
-    QMutex events_mutex;
+EventList events;
+QMutex events_mutex;
 }
 
 void Resources::Private::run()
@@ -60,10 +67,9 @@ void Resources::Private::run()
         EventList currentEvents;
 
         {
-            QMutexLocker locker(& events_mutex);
+            QMutexLocker locker(&events_mutex);
 
             if (events.count() == 0) {
-                // qDebug() << "No more events to process, exiting.";
                 return;
             }
 
@@ -75,38 +81,40 @@ void Resources::Private::run()
     }
 }
 
-void Resources::Private::insertEvent(const Event & newEvent)
+void Resources::Private::insertEvent(const Event &newEvent)
 {
-    if (lastEvent == newEvent) return;
+    if (lastEvent == newEvent) {
+        return;
+    }
+
     lastEvent = newEvent;
 
     {
-        QMutexLocker locker(& events_mutex);
+        QMutexLocker locker(&events_mutex);
         events << newEvent;
     }
 
     emit q->RegisteredResourceEvent(newEvent);
 }
 
-void Resources::Private::addEvent(const QString & application, WId wid, const QString & uri,
-            int type, int reason)
+void Resources::Private::addEvent(const QString &application, WId wid, const QString &uri,
+                                  int type)
 {
-    Event newEvent(application, wid, uri, type, reason);
+    Event newEvent(application, wid, uri, type);
     addEvent(newEvent);
 }
 
-void Resources::Private::addEvent(const Event & newEvent)
+void Resources::Private::addEvent(const Event &newEvent)
 {
     // And now, for something completely delayed
     {
-        QMutexLocker locker(& events_mutex);
+        QMutexLocker locker(&events_mutex);
 
         // Deleting previously registered Accessed events if
         // the current one has the same application and uri
         if (newEvent.type != Event::Accessed) {
-            kamd::utils::remove_if(events, [&newEvent] (const Event & event) -> bool {
+            kamd::utils::remove_if(events, [&newEvent](const Event &event)->bool {
                 return
-                    event.reason      == Event::Accessed      &&
                     event.application == newEvent.application &&
                     event.uri         == newEvent.uri
                 ;
@@ -122,10 +130,8 @@ void Resources::Private::addEvent(const Event & newEvent)
     // as well.
 
     if (newEvent.wid != 0) {
-        WindowData & data = windows[newEvent.wid];
-        const KUrl & kuri(newEvent.uri);
-
-        qDebug() << kuri << data.focussedResource;
+        WindowData &data = windows[newEvent.wid];
+        const QString &kuri(newEvent.uri);
 
         data.application = newEvent.application;
 
@@ -159,8 +165,6 @@ void Resources::Private::addEvent(const Event & newEvent)
 
             case Event::Closed:
 
-                qDebug() << data.focussedResource << kuri;
-
                 if (data.focussedResource == kuri) {
                     // If we are closing a document that is in focus,
                     // release focus first
@@ -186,7 +190,6 @@ void Resources::Private::addEvent(const Event & newEvent)
             default:
                 insertEvent(newEvent);
                 break;
-
         }
     }
 
@@ -207,9 +210,9 @@ void Resources::Private::windowClosed(WId windowId)
 
     // Closing all the resources that the window registered
 
-    foreach (const KUrl & uri, windows[windowId].resources) {
+    for (const QString &uri: windows[windowId].resources) {
         q->RegisterResourceEvent(windows[windowId].application,
-                toInt(windowId), uri.url(), Event::Closed, 0);
+                                 windowId, uri, Event::Closed);
     }
 
     windows.remove(windowId);
@@ -223,44 +226,46 @@ void Resources::Private::activeWindowChanged(WId windowId)
     // The windows can do this manually, but if they are
     // SDI, we can do it on our own.
 
-    if (windowId == focussedWindow) return;
+    if (windowId == focussedWindow) {
+        return;
+    }
 
     if (windows.contains(focussedWindow)) {
-        const WindowData & data = windows[focussedWindow];
+        const WindowData &data = windows[focussedWindow];
 
         if (!data.focussedResource.isEmpty()) {
-            insertEvent(Event(data.application, focussedWindow, data.focussedResource.url(), Event::FocussedOut));
+            insertEvent(Event(data.application, focussedWindow, data.focussedResource, Event::FocussedOut));
         }
     }
 
     focussedWindow = windowId;
 
     if (windows.contains(focussedWindow)) {
-        const WindowData & data = windows[focussedWindow];
+        const WindowData &data = windows[focussedWindow];
 
         if (!data.focussedResource.isEmpty()) {
-            insertEvent(Event(data.application, windowId, data.focussedResource.url(), Event::FocussedIn));
+            insertEvent(Event(data.application, windowId, data.focussedResource, Event::FocussedIn));
         }
     }
 }
 
-
-Resources::Resources(QObject * parent)
-    : Module("resources", parent), d(this)
+Resources::Resources(QObject *parent)
+    : Module(QStringLiteral("resources"), parent)
+    , d(this)
 {
-    qRegisterMetaType < Event > ("Event");
-    qRegisterMetaType < EventList > ("EventList");
-    qRegisterMetaType < WId > ("WId");
+    qRegisterMetaType<Event>("Event");
+    qRegisterMetaType<EventList>("EventList");
+    qRegisterMetaType<WId>("WId");
 
     new ResourcesAdaptor(this);
     KDBusConnectionPool::threadConnection().registerObject(
-            ACTIVITY_MANAGER_OBJECT_PATH(Resources), this);
+        ACTIVITY_MANAGER_OBJECT_PATH(Resources), this);
 
+    // TODO:
     d->connect(KWindowSystem::self(), SIGNAL(windowRemoved(WId)),
             SLOT(windowClosed(WId)));
     d->connect(KWindowSystem::self(), SIGNAL(activeWindowChanged(WId)),
             SLOT(activeWindowChanged(WId)));
-
 }
 
 Resources::~Resources()
@@ -268,69 +273,66 @@ Resources::~Resources()
 }
 
 void Resources::RegisterResourceEvent(QString application, uint _windowId,
-        const QString & uri, uint event, uint reason)
+                                      const QString &uri, uint event)
 {
-    Q_ASSERT_X(!uri.startsWith("nepomuk:"), "Resources::RegisterResourceEvent",
-            "We do not accept nepomuk URIs for resource events");
+    Q_ASSERT_X(!uri.startsWith(QStringLiteral("nepomuk:")),
+               "Resources::RegisterResourceEvent",
+               "We do not accept nepomuk URIs for resource events");
 
-    if (
-           event > Event::LastEventType
-        || reason > Event::LastEventReason
+    if (event > Event::LastEventType
         || uri.isEmpty()
-        || application.isEmpty()
-        // Dirty way to skip special web browser URIs
-        // This is up to the plugin - whether it wants it filtered out or not
-        // || uri.startsWith(QLatin1String("about:"))
-    ) return;
+        || application.isEmpty()) {
+        return;
+    }
 
-    KUrl kuri(uri);
-    WId windowId = (WId) _windowId;
+    QString kuri(uri);
+    WId windowId = (WId)_windowId;
 
-    d->addEvent(application, windowId,
-            kuri.url(), (Event::Type) event, (Event::Reason) reason);
+    d->addEvent(application, windowId, kuri, (Event::Type)event);
 }
 
-
-void Resources::RegisterResourceMimeType(const QString & uri, const QString & mimetype)
+void Resources::RegisterResourceMimeType(const QString &uri, const QString &mimetype)
 {
-    if (!mimetype.isEmpty()) return;
+    if (!mimetype.isEmpty()) {
+        return;
+    }
 
-    KUrl kuri(uri);
+    QString kuri(uri);
 
     emit RegisteredResourceMimeType(uri, mimetype);
 }
 
-
-void Resources::RegisterResourceTitle(const QString & uri, const QString & title)
+void Resources::RegisterResourceTitle(const QString &uri, const QString &title)
 {
     // A dirty saninty check for the title
-    if (title.length() < 3) return;
+    if (title.length() < 3) {
+        return;
+    }
 
-    KUrl kuri(uri);
+    QString kuri(uri);
 
     emit RegisteredResourceTitle(uri, title);
 }
 
-bool Resources::isFeatureOperational(const QStringList & feature) const
+bool Resources::isFeatureOperational(const QStringList &feature) const
 {
     Q_UNUSED(feature)
     return false;
 }
 
-bool Resources::isFeatureEnabled(const QStringList & feature) const
+bool Resources::isFeatureEnabled(const QStringList &feature) const
 {
     Q_UNUSED(feature)
     return false;
-
 }
 
-void Resources::setFeatureEnabled(const QStringList & feature, bool value)
+void Resources::setFeatureEnabled(const QStringList &feature, bool value)
 {
     Q_UNUSED(feature)
     Q_UNUSED(value)
 }
 
-QStringList Resources::listFeatures(const QStringList & feature) const
+QStringList Resources::listFeatures(const QStringList &feature) const
 {
     Q_UNUSED(feature)
     static QStringList features;

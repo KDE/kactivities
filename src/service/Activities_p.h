@@ -20,24 +20,27 @@
 #ifndef ACTIVITIES_P_H
 #define ACTIVITIES_P_H
 
+// Self
+#include "Activities.h"
+
+// Qt
 #include <QString>
 #include <QTimer>
 
-#include <KConfig>
-#include <KConfigGroup>
+// KDE
+#include <kconfig.h>
+#include <kconfiggroup.h>
 
-#include "Activities.h"
 
 class KSMServer;
 
 class QDBusInterface;
-class KJob;
 
-class Activities::Private: public QObject {
+class Activities::Private : public QObject {
     Q_OBJECT
 
 public:
-    Private(Activities * parent);
+    Private(Activities *parent);
     ~Private();
 
     // Loads the last activity
@@ -49,11 +52,11 @@ public:
     void ensureCurrentActivityIsRunning();
 
 public Q_SLOTS:
-    bool setCurrentActivity(const QString & activity);
+    bool setCurrentActivity(const QString &activity);
 
 public:
-    void setActivityState(const QString & activity, Activities::State state);
-    QHash < QString, Activities::State > activities;
+    void setActivityState(const QString &activity, Activities::State state);
+    QHash<QString, Activities::State> activities;
 
     // Current activity
     QString currentActivity;
@@ -63,15 +66,33 @@ public:
     KConfig config;
 
     // Interface to the session management
-    KSMServer * ksmserver;
+    KSMServer *ksmserver;
 
 public:
-    KConfigGroup activitiesConfig();
-    KConfigGroup activityIconsConfig();
-    KConfigGroup mainConfig();
-    QString activityName(const QString & activity);
-    QString activityIcon(const QString & activity);
+    inline KConfigGroup activitiesConfig()
+    {
+        return KConfigGroup(&config, "activities");
+    }
 
+    inline KConfigGroup activityIconsConfig()
+    {
+        return KConfigGroup(&config, "activities-icons");
+    }
+
+    inline KConfigGroup mainConfig()
+    {
+        return KConfigGroup(&config, "main");
+    }
+
+    inline QString activityName(const QString &activity)
+    {
+        return activitiesConfig().readEntry(activity, QString());
+    }
+
+    inline QString activityIcon(const QString &activity)
+    {
+        return activityIconsConfig().readEntry(activity, QString());
+    }
 
 public Q_SLOTS:
     // Schedules config syncing to be done after
@@ -83,14 +104,13 @@ public Q_SLOTS:
     // Immediately syncs the configuration file
     void configSync();
 
-    void removeActivity(const QString & activity);
-    void activitySessionStateChanged(const QString & activity, int state);
+    void removeActivity(const QString &activity);
+    void activitySessionStateChanged(const QString &activity, int state);
 
-    void emitCurrentActivityChanged(const QString & activity);
+    void emitCurrentActivityChanged(const QString &activity);
 
 private:
-    Activities * const q;
+    Activities *const q;
 };
 
 #endif // ACTIVITIES_P_H
-

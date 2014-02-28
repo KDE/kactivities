@@ -20,22 +20,23 @@
 #ifndef PLUGINS_SQLITE_RESOURCE_SCORE_MAINTAINER_H
 #define PLUGINS_SQLITE_RESOURCE_SCORE_MAINTAINER_H
 
-#include <KUrl>
-
+// Utils
 #include <utils/d_ptr.h>
 
+
 class ResourceScoreMaintainerPrivate;
+class QString;
 
 /**
  * Thread to process desktop/usage events
  */
 class ResourceScoreMaintainer {
 public:
-    static ResourceScoreMaintainer * self();
+    static ResourceScoreMaintainer *self();
 
     virtual ~ResourceScoreMaintainer();
 
-    void processResource(const KUrl & resource, const QString & application);
+    void processResource(const QString &resource, const QString &application);
 
 private:
     ResourceScoreMaintainer();

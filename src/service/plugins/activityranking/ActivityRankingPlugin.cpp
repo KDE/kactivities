@@ -26,44 +26,43 @@
 
 class ActivityRankingPlugin::Private {
 public:
-    ActivityRanking * ranking;
-    QThread * rankingThread;
+    ActivityRanking *ranking;
+    QThread *rankingThread;
 };
 
-ActivityRankingPlugin::ActivityRankingPlugin(QObject * parent, const QVariantList & args)
+ActivityRankingPlugin::ActivityRankingPlugin(QObject *parent, const QVariantList &args)
     : Plugin(parent)
 {
     Q_UNUSED(args)
 }
 
-bool ActivityRankingPlugin::init(const QHash < QString, QObject * > & modules)
+bool ActivityRankingPlugin::init(const QHash<QString, QObject *> &modules)
 {
     d->ranking = new ActivityRanking();
     d->ranking->init(modules["activities"]);
 
-    class Thread: public QThread {
+    class Thread : public QThread {
     public:
-        Thread(ActivityRanking * ptr = nullptr)
-            : QThread(), object(ptr)
+        Thread(ActivityRanking *ptr = Q_NULLPTR)
+            : QThread()
+            , object(ptr)
         {
         }
 
-        void run() _override
+        void run() Q_DECL_OVERRIDE
         {
             std::unique_ptr<ActivityRanking> o(object);
             exec();
         }
 
     private:
-        ActivityRanking * object;
+        ActivityRanking *object;
 
-    } * thread = new Thread(d->ranking);
+    } *thread = new Thread(d->ranking);
 
     d->rankingThread = thread;
     d->ranking->moveToThread(thread);
     thread->start();
-
-    qDebug() << "running in thread" << d->ranking->metaObject()->className();
 
     return true;
 }

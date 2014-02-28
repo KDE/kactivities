@@ -21,32 +21,29 @@
 
 #include <Plugin.h>
 
-#include <utils/override.h>
-
 class QSignalMapper;
 class KActionCollection;
 
-class GlobalShortcutsPlugin: public Plugin
-{
+class GlobalShortcutsPlugin : public Plugin {
     Q_OBJECT
 
 public:
-    GlobalShortcutsPlugin(QObject * parent, const QVariantList & args);
+    GlobalShortcutsPlugin(QObject *parent, const QVariantList &args);
     virtual ~GlobalShortcutsPlugin();
 
-    virtual bool init(const QHash < QString, QObject * > & modules) _override;
+    virtual bool init(const QHash<QString, QObject *> &modules) Q_DECL_OVERRIDE;
 
 private Q_SLOTS:
-    void activityAdded(const QString & activity);
-    void activityRemoved(const QString & activity);
-    void activityChanged(const QString & activity);
+    void activityAdded(const QString &activity);
+    void activityRemoved(const QString &activity);
+    void activityChanged(const QString &activity);
 
 private:
-    inline QString activityName(const QString & activity) const;
+    inline QString activityName(const QString &activity) const;
 
-    QObject * m_activitiesService;
-    QSignalMapper * m_signalMapper;
-    KActionCollection * m_actionCollection;
+    QObject *m_activitiesService;
+    QSignalMapper *m_signalMapper;
+    KActionCollection *m_actionCollection;
 };
 
 #endif // PLUGINS_GLOBAL_SHORTCUTS_PLUGIN_H

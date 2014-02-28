@@ -21,7 +21,6 @@
 #define ACTIVITIES_RESOURCEINSTANCE_H
 
 #include <QObject>
-#include <QWidget>
 #include <QUrl>
 
 #include "kactivities_export.h"
@@ -50,46 +49,31 @@ class ResourceInstancePrivate;
  * systems - everything is done under-the-hood automatically.
  *
  */
-class KACTIVITIES_EXPORT ResourceInstance: public QObject
-{
+class KACTIVITIES_EXPORT ResourceInstance : public QObject {
     Q_OBJECT
 
     Q_PROPERTY(QUrl uri READ uri WRITE setUri)
     Q_PROPERTY(QString mimetype READ mimetype WRITE setMimetype)
     Q_PROPERTY(QString title READ title WRITE setTitle)
-    Q_PROPERTY(WId winId READ winId)
-    Q_PROPERTY(AccessReason accessReason READ accessReason)
+    Q_PROPERTY(quintptr winId READ winId)
 
 public:
-    /***
-     * The reason for opening the resource
-     */
-    enum AccessReason {
-         User = 0,      ///< Due to an explicit user request
-         Scheduled = 1, ///< As a result of a user-scheduled action
-         Heuristic = 2, ///< Deduced from user's activity, or indirectly requested
-         System = 3,    ///< Due to a system event
-         World = 4      ///< Due to an action performed by an external entity
-    };
-    Q_ENUMS(AccessReason)
-
     /**
      * Creates a new resource instance
      * @param wid id of the window that will show the resource
      * @param parent pointer to the parent object
      * @since 4.10
      */
-    explicit ResourceInstance(WId wid, QObject *parent = 0 /*nullptr*/);
+    explicit ResourceInstance(quintptr wid, QObject *parent = Q_NULLPTR);
 
     /**
      * Creates a new resource instance
      * @param wid id of the window that will show the resource
-     * @param reason reason for opening the resource
      * @param application application's name (the name used for the .desktop file).
      *        If not specified, QCoreApplication::applicationName is used
      * @param parent pointer to the parent object
      */
-    explicit ResourceInstance(WId wid, AccessReason reason = User, const QString &application = QString(), QObject * parent = 0 /*nullptr*/);
+    explicit ResourceInstance(quintptr wid, const QString &application = QString(), QObject *parent = Q_NULLPTR);
 
     /**
      * Creates a new resource instance and automatically
@@ -109,12 +93,13 @@ public:
      * @param resourceUri URI of the resource that is shown
      * @param mimetype the mime type of the resource
      * @param title the title of the resource
-     * @param reason reason for opening the resource
      * @param application application's name (the name used for the .desktop file).
      *        If not specified, QCoreApplication::applicationName is used
      * @param parent pointer to the parent object
      */
-    ResourceInstance(WId wid, QUrl resourceUri, const QString &mimetype = QString(), const QString &title = QString(), AccessReason reason = User, const QString &application = QString(), QObject *parent = 0 /*nullptr*/);
+    ResourceInstance(quintptr wid, QUrl resourceUri, const QString &mimetype = QString(),
+                     const QString &title = QString(), const QString &application = QString(),
+                     QObject *parent = Q_NULLPTR);
 
     /**
      * Destroys the ResourceInstance and notifies the system
@@ -194,12 +179,7 @@ public:
     /**
      * @returns the window id
      */
-    WId winId() const;
-
-    /**
-     * @returns the reason for accessing the resource
-     */
-    AccessReason accessReason() const;
+    quintptr winId() const;
 
     /**
      * If there's no way to tell for how long an application is keeping
@@ -211,13 +191,11 @@ public:
      *        If not specified, QCoreApplication::applicationName is used
      *
      */
-    static void  notifyAccessed(const QUrl &uri, const QString &application = QString());
+    static void notifyAccessed(const QUrl &uri, const QString &application = QString());
 
 private:
-    ResourceInstancePrivate * const d;
+    const QScopedPointer<ResourceInstancePrivate> d;
 };
-
 }
 
 #endif // ACTIVITIES_RESOURCEINSTANCE_H
-

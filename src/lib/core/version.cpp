@@ -19,8 +19,7 @@
 
 #include "version.h"
 
-namespace KActivities
-{
+namespace KActivities {
 
 unsigned int version()
 {
@@ -48,4 +47,3 @@ const char *versionString()
 }
 
 } // KActivities namespace
-

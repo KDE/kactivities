@@ -24,20 +24,17 @@
 
 #include "ActivityData.h"
 
-#include <utils/nullptr.h>
-#include <utils/override.h>
 #include <utils/d_ptr.h>
 
-class ActivityRanking: public QObject
-{
+class ActivityRanking : public QObject {
     Q_OBJECT
     Q_CLASSINFO("D-Bus Interface", "org.kde.ActivityManager.ActivityRanking")
 
 public:
-    explicit ActivityRanking(QObject * parent = nullptr);
+    explicit ActivityRanking(QObject *parent = Q_NULLPTR);
     ~ActivityRanking();
 
-    void init(QObject * activities);
+    void init(QObject *activities);
 
 public Q_SLOTS:
     /**
@@ -54,18 +51,17 @@ public Q_SLOTS:
     QList<ActivityData> activities();
 
 Q_SIGNALS:
-    void rankingChanged(const QStringList & topActivities, const ActivityDataList & activities);
+    void rankingChanged(const QStringList &topActivities, const ActivityDataList &activities);
 
 protected:
     void initDatabaseSchema();
 
 private Q_SLOTS:
-    void activityChanged(const QString & activity);
-    void locationChanged(const QString & location);
+    void activityChanged(const QString &activity);
+    void locationChanged(const QString &location);
 
 private:
     D_PTR;
 };
 
 #endif // PLUGINS_ACTIVITY_RANKING_ACTIVITY_RANKING_THREAD_H
-

@@ -10,3 +10,4 @@ _tests
 .ycm_extra_conf.pyc
 .clang_complete
 kactivities.kdev4
+compile_commands.json

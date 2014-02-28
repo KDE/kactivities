@@ -39,18 +39,18 @@ using namespace KDE::Vocabulary;
 using namespace Nepomuk::Vocabulary;
 using namespace Soprano::Vocabulary;
 
-void updateNepomukScore(const QString & activity, const QString & application, const QUrl & resource, qreal score);
+void updateNepomukScore(const QString &activity, const QString &application, const QUrl &resource, qreal score);
 
-QUrl resourceForUrl(const QUrl & url);
+QUrl resourceForUrl(const QUrl &url);
 
-QUrl resourceForId(const QString & resourceId, const QUrl & type);
+QUrl resourceForId(const QString &resourceId, const QUrl &type);
 
-inline QString resN3(const QUrl & uri)
+inline QString resN3(const QUrl &uri)
 {
     return Soprano::Node::resourceToN3(uri);
 }
 
-inline Nepomuk::Resource activityResource(const QString & activity)
+inline Nepomuk::Resource activityResource(const QString &activity)
 {
     Q_ASSERT(!activity.isEmpty());
 
@@ -58,4 +58,3 @@ inline Nepomuk::Resource activityResource(const QString & activity)
 }
 
 #endif // PLUGINS_SQLITE_NEPOMUK_COMMON_H
-

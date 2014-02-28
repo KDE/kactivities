@@ -20,38 +20,42 @@
 #ifndef MODULE_H
 #define MODULE_H
 
+// Qt
 #include <QObject>
 #include <QString>
 #include <QStringList>
+#include <QDBusVariant>
 
+// Utils
 #include <utils/d_ptr.h>
-#include <utils/nullptr.h>
-#include <utils/override.h>
+
 
 /**
  * Module
  */
-class Module: public QObject {
+class Module : public QObject {
     Q_OBJECT
 
 public:
-    explicit Module(const QString & name, QObject * parent = nullptr);
+    explicit Module(const QString &name, QObject *parent = Q_NULLPTR);
     virtual ~Module();
 
-    static QObject * get(const QString & name);
-    static const QHash < QString, QObject * > get();
+    static QObject *get(const QString &name);
+    static const QHash<QString, QObject *> get();
 
-    virtual bool isFeatureOperational(const QStringList & feature) const;
-    virtual bool isFeatureEnabled(const QStringList & feature) const;
-    virtual void setFeatureEnabled(const QStringList & feature, bool value);
-    virtual QStringList listFeatures(const QStringList & feature) const;
+    virtual bool isFeatureOperational(const QStringList &feature) const;
+    virtual bool isFeatureEnabled(const QStringList &feature) const;
+    virtual void setFeatureEnabled(const QStringList &feature, bool value);
+    virtual QStringList listFeatures(const QStringList &feature) const;
+
+    virtual QDBusVariant value(const QStringList &property) const;
+    virtual void setValue(const QStringList &property, const QDBusVariant &value);
 
 protected:
-    static void registerModule(const QString & name, QObject * module);
+    static void registerModule(const QString &name, QObject *module);
 
 private:
     D_PTR;
 };
 
 #endif // MODULE_H
-

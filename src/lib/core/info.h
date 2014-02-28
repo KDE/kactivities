@@ -20,12 +20,9 @@
 #define ACTIVITIES_INFO_H
 
 #include <QObject>
-#include <QWidget>
 #include <QString>
 #include <QStringList>
-
-#include <kurl.h>
-#include <kdemacros.h>
+#include <QFuture>
 
 #include "kactivities_export.h"
 
@@ -34,10 +31,10 @@ namespace KActivities {
 class InfoPrivate;
 
 /**
- * This class provides info about an activity. Most methods in it
- * require a Nepomuk backend running.
+ * This class provides info about an activity. Most methods in it require a
+ * semantic backend running to function properly.
  *
- * This class is not thread-safe
+ * This class is not thread-safe.
  *
  * @see Consumer for info about activities
  *
@@ -46,30 +43,39 @@ class InfoPrivate;
  * amount of d-bus related locks, you should declare long-lived instances
  * of this class.
  *
+ * Before relying on the values retrieved by the class, make sure that the
+ * state is not Info::Unknown. You can get invalid data either because the
+ * service is not functioning properly (or at all) or because the class did
+ * not have enough time to synchronize the data with it.
+ *
+ * For example, if this is the only existing instance of the Info class, the
+ * name method will return an empty string.
+ *
  * For example, this is wrong (works, but blocks):
  * @code
  * void someMethod(const QString & activity) {
+ *     // Do not copy. This approach is not a good one!
  *     Info info(activity);
  *     doSomethingWith(info.name());
  * }
  * @endcode
  *
- * The methods that are cached are marked as 'pre-fetched and cached'.
- * Methods that will block until the response from the service is returned
- * are marked as 'blocking'.
+ * Instances of the Info class should be long-lived. For example, members
+ * of the classes that use them, and you should listen for the changes in the
+ * provided properties.
  *
  * @since 4.5
  */
-class KACTIVITIES_EXPORT Info: public QObject
-{
+class KACTIVITIES_EXPORT Info : public QObject {
     Q_OBJECT
 
     Q_PROPERTY(QString id READ id)
     Q_PROPERTY(QString name READ name NOTIFY nameChanged)
     Q_PROPERTY(QString icon READ icon NOTIFY iconChanged)
+    Q_PROPERTY(Info::State state READ state NOTIFY stateChanged)
 
 public:
-    explicit Info(const QString & activity, QObject * parent = 0 /*nullptr*/);
+    explicit Info(const QString &activity, QObject *parent = Q_NULLPTR);
     ~Info();
 
     /**
@@ -81,20 +87,21 @@ public:
      * Specifies which parts of this class are functional
      */
     enum Availability {
-        Nothing = 0,             ///< No activity info provided (isValid is false)
-        BasicInfo = 1,           ///< Basic info is provided
-        Everything = 2           ///< Everything is available
+        Nothing = 0,   ///< No activity info provided (isValid is false)
+        BasicInfo = 1, ///< Basic info is provided
+        Everything = 2 ///< Everything is available
     };
 
     /**
      * State of the activity
      */
     enum State {
-        Invalid  = 0,
-        Running  = 2,
-        Starting = 3,
-        Stopped  = 4,
-        Stopping = 5
+        Invalid = 0,  ///< This activity does not exist
+        Unknown = 1,  ///< Information is not yet retrieved from the service
+        Running = 2,  ///< Activity is running
+        Starting = 3, ///< Activity is begin started
+        Stopped = 4,  ///< Activity is stopped
+        Stopping = 5  ///< Activity is begin started
     };
 
     /**
@@ -103,18 +110,10 @@ public:
     Availability availability() const;
 
     /**
-     * @returns the URI of this activity. The same URI is used by
-     * activities KIO slave.
+     * @returns the URI of this activity. The same URI is used by activities
+     * KIO slave.
      */
-    KUrl uri() const;
-
-    /**
-     * @deprecated we don't guarantee that nepomuk is the backend
-     * @returns the Nepomuk resource URI of this activity
-     * @note Functional only when availability is Everything
-     */
-    KDE_DEPRECATED
-    KUrl resourceUri() const;
+    QString uri() const;
 
     /**
      * @returns the id of the activity
@@ -123,71 +122,43 @@ public:
 
     /**
      * @returns the name of the activity
-     * @note Functional when availability is BasicInfo or Everything
-     * @note This method is <b>pre-fetched and cached</b>
      */
     QString name() const;
 
     /**
-     * @returns the icon of the activity. Icon can be a
-     * freedesktop.org name or a file path. Or empty if
-     * no icon is set.
-     * @note Functional only when availability is Everything
-     * @note This method is <b>pre-fetched and cached</b>
+     * @returns the icon of the activity. Icon can be a freedesktop.org name or
+     * a file path. Or empty if no icon is set.
      */
     QString icon() const;
 
     /**
      * @returns the state of the activity
-     * @note This method is <b>cached</b>
      */
     State state() const;
 
     /**
-     * @returns true if encrypted
-     * @since 4.8
-     */
-    KDE_DEPRECATED
-    bool isEncrypted() const;
-
-    /**
-     * This function is provided for convenience.
-     * @returns the name of the specified activity
-     * @param id id of the activity
-     * @note This method is <b>blocking</b>, you should use Info::name()
-     */
-    static QString name(const QString & id);
-
-    /**
      * Links the specified resource to the activity
      * @param resourceUri resource URI
-     * @note This method is <b>asynchronous</b>
+     * @note This method is <b>asynchronous</b>. It will return before the
+     * resource is actually linked to the activity.
      */
-    void linkResource(const KUrl & resourceUri);
-
+    void linkResource(const QString &resourceUri);
 
     /**
      * Unlinks the specified resource from the activity
      * @param resourceUri resource URI
-     * @note This method is <b>asynchronous</b>
+     * @note This method is <b>asynchronous</b>. It will return before the
+     * resource is actually unlinked from the activity.
      */
-    void unlinkResource(const KUrl & resourceUri);
-
-
-    /**
-     * @returns the list of linked resources
-     * @note This method is <b>blocking</b>
-     */
-    KDE_DEPRECATED
-    KUrl::List linkedResources() const;
-
+    void unlinkResource(const QString &resourceUri);
 
     /**
      * @returns whether a resource is linked to this activity
-     * @note this method is <b>blocking</b>
-     * @since 4.11
+     * @note This QFuture is not thread-based, you can not call synchronous
+     * methods like waitForFinished, cancel, pause on it.
+     * @since 5.0
      */
-    bool isResourceLinked(const KUrl & resourceUri);
+    QFuture<bool> isResourceLinked(const QString &resourceUri);
 
 Q_SIGNALS:
     /**
@@ -198,12 +169,12 @@ Q_SIGNALS:
     /**
      * Emitted when the name is changed
      */
-    void nameChanged(const QString & name);
+    void nameChanged(const QString &name);
 
     /**
      * Emitted when the icon was changed
      */
-    void iconChanged(const QString & icon);
+    void iconChanged(const QString &icon);
 
     /**
      * Emitted when the activity is added
@@ -232,7 +203,7 @@ Q_SIGNALS:
     void stateChanged(KActivities::Info::State state);
 
 private:
-    InfoPrivate * const d;
+    const QScopedPointer<InfoPrivate> d;
 
     Q_PRIVATE_SLOT(d, void activityStateChanged(const QString &, int))
     Q_PRIVATE_SLOT(d, void added(const QString &))
@@ -242,9 +213,7 @@ private:
     Q_PRIVATE_SLOT(d, void infoChanged(const QString &))
     Q_PRIVATE_SLOT(d, void nameChanged(const QString &, const QString &))
     Q_PRIVATE_SLOT(d, void iconChanged(const QString &, const QString &))
-    Q_PRIVATE_SLOT(d, void setServicePresent(bool))
-    Q_PRIVATE_SLOT(d, void nameCallFinished(QDBusPendingCallWatcher*))
-    Q_PRIVATE_SLOT(d, void iconCallFinished(QDBusPendingCallWatcher*))
+    Q_PRIVATE_SLOT(d, void setServiceStatus(Consumer::ServiceStatus))
 
     friend class InfoPrivate;
 };
@@ -252,4 +221,3 @@ private:
 } // namespace KActivities
 
 #endif // ACTIVITIES_INFO_H
-

@@ -20,34 +20,39 @@
 #ifndef RESOURCES_P_H
 #define RESOURCES_P_H
 
+// Self
 #include "Resources.h"
-#include "resourcesadaptor.h"
 
+// Qt
 #include <QString>
 #include <QList>
-#include <KUrl>
+#include <QWidgetList> // for WId
 
-class Resources::Private: public QThread {
+// Local
+#include "resourcesadaptor.h"
+
+
+class Resources::Private : public QThread {
     Q_OBJECT
 
 public:
-    Private(Resources * parent);
+    Private(Resources *parent);
 
     void run();
 
     // Inserts the event directly into the queue
-    void insertEvent(const Event & newEvent);
+    void insertEvent(const Event &newEvent);
 
     // Processes the event and inserts it into the queue
-    void addEvent(const QString & application, WId wid, const QString & uri,
-                int type, int reason);
+    void addEvent(const QString &application, WId wid, const QString &uri,
+                  int type);
 
     // Processes the event and inserts it into the queue
-    void addEvent(const Event & newEvent);
+    void addEvent(const Event &newEvent);
 
-    QList <KUrl> resourcesLinkedToActivity(const QString & activity) const;
+    QStringList resourcesLinkedToActivity(const QString &activity) const;
 
-private Q_SLOTS:
+public Q_SLOTS:
     // Reacting to window manager signals
     void windowClosed(WId windowId);
 
@@ -55,19 +60,17 @@ private Q_SLOTS:
 
 private:
     struct WindowData {
-        QSet < KUrl > resources;
-        KUrl focussedResource;
+        QSet<QString> resources;
+        QString focussedResource;
         QString application;
     };
 
     Event lastEvent;
-    // EventList events;
-    // QMutex events_mutex;
 
-    QHash < WId, WindowData > windows;
+    QHash<WId, WindowData> windows;
     WId focussedWindow;
 
-    Resources * const q;
+    Resources *const q;
 };
 
 #endif // RESOURCES_P_H

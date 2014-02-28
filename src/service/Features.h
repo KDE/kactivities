@@ -20,34 +20,41 @@
 #ifndef FEATURES_H
 #define FEATURES_H
 
+// Qt
 #include <QObject>
 #include <QString>
+#include <QDBusVariant>
 
-#include <Module.h>
-
+// Utils
 #include <utils/d_ptr.h>
-#include <utils/nullptr.h>
+
+// Local
+#include "Module.h"
+
 
 /**
  * Features object provides one interface for clients
  * to access other objects' features
  */
-class Features: public Module {
+class Features : public Module {
     Q_OBJECT
     Q_CLASSINFO("D-Bus Interface", "org.kde.ActivityManager.Features")
 
 public:
-    Features(QObject * parent = nullptr);
+    Features(QObject *parent = Q_NULLPTR);
     virtual ~Features();
 
 public Q_SLOTS:
-    bool IsFeatureOperational(const QString & feature) const;
+    /**
+     * Is the feature backend available?
+     */
+    bool IsFeatureOperational(const QString &feature) const;
 
-    bool IsFeatureEnabled(const QString & feature) const;
+    QStringList ListFeatures(const QString &module) const;
 
-    void SetFeatureEnabled(const QString & feature, bool value);
+    QDBusVariant GetValue(const QString &property) const;
 
-    QStringList ListFeatures(const QString & module) const;
+    void SetValue(const QString &property, const QDBusVariant &value);
 
 private:
     D_PTR;

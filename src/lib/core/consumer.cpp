@@ -20,191 +20,84 @@
 #include "consumer_p.h"
 #include "manager_p.h"
 
-#include <QDebug>
+#include "debug_p.h"
 
 namespace KActivities {
 
-static QString nulluuid = "00000000-0000-0000-0000-000000000000";
-ConsumerPrivate * ConsumerPrivate::s_instance = 0;
-
-ConsumerPrivate * ConsumerPrivate::self(QObject * consumer)
-{
-    if (!s_instance) {
-        s_instance = new ConsumerPrivate();
-    }
-
-    s_instance->consumers << consumer;
-
-    return s_instance;
-}
-
-void ConsumerPrivate::free(QObject * consumer)
-{
-    consumers.remove(consumer);
-
-    if (consumers.isEmpty()) {
-        s_instance = 0;
-        deleteLater();
-    }
-}
-
-KAMD_RETRIEVE_REMOTE_VALUE_HANDLER(QString,     ConsumerPrivate, currentActivity, nulluuid)
-KAMD_RETRIEVE_REMOTE_VALUE_HANDLER(QStringList, ConsumerPrivate, listActivities, QStringList())
-KAMD_RETRIEVE_REMOTE_VALUE_HANDLER(QStringList, ConsumerPrivate, runningActivities, QStringList())
-
 ConsumerPrivate::ConsumerPrivate()
-    : currentActivityCallWatcher(0),
-      listActivitiesCallWatcher(0),
-      runningActivitiesCallWatcher(0)
+    : cache(ActivitiesCache::self())
 {
-    connect(Manager::activities(), SIGNAL(CurrentActivityChanged(const QString &)),
-            this, SLOT(setCurrentActivity(const QString &)));
-    connect(Manager::activities(), SIGNAL(ActivityAdded(QString)),
-            this, SLOT(addActivity(QString)));
-    connect(Manager::activities(), SIGNAL(ActivityRemoved(QString)),
-            this, SLOT(removeActivity(QString)));
-    connect(Manager::activities(), SIGNAL(ActivityStateChanged(QString,int)),
-            this, SLOT(setActivityState(QString, int)));
-
-    connect(Manager::self(), SIGNAL(servicePresenceChanged(bool)),
-            this, SLOT(setServicePresent(bool)));
-
-    qDebug() << "We are checking whether the service is present" <<
-        Manager::isServicePresent();
-
-    if (Manager::isServicePresent()) {
-        initializeCachedData();
-    }
 }
 
-void ConsumerPrivate::setServicePresent(bool present)
+void ConsumerPrivate::setServiceStatus(Consumer::ServiceStatus status)
 {
-    emit serviceStatusChanged(
-            present ? Consumer::Running : Consumer::NotRunning
-        );
-
-    if (present) {
-        initializeCachedData();
-    }
+    emit serviceStatusChanged(status);
 }
 
-void ConsumerPrivate::initializeCachedData()
+Consumer::Consumer(QObject *parent)
+    : QObject(parent)
+    , d(new ConsumerPrivate())
 {
-    KAMD_RETRIEVE_REMOTE_VALUE(currentActivity, CurrentActivity(), this);
-    KAMD_RETRIEVE_REMOTE_VALUE(listActivities, ListActivities(), this);
-    KAMD_RETRIEVE_REMOTE_VALUE(runningActivities, ListActivities(Info::Running), this);
-}
+    qCDebug(KAMD_CORELIB) << "Creating a consumer";
 
-void ConsumerPrivate::setCurrentActivity(const QString & activity)
-{
-    qDebug() << "current activity is" << activity;
-    currentActivity = activity;
-
-    emit currentActivityChanged(activity);
-}
-
-void ConsumerPrivate::addActivity(const QString & activity)
-{
-    qDebug() << "new activity added" << activity;
-    if (!listActivities.contains(activity)) {
-        listActivities << activity;
-        runningActivities << activity;
-    }
-
-    emit activityAdded(activity);
-}
-
-void ConsumerPrivate::removeActivity(const QString & activity)
-{
-    qDebug() << "activity removed added" << activity;
-    listActivities.removeAll(activity);
-    runningActivities.removeAll(activity);
-
-    emit activityRemoved(activity);
-}
-
-void ConsumerPrivate::setActivityState(const QString & activity, int state)
-{
-    if (!listActivities.contains(activity)) {
-         qWarning("trying to alter state of unknown activity!!");
-         return; // denied
-    }
-
-    if (state == Info::Running) {
-        if (!runningActivities.contains(activity))
-            runningActivities << activity;
-
-    } else {
-        runningActivities.removeAll(activity);
-    }
-}
-
-Consumer::Consumer(QObject * parent)
-    : QObject(parent), d(ConsumerPrivate::self(this))
-{
-    connect(d, SIGNAL(serviceStatusChanged(KActivities::Consumer::ServiceStatus)),
-            this, SIGNAL(serviceStatusChanged(KActivities::Consumer::ServiceStatus)));
-    connect(d, SIGNAL(currentActivityChanged(QString)),
+    connect(d->cache.data(), SIGNAL(currentActivityChanged(QString)),
             this, SIGNAL(currentActivityChanged(QString)));
-    connect(d, SIGNAL(activityAdded(QString)),
+    connect(d->cache.data(), SIGNAL(activityAdded(QString)),
             this, SIGNAL(activityAdded(QString)));
-    connect(d, SIGNAL(activityRemoved(QString)),
+    connect(d->cache.data(), SIGNAL(activityRemoved(QString)),
             this, SIGNAL(activityRemoved(QString)));
+    connect(d->cache.data(), SIGNAL(serviceStatusChanged(Consumer::ServiceStatus)),
+            this, SIGNAL(serviceStatusChanged(Consumer::ServiceStatus)));
 
+    connect(d->cache.data(), &ActivitiesCache::activityListChanged, [=]() { emit activitiesChanged(activities()); });
+
+    connect(d.data(), SIGNAL(serviceStatusChanged(Consumer::ServiceStatus)),
+            this, SIGNAL(serviceStatusChanged(Consumer::ServiceStatus)));
+
+    // connect(d->cache.data(), SIGNAL(activityStateChanged(QString,int)),
+    //         this, SIGNAL(activityStateChanged(QString,int)));
 }
 
 Consumer::~Consumer()
 {
-    d->free(this);
+    qCDebug(KAMD_CORELIB) << "Killing the consumer";
 }
 
-KAMD_REMOTE_VALUE_GETTER(QString, Consumer, currentActivity, nulluuid)
-KAMD_REMOTE_VALUE_GETTER(QStringList, Consumer, listActivities, QStringList(nulluuid))
-
-QStringList Consumer::listActivities(Info::State state) const
+QString Consumer::currentActivity() const
 {
-    if (state == Info::Running) {
-        if (!Manager::isServicePresent()) return QStringList(nulluuid);
+    return d->cache.data()->m_currentActivity;
+}
 
-        waitForCallFinished(d->runningActivitiesCallWatcher, &d->runningActivitiesMutex);
+QStringList Consumer::activities(Info::State state) const
+{
+    QStringList result;
 
-        qDebug() << "Returning the running activities" << d->runningActivities;
+    result.reserve(d->cache.data()->m_activities.size());
 
-        return d->runningActivities;
+    foreach (const auto & info, d->cache.data()->m_activities) {
+        if (info.state == state)
+            result << info.id;
     }
 
-    KAMD_RETRIEVE_REMOTE_VALUE_SYNC(
-            QStringList, activities, ListActivities(state), QStringList(nulluuid)
-        );
+    return result;
 }
 
-void Consumer::linkResourceToActivity(const QUrl & uri, const QString & activity)
+QStringList Consumer::activities() const
 {
-    if (Manager::isServicePresent())
-        Manager::resourcesLinking()->LinkResourceToActivity(uri.toString(), activity);
-}
+    QStringList result;
 
-void Consumer::unlinkResourceFromActivity(const QUrl & uri, const QString & activity)
-{
-    if (Manager::isServicePresent())
-        Manager::resourcesLinking()->UnlinkResourceFromActivity(uri.toString(), activity);
-}
+    result.reserve(d->cache.data()->m_activities.size());
 
-bool Consumer::isResourceLinkedToActivity(const QUrl & uri, const QString & activity) const
-{
-    KAMD_RETRIEVE_REMOTE_VALUE_SYNC(
-            bool, resourcesLinking, IsResourceLinkedToActivity(uri.toString(), activity), false
-        );
+    foreach (const auto & info, d->cache.data()->m_activities) {
+        result << info.id;
+    }
+
+    return result;
 }
 
 Consumer::ServiceStatus Consumer::serviceStatus()
 {
-    if (!Manager::isServicePresent()) {
-        return NotRunning;
-    }
-
-    return Running;
+    return d->cache.data()->m_status;
 }
 
 } // namespace KActivities
-

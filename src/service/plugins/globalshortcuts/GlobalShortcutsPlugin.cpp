@@ -26,17 +26,14 @@
 #include <KActionCollection>
 #include <KLocalizedString>
 
-#include <utils/nullptr.h>
-#include <utils/val.h>
+const auto objectNamePattern = QStringLiteral("switch-to-activity-%1");
+const auto objectNamePatternLength = objectNamePattern.length() - 2;
 
-val objectNamePattern       = QString::fromLatin1("switch-to-activity-%1");
-val objectNamePatternLength = objectNamePattern.length() - 2;
-
-GlobalShortcutsPlugin::GlobalShortcutsPlugin(QObject * parent, const QVariantList & args)
-    : Plugin(parent),
-      m_activitiesService(nullptr),
-      m_signalMapper(new QSignalMapper(this)),
-      m_actionCollection(new KActionCollection(this))
+GlobalShortcutsPlugin::GlobalShortcutsPlugin(QObject *parent, const QVariantList &args)
+    : Plugin(parent)
+    , m_activitiesService(Q_NULLPTR)
+    , m_signalMapper(new QSignalMapper(this))
+    , m_actionCollection(new KActionCollection(this))
 {
     Q_UNUSED(args)
 }
@@ -46,25 +43,24 @@ GlobalShortcutsPlugin::~GlobalShortcutsPlugin()
     m_actionCollection->clear();
 }
 
-bool GlobalShortcutsPlugin::init(const QHash < QString, QObject * > & modules)
+bool GlobalShortcutsPlugin::init(const QHash<QString, QObject *> &modules)
 {
     m_activitiesService = modules["activities"];
 
-    val activitiesList = Plugin::callOn <QStringList, Qt::DirectConnection> (m_activitiesService, "ListActivities", "QStringList");
+    const auto activitiesList = Plugin::callOn<QStringList, Qt::DirectConnection>(m_activitiesService, "ListActivities", "QStringList");
 
-    foreach (val & activity, activitiesList) {
+    for (const auto &activity: activitiesList) {
         activityAdded(activity);
     }
 
     connect(
         m_signalMapper, SIGNAL(mapped(QString)),
         m_activitiesService, SLOT(SetCurrentActivity(QString)),
-        Qt::QueuedConnection
-    );
+        Qt::QueuedConnection);
 
     m_actionCollection->readSettings();
 
-    foreach (val & action, m_actionCollection->actions()) {
+    for (const auto &action: m_actionCollection->actions()) {
         if (!activitiesList.contains(action->objectName().mid(objectNamePatternLength))) {
             m_actionCollection->removeAction(action);
         }
@@ -75,11 +71,10 @@ bool GlobalShortcutsPlugin::init(const QHash < QString, QObject * > & modules)
     return true;
 }
 
-void GlobalShortcutsPlugin::activityAdded(const QString & activity)
+void GlobalShortcutsPlugin::activityAdded(const QString &activity)
 {
-    val action = m_actionCollection->addAction(
-            objectNamePattern.arg(activity)
-        );
+    const auto action = m_actionCollection->addAction(
+        objectNamePattern.arg(activity));
 
     action->setText(i18nc("@action", "Switch to activity \"%1\"", activityName(activity)));
     action->setGlobalShortcut(KShortcut());
@@ -90,9 +85,9 @@ void GlobalShortcutsPlugin::activityAdded(const QString & activity)
     m_actionCollection->writeSettings();
 }
 
-void GlobalShortcutsPlugin::activityRemoved(const QString & activity)
+void GlobalShortcutsPlugin::activityRemoved(const QString &activity)
 {
-    foreach (val & action, m_actionCollection->actions()) {
+    for (const auto &action: m_actionCollection->actions()) {
         if (activity == action->objectName().mid(objectNamePatternLength)) {
             m_actionCollection->removeAction(action);
         }
@@ -101,22 +96,20 @@ void GlobalShortcutsPlugin::activityRemoved(const QString & activity)
     m_actionCollection->writeSettings();
 }
 
-void GlobalShortcutsPlugin::activityChanged(const QString & activity)
+void GlobalShortcutsPlugin::activityChanged(const QString &activity)
 {
-    foreach (val & action, m_actionCollection->actions()) {
+    for (const auto &action: m_actionCollection->actions()) {
         if (activity == action->objectName().mid(objectNamePatternLength)) {
             action->setText(i18nc("@action", "Switch to activity \"%1\"", activityName(activity)));
         }
     }
 }
 
-QString GlobalShortcutsPlugin::activityName(const QString & activity) const
+QString GlobalShortcutsPlugin::activityName(const QString &activity) const
 {
-    return Plugin::callOnWithArgs <QString, Qt::DirectConnection> (
-            m_activitiesService, "ActivityName", "QString",
-            Q_ARG(QString, activity)
-        );
+    return Plugin::callOnWithArgs<QString, Qt::DirectConnection>(
+        m_activitiesService, "ActivityName", "QString",
+        Q_ARG(QString, activity));
 }
 
 KAMD_EXPORT_PLUGIN(GlobalShortcutsPlugin, "activitymanager_plugin_globalshortcuts")
-

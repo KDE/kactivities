@@ -17,19 +17,27 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+// Self
 #include "Event.h"
 
-#include <QDebug>
-#include <common.h>
+// Local
+#include "Debug.h"
+#include "common.h"
 
 
 Event::Event()
-    : wid(0), type(Accessed), reason(User), timestamp(QDateTime::currentDateTime())
+    : wid(0)
+    , type(Accessed)
+    , timestamp(QDateTime::currentDateTime())
 {
 }
 
-Event::Event(const QString & vApplication, WId vWid, const QString & vUri, int vType, int vReason)
-    : application(vApplication), wid(vWid), uri(vUri), type(vType), reason(vReason), timestamp(QDateTime::currentDateTime())
+Event::Event(const QString &vApplication, quintptr vWid, const QString &vUri, int vType)
+    : application(vApplication)
+    , wid(vWid)
+    , uri(vUri)
+    , type(vType)
+    , timestamp(QDateTime::currentDateTime())
 {
     Q_ASSERT(!vApplication.isEmpty());
     Q_ASSERT(!vUri.isEmpty());
@@ -42,32 +50,32 @@ Event Event::deriveWithType(Type type) const
     return result;
 }
 
-bool Event::operator == (const Event & other) const
+bool Event::operator==(const Event &other) const
 {
-    return
-        application == other.application &&
-        wid == other.wid &&
-        uri == other.uri &&
-        type == other.type &&
-        reason == other.reason &&
-        timestamp == other.timestamp;
+    return application == other.application && wid == other.wid && uri == other.uri && type == other.type && timestamp == other.timestamp;
 }
 
 QString Event::typeName() const
 {
     switch (type) {
-        case Accessed:    return "Accessed";
-        case Opened:      return "Opened";
-        case Modified:    return "Modified";
-        case Closed:      return "Closed";
-        case FocussedIn:  return "FocussedIn";
-        case FocussedOut: return "FocussedOut";
-        default:          return "Other";
+        case Accessed:
+            return QStringLiteral("Accessed");
+        case Opened:
+            return QStringLiteral("Opened");
+        case Modified:
+            return QStringLiteral("Modified");
+        case Closed:
+            return QStringLiteral("Closed");
+        case FocussedIn:
+            return QStringLiteral("FocussedIn");
+        case FocussedOut:
+            return QStringLiteral("FocussedOut");
+        default:
+            return QStringLiteral("Other");
     }
-
 }
 
-QDebug operator << (QDebug dbg, const Event & e)
+QDebug operator<<(QDebug dbg, const Event &e)
 {
 #ifndef QT_NO_DEBUG_OUTPUT
     dbg << "Event(" << e.application << e.wid << e.typeName() << e.uri << ":" << e.timestamp << ")";
@@ -76,4 +84,3 @@ QDebug operator << (QDebug dbg, const Event & e)
 #endif
     return dbg.space();
 }
-

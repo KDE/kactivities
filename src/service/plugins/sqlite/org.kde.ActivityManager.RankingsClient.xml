@@ -2,18 +2,10 @@
 <node>
   <interface name="org.kde.ActivityManager.RankingsClient">
     <method name="updated">
-      <arg name="data" type="av" direction="in"/>
-    </method>
-    <method name="inserted">
-      <arg name="position" type="i" direction="in"/>
-      <arg name="item" type="av" direction="in"/>
-    </method>
-    <method name="removed">
-      <arg name="position" type="i" direction="in"/>
-    </method>
-    <method name="changed">
-      <arg name="position" type="i" direction="in"/>
-      <arg name="item" type="av" direction="in"/>
+      <arg name="requestId" type="s" direction="in"/>
+      <arg name="action" type="s" direction="in"/>
+      <arg name="data" type="a{sv}" direction="in"/>
+      <annotation name="org.qtproject.QtDBus.QtTypeName.In2" value="QVariantMap"/>
     </method>
   </interface>
 </node>

@@ -15,21 +15,26 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+// Self
 #include "SlcPlugin.h"
-#include "slcadaptor.h"
 
+// Qt
 #include <QDBusConnection>
+
+// KDE
 #include <kdbusconnectionpool.h>
 
-#include <utils/val.h>
+// Local
+#include "slcadaptor.h"
 
-SlcPlugin::SlcPlugin(QObject * parent, const QVariantList & args)
+
+SlcPlugin::SlcPlugin(QObject *parent, const QVariantList &args)
     : Plugin(parent)
 {
     Q_UNUSED(args)
 
     new SLCAdaptor(this);
-    KDBusConnectionPool::threadConnection().registerObject("/SLC", this);
+    KDBusConnectionPool::threadConnection().registerObject(QStringLiteral("/SLC"), this);
 }
 
 SlcPlugin::~SlcPlugin()
@@ -51,7 +56,7 @@ QString SlcPlugin::focussedResourceTitle() const
     return m_resources[m_focussedResource].title;
 }
 
-void SlcPlugin::registeredResourceEvent(const Event & event)
+void SlcPlugin::registeredResourceEvent(const Event &event)
 {
     switch (event.type) {
         case Event::FocussedIn:
@@ -59,7 +64,7 @@ void SlcPlugin::registeredResourceEvent(const Event & event)
             if (!event.uri.startsWith(QLatin1String("about"))) {
                 if (m_focussedResource != event.uri) {
                     m_focussedResource = event.uri;
-                    val & info = m_resources[m_focussedResource];
+                    const auto &info = m_resources[m_focussedResource];
                     emit focusChanged(event.uri, info.mimetype, info.title);
                 }
             } else {
@@ -88,29 +93,29 @@ void SlcPlugin::registeredResourceEvent(const Event & event)
     }
 }
 
-void SlcPlugin::registeredResourceMimeType(const QString & uri, const QString & mimetype)
+void SlcPlugin::registeredResourceMimeType(const QString &uri, const QString &mimetype)
 {
     m_resources[uri].mimetype = mimetype;
 }
 
-void SlcPlugin::registeredResourceTitle(const QString & uri, const QString & title)
+void SlcPlugin::registeredResourceTitle(const QString &uri, const QString &title)
 {
     m_resources[uri].title = title;
 }
 
-bool SlcPlugin::init(const QHash < QString, QObject * > & modules)
+bool SlcPlugin::init(const QHash<QString, QObject *> &modules)
 {
-    connect(modules["resources"], SIGNAL(RegisteredResourceEvent(Event)),
+    connect(modules[QStringLiteral("resources")], SIGNAL(RegisteredResourceEvent(Event)),
             this, SLOT(registeredResourceEvent(Event)),
             Qt::QueuedConnection);
-    connect(modules["resources"], SIGNAL(RegisteredResourceMimeType(QString, QString)),
+    connect(modules[QStringLiteral("resources")], SIGNAL(RegisteredResourceMimeType(QString, QString)),
             this, SLOT(registeredResourceMimeType(QString, QString)),
             Qt::QueuedConnection);
-    connect(modules["resources"], SIGNAL(RegisteredResourceTitle(QString, QString)),
+    connect(modules[QStringLiteral("resources")], SIGNAL(RegisteredResourceTitle(QString, QString)),
             this, SLOT(registeredResourceTitle(QString, QString)),
             Qt::QueuedConnection);
 
     return true;
 }
 
-KAMD_EXPORT_PLUGIN(SlcPlugin, "activitymanger_plugin_slc")
+// KAMD_EXPORT_PLUGIN(SlcPlugin, "activitymanger_plugin_slc")

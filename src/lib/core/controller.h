@@ -20,13 +20,12 @@
 #define ACTIVITIES_CONTROLLER_H
 
 #include <QObject>
-#include <QWidget>
 #include <QString>
 #include <QStringList>
+#include <QFuture>
 
 #include "consumer.h"
 
-#include <kurl.h>
 #include "kactivities_export.h"
 
 namespace KActivities {
@@ -37,18 +36,22 @@ class ControllerPrivate;
  * This class provides methods for controlling and managing
  * the activities.
  *
+ * @note The QFuture objects returned by these methods are not thread-based,
+ * you can not call synchronous methods like waitForFinished, cancel, pause on
+ * them. You need either to register watchers to check when those have finished,
+ * or to check whether they are ready from time to time manually.
+ *
  * @see Consumer for info about activities
  *
- * @since 4.5
+ * @since 5.0
  */
-class KACTIVITIES_EXPORT Controller: public Consumer
-{
+class KACTIVITIES_EXPORT Controller : public Consumer {
     Q_OBJECT
 
     Q_PROPERTY(QString currentActivity READ currentActivity WRITE setCurrentActivity)
 
 public:
-    explicit Controller(QObject * parent = 0 /*nullptr*/);
+    explicit Controller(QObject *parent = Q_NULLPTR);
 
     ~Controller();
 
@@ -57,60 +60,51 @@ public:
      * @param id id of the activity
      * @param name name to be set
      */
-    void setActivityName(const QString & id, const QString & name);
+    QFuture<void> setActivityName(const QString &id, const QString &name);
 
     /**
      * Sets the icon of the specified activity
      * @param id id of the activity
      * @param icon icon to be set - freedesktop.org name or file path
      */
-    void setActivityIcon(const QString & id, const QString & icon);
-
-    /**
-     * Sets whether the activity should be encrypted
-     * @param id id of the activity
-     * @param encrypted should the activity be encrypted
-     */
-    KDE_DEPRECATED
-    void setActivityEncrypted(const QString & id, bool encrypted);
+    QFuture<void> setActivityIcon(const QString &id, const QString &icon);
 
     /**
      * Sets the current activity
      * @param id id of the activity to make current
      * @returns true if successful
      */
-    bool setCurrentActivity(const QString & id);
+    QFuture<bool> setCurrentActivity(const QString &id);
 
     /**
      * Adds a new activity
      * @param name name of the activity
      * @returns id of the newly created activity
      */
-    QString addActivity(const QString & name);
+    QFuture<QString> addActivity(const QString &name);
 
     /**
      * Removes the specified activity
      * @param id id of the activity to delete
      */
-    void removeActivity(const QString & id);
+    QFuture<void> removeActivity(const QString &id);
 
     /**
      * Stops the activity
      * @param id id of the activity to stop
      */
-    void stopActivity(const QString & id);
+    QFuture<void> stopActivity(const QString &id);
 
     /**
      * Starts the activity
      * @param id id of the activity to start
      */
-    void startActivity(const QString & id);
+    QFuture<void> startActivity(const QString &id);
 
 private:
-    ControllerPrivate * const d;
+    // const QScopedPointer<ControllerPrivate> d;
 };
 
 } // namespace KActivities
 
 #endif // ACTIVITIES_CONTROLLER_H
-

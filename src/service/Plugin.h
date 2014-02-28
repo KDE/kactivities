@@ -20,32 +20,36 @@
 #ifndef PLUGIN_H
 #define PLUGIN_H
 
-#include <kdemacros.h>
+#include <kactivities_export.h>
 
+// Qt
 #include <QObject>
 #include <QMetaObject>
 
-#include <KPluginFactory>
-#include <KConfigGroup>
+// KDE
+// #include <KPluginFactory>
+#include <kconfiggroup.h>
 
+// Utils
+#include <utils/d_ptr.h>
+
+// Local
 #include "Event.h"
 #include "Module.h"
 
-#include <utils/d_ptr.h>
 
 #define KAMD_EXPORT_PLUGIN(ClassName, AboutData)                       \
     K_PLUGIN_FACTORY(ClassName##Factory, registerPlugin<ClassName>();) \
-    K_EXPORT_PLUGIN(ClassName##Factory(AboutData))
-
+        K_EXPORT_PLUGIN(ClassName##Factory(AboutData))
 
 /**
  *
  */
-class KDE_EXPORT Plugin: public Module {
+class KACTIVITIES_EXPORT Plugin : public Module {
     Q_OBJECT
 
 public:
-    Plugin(QObject * parent);
+    Plugin(QObject *parent);
     virtual ~Plugin();
 
     /**
@@ -54,7 +58,7 @@ public:
      * @returns the plugin needs to return whether it has
      *      successfully been initialized
      */
-    virtual bool init(const QHash < QString, QObject * > & modules);
+    virtual bool init(const QHash<QString, QObject *> &modules) = 0;
 
     /**
      * Returns the config group for the plugin.
@@ -67,39 +71,39 @@ public:
      * Convenience meta-method to provide prettier invocation of QMetaObject::invokeMethod
      */
     template <typename ReturnType, Qt::ConnectionType connection>
-    static ReturnType callOn(QObject * object, const char * method, const char * returnTypeName)
+    inline static ReturnType callOn(QObject *object, const char *method,
+                                    const char *returnTypeName)
     {
         ReturnType result;
 
         QMetaObject::invokeMethod(
-                object, method, connection,
-                QReturnArgument < ReturnType > (returnTypeName, result)
-            );
+            object, method, connection,
+            QReturnArgument<ReturnType>(returnTypeName, result));
 
         return result;
     }
 
-    template <typename ReturnType, Qt::ConnectionType connection, typename... Args>
-    static ReturnType callOnWithArgs(QObject * object, const char * method, const char * returnTypeName, Args ... args)
+    template
+        <typename ReturnType, Qt::ConnectionType connection, typename... Args>
+    inline static ReturnType callOnWithArgs(QObject *object, const char *method,
+                                            const char *returnTypeName,
+                                            Args... args)
     {
         ReturnType result;
 
         QMetaObject::invokeMethod(
-                object, method, connection,
-                QReturnArgument < ReturnType > (returnTypeName, result),
-                args...
-            );
+            object, method, connection,
+            QReturnArgument<ReturnType>(returnTypeName, result),
+            args...);
 
         return result;
     }
 
 protected:
-    void setName(const QString & name);
+    void setName(const QString &name);
 
 private:
     D_PTR;
-
 };
 
 #endif // PLUGIN_H
-

@@ -25,12 +25,11 @@ class ActivityDataStaticInit {
 public:
     ActivityDataStaticInit()
     {
-        qDBusRegisterMetaType < ActivityData > ();
-        qDBusRegisterMetaType < QList < ActivityData > > ();
+        qDBusRegisterMetaType<ActivityData>();
+        qDBusRegisterMetaType<QList<ActivityData>>();
     }
 
     static ActivityDataStaticInit _instance;
-
 };
 
 ActivityDataStaticInit ActivityDataStaticInit::_instance;
@@ -39,23 +38,23 @@ ActivityData::ActivityData()
 {
 }
 
-ActivityData::ActivityData(const ActivityData & source)
-  : score(source.score),
-    id(source.id)
+ActivityData::ActivityData(const ActivityData &source)
+    : score(source.score)
+    , id(source.id)
 {
 }
 
-ActivityData & ActivityData::operator = (const ActivityData & source)
+ActivityData &ActivityData::operator=(const ActivityData &source)
 {
     if (&source != this) {
-        score       = source.score;
-        id          = source.id;
+        score = source.score;
+        id = source.id;
     }
 
     return *this;
 }
 
-QDBusArgument & operator << (QDBusArgument & arg, const ActivityData r)
+QDBusArgument &operator<<(QDBusArgument &arg, const ActivityData r)
 {
     arg.beginStructure();
 
@@ -67,7 +66,7 @@ QDBusArgument & operator << (QDBusArgument & arg, const ActivityData r)
     return arg;
 }
 
-const QDBusArgument & operator >> (const QDBusArgument & arg, ActivityData & r)
+const QDBusArgument &operator>>(const QDBusArgument &arg, ActivityData &r)
 {
     arg.beginStructure();
 
@@ -79,9 +78,8 @@ const QDBusArgument & operator >> (const QDBusArgument & arg, ActivityData & r)
     return arg;
 }
 
-QDebug operator << (QDebug dbg, const ActivityData & r)
+QDebug operator<<(QDebug dbg, const ActivityData &r)
 {
     dbg << "ActivityData(" << r.score << r.id << ")";
     return dbg.space();
 }
-

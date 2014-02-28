@@ -1,9 +1,13 @@
-macro_optional_add_subdirectory (slc)
-macro_optional_add_subdirectory (activityranking)
-macro_optional_add_subdirectory (sqlite)
-macro_optional_add_subdirectory (globalshortcuts)
-macro_optional_add_subdirectory (virtualdesktopswitch)
+# vim:set softtabstop=3 shiftwidth=3 tabstop=3 expandtab:
 
-if (NepomukCore_FOUND AND Soprano_FOUND)
-    macro_optional_add_subdirectory (nepomuk)
-endif ()
+add_subdirectory (slc)
+add_subdirectory (sqlite)
+add_subdirectory (activitytemplates)
+
+# add_subdirectory (globalshortcuts)
+# add_subdirectory (virtualdesktopswitch)
+# macro_optional_add_subdirectory (activityranking)
+
+# if (NepomukCore_FOUND AND Soprano_FOUND)
+#     macro_optional_add_subdirectory (nepomuk)
+# endif ()

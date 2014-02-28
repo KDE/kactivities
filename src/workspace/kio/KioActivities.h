@@ -27,75 +27,75 @@
 
 #include "lib/core/consumer.h"
 
-class ActivitiesProtocol: public KIO::ForwardingSlaveBase {
+class ActivitiesProtocol : public KIO::ForwardingSlaveBase {
     Q_OBJECT
 
 public:
-    ActivitiesProtocol(const QByteArray & poolSocket, const QByteArray & appSocket);
+    ActivitiesProtocol(const QByteArray &poolSocket, const QByteArray &appSocket);
     virtual ~ActivitiesProtocol();
 
     /**
      * List all files and folders tagged with the corresponding tag.
      */
-    void listDir(const KUrl & url);
+    void listDir(const KUrl &url);
 
     /**
      * Results in the creation of a new tag.
      */
-    void mkdir(const KUrl & url, int permissions);
+    void mkdir(const KUrl &url, int permissions);
 
     /**
      * Will be forwarded for files.
      */
-    void get(const KUrl & url);
+    void get(const KUrl &url);
 
     /**
      * Not supported.
      */
-    void put(const KUrl & url, int permissions, KIO::JobFlags flags);
+    void put(const KUrl &url, int permissions, KIO::JobFlags flags);
 
     /**
      * Files and folders can be copied to the virtual folders resulting
      * is assignment of the corresponding tag.
      */
-    void copy(const KUrl & src, const KUrl & dest, int permissions, KIO::JobFlags flags);
+    void copy(const KUrl &src, const KUrl &dest, int permissions, KIO::JobFlags flags);
 
     /**
      * File renaming will be forwarded.
      * Folder renaming results in renaming of the tag.
      */
-    void rename(const KUrl & src, const KUrl & dest, KIO::JobFlags flags);
+    void rename(const KUrl &src, const KUrl &dest, KIO::JobFlags flags);
 
     /**
      * File deletion means remocing the tag
      * Folder deletion will result in deletion of the tag.
      */
-    void del(const KUrl & url, bool isfile);
+    void del(const KUrl &url, bool isfile);
 
     /**
      * Files will be forwarded.
      * Folders will be created as virtual folders.
      */
-    void mimetype(const KUrl & url);
+    void mimetype(const KUrl &url);
 
     /**
      * Files will be forwarded.
      * Folders will be created as virtual folders.
      */
-    void stat(const KUrl & url);
+    void stat(const KUrl &url);
 
 protected:
     /**
      * reimplemented from ForwardingSlaveBase
      */
-    bool rewriteUrl(const KUrl & url, KUrl & newURL);
+    bool rewriteUrl(const KUrl &url, KUrl &newURL);
 
-    void prepareUDSEntry(KIO::UDSEntry & entry,
-                          bool listing = false) const;
+    void prepareUDSEntry(KIO::UDSEntry &entry,
+                         bool listing = false) const;
 
 private:
     class Private;
-    Private * const d;
+    Private *const d;
 };
 
 #endif // KIO_ACTIVITIES_H

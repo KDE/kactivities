@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2010, 2011, 2012 Ivan Cukic <ivan.cukic(at)kde.org>
+ *   Copyright (C) 2010, 2011, 2012, 2013, 2014 Ivan Cukic <ivan.cukic(at)kde.org>
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU Lesser General Public License version 2,
@@ -19,115 +19,132 @@
 
 #include "manager_p.h"
 
-#include <QDBusConnection>
-#include <QDebug>
+#include <mutex>
 
-#include <ktoolinvocation.h>
-#include <kdbusconnectionpool.h>
+#include <QCoreApplication>
+#include <QDBusConnection>
+
+#include "debug_p.h"
+#include "mainthreadexecutor_p.h"
 
 namespace KActivities {
 
-Manager * Manager::s_instance = 0 /*nullptr*/;
+Manager *Manager::s_instance = Q_NULLPTR;
 
-#define ACTIVITY_MANAGER_DBUS_PATH   "org.kde.ActivityManager"
-#define ACTIVITY_MANAGER_DBUS_OBJECT "/ActivityManager"
+#define ACTIVITY_MANAGER_DBUS_PATH \
+    QStringLiteral("org.kde.ActivityManager")
+#define ACTIVITY_MANAGER_DBUS_OBJECT(A) \
+    QStringLiteral("/ActivityManager" A)
 
 Manager::Manager()
-    : QObject(),
-      m_activities(
-          new org::kde::ActivityManager::Activities(
+    : QObject()
+    , m_watcher(
             ACTIVITY_MANAGER_DBUS_PATH,
-            ACTIVITY_MANAGER_DBUS_OBJECT "/Activities",
-            KDBusConnectionPool::threadConnection(),
-            this
-            )),
-      m_resources(
-          new org::kde::ActivityManager::Resources(
-            ACTIVITY_MANAGER_DBUS_PATH,
-            ACTIVITY_MANAGER_DBUS_OBJECT "/Resources",
-            KDBusConnectionPool::threadConnection(),
-            this
-            )),
-      m_resourcesLinking(
-          new org::kde::ActivityManager::ResourcesLinking(
-            ACTIVITY_MANAGER_DBUS_PATH,
-            ACTIVITY_MANAGER_DBUS_OBJECT "/Resources/Linking",
-            KDBusConnectionPool::threadConnection(),
-            this
-            )),
-      m_features(
-          new org::kde::ActivityManager::Features(
-            ACTIVITY_MANAGER_DBUS_PATH,
-            ACTIVITY_MANAGER_DBUS_OBJECT "/Features",
-            KDBusConnectionPool::threadConnection(),
-            this
-            ))
+            QDBusConnection::sessionBus()
+            )
+    , m_activities(
+            new org::kde::ActivityManager::Activities(
+                ACTIVITY_MANAGER_DBUS_PATH,
+                ACTIVITY_MANAGER_DBUS_OBJECT("/Activities"),
+                QDBusConnection::sessionBus(),
+                this)
+            )
+    , m_resources(
+            new org::kde::ActivityManager::Resources(
+                ACTIVITY_MANAGER_DBUS_PATH,
+                ACTIVITY_MANAGER_DBUS_OBJECT("/Resources"),
+                QDBusConnection::sessionBus(),
+                this)
+            )
+    , m_resourcesLinking(
+            new org::kde::ActivityManager::ResourcesLinking(
+                ACTIVITY_MANAGER_DBUS_PATH,
+                ACTIVITY_MANAGER_DBUS_OBJECT("/Resources/Linking"),
+                QDBusConnection::sessionBus(),
+                this)
+            )
+    , m_features(
+            new org::kde::ActivityManager::Features(
+                ACTIVITY_MANAGER_DBUS_PATH,
+                ACTIVITY_MANAGER_DBUS_OBJECT("/Features"),
+                QDBusConnection::sessionBus(),
+                this)
+            )
 {
-    connect(&m_watcher, SIGNAL(serviceOwnerChanged(const QString &, const QString &, const QString &)),
-            this, SLOT(serviceOwnerChanged(const QString &, const QString &, const QString &)));
+    connect(&m_watcher, &QDBusServiceWatcher::serviceOwnerChanged,
+            this, &Manager::serviceOwnerChanged);
 }
 
-Manager * Manager::self()
+Manager *Manager::self()
 {
+    static std::mutex singleton;
+    std::lock_guard<std::mutex> singleton_lock(singleton);
+
     if (!s_instance) {
-        // check if the activity manager is already running
-        if (!isServicePresent()) {
 
-            // not running, trying to launch it
-            QString error;
+        runInMainThread([] () {
+            // check if the activity manager is already running
+            if (!Manager::isServiceRunning()) {
 
-            int ret = KToolInvocation::startServiceByDesktopPath("kactivitymanagerd.desktop", QStringList(), &error);
-            if (ret > 0) {
-                qDebug() << "Activity: Couldn't start kactivitymanagerd: " << error << endl;
+                #if defined(QT_DEBUG)
+                QLoggingCategory::setFilterRules(QStringLiteral("org.kde.kactivities.lib.core.debug=true"));
+
+                qCDebug(KAMD_CORELIB) << "Should we start the daemon?";
+                if (!QCoreApplication::instance()
+                         ->property("org.kde.KActivities.core.disableAutostart")
+                         .toBool()) {
+                    qCDebug(KAMD_CORELIB) << "Starting the activity manager daemon";
+                    QProcess::startDetached(QStringLiteral("kactivitymanagerd"));
+                }
+
+                #else
+                QProcess::startDetached(QStringLiteral("kactivitymanagerd"));
+                #endif
             }
 
-            if (!KDBusConnectionPool::threadConnection().interface()->isServiceRegistered(ACTIVITY_MANAGER_DBUS_PATH)) {
-                qDebug() << "Activity: The kactivitymanagerd service is still not registered";
-            } else {
-                qDebug() << "Activity: The kactivitymanagerd service has been registered";
-            }
-        }
+            // creating a new instance of the class
+            Manager::s_instance = new Manager();
 
-        // creating a new instance of the class
-        s_instance = new Manager();
+        });
     }
 
     return s_instance;
 }
 
-bool Manager::isServicePresent()
+bool Manager::isServiceRunning()
 {
-    return KDBusConnectionPool::threadConnection().interface()->isServiceRegistered(ACTIVITY_MANAGER_DBUS_PATH);
+    return QDBusConnection::sessionBus().interface()->isServiceRegistered(ACTIVITY_MANAGER_DBUS_PATH);
 }
 
-void Manager::serviceOwnerChanged(const QString & serviceName, const QString & oldOwner, const QString & newOwner)
+void Manager::serviceOwnerChanged(const QString &serviceName, const QString &oldOwner, const QString &newOwner)
 {
     Q_UNUSED(oldOwner)
 
+    // qDebug() << "Service: " << serviceName;
+
     if (serviceName == ACTIVITY_MANAGER_DBUS_PATH) {
-        emit servicePresenceChanged(!newOwner.isEmpty());
+        emit serviceStatusChanged(!newOwner.isEmpty());
     }
 }
 
-Service::Activities * Manager::activities()
+Service::Activities *Manager::activities()
 {
     return self()->m_activities;
 }
 
-Service::Resources * Manager::resources()
+Service::Resources *Manager::resources()
 {
     return self()->m_resources;
 }
 
-Service::ResourcesLinking * Manager::resourcesLinking()
+Service::ResourcesLinking *Manager::resourcesLinking()
 {
     return self()->m_resourcesLinking;
 }
 
-Service::Features * Manager::features()
+Service::Features *Manager::features()
 {
     return self()->m_features;
 }
 
 } // namespace KActivities
-

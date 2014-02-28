@@ -20,8 +20,7 @@
 #ifndef UTILS_FOR_EACH_ASSOC_H
 #define UTILS_FOR_EACH_ASSOC_H
 
-#include <config-features.h>
-#include <utils/nullptr.h>
+#include <kactivities-features.h>
 
 /********************************************************************
  *  Associative container's for_each (for hash, map, and similar )  *
@@ -37,7 +36,8 @@ namespace details {
 template <typename Iterator, typename Function>
 Function qt_for_each_assoc(Iterator start, Iterator end, Function f)
 {
-    for ( ; start != end; ++ start ) f(start.key(), start.value());
+    for (; start != end; ++start)
+        f(start.key(), start.value());
 
     return f;
 }
@@ -45,7 +45,8 @@ Function qt_for_each_assoc(Iterator start, Iterator end, Function f)
 template <typename Iterator, typename Function>
 Function stl_for_each_assoc(Iterator start, Iterator end, Function f)
 {
-    for ( ; start != end; ++ start ) f(start->first, start->second);
+    for (; start != end; ++start)
+        f(start->first, start->second);
 
     return f;
 }
@@ -53,15 +54,16 @@ Function stl_for_each_assoc(Iterator start, Iterator end, Function f)
 // Container functions
 
 template <typename Container, typename Function>
-Function _for_each_assoc_helper_container(const Container & c, Function f,
-        decltype(&Container::constBegin) * )
+Function _for_each_assoc_helper_container(const Container &c, Function f,
+                                          decltype(&Container::constBegin) *)
 {
+    // STL will never have methods with camelCase :)
     return qt_for_each_assoc(c.constBegin(), c.constEnd(), f);
 }
 
-template <typename Container, typename Function>
-Function _for_each_assoc_helper_container(const Container & c, Function f,
-        decltype(&Container::cbegin) * )
+template <typename Container, typename Function, typename Default>
+Function _for_each_assoc_helper_container(const Container &c, Function f,
+                                          Default *)
 {
     return stl_for_each_assoc(c.cbegin(), c.cend(), f);
 }
@@ -69,10 +71,10 @@ Function _for_each_assoc_helper_container(const Container & c, Function f,
 } // namespace details
 
 template <typename Container, typename Function>
-Function for_each_assoc(const Container & c, Function f)
+Function for_each_assoc(const Container &c, Function f)
 {
     return details::_for_each_assoc_helper_container
-        <Container, Function>(c, f, nullptr);
+        <Container, Function>(c, f, Q_NULLPTR);
 }
 
 } // namespace utils

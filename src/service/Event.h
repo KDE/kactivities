@@ -20,30 +20,29 @@
 #ifndef EVENT_H
 #define EVENT_H
 
+// Qt
 #include <QString>
-#include <QWidget>
 #include <QDateTime>
 #include <QMetaType>
+
 
 /**
  *
  */
 class Event {
 public:
-
     enum Type {
-        Accessed = 0,    ///< resource was accessed, but we don't know for how long it will be open/used
+        Accessed = 0, ///< resource was accessed, but we don't know for how long it will be open/used
 
-        Opened = 1,      ///< resource was opened
-        Modified = 2,    ///< previously opened resource was modified
-        Closed = 3,      ///< previously opened resource was closed
+        Opened = 1, ///< resource was opened
+        Modified = 2, ///< previously opened resource was modified
+        Closed = 3, ///< previously opened resource was closed
 
-        FocussedIn = 4,  ///< resource get the keyboard focus
+        FocussedIn = 4, ///< resource get the keyboard focus
         FocussedOut = 5, ///< resource lost the focus
 
         LastEventType = 5,
         UserEventType = 32
-
     };
 
     // These events can't come outside of the activity manager daemon,
@@ -51,44 +50,28 @@ public:
     // to the daemon plugins
     enum UserType {
         UpdateScore = UserEventType + 1
-
-    };
-
-    // TODO: Remove
-    // Was introduced for better cooperation with Zeitgeist
-    // We don't use it
-    enum Reason {
-        User = 0,
-        Scheduled = 1,
-        Heuristic = 2,
-        System = 3,
-        World = 4,
-
-        LastEventReason = 4,
-        UserEventReason = 32
     };
 
     Event();
 
-    explicit Event(const QString & application, WId wid, const QString & uri,
-            int type = Accessed, int reason = User);
+    explicit Event(const QString &application, quintptr wid, const QString &uri,
+                   int type = Accessed);
 
     Event deriveWithType(Type type) const;
 
-    bool operator == (const Event & other) const;
+    bool operator==(const Event &other) const;
 
 public:
     QString application;
-    WId     wid;
+    quintptr wid;
     QString uri;
-    int     type;
-    int     reason;
+    int type;
     QDateTime timestamp;
 
     QString typeName() const;
 };
 
-QDebug operator << (QDebug dbg, const Event & e);
+QDebug operator<<(QDebug dbg, const Event &e);
 
 typedef QList<Event> EventList;
 
@@ -96,4 +79,3 @@ Q_DECLARE_METATYPE(Event)
 Q_DECLARE_METATYPE(EventList)
 
 #endif // EVENT_H
-

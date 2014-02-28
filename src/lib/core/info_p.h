@@ -23,26 +23,15 @@
 #include <QObject>
 
 #include "utils_p.h"
+#include "activitiescache_p.h"
 
 namespace KActivities {
 
-class InfoPrivateCommon: public QObject {
-    Q_OBJECT
-public:
-    static InfoPrivateCommon * self();
-
-    InfoPrivateCommon();
-    virtual ~InfoPrivateCommon();
-
-private:
-    static InfoPrivateCommon * s_instance;
-};
-
 class InfoPrivate {
 public:
-    InfoPrivate(Info * info, const QString & activity);
+    InfoPrivate(Info *info, const QString &activity);
 
-    void activityStateChanged(const QString &, int);
+    void activityStateChanged(const QString &, int) const;
 
     void added(const QString &) const;
     void removed(const QString &) const;
@@ -51,15 +40,10 @@ public:
     void infoChanged(const QString &) const;
     void nameChanged(const QString &, const QString &) const;
     void iconChanged(const QString &, const QString &) const;
-    void setServicePresent(bool present);
+    void setServiceStatus(Consumer::ServiceStatus status) const;
 
-    void initializeCachedData();
-
-    Info *q;
-    Info::State state;
-
-    KAMD_REMOTE_VALUE(QString, name);
-    KAMD_REMOTE_VALUE(QString, icon);
+    Info *const q;
+    QSharedPointer<ActivitiesCache> cache;
 
     const QString id;
 };

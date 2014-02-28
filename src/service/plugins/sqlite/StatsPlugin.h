@@ -18,62 +18,72 @@
 #ifndef PLUGINS_SQLITE_STATS_PLUGIN_H
 #define PLUGINS_SQLITE_STATS_PLUGIN_H
 
+// Qt
 #include <QObject>
-#include <QSet>
 
+// Boost
+#include <boost/container/flat_set.hpp>
+
+// Local
 #include <Plugin.h>
-#include "Rankings.h"
 
-#include <utils/nullptr.h>
-#include <utils/override.h>
 
 class QFileSystemWatcher;
 
-class StatsPlugin: public Plugin {
+class StatsPlugin : public Plugin {
     Q_OBJECT
     Q_CLASSINFO("D-Bus Interface", "org.kde.ActivityManager.Resources.Scoring")
+    Q_PLUGIN_METADATA(IID "org.kde.ActivityManager.plugins.sqlite")
 
 public:
-    explicit StatsPlugin(QObject *parent = nullptr, const QVariantList & args = QVariantList());
+    explicit StatsPlugin(QObject *parent = Q_NULLPTR,
+                         const QVariantList &args = QVariantList());
 
-    static StatsPlugin * self();
+    static StatsPlugin *self();
 
-    virtual bool init(const QHash < QString, QObject * > & modules) _override;
+    virtual bool init(const QHash<QString, QObject *> &modules) Q_DECL_OVERRIDE;
 
     QString currentActivity() const;
 
 Q_SIGNALS:
-    void resourceScoreUpdated(const QString & activity, const QString & client, const QString & resource, double score);
-    void recentStatsDeleted(const QString & activity, int count, const QString & what);
-    void earlierStatsDeleted(const QString & activity, int months);
+    void resourceScoreUpdated(const QString &activity, const QString &client,
+                              const QString &resource, double score);
+
+    void recentStatsDeleted(const QString &activity, int count,
+                            const QString &what);
+
+    void earlierStatsDeleted(const QString &activity, int months);
 
 public Q_SLOTS:
-    void deleteRecentStats(const QString & activity, int count, const QString & what);
-    void deleteEarlierStats(const QString & activity, int months);
+    void deleteRecentStats(const QString &activity, int count,
+                           const QString &what);
+
+    void deleteEarlierStats(const QString &activity, int months);
 
 private Q_SLOTS:
-    void addEvents(const EventList & events);
+    void addEvents(const EventList &events);
     void loadConfiguration();
 
 private:
+    inline bool acceptedEvent(const Event &event);
+
     enum WhatToRemember {
-        AllApplications      = 0,
+        AllApplications = 0,
         SpecificApplications = 1,
-        NoApplications       = 2
+        NoApplications = 2
     };
 
-    Rankings * m_rankings;
-    QObject * m_activities;
-    QObject * m_resources;
-    QFileSystemWatcher * m_configWatcher;
+    QObject *m_activities;
+    QObject *m_resources;
+    QFileSystemWatcher *m_configWatcher;
 
-    QSet <QString> m_apps;
+    boost::container::flat_set<QString> m_apps;
 
     bool m_blockedByDefault : 1;
     bool m_blockAll : 1;
     WhatToRemember m_whatToRemember : 2;
 
-    static StatsPlugin * s_instance;
+    static StatsPlugin *s_instance;
 };
 
 #endif // PLUGINS_SQLITE_STATS_PLUGIN_H

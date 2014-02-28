@@ -17,44 +17,47 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+// Self
 #include "ResourceScoreMaintainer.h"
 
+// Qt
 #include <QList>
 #include <QMutex>
 #include <QThread>
 
+// System
 #include <time.h>
 
+// Utils
+#include <utils/for_each_assoc.h>
+#include <utils/d_ptr_implementation.h>
+
+// Local
 #include "StatsPlugin.h"
 #include "ResourceScoreCache.h"
 
-#include <utils/for_each_assoc.h>
-#include <utils/d_ptr_implementation.h>
-#include <utils/val.h>
 
-class ResourceScoreMaintainer::Private: public QThread {
+class ResourceScoreMaintainer::Private : public QThread {
 public:
     typedef QString ApplicationName;
     typedef QString ActivityID;
-    typedef QList < QUrl > ResourceList;
+    typedef QList<QString> ResourceList;
 
-    typedef QMap < ApplicationName, ResourceList > Applications;
-    typedef QMap < ActivityID, Applications > ResourceTree;
+    typedef QHash<ApplicationName, ResourceList> Applications;
+    typedef QHash<ActivityID, Applications> ResourceTree;
 
-    ResourceTree openResources;
-    QMutex openResources_mutex;
+    ResourceTree scheduledResources;
+    QMutex scheduledResources_mutex;
 
     void run();
-    void processActivity(const ActivityID & activity, const Applications & applications);
-
-    static ResourceScoreMaintainer * s_instance;
-
+    void processActivity(const ActivityID &activity,
+                         const Applications &applications);
 };
-
-ResourceScoreMaintainer * ResourceScoreMaintainer::Private::s_instance = nullptr;
 
 void ResourceScoreMaintainer::Private::run()
 {
+    using namespace kamd::utils;
+
     forever {
         // initial delay before processing the resources
         sleep(5);
@@ -62,12 +65,11 @@ void ResourceScoreMaintainer::Private::run()
         ResourceTree resources;
 
         {
-            QMutexLocker lock(&openResources_mutex);
-            resources = openResources;
-            openResources.clear();
+            QMutexLocker lock(&scheduledResources_mutex);
+            std::swap(resources, scheduledResources);
         }
 
-        val & activity = StatsPlugin::self()->currentActivity();
+        const auto activity = StatsPlugin::self()->currentActivity();
 
         // Let us first process the events related to the current
         // activity so that the stats are available quicker
@@ -77,7 +79,7 @@ void ResourceScoreMaintainer::Private::run()
             resources.remove(activity);
         }
 
-        kamd::utils::for_each_assoc(resources,
+        for_each_assoc(resources,
             [this](const ActivityID & activity, const Applications & applications) {
                 processActivity(activity, applications);
             }
@@ -85,24 +87,26 @@ void ResourceScoreMaintainer::Private::run()
     }
 }
 
-void ResourceScoreMaintainer::Private::processActivity(const ActivityID & activity, const Applications & applications)
+void ResourceScoreMaintainer::Private::processActivity(const ActivityID
+                                                       &activity,
+                                                       const Applications
+                                                       &applications)
 {
-    kamd::utils::for_each_assoc(applications,
-        [activity](const ApplicationName & application, const ResourceList & resources) {
-            foreach (const QUrl & resource, resources) {
-                ResourceScoreCache(activity, application, resource).updateScore();
+    using namespace kamd::utils;
+
+    for_each_assoc(applications,
+        [&](const ApplicationName &application, const ResourceList &resources) {
+            for (const auto &resource : resources) {
+                ResourceScoreCache(activity, application, resource).update();
             }
         }
     );
 }
 
-ResourceScoreMaintainer * ResourceScoreMaintainer::self()
+ResourceScoreMaintainer *ResourceScoreMaintainer::self()
 {
-    if (!Private::s_instance) {
-        Private::s_instance = new ResourceScoreMaintainer();
-    }
-
-    return Private::s_instance;
+    static ResourceScoreMaintainer instance;
+    return &instance;
 }
 
 ResourceScoreMaintainer::ResourceScoreMaintainer()
@@ -114,27 +118,25 @@ ResourceScoreMaintainer::~ResourceScoreMaintainer()
 {
 }
 
-void ResourceScoreMaintainer::processResource(const KUrl & resource, const QString & application)
+void ResourceScoreMaintainer::processResource(const QString &resource,
+                                              const QString &application)
 {
-    QMutexLocker lock(&d->openResources_mutex);
+    QMutexLocker lock(&d->scheduledResources_mutex);
 
     // Checking whether the item is already scheduled for
     // processing
 
-    val & activity = StatsPlugin::self()->currentActivity();
+    const auto activity = StatsPlugin::self()->currentActivity();
 
-    if (d->openResources.contains(activity) &&
-            d->openResources[activity].contains(application) &&
-            d->openResources[activity][application].contains(resource)) {
+    if (d->scheduledResources.contains(activity)
+        && d->scheduledResources[activity].contains(application)
+        && d->scheduledResources[activity][application].contains(resource)) {
 
         // Nothing
 
     } else {
-        d->openResources[activity][application] << resource;
-
+        d->scheduledResources[activity][application] << resource;
     }
 
     d->start();
 }
-
-

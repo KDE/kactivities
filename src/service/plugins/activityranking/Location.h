@@ -28,16 +28,16 @@
 /**
  * Location
  */
-class Location: public QObject {
+class Location : public QObject {
     Q_OBJECT
 
 public:
-    static Location * self(QObject * parent);
+    static Location *self(QObject *parent);
 
     virtual ~Location();
 
- Q_SIGNALS:
-     void currentChanged(const QString &location);
+Q_SIGNALS:
+    void currentChanged(const QString &location);
 
 public:
     QString current() const;
@@ -45,14 +45,12 @@ public:
 protected Q_SLOTS:
     void enable();
     void disable();
-    void setCurrent(const QString & location);
+    void setCurrent(const QString &location);
 
 private:
-    Location(QObject * parent);
+    Location(QObject *parent);
 
     D_PTR;
 };
 
-
 #endif // PLUGINS_ACTIVITY_RANKING_LOCATION_H
-

@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2010, 2011, 2012 Ivan Cukic <ivan.cukic(at)kde.org>
+ *   Copyright (C) 2010, 2011, 2012, 2013, 2014 Ivan Cukic <ivan.cukic(at)kde.org>
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU Lesser General Public License version 2,
@@ -33,39 +33,41 @@ namespace Service = org::kde::ActivityManager;
 
 namespace KActivities {
 
-class Manager: public QObject {
+class Manager : public QObject {
     Q_OBJECT
 
 public:
-    static Manager * self();
+    static Manager *self();
 
-    static bool isServicePresent();
+    static bool isServiceRunning();
 
-    static Service::Activities       * activities();
-    static Service::Resources        * resources();
-    static Service::ResourcesLinking * resourcesLinking();
-    static Service::Features         * features();
+    static Service::Activities *activities();
+    static Service::Resources *resources();
+    static Service::ResourcesLinking *resourcesLinking();
+    static Service::Features *features();
 
 public Q_SLOTS:
-    void serviceOwnerChanged(const QString & serviceName, const QString & oldOwner, const QString & newOwner);
+    void serviceOwnerChanged(const QString &serviceName,
+                             const QString &oldOwner, const QString &newOwner);
 
 Q_SIGNALS:
-    void servicePresenceChanged(bool present);
+    void serviceStatusChanged(bool status);
 
 private:
     Manager();
 
     QDBusServiceWatcher m_watcher;
 
-    static Manager * s_instance;
+    static Manager *s_instance;
 
-    Service::Activities        * const m_activities;
-    Service::Resources         * const m_resources;
-    Service::ResourcesLinking  * const m_resourcesLinking;
-    Service::Features          * const m_features;
+    Service::Activities *const m_activities;
+    Service::Resources *const m_resources;
+    Service::ResourcesLinking *const m_resourcesLinking;
+    Service::Features *const m_features;
+
+    friend class ManagerInstantiator;
 };
 
 } // namespace KActivities
 
 #endif // ACTIVITIES_MANAGER_P
-
