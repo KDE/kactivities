@@ -139,8 +139,12 @@ struct ActivityModel::Private {
             emit model->dataChanged(
                 model->index(position->first),
                 model->index(position->first),
-                QVector<int> {role}
+                role == Qt::DecorationRole ?
+                    QVector<int> {role, ActivityModel::ActivityIcon} :
+                    QVector<int> {role}
             );
+
+
         }
     }
 };
@@ -174,10 +178,14 @@ ActivityModel::~ActivityModel()
 QHash<int, QByteArray> ActivityModel::roleNames() const
 {
     QHash<int, QByteArray> roles;
+
     roles[Qt::DisplayRole]    = "name";
     roles[Qt::DecorationRole] = "icon";
+
     roles[ActivityState]      = "state";
     roles[ActivityId]         = "id";
+    // roles[ActivityName]       = "name";
+    roles[ActivityIcon]       = "iconSource";
     roles[ActivityBackground] = "background";
     roles[ActivityCurrent]    = "current";
     return roles;
@@ -383,13 +391,21 @@ QVariant ActivityModel::data(const QModelIndex &index, int role) const
         return item->name();
 
     case Qt::DecorationRole:
-        return QIcon::fromTheme(item->icon());
+        return QIcon::fromTheme(data(index, ActivityIcon).toString());
 
     case ActivityId:
         return item->id();
 
     case ActivityState:
         return item->state();
+
+    case ActivityIcon:
+        {
+            const QString &icon = item->icon();
+
+            // We need a default icon for activities
+            return icon.isEmpty() ? "preferences-activities" : icon;
+        }
 
     case ActivityCurrent:
         return m_service.currentActivity() == item->id();

@@ -41,7 +41,8 @@
 #define KSMSERVER_SERVICE QStringLiteral("org.kde.ksmserver")
 
 KSMServer::Private::Private(KSMServer *parent)
-    : serviceWatcher(Q_NULLPTR)
+    : ksmServerFunctioning(false)
+    , serviceWatcher(Q_NULLPTR)
     , kwin(Q_NULLPTR)
     , ksmserver(Q_NULLPTR)
     , processing(false)
@@ -88,6 +89,7 @@ void KSMServer::Private::serviceOwnerChanged(const QString &service,
     Q_UNUSED(newOwner);
 
     if (service == KSMSERVER_SERVICE) {
+        qDebug() << "KSM owned by ksmserver";
 
         initializeInterface(
             ksmserver,
@@ -96,15 +98,20 @@ void KSMServer::Private::serviceOwnerChanged(const QString &service,
             QStringLiteral("org.kde.KSMServerInterface"),
             [this](QObject * service) {
                 service->setParent(this);
-                connect(service, SIGNAL(subSessionOpened()),
-                    this, SLOT(subSessionOpened()));
-                connect(service, SIGNAL(subSessionClosed()),
-                    this, SLOT(subSessionClosed()));
-                connect(service, SIGNAL(subSessionCloseCanceled()),
-                    this, SLOT(subSessionCloseCanceled()));
+
+                ksmServerFunctioning =
+                    connect(service, SIGNAL(subSessionOpened()),
+                        this, SLOT(subSessionOpened()))
+                &&
+                    connect(service, SIGNAL(subSessionClosed()),
+                        this, SLOT(subSessionClosed()))
+                &&
+                    connect(service, SIGNAL(subSessionCloseCanceled()),
+                        this, SLOT(subSessionCloseCanceled()));
             });
 
     } else if (service == KWIN_SERVICE) {
+        qDebug() << "KSM owned by kwin";
 
         initializeInterface(
             kwin,
@@ -113,6 +120,7 @@ void KSMServer::Private::serviceOwnerChanged(const QString &service,
             QStringLiteral("org.kde.KWin"),
             [this](QObject * service) {
                 service->setParent(this);
+                ksmServerFunctioning = true;
             });
     }
 }
@@ -129,11 +137,21 @@ KSMServer::~KSMServer()
 
 void KSMServer::startActivitySession(const QString &activity)
 {
+    if (!d->ksmServerFunctioning) {
+        emit activitySessionStateChanged(activity, Started);
+        return;
+    }
+
     d->processLater(activity, true);
 }
 
 void KSMServer::stopActivitySession(const QString &activity)
 {
+    if (!d->ksmServerFunctioning) {
+        emit activitySessionStateChanged(activity, Stopped);
+        return;
+    }
+
     d->processLater(activity, false);
 }
 

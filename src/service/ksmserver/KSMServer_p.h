@@ -38,6 +38,8 @@ public:
 
     void processLater(const QString &activity, bool start);
 
+    bool ksmServerFunctioning;
+
 private Q_SLOTS:
     void serviceOwnerChanged(const QString &service, const QString &oldOwner, const QString &newOwner);
 

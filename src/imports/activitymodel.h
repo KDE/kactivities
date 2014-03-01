@@ -62,9 +62,11 @@ public:
 
     enum Roles {
         ActivityId         = Qt::UserRole,
-        ActivityState      = Qt::UserRole + 1,
-        ActivityBackground = Qt::UserRole + 2,
-        ActivityCurrent    = Qt::UserRole + 3
+        // ActivityName       = Qt::UserRole + 1,
+        ActivityIcon       = Qt::UserRole + 2,
+        ActivityState      = Qt::UserRole + 3,
+        ActivityBackground = Qt::UserRole + 4,
+        ActivityCurrent    = Qt::UserRole + 5,
     };
 
     enum State {
