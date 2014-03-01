@@ -412,13 +412,8 @@ QVariant ActivityModel::data(const QModelIndex &index, int role) const
 
     case ActivityBackground:
         {
-            qDebug() << "GAGAGAGAGAG:" << _plasmaConfigContainments().groupList();
-            qDebug() << "Searching for activity: " << item->name() << " " << item->id();
-
             for (const auto &group: _plasmaConfigContainments().groupList()) {
                 auto containmentGroup = _plasmaConfigContainments().group(group);
-
-                qDebug() << "Found: " << containmentGroup.readEntry("activityId");
 
                 if (containmentGroup.readEntry("activityId", QString()) == item->id()) {
                     auto wallpaper = containmentGroup
@@ -431,7 +426,7 @@ QVariant ActivityModel::data(const QModelIndex &index, int role) const
                 }
             }
 
-            return "Gaga!";
+            return "";
         }
 
     default:
