@@ -412,21 +412,33 @@ QVariant ActivityModel::data(const QModelIndex &index, int role) const
 
     case ActivityBackground:
         {
+            QColor backgroundColor;
+
             for (const auto &group: _plasmaConfigContainments().groupList()) {
                 auto containmentGroup = _plasmaConfigContainments().group(group);
 
                 if (containmentGroup.readEntry("activityId", QString()) == item->id()) {
+                    // Trying for the wallpaper
                     auto wallpaper = containmentGroup
                         .group("Wallpaper")
                         .group("General")
                         .readEntry("Image", QString());
 
-                    if (!wallpaper.isEmpty())
+                    // Early bailout if we have found a wallpaper
+                    if (!wallpaper.isEmpty()) {
+                        qDebug() << item->name() << " we have a real wallpaper " << wallpaper;
                         return wallpaper;
+                    }
+
+                    backgroundColor = containmentGroup
+                        .group("Wallpaper")
+                        .group("General")
+                        .readEntry("Color", QColor(0, 0, 0));
                 }
             }
 
-            return "";
+            qDebug() << item->name() << "we have a color " << backgroundColor;
+            return backgroundColor.name();
         }
 
     default:
