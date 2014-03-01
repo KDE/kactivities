@@ -13,7 +13,6 @@ find_package (KF5CoreAddons ${KF5_VERSION} CONFIG REQUIRED)
 find_package (KF5I18n ${KF5_VERSION} CONFIG REQUIRED)
 find_package (KF5Service ${KF5_VERSION} CONFIG REQUIRED)
 find_package (KF5WindowSystem ${KF5_VERSION} CONFIG REQUIRED)
-find_package (KF5Auth ${KF5_VERSION} CONFIG REQUIRED)
 
 # Standard stuff
 
