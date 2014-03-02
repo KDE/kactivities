@@ -1,6 +1,14 @@
 [Desktop Entry]
 Encoding=UTF-8
 Name=Activities testing
+Name[ca]=Prova d'activitats
+Name[de]=Aktivitätentest
+Name[nl]=Bezig met testen van Activiteiten
+Name[pt]=Teste das actividades
+Name[pt_BR]=Teste de atividades
+Name[sk]=Testovanie aktivít
+Name[uk]=Тестування просторів дій
+Name[x-test]=xxActivities testingxx
 Icon=preferences-system-time
 Type=Service
 X-KDE-ParentApp=
