@@ -2,19 +2,23 @@
 Name=List activities test
 Name[ca]=Prova de llista d'activitats
 Name[de]=Aktivitätentest auflisten
+Name[ko]=활동 목록 테스트
 Name[nl]=Lijst met testen voor Activiteiten
 Name[pt]=Teste da listagem de actividades
 Name[pt_BR]=Teste da lista de atividades
 Name[sk]=Test zoznamu aktivít
+Name[sv]=Lista aktivitetstester
 Name[uk]=Тестування списку просторів дій
 Name[x-test]=xxList activities testxx
 Comment=Strange, but not a Clock
 Comment[ca]=És estrany, però no és cap rellotge
 Comment[de]=Seltsam, aber keine Uhr
+Comment[ko]=수상하지만 시계는 아님
 Comment[nl]=Vreemd, maar geen klok
 Comment[pt]=Estranho, Mas Não é um Relógio
 Comment[pt_BR]=Estranho, mas não é um relógio
 Comment[sk]=Zvláštne, ale nie hodiny
+Comment[sv]=Underlig, men inte en klocka
 Comment[uk]=Дивно, але не годинник
 Comment[x-test]=xxStrange, but not a Clockxx
 
