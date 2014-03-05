@@ -1,0 +1,7 @@
+org.kde.activities namespace doe not guarantee
+stable api.
+
+If you want to use components from it, make sure
+you follow the further developments closely.
+
+
