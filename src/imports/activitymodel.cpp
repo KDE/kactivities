@@ -35,10 +35,12 @@
 #include <klocalizedstring.h>
 #include <kconfig.h>
 #include <kconfiggroup.h>
+#include <kdirwatch.h>
 
 // Boost
 #include <boost/range/algorithm/find_if.hpp>
 #include <boost/range/algorithm/binary_search.hpp>
+#include <boost/range/adaptor/filtered.hpp>
 #include <boost/optional.hpp>
 
 // Local
@@ -49,7 +51,8 @@
 namespace KActivities {
 namespace Models {
 
-struct ActivityModel::Private {
+class ActivityModel::Private {
+public:
     DECLARE_RAII_MODEL_UPDATERS(ActivityModel)
 
     /**
@@ -123,17 +126,24 @@ struct ActivityModel::Private {
      */
     template <typename _Model, typename _Container>
     static inline
-    void emitActivityUpdated(_Model * model,
+    void emitActivityUpdated(_Model *model,
                              const _Container &container,
-                             QObject * activityInfo, int role)
+                             QObject *activityInfo, int role)
     {
         const auto activity = static_cast<Info*> (activityInfo);
+        emitActivityUpdated(model, container, activity->id(), role);
+    }
 
-        // qDebug() << "Activity updated: " << activity->id()
-        //          << "name: " << activity->name()
-        //          ;
-
-        auto position = Private::activityPosition(container, activity->id());
+    /**
+     * Notifies the model that an activity was updated
+     */
+    template <typename _Model, typename _Container>
+    static inline
+    void emitActivityUpdated(_Model *model,
+                             const _Container &container,
+                             const QString &activity, int role)
+    {
+        auto position = Private::activityPosition(container, activity);
 
         if (position) {
             emit model->dataChanged(
@@ -143,17 +153,119 @@ struct ActivityModel::Private {
                     QVector<int> {role, ActivityModel::ActivityIcon} :
                     QVector<int> {role}
             );
-
-
         }
     }
-};
 
-static
-KConfigGroup _plasmaConfigContainments() {
-    static KConfig config("plasma-org.kde.desktop-appletsrc");
-    return config.group("Containments");
-}
+    class BackgroundCache {
+    public:
+        BackgroundCache()
+            : initialized(false)
+            , plasmaConfig("plasma-org.kde.desktop-appletsrc")
+        {
+            using namespace std::placeholders;
+
+            const auto configFile = QStandardPaths::writableLocation(
+                                        QStandardPaths::GenericConfigLocation) +
+                                    QLatin1Char('/') + plasmaConfig.name();
+
+            KDirWatch::self()->addFile(configFile);
+
+            connect(KDirWatch::self(), &KDirWatch::dirty,   std::bind(&BackgroundCache::settingsFileChanged, this, _1));
+            connect(KDirWatch::self(), &KDirWatch::created, std::bind(&BackgroundCache::settingsFileChanged, this, _1));
+        }
+
+        void settingsFileChanged(const QString &file)
+        {
+            if (!file.endsWith(plasmaConfig.name())) return;
+
+            plasmaConfig.reparseConfiguration();
+
+            if (initialized) {
+                reload();
+            }
+        }
+
+        void subscribe(ActivityModel *model)
+        {
+            if (!initialized) {
+                reload();
+            }
+
+            models << model;
+        }
+
+        void unsubscribe(ActivityModel *model)
+        {
+            models.removeAll(model);
+
+            if (models.isEmpty()) {
+                initialized = false;
+                forActivity.clear();
+            }
+        }
+
+        void reload()
+        {
+            forActivity.clear();
+
+            for (const auto &groupName: plasmaConfigContainments().groupList()) {
+
+                auto config = plasmaConfigContainments().group(groupName);
+                auto activityId = config.readEntry("activityId", QString());
+
+                // Ignore if it has no assigned activity
+                if (activityId.isEmpty()) continue;
+
+                // Ignore if the activity already has a wallpaper
+                if (forActivity.contains(activityId) &&
+                    forActivity[activityId][0] != '#') continue;
+
+                // Trying for the wallpaper
+                auto wallpaper = config
+                    .group("Wallpaper")
+                    .group("General")
+                    .readEntry("Image", QString());
+
+                if (!wallpaper.isEmpty()) {
+                    forActivity[activityId] = wallpaper;
+
+                } else {
+                    auto backgroundColor = config
+                        .group("Wallpaper")
+                        .group("General")
+                        .readEntry("Color", QColor(0, 0, 0));
+
+                    forActivity[activityId] = backgroundColor.name();
+                }
+            }
+
+            initialized = true;
+
+            for (auto model: models) {
+                Private::model_reset m(model);
+            }
+        }
+
+        KConfigGroup plasmaConfigContainments() {
+            return plasmaConfig.group("Containments");
+        }
+
+        QHash<QString, QString> forActivity;
+        QList<ActivityModel*> models;
+
+        bool initialized;
+        KConfig plasmaConfig;
+
+    };
+
+    static BackgroundCache &backgrounds()
+    {
+        // If you convert this to a shared pointer,
+        // fix the connections to KDirWatcher
+        static BackgroundCache cache;
+        return cache;
+    }
+};
 
 
 ActivityModel::ActivityModel(QObject *parent)
@@ -169,10 +281,13 @@ ActivityModel::ActivityModel(QObject *parent)
             this,       SLOT(onActivityRemoved(QString)));
 
     setServiceStatus(m_service.serviceStatus());
+
+    Private::backgrounds().subscribe(this);
 }
 
 ActivityModel::~ActivityModel()
 {
+    Private::backgrounds().unsubscribe(this);
 }
 
 QHash<int, QByteArray> ActivityModel::roleNames() const
@@ -411,35 +526,7 @@ QVariant ActivityModel::data(const QModelIndex &index, int role) const
         return m_service.currentActivity() == item->id();
 
     case ActivityBackground:
-        {
-            QColor backgroundColor;
-
-            for (const auto &group: _plasmaConfigContainments().groupList()) {
-                auto containmentGroup = _plasmaConfigContainments().group(group);
-
-                if (containmentGroup.readEntry("activityId", QString()) == item->id()) {
-                    // Trying for the wallpaper
-                    auto wallpaper = containmentGroup
-                        .group("Wallpaper")
-                        .group("General")
-                        .readEntry("Image", QString());
-
-                    // Early bailout if we have found a wallpaper
-                    if (!wallpaper.isEmpty()) {
-                        qDebug() << item->name() << " we have a real wallpaper " << wallpaper;
-                        return wallpaper;
-                    }
-
-                    backgroundColor = containmentGroup
-                        .group("Wallpaper")
-                        .group("General")
-                        .readEntry("Color", QColor(0, 0, 0));
-                }
-            }
-
-            qDebug() << item->name() << "we have a color " << backgroundColor;
-            return backgroundColor.name();
-        }
+        return Private::backgrounds().forActivity[item->id()];
 
     default:
         return QVariant();
