@@ -54,9 +54,14 @@ public:
     ActivityModel(QObject *parent = 0);
     virtual ~ActivityModel();
 
-    int rowCount(const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE;
-    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const Q_DECL_OVERRIDE;
-    QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const Q_DECL_OVERRIDE;
+    int rowCount(const QModelIndex &parent = QModelIndex()) const
+        Q_DECL_OVERRIDE;
+
+    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const
+        Q_DECL_OVERRIDE;
+
+    QVariant headerData(int section, Qt::Orientation orientation,
+                        int role = Qt::DisplayRole) const Q_DECL_OVERRIDE;
 
     QHash<int, QByteArray> roleNames() const Q_DECL_OVERRIDE;
 
@@ -130,7 +135,7 @@ private:
         }
     };
 
-    boost::container::flat_set<InfoPtr, InfoPtrComparator> m_registeredActivities;
+    boost::container::flat_set<InfoPtr, InfoPtrComparator> m_knownActivities;
     boost::container::flat_set<Info*, InfoPtrComparator> m_shownActivities;
 
     Info *registerActivity(const QString &id);

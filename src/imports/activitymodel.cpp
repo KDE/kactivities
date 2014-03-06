@@ -210,9 +210,9 @@ public:
         {
             forActivity.clear();
 
-            for (const auto &groupName: plasmaConfigContainments().groupList()) {
+            for (const auto &cont: plasmaConfigContainments().groupList()) {
 
-                auto config = plasmaConfigContainments().group(groupName);
+                auto config = plasmaConfigContainments().group(cont);
                 auto activityId = config.readEntry("activityId", QString());
 
                 // Ignore if it has no assigned activity
@@ -318,12 +318,13 @@ void ActivityModel::setServiceStatus(Consumer::ServiceStatus)
 
 void ActivityModel::replaceActivities(const QStringList &activities)
 {
-    // qDebug() << m_shownStatesString << "New list of activities: " << activities;
+    // qDebug() << m_shownStatesString << "New list of activities: "
+    //          << activities;
     // qDebug() << m_shownStatesString << " -- RESET MODEL -- ";
 
     Private::model_reset m(this);
 
-    m_registeredActivities.clear();
+    m_knownActivities.clear();
     m_shownActivities.clear();
 
     for (const QString &activity: activities) {
@@ -335,7 +336,8 @@ void ActivityModel::onActivityAdded(const QString &id, bool notifyClients)
 {
     auto info = registerActivity(id);
 
-    // qDebug() << m_shownStatesString << "Added a new activity:" << info->id() << " " << info->name();
+    // qDebug() << m_shownStatesString << "Added a new activity:" << info->id()
+    //          << " " << info->name();
 
     showActivity(info, notifyClients);
 }
@@ -350,6 +352,8 @@ void ActivityModel::onActivityRemoved(const QString &id)
 
 void ActivityModel::onCurrentActivityChanged(const QString &id)
 {
+    Q_UNUSED(id)
+
     for (const auto activity: m_shownActivities) {
         Private::emitActivityUpdated(this, m_shownActivities, activity->id(),
                                      ActivityCurrent);
@@ -358,7 +362,7 @@ void ActivityModel::onCurrentActivityChanged(const QString &id)
 
 Info *ActivityModel::registerActivity(const QString &id)
 {
-    auto position = Private::activityPosition(m_registeredActivities, id);
+    auto position = Private::activityPosition(m_knownActivities, id);
 
     // qDebug() << m_shownStatesString << "Registering activity: " << id
     //          << " new? not " << (bool)position;
@@ -376,7 +380,7 @@ Info *ActivityModel::registerActivity(const QString &id)
         connect(activityInfo, &Info::stateChanged,
                 this,         &ActivityModel::onActivityStateChanged);
 
-        m_registeredActivities.insert(InfoPtr(activityInfo));
+        m_knownActivities.insert(InfoPtr(activityInfo));
 
         return activityInfo;
     }
@@ -386,10 +390,10 @@ void ActivityModel::unregisterActivity(const QString &id)
 {
     // qDebug() << m_shownStatesString << "Deregistering activity: " << id;
 
-    auto position = Private::activityPosition(m_registeredActivities, id);
+    auto position = Private::activityPosition(m_knownActivities, id);
 
     if (position) {
-        m_registeredActivities.erase(position->second);
+        m_knownActivities.erase(position->second);
     }
 }
 
@@ -399,9 +403,10 @@ void ActivityModel::showActivity(Info *activityInfo, bool notifyClients)
     if (!Private::matchingState(activityInfo, m_shownStates)) return;
 
     // Is it already shown?
-    if (boost::binary_search(m_shownActivities, activityInfo, InfoPtrComparator())) return;
+    if (boost::binary_search(m_shownActivities, activityInfo,
+                             InfoPtrComparator())) return;
 
-    // qDebug() << m_shownStatesString << "Setting activity visibility to true: "
+    // qDebug() << m_shownStatesString << "Setting activity visibility to true:"
     //     << activityInfo->id() << activityInfo->name();
 
     auto position = m_shownActivities.insert(activityInfo);
@@ -420,10 +425,12 @@ void ActivityModel::hideActivity(const QString &id)
 {
     auto position = Private::activityPosition(m_shownActivities, id);
 
-    // qDebug() << m_shownStatesString << "Setting activity visibility to false: " << id;
+    // qDebug() << m_shownStatesString
+    //          << "Setting activity visibility to false: " << id;
 
     if (position) {
-        // qDebug() << m_shownStatesString << " -- MODEL REMOVE -- " << position->first;
+        // qDebug() << m_shownStatesString << " -- MODEL REMOVE -- "
+        //          << position->first;
         Private::model_remove(this, QModelIndex(),
             position->first, position->first);
         m_shownActivities.erase(position->second);
