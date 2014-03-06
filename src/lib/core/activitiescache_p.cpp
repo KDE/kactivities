@@ -68,11 +68,20 @@ ActivitiesCache::ActivitiesCache()
 
     connect(activities, &Activities::ActivityStateChanged,
             this, &ActivitiesCache::updateActivityState);
+    connect(activities, &Activities::ActivityNameChanged,
+            this, &ActivitiesCache::setActivityName);
+    connect(activities, &Activities::ActivityIconChanged,
+            this, &ActivitiesCache::setActivityIcon);
+
     connect(activities, &Activities::CurrentActivityChanged,
             this, &ActivitiesCache::setCurrentActivity);
 
     connect(Manager::self(), &Manager::serviceStatusChanged,
             this, &ActivitiesCache::setServiceStatus);
+
+    // These are covered by ActivityStateChanged
+    // signal void org.kde.ActivityManager.Activities.ActivityStarted(QString activity)
+    // signal void org.kde.ActivityManager.Activities.ActivityStopped(QString activity)
 
     setServiceStatus(Manager::self()->isServiceRunning());
 }
@@ -214,6 +223,30 @@ void ActivitiesCache::setActivityInfo(const ActivityInfo &info)
     } else {
         *where = info;
         emit activityChanged(info.id);
+    }
+}
+
+void ActivitiesCache::setActivityName(const QString &id, const QString &name)
+{
+    auto where = std::lower_bound(
+        m_activities.begin(), m_activities.end(), ActivityInfo(id));
+
+    if (where != m_activities.end() && where->id == id) {
+        where->name = name;
+
+        emit activityNameChanged(id, name);
+    }
+}
+
+void ActivitiesCache::setActivityIcon(const QString &id, const QString &icon)
+{
+    auto where = std::lower_bound(
+        m_activities.begin(), m_activities.end(), ActivityInfo(id));
+
+    if (where != m_activities.end() && where->id == id) {
+        where->icon = icon;
+
+        emit activityIconChanged(id, icon);
     }
 }
 

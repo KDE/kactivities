@@ -49,7 +49,11 @@ IMPLEMENT_SIGNAL_HANDLER(infoChanged)
 
 #define IMPLEMENT_SIGNAL_HANDLER(INTERNAL)                                     \
     void InfoPrivate::INTERNAL(const QString &_id, const QString &val) const   \
-    { if (id == _id) emit q->INTERNAL(val); }
+    {                                                                          \
+        if (id == _id) {                                                       \
+            emit q->INTERNAL(val);                                             \
+        }                                                                      \
+    }
 
 IMPLEMENT_SIGNAL_HANDLER(nameChanged)
 IMPLEMENT_SIGNAL_HANDLER(iconChanged)
@@ -60,7 +64,14 @@ void InfoPrivate::activityStateChanged(const QString &idChanged,
                                        int newState) const
 {
     if (idChanged == id) {
-        emit q->stateChanged(static_cast<Info::State>(newState));
+        auto state = static_cast<Info::State>(newState);
+        emit q->stateChanged(state);
+
+        if (state == KActivities::Info::Stopped) {
+            emit q->stopped();
+        } else if (state == KActivities::Info::Running) {
+            emit q->started();
+        }
     }
 }
 
@@ -78,13 +89,16 @@ Info::Info(const QString &activity, QObject *parent)
     // PASS_SIGNAL_HANDLER(started)
     // PASS_SIGNAL_HANDLER(stopped)
     PASS_SIGNAL_HANDLER(activityChanged, infoChanged)
-    // PASS_SIGNAL_HANDLER(nameChanged)
-    // PASS_SIGNAL_HANDLER(iconChanged)
-
 #undef PASS_SIGNAL_HANDLER
 
-    connect(d->cache.data(), SIGNAL(activityStateChanged(QString, int)),
-            this,            SLOT(activityStateChanged(QString, int)));
+#define PASS_SIGNAL_HANDLER(SIGNAL_NAME, SLOT_NAME, TYPE)                      \
+    connect(d->cache.data(), SIGNAL(SIGNAL_NAME(QString, TYPE)),               \
+            this,            SLOT(SLOT_NAME(QString, TYPE)));                  \
+
+    PASS_SIGNAL_HANDLER(activityStateChanged, activityStateChanged, int);
+    PASS_SIGNAL_HANDLER(activityIconChanged, iconChanged, QString);
+    PASS_SIGNAL_HANDLER(activityNameChanged, nameChanged, QString);
+#undef PASS_SIGNAL_HANDLER
 
 }
 
