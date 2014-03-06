@@ -106,6 +106,7 @@ private Q_SLOTS:
     void replaceActivities(const QStringList &activities);
     void onActivityAdded(const QString &id, bool notifyClients = true);
     void onActivityRemoved(const QString &id);
+    void onCurrentActivityChanged(const QString &id);
 
     void setServiceStatus(KActivities::Consumer::ServiceStatus status);
 

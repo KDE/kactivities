@@ -170,8 +170,10 @@ public:
 
             KDirWatch::self()->addFile(configFile);
 
-            connect(KDirWatch::self(), &KDirWatch::dirty,   std::bind(&BackgroundCache::settingsFileChanged, this, _1));
-            connect(KDirWatch::self(), &KDirWatch::created, std::bind(&BackgroundCache::settingsFileChanged, this, _1));
+            connect(KDirWatch::self(), &KDirWatch::dirty,
+                    std::bind(&BackgroundCache::settingsFileChanged, this, _1));
+            connect(KDirWatch::self(), &KDirWatch::created,
+                    std::bind(&BackgroundCache::settingsFileChanged, this, _1));
         }
 
         void settingsFileChanged(const QString &file)
@@ -279,6 +281,8 @@ ActivityModel::ActivityModel(QObject *parent)
             this,       SLOT(onActivityAdded(QString)));
     connect(&m_service, SIGNAL(activityRemoved(QString)),
             this,       SLOT(onActivityRemoved(QString)));
+    connect(&m_service, SIGNAL(currentActivityChanged(QString)),
+            this,       SLOT(onCurrentActivityChanged(QString)));
 
     setServiceStatus(m_service.serviceStatus());
 
@@ -342,6 +346,14 @@ void ActivityModel::onActivityRemoved(const QString &id)
 
     hideActivity(id);
     unregisterActivity(id);
+}
+
+void ActivityModel::onCurrentActivityChanged(const QString &id)
+{
+    for (const auto activity: m_shownActivities) {
+        Private::emitActivityUpdated(this, m_shownActivities, activity->id(),
+                                     ActivityCurrent);
+    }
 }
 
 Info *ActivityModel::registerActivity(const QString &id)
