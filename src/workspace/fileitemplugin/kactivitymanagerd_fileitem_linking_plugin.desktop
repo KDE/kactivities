@@ -49,4 +49,4 @@ Name[zh_TW]=活動連結外掛程式
 Icon=preferences-activities
 X-KDE-Library=kactivitymanagerd_fileitem_linking_plugin
 ServiceTypes=KFileItemAction/Plugin
-MimeType=all/all;application/octet-stream;inode/directory;
+MimeType=application/octet-stream;inode/directory;
