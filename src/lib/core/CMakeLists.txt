@@ -86,9 +86,11 @@ set_target_properties (
 
 target_link_libraries (
    KF5Activities
-   Qt5::Core
-   Qt5::DBus
-   KF5::DBusAddons
+   PUBLIC
+      Qt5::Core
+   PRIVATE
+      Qt5::DBus
+      KF5::DBusAddons
    )
 
 target_include_directories(KF5Activities INTERFACE "$<INSTALL_INTERFACE:${INCLUDE_INSTALL_DIR}/KActivities>" )
