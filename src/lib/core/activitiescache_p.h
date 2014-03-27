@@ -20,7 +20,8 @@
 #ifndef ACTIVITIES_CACHE_P_H
 #define ACTIVITIES_CACHE_P_H
 
-#include <QSharedPointer>
+#include <memory>
+
 #include <QObject>
 
 #include <common/dbus/org.kde.ActivityManager.Activities.h>
@@ -34,7 +35,7 @@ class ActivitiesCache : public QObject {
     Q_OBJECT
 
 public:
-    static QSharedPointer<ActivitiesCache> self();
+    static std::shared_ptr<ActivitiesCache> self();
 
     ~ActivitiesCache();
 
@@ -90,7 +91,6 @@ public:
     }
 
     ActivitiesCache();
-    static QWeakPointer<ActivitiesCache> s_instance;
 
     QList<ActivityInfo> m_activities;
     QString m_currentActivity;

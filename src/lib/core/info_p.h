@@ -21,6 +21,7 @@
 
 #include "info.h"
 #include <QObject>
+#include <memory>
 
 #include "utils_p.h"
 #include "activitiescache_p.h"
@@ -43,7 +44,7 @@ public:
     void setServiceStatus(Consumer::ServiceStatus status) const;
 
     Info *const q;
-    QSharedPointer<ActivitiesCache> cache;
+    std::shared_ptr<ActivitiesCache> cache;
 
     const QString id;
 };

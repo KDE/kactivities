@@ -21,8 +21,9 @@
 #include "manager_p.h"
 
 #include <mutex>
+#include <memory>
 
-#include <QWeakPointer>
+#include <QString>
 
 #include "mainthreadexecutor_p.h"
 
@@ -30,31 +31,29 @@ namespace KActivities {
 
 static QString nulluuid = QStringLiteral("00000000-0000-0000-0000-000000000000");
 
-QWeakPointer<ActivitiesCache> ActivitiesCache::s_instance;
 
-QSharedPointer<ActivitiesCache> ActivitiesCache::self()
+std::shared_ptr<ActivitiesCache> ActivitiesCache::self()
 {
+    static std::weak_ptr<ActivitiesCache> s_instance;
     static std::mutex singleton;
     std::lock_guard<std::mutex> singleton_lock(singleton);
 
-    if (!s_instance) {
+    auto result = s_instance.lock();
 
-        QSharedPointer<ActivitiesCache> instance(Q_NULLPTR);
+    if (s_instance.expired()) {
+        runInMainThread([&result] {
+            result.reset(new ActivitiesCache());
+            s_instance = result;
+            });
+    }
 
-        runInMainThread([&instance] {
-            instance.reset(new ActivitiesCache());
-            s_instance = instance;
-        });
-
-        return instance;
-
-    } else return s_instance.toStrongRef();
+    return std::move(result);
 }
 
 ActivitiesCache::ActivitiesCache()
     : m_status(Consumer::NotRunning)
 {
-    // qDebug() << "Creating a new instance";
+    // qDebug() << "ActivitiesCache: Creating a new instance";
     using org::kde::ActivityManager::Activities;
 
     auto activities = Manager::self()->activities();
@@ -110,7 +109,7 @@ void ActivitiesCache::loadOfflineDefaults()
 
 ActivitiesCache::~ActivitiesCache()
 {
-    // qDebug() << "Destroying the instance";
+    // qDebug() << "ActivitiesCache: Destroying the instance";
 }
 
 void ActivitiesCache::removeActivity(const QString &id)

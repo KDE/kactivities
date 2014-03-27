@@ -40,21 +40,22 @@ Consumer::Consumer(QObject *parent)
 {
     qCDebug(KAMD_CORELIB) << "Creating a consumer";
 
-    connect(d->cache.data(), SIGNAL(currentActivityChanged(QString)),
+    connect(d->cache.get(), SIGNAL(currentActivityChanged(QString)),
             this, SIGNAL(currentActivityChanged(QString)));
-    connect(d->cache.data(), SIGNAL(activityAdded(QString)),
+    connect(d->cache.get(), SIGNAL(activityAdded(QString)),
             this, SIGNAL(activityAdded(QString)));
-    connect(d->cache.data(), SIGNAL(activityRemoved(QString)),
+    connect(d->cache.get(), SIGNAL(activityRemoved(QString)),
             this, SIGNAL(activityRemoved(QString)));
-    connect(d->cache.data(), SIGNAL(serviceStatusChanged(Consumer::ServiceStatus)),
+    connect(d->cache.get(), SIGNAL(serviceStatusChanged(Consumer::ServiceStatus)),
             this, SIGNAL(serviceStatusChanged(Consumer::ServiceStatus)));
 
-    connect(d->cache.data(), &ActivitiesCache::activityListChanged, [=]() { emit activitiesChanged(activities()); });
+    connect(d->cache.get(), &ActivitiesCache::activityListChanged,
+            this, [=]() { emit activitiesChanged(activities()); });
 
-    connect(d.data(), SIGNAL(serviceStatusChanged(Consumer::ServiceStatus)),
+    connect(d->cache.get(), SIGNAL(serviceStatusChanged(Consumer::ServiceStatus)),
             this, SIGNAL(serviceStatusChanged(Consumer::ServiceStatus)));
 
-    // connect(d->cache.data(), SIGNAL(activityStateChanged(QString,int)),
+    // connect(d->cache.get(), SIGNAL(activityStateChanged(QString,int)),
     //         this, SIGNAL(activityStateChanged(QString,int)));
 }
 
@@ -65,16 +66,16 @@ Consumer::~Consumer()
 
 QString Consumer::currentActivity() const
 {
-    return d->cache.data()->m_currentActivity;
+    return d->cache->m_currentActivity;
 }
 
 QStringList Consumer::activities(Info::State state) const
 {
     QStringList result;
 
-    result.reserve(d->cache.data()->m_activities.size());
+    result.reserve(d->cache->m_activities.size());
 
-    foreach (const auto & info, d->cache.data()->m_activities) {
+    foreach (const auto & info, d->cache->m_activities) {
         if (info.state == state)
             result << info.id;
     }
@@ -86,9 +87,9 @@ QStringList Consumer::activities() const
 {
     QStringList result;
 
-    result.reserve(d->cache.data()->m_activities.size());
+    result.reserve(d->cache->m_activities.size());
 
-    foreach (const auto & info, d->cache.data()->m_activities) {
+    foreach (const auto & info, d->cache->m_activities) {
         result << info.id;
     }
 
@@ -97,7 +98,7 @@ QStringList Consumer::activities() const
 
 Consumer::ServiceStatus Consumer::serviceStatus()
 {
-    return d->cache.data()->m_status;
+    return d->cache->m_status;
 }
 
 } // namespace KActivities

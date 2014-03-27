@@ -24,8 +24,6 @@
 
 #include <controller.h>
 
-#include <QScopedPointer>
-
 class QProcess;
 class QTemporaryDir;
 

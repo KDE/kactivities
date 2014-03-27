@@ -81,7 +81,7 @@ Info::Info(const QString &activity, QObject *parent)
     , d(new InfoPrivate(this, activity))
 {
 #define PASS_SIGNAL_HANDLER(SIGNAL_NAME, SLOT_NAME)                            \
-    connect(d->cache.data(), SIGNAL(SIGNAL_NAME(QString)),                     \
+    connect(d->cache.get(),  SIGNAL(SIGNAL_NAME(QString)),                     \
             this,            SLOT(SLOT_NAME(QString)));
 
     PASS_SIGNAL_HANDLER(activityAdded, added)
@@ -92,7 +92,7 @@ Info::Info(const QString &activity, QObject *parent)
 #undef PASS_SIGNAL_HANDLER
 
 #define PASS_SIGNAL_HANDLER(SIGNAL_NAME, SLOT_NAME, TYPE)                      \
-    connect(d->cache.data(), SIGNAL(SIGNAL_NAME(QString, TYPE)),               \
+    connect(d->cache.get(),  SIGNAL(SIGNAL_NAME(QString, TYPE)),               \
             this,            SLOT(SLOT_NAME(QString, TYPE)));                  \
 
     PASS_SIGNAL_HANDLER(activityStateChanged, activityStateChanged, int);
