@@ -26,6 +26,9 @@
 // Qt
 #include <QPair>
 
+// STD
+#include <memory>
+
 class QDBusServiceWatcher;
 class QDBusInterface;
 class QDBusPendingCallWatcher;
@@ -37,8 +40,6 @@ public:
     Private(KSMServer *parent);
 
     void processLater(const QString &activity, bool start);
-
-    bool ksmServerFunctioning;
 
 private Q_SLOTS:
     void serviceOwnerChanged(const QString &service, const QString &oldOwner, const QString &newOwner);
@@ -55,9 +56,8 @@ private Q_SLOTS:
     void subSessionSendEvent(int event);
 
 private:
-    QDBusServiceWatcher *serviceWatcher;
+    std::unique_ptr<QDBusServiceWatcher> serviceWatcher;
     QDBusInterface *kwin;
-    QDBusInterface *ksmserver;
 
     bool processing;
     QString processingActivity;

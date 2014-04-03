@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2012 Ivan Cukic <ivan.cukic(at)kde.org>
+ *   Copyright (C) 2012, 2013, 2014 Ivan Cukic <ivan.cukic(at)kde.org>
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License version 2,
@@ -38,90 +38,45 @@
 #include <Debug.h>
 
 #define KWIN_SERVICE QStringLiteral("org.kde.kwin")
-#define KSMSERVER_SERVICE QStringLiteral("org.kde.ksmserver")
 
 KSMServer::Private::Private(KSMServer *parent)
-    : ksmServerFunctioning(false)
-    , serviceWatcher(Q_NULLPTR)
+    : serviceWatcher(new QDBusServiceWatcher(this))
     , kwin(Q_NULLPTR)
-    , ksmserver(Q_NULLPTR)
     , processing(false)
     , q(parent)
 {
-    serviceWatcher = new QDBusServiceWatcher(this);
-
     serviceWatcher->setConnection(KDBusConnectionPool::threadConnection());
     serviceWatcher->addWatchedService(KWIN_SERVICE);
-    serviceWatcher->addWatchedService(KSMSERVER_SERVICE);
 
-    connect(serviceWatcher, SIGNAL(serviceOwnerChanged(QString, QString, QString)),
-            this, SLOT(serviceOwnerChanged(QString, QString, QString)));
+    connect(serviceWatcher.get(), &QDBusServiceWatcher::serviceOwnerChanged,
+            this, &Private::serviceOwnerChanged);
 
     serviceOwnerChanged(KWIN_SERVICE, QString(), QString());
-    serviceOwnerChanged(KSMSERVER_SERVICE, QString(), QString());
-}
-
-template <typename Func>
-static void initializeInterface(QDBusInterface *&service,
-                                const QString &servicePath, const QString &path, const QString &object, Func init)
-{
-    // Delete the old object, just in case
-    delete service;
-
-    // Creating the new dbus interface
-    service = new QDBusInterface(servicePath, path, object);
-
-    // If the service is valid, initialize it
-    // otherwise delete the object
-    if (service->isValid()) {
-        init(service);
-
-    } else {
-        delete service;
-        service = Q_NULLPTR;
-    }
 }
 
 void KSMServer::Private::serviceOwnerChanged(const QString &service,
-                                             const QString &oldOwner, const QString &newOwner)
+                                             const QString &oldOwner,
+                                             const QString &newOwner)
 {
     Q_UNUSED(oldOwner);
     Q_UNUSED(newOwner);
 
-    if (service == KSMSERVER_SERVICE) {
-        qDebug() << "KSM owned by ksmserver";
+    if (service == KWIN_SERVICE) {
+        // Delete the old object, just in case
+        delete kwin;
 
-        initializeInterface(
-            ksmserver,
-            KSMSERVER_SERVICE,
-            QStringLiteral("/KSMServer"),
-            QStringLiteral("org.kde.KSMServerInterface"),
-            [this](QObject * service) {
-                service->setParent(this);
+        // Creating the new dbus interface
+        kwin = new QDBusInterface(KWIN_SERVICE, QStringLiteral("/KWin"), QStringLiteral("org.kde.kwin"));
 
-                ksmServerFunctioning =
-                    connect(service, SIGNAL(subSessionOpened()),
-                        this, SLOT(subSessionOpened()))
-                &&
-                    connect(service, SIGNAL(subSessionClosed()),
-                        this, SLOT(subSessionClosed()))
-                &&
-                    connect(service, SIGNAL(subSessionCloseCanceled()),
-                        this, SLOT(subSessionCloseCanceled()));
-            });
+        // If the service is valid, initialize it
+        // otherwise delete the object
+        if (kwin->isValid()) {
+            kwin->setParent(this);
 
-    } else if (service == KWIN_SERVICE) {
-        qDebug() << "KSM owned by kwin";
-
-        initializeInterface(
-            kwin,
-            KWIN_SERVICE,
-            QStringLiteral("/KWin"),
-            QStringLiteral("org.kde.KWin"),
-            [this](QObject * service) {
-                service->setParent(this);
-                ksmServerFunctioning = true;
-            });
+        } else {
+            delete kwin;
+            kwin = Q_NULLPTR;
+        }
     }
 }
 
@@ -137,37 +92,34 @@ KSMServer::~KSMServer()
 
 void KSMServer::startActivitySession(const QString &activity)
 {
-    if (!d->ksmServerFunctioning) {
-        emit activitySessionStateChanged(activity, Started);
-        return;
-    }
-
     d->processLater(activity, true);
 }
 
 void KSMServer::stopActivitySession(const QString &activity)
 {
-    if (!d->ksmServerFunctioning) {
-        emit activitySessionStateChanged(activity, Stopped);
-        return;
-    }
-
     d->processLater(activity, false);
 }
 
 void KSMServer::Private::processLater(const QString &activity, bool start)
 {
-    for (const auto &item: queue) {
-        if (item.first == activity) {
-            return;
+    if (kwin) {
+        for (const auto &item: queue) {
+            if (item.first == activity) {
+                return;
+            }
         }
-    }
 
-    queue << qMakePair(activity, start);
+        queue << qMakePair(activity, start);
 
-    if (!processing) {
-        processing = true;
-        QMetaObject::invokeMethod(this, "process", Qt::QueuedConnection);
+        if (!processing) {
+            processing = true;
+            QMetaObject::invokeMethod(this, "process", Qt::QueuedConnection);
+        }
+    } else {
+        // We don't have kwin. No way to invoke the session stuff
+        emit q->activitySessionStateChanged(processingActivity,
+                                            start ? KSMServer::Started
+                                                  : KSMServer::Stopped);
     }
 }
 
