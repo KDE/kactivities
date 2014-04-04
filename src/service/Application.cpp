@@ -124,9 +124,6 @@ Application::Application(int &argc, char **argv)
         exit(0);
     }
 
-    KDBusConnectionPool::threadConnection().registerService(
-             QStringLiteral("org.kde.kactivitymanagerd"));
-
     // KAMD is a daemon, if it crashes it is not a problem as
     // long as it restarts properly
     // TODO:
