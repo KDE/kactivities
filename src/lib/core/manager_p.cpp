@@ -79,6 +79,7 @@ Manager * Manager::self()
             int ret = KToolInvocation::startServiceByDesktopPath("kactivitymanagerd.desktop", QStringList(), &error);
             if (ret > 0) {
                 qDebug() << "Activity: Couldn't start kactivitymanagerd: " << error << endl;
+                QProcess::startDetached("kactivitymanagerd");
             }
 
             if (!KDBusConnectionPool::threadConnection().interface()->isServiceRegistered(ACTIVITY_MANAGER_DBUS_PATH)) {
