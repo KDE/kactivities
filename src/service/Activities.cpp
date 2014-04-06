@@ -69,7 +69,7 @@ Activities::Private::ConfigurationChecker::ConfigurationChecker()
         } else {
             auto homeDir = QDir::home();
 
-            for (const auto testSubdir: { ".kde", ".kde5" }) {
+            for (const auto testSubdir: { ".kde", ".kde4" }) {
                 if (homeDir.exists(testSubdir)) {
                     qDebug() << "Using " << testSubdir << " as the location of the old config file";
                     whereToSearch = homeDir.filePath(testSubdir);
