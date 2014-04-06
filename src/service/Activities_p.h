@@ -62,6 +62,10 @@ public:
     QString currentActivity;
 
     // Configuration
+    class ConfigurationChecker {
+    public:
+        ConfigurationChecker();
+    } configChecker;
     QTimer configSyncTimer;
     KConfig config;
 

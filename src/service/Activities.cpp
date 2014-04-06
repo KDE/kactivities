@@ -23,9 +23,11 @@
 #include "Activities_p.h"
 
 // Qt
+#include <QtGlobal>
 #include <QDBusConnection>
 #include <QMetaObject>
 #include <QStandardPaths>
+#include <QFile>
 #include <QUuid>
 
 // KDE
@@ -44,11 +46,52 @@
 #include "common.h"
 #include "ksmserver/KSMServer.h"
 
-
 // Private
+#define ACTIVITY_MANAGER_CONFIG_FILE_NAME QStringLiteral("kactivitymanagerdrc")
+
+Activities::Private::ConfigurationChecker::ConfigurationChecker()
+{
+    // Checking whether we need to transfer the KActivities/KDE4
+    // configuration file to the new location.
+    const QString newConfigLocation
+        = QStandardPaths::writableLocation(QStandardPaths::ConfigLocation)
+          + "/" + ACTIVITY_MANAGER_CONFIG_FILE_NAME;
+
+    if (!QFile(newConfigLocation).exists()) {
+        // The configuration file does not exist, we need to find the
+        // one from KDE4
+        QString whereToSearch;
+
+        if (qEnvironmentVariableIsSet("KDEHOME")) {
+            qDebug() << "Using KDEHOME as the location of the old config file";
+            whereToSearch = QString::fromLocal8Bit(qgetenv("KDEHOME"));
+
+        } else {
+            auto homeDir = QDir::home();
+
+            for (const auto testSubdir: { ".kde", ".kde5" }) {
+                if (homeDir.exists(testSubdir)) {
+                    qDebug() << "Using " << testSubdir << " as the location of the old config file";
+                    whereToSearch = homeDir.filePath(testSubdir);
+                    break;
+                }
+            }
+        }
+
+        if (!whereToSearch.isNull()) {
+            QFile oldConfigFile(whereToSearch + "/share/config/activitymanagerrc");
+
+            if (oldConfigFile.exists()) {
+                qDebug() << "Found the old config file " << oldConfigFile.fileName();
+                oldConfigFile.copy(newConfigLocation);
+            }
+        }
+    }
+}
 
 Activities::Private::Private(Activities *parent)
-    : config(QStringLiteral("kactivitymanagerdrc"))
+    : configChecker()
+    , config(QStringLiteral("kactivitymanagerdrc"))
     , q(parent)
 {
     // qCDebug(KAMD_ACTIVITIES) << "Using this configuration file:"
