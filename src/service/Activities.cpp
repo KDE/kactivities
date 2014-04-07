@@ -482,7 +482,9 @@ void Activities::StopActivity(const QString &activity)
 {
     if (!d->activities.contains(activity)
             || d->activities[activity] == Stopped
-            || d->activities.size() == 1) {
+            || d->activities.size() == 1
+            || d->activities.keys(Activities::Running).size() <= 1
+            ) {
         return;
     }
 

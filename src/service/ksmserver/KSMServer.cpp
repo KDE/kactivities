@@ -25,6 +25,7 @@
 #include <QDBusConnection>
 #include <QDBusServiceWatcher>
 #include <QDBusInterface>
+#include <QDBusConnectionInterface>
 #include <QDBusPendingReply>
 #include <QDBusPendingCallWatcher>
 
@@ -64,18 +65,21 @@ void KSMServer::Private::serviceOwnerChanged(const QString &service,
     if (service == KWIN_SERVICE) {
         // Delete the old object, just in case
         delete kwin;
+        kwin = Q_NULLPTR;
 
-        // Creating the new dbus interface
-        kwin = new QDBusInterface(KWIN_SERVICE, QStringLiteral("/KWin"), QStringLiteral("org.kde.kwin"));
+        if (KDBusConnectionPool::threadConnection().interface()->isServiceRegistered(KWIN_SERVICE)) {
+            // Creating the new dbus interface
+            kwin = new QDBusInterface(KWIN_SERVICE, QStringLiteral("/KWin"), QStringLiteral("org.kde.kwin"));
 
-        // If the service is valid, initialize it
-        // otherwise delete the object
-        if (kwin->isValid()) {
-            kwin->setParent(this);
+            // If the service is valid, initialize it
+            // otherwise delete the object
+            if (kwin->isValid()) {
+                kwin->setParent(this);
 
-        } else {
-            delete kwin;
-            kwin = Q_NULLPTR;
+            } else {
+                delete kwin;
+                kwin = Q_NULLPTR;
+            }
         }
     }
 }
@@ -117,9 +121,8 @@ void KSMServer::Private::processLater(const QString &activity, bool start)
         }
     } else {
         // We don't have kwin. No way to invoke the session stuff
-        emit q->activitySessionStateChanged(processingActivity,
-                                            start ? KSMServer::Started
-                                                  : KSMServer::Stopped);
+        emit subSessionSendEvent(start ? KSMServer::Started
+                                       : KSMServer::Stopped);
     }
 }
 
@@ -166,7 +169,7 @@ void KSMServer::Private::startCallFinished(QDBusPendingCallWatcher *call)
     QDBusPendingReply<bool> reply = *call;
 
     if (reply.isError()) {
-        emit q->activitySessionStateChanged(processingActivity, KSMServer::Started);
+        emit subSessionSendEvent(KSMServer::Started);
 
     } else {
         // If we got false, it means something is going on with ksmserver
@@ -186,7 +189,7 @@ void KSMServer::Private::stopCallFinished(QDBusPendingCallWatcher *call)
     QDBusPendingReply<bool> reply = *call;
 
     if (reply.isError()) {
-        emit q->activitySessionStateChanged(processingActivity, KSMServer::Stopped);
+        subSessionSendEvent(KSMServer::Stopped);
 
     } else {
         // If we got false, it means something is going on with ksmserver
