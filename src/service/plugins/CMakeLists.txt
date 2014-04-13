@@ -7,7 +7,3 @@ add_subdirectory (activitytemplates)
 # add_subdirectory (globalshortcuts)
 # add_subdirectory (virtualdesktopswitch)
 # macro_optional_add_subdirectory (activityranking)
-
-# if (NepomukCore_FOUND AND Soprano_FOUND)
-#     macro_optional_add_subdirectory (nepomuk)
-# endif ()

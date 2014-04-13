@@ -55,7 +55,7 @@ Activities::Private::ConfigurationChecker::ConfigurationChecker()
     // configuration file to the new location.
     const QString newConfigLocation
         = QStandardPaths::writableLocation(QStandardPaths::ConfigLocation)
-          + "/" + ACTIVITY_MANAGER_CONFIG_FILE_NAME;
+          + '/' + ACTIVITY_MANAGER_CONFIG_FILE_NAME;
 
     if (!QFile(newConfigLocation).exists()) {
         // The configuration file does not exist, we need to find the
