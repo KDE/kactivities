@@ -1,6 +1,6 @@
 # vim:set softtabstop=3 shiftwidth=3 tabstop=3 expandtab:
 
-project (activitymanager-virtualdesktopswitch)
+project (kactivitymanagerd-virtualdesktopswitch)
 
 include_directories (
    ${CMAKE_SOURCE_DIR}/src
@@ -18,20 +18,20 @@ set (
    )
 
 add_library (
-   activitymanager_plugin_virtualdesktopswitch SHARED
+   kactivitymanagerd_plugin_virtualdesktopswitch SHARED
    ${virtualdesktopswitch_SRCS}
    )
 
 target_link_libraries (
-   activitymanager_plugin_virtualdesktopswitch
+   kactivitymanagerd_plugin_virtualdesktopswitch
    Qt5::Core
    )
 
 set_target_properties(
-   activitymanager_plugin_virtualdesktopswitch
+   kactivitymanagerd_plugin_virtualdesktopswitch
    PROPERTIES PREFIX ""
    )
 
-install (TARGETS activitymanager_plugin_virtualdesktopswitch DESTINATION ${KAMD_PLUGIN_DIR})
-# install (FILES activitymanager-plugin-virtualdesktopswitch.desktop DESTINATION ${SERVICES_INSTALL_DIR})
+install (TARGETS kactivitymanagerd_plugin_virtualdesktopswitch DESTINATION ${KAMD_PLUGIN_DIR})
+# install (FILES kactivitymanagerd-plugin-virtualdesktopswitch.desktop DESTINATION ${SERVICES_INSTALL_DIR})
 

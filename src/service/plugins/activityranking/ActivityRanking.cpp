@@ -356,7 +356,7 @@ void ActivityRanking::init(QObject *activities)
     new ActivityRankingAdaptor(this);
     KDBusConnectionPool::threadConnection().registerObject("/ActivityRanking", this);
 
-    const auto path = KStandardDirs::locateLocal("data", "activitymanager/activityranking/database", true);
+    const auto path = KStandardDirs::locateLocal("data", "kactivitymanagerd/activityranking/database", true);
 
     d->database = QSqlDatabase::addDatabase("QSQLITE", "plugins_activityranking_db");
     d->database.setDatabaseName(path);

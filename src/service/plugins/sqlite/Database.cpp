@@ -247,7 +247,7 @@ Database::Database()
 {
     const QString databaseDir
         = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation)
-          + QStringLiteral("/activitymanager/resources/");
+          + QStringLiteral("/kactivitymanagerd/resources/");
 
     QDir().mkpath(databaseDir);
 

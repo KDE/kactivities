@@ -51,10 +51,10 @@ Type=Service
 Icon=edit-copy
 
 X-KDE-ServiceTypes=ActivityManager/Plugin
-X-KDE-Library=activitymanager_plugin_activitytemplates
+X-KDE-Library=kactivitymanagerd_plugin_activitytemplates
 X-KDE-PluginInfo-Author=Ivan Čukić
 X-KDE-PluginInfo-Email=ivan.cukic@kde.org
-X-KDE-PluginInfo-Name=org.kde.kactivitymanager.activitytemplates
+X-KDE-PluginInfo-Name=org.kde.ActivityManager.ActivityTemplates
 X-KDE-PluginInfo-Version=1.0
 X-KDE-PluginInfo-Website=http://plasma.kde.org/
 X-KDE-PluginInfo-Category=

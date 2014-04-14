@@ -25,12 +25,12 @@ qt5_add_dbus_adaptor (
    )
 
 add_library (
-   activitymanager_plugin_slc SHARED
+   kactivitymanagerd_plugin_slc SHARED
    ${slc_SRCS}
    )
 
 target_link_libraries (
-   activitymanager_plugin_slc
+   kactivitymanagerd_plugin_slc
    Qt5::Core
    Qt5::DBus
    KF5::ConfigCore
@@ -38,10 +38,10 @@ target_link_libraries (
    )
 
 set_target_properties(
-   activitymanager_plugin_slc
+   kactivitymanagerd_plugin_slc
    PROPERTIES PREFIX ""
    )
 
-install (TARGETS activitymanager_plugin_slc DESTINATION ${KAMD_PLUGIN_DIR})
-# install (FILES activitymanager-plugin-slc.desktop DESTINATION ${SERVICES_INSTALL_DIR})
+install (TARGETS kactivitymanagerd_plugin_slc DESTINATION ${KAMD_PLUGIN_DIR})
+# install (FILES kactivitymanagerd-plugin-slc.desktop DESTINATION ${SERVICES_INSTALL_DIR})
 

@@ -69,7 +69,7 @@ void BlacklistedApplicationsModel::load()
 {
     // Loading plugin configuration
 
-    const auto config = d->pluginConfig->group("Plugin-org.kde.kactivitymanager.resourcescoring");
+    const auto config = d->pluginConfig->group("Plugin-org.kde.ActivityManager.ResourceScoring");
 
     const auto defaultBlockedValue = config.readEntry("blocked-by-default", false);
     auto blockedApplications = QSet<QString>::fromList(config.readEntry("blocked-applications", QStringList()));
@@ -77,7 +77,7 @@ void BlacklistedApplicationsModel::load()
 
     // Reading new applications from the database
 
-    const auto path = KStandardDirs::locateLocal("data", "activitymanager/resources/database", true);
+    const auto path = KStandardDirs::locateLocal("data", "kactivitymanagerd/resources/database", true);
 
     d->database = QSqlDatabase::addDatabase("QSQLITE", "plugins_sqlite_db_resources");
     d->database.setDatabaseName(path);
@@ -139,7 +139,7 @@ void BlacklistedApplicationsModel::load()
 
 void BlacklistedApplicationsModel::save()
 {
-    auto config = d->pluginConfig->group("Plugin-org.kde.kactivitymanager.resourcescoring");
+    auto config = d->pluginConfig->group("Plugin-org.kde.ActivityManager.ResourceScoring");
     QStringList blockedApplications;
     QStringList allowedApplications;
 

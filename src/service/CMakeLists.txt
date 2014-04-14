@@ -27,7 +27,7 @@ set (plugin_implementation_SRCS
 
 add_subdirectory (plugins)
 
-set (activity_manager_SRCS
+set (kactivitymanager_SRCS
    Application.cpp
    ${CMAKE_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.Activities.cpp
 
@@ -43,26 +43,26 @@ set (activity_manager_SRCS
    )
 
 qt5_add_dbus_adaptor (
-   activity_manager_SRCS
+   kactivitymanager_SRCS
    ../common/dbus/org.kde.ActivityManager.Activities.xml
    Activities.h Activities
    )
 
 qt5_add_dbus_adaptor (
-   activity_manager_SRCS
+   kactivitymanager_SRCS
    ../common/dbus/org.kde.ActivityManager.Resources.xml
    Resources.h Resources
    )
 
 qt5_add_dbus_adaptor (
-   activity_manager_SRCS
+   kactivitymanager_SRCS
    ../common/dbus/org.kde.ActivityManager.Features.xml
    Features.h Features
    )
 
-add_executable (activity-manager ${activity_manager_SRCS})
+add_executable (kactivitymanagerd ${kactivitymanager_SRCS})
 
-target_link_libraries (activity-manager
+target_link_libraries (kactivitymanagerd
    Qt5::Core
    Qt5::DBus
    Qt5::Widgets
@@ -74,10 +74,6 @@ target_link_libraries (activity-manager
    KF5::WindowSystem
    )
 
-set_target_properties (activity-manager
-   PROPERTIES OUTPUT_NAME kactivitymanagerd
-   )
-
 ########### install application ###############
 
 install (FILES
@@ -86,11 +82,11 @@ install (FILES
    )
 
 install (TARGETS
-   activity-manager ${INSTALL_TARGETS_DEFAULT_ARGS}
+   kactivitymanagerd ${INSTALL_TARGETS_DEFAULT_ARGS}
    )
 
 install (FILES
-   files/activitymanager-plugin.desktop
+   files/kactivitymanagerd-plugin.desktop
    DESTINATION ${SERVICETYPES_INSTALL_DIR}
    )
 

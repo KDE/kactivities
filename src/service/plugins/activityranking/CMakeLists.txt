@@ -30,15 +30,15 @@ qt4_add_dbus_interface (
    )
 
 add_library (
-   activitymanager_plugin_activityranking SHARED
+   kactivitymanagerd_plugin_activityranking SHARED
    ${activityranking_SRCS}
    )
 
 target_link_libraries (
-   activitymanager_plugin_activityranking
+   kactivitymanagerd_plugin_activityranking
    ${QT_QTSQL_LIBRARIES}
    )
 
-install (TARGETS activitymanager_plugin_activityranking DESTINATION ${KAMD_PLUGIN_DIR})
-# install (FILES activitymanager-plugin-activityranking.desktop DESTINATION ${SERVICES_INSTALL_DIR})
+install (TARGETS kactivitymanagerd_plugin_activityranking DESTINATION ${KAMD_PLUGIN_DIR})
+# install (FILES kactivitymanagerd-plugin-activityranking.desktop DESTINATION ${SERVICES_INSTALL_DIR})
 

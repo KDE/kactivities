@@ -90,4 +90,4 @@ void TemplatesPlugin::setValue(const QStringList &property,
 
 }
 
-// KAMD_EXPORT_PLUGIN(TemplatesPlugin, "activitymanager_plugin_activitytemplates")
+// KAMD_EXPORT_PLUGIN(TemplatesPlugin, "kactivitymanagerd_plugin_activitytemplates")

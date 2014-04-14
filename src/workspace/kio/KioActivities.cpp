@@ -384,7 +384,7 @@ bool ActivitiesProtocol::rewriteUrl(const KUrl &url, KUrl &newURL)
     }
 
     if (pathType == Private::PrivateActivityPathItem) {
-        static QDir activitiesDataFolder = QDir(KStandardDirs::locateLocal("data", "activitymanager/activities"));
+        static QDir activitiesDataFolder = QDir(KStandardDirs::locateLocal("data", "kactivitymanagerd/activities"));
 
         newURL = KUrl("file://" + activitiesDataFolder.filePath("crypt-" + d->activity + "/user/" + d->filename));
 

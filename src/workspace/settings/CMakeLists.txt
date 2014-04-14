@@ -45,5 +45,5 @@ install (FILES kcm_activities.desktop
 
 install (FILES
    qml/BlacklistApplicationView.qml
-   DESTINATION ${DATA_INSTALL_DIR}/activitymanager/workspace/settings
+   DESTINATION ${DATA_INSTALL_DIR}/kactivitymanagerd/workspace/settings
    )

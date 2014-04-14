@@ -1,6 +1,6 @@
 # vim:set softtabstop=3 shiftwidth=3 tabstop=3 expandtab:
 
-project (activitymanager-plugin-activitytemplates)
+project (kactivitymanagerd-plugin-activitytemplates)
 
 include_directories (
    ${CMAKE_SOURCE_DIR}/src
@@ -18,12 +18,12 @@ set (
    )
 
 add_library (
-   activitymanager_plugin_activitytemplates SHARED
+   kactivitymanagerd_plugin_activitytemplates SHARED
    ${activitytemplates_SRCS}
    )
 
 target_link_libraries (
-   activitymanager_plugin_activitytemplates
+   kactivitymanagerd_plugin_activitytemplates
    Qt5::Core
    Qt5::DBus
    KF5::ConfigCore
@@ -31,10 +31,10 @@ target_link_libraries (
    )
 
 set_target_properties(
-   activitymanager_plugin_activitytemplates
+   kactivitymanagerd_plugin_activitytemplates
    PROPERTIES PREFIX ""
    )
 
-install (TARGETS activitymanager_plugin_activitytemplates DESTINATION ${KAMD_PLUGIN_DIR})
-# install (FILES activitymanager-plugin-activitytemplates.desktop DESTINATION ${SERVICES_INSTALL_DIR})
+install (TARGETS kactivitymanagerd_plugin_activitytemplates DESTINATION ${KAMD_PLUGIN_DIR})
+# install (FILES kactivitymanagerd-plugin-activitytemplates.desktop DESTINATION ${SERVICES_INSTALL_DIR})
 

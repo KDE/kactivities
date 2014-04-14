@@ -18,20 +18,20 @@ set (
    )
 
 add_library (
-   activitymanager_plugin_globalshortcuts SHARED
+   kactivitymanagerd_plugin_globalshortcuts SHARED
    ${globalshortcuts_SRCS}
    )
 
 target_link_libraries (
-   activitymanager_plugin_globalshortcuts
+   kactivitymanagerd_plugin_globalshortcuts
    Qt5::Core
    )
 
 set_target_properties(
-   activitymanager_plugin_globalshortcuts
+   kactivitymanagerd_plugin_globalshortcuts
    PROPERTIES PREFIX ""
    )
 
-install (TARGETS activitymanager_plugin_globalshortcuts DESTINATION ${KAMD_PLUGIN_DIR})
-# install (FILES activitymanager-plugin-globalshortcuts.desktop DESTINATION ${SERVICES_INSTALL_DIR})
+install (TARGETS kactivitymanagerd_plugin_globalshortcuts DESTINATION ${KAMD_PLUGIN_DIR})
+# install (FILES kactivitymanagerd-plugin-globalshortcuts.desktop DESTINATION ${SERVICES_INSTALL_DIR})
 

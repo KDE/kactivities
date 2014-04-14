@@ -141,7 +141,7 @@ void Application::loadPlugins()
     // TODO: Properly load plugins when KF5::KService becomes more stable
 
     const QDir pluginsDir(QStringLiteral(KAMD_INSTALL_PREFIX "/" KAMD_PLUGIN_DIR));
-    const auto plugins = pluginsDir.entryList(QStringList{ QStringLiteral("activitymanager*.so") }, QDir::Files);
+    const auto plugins = pluginsDir.entryList(QStringList{ QStringLiteral("kactivitymanagerd*.so") }, QDir::Files);
     const auto config = KSharedConfig::openConfig(QStringLiteral("kactivitymanagerdrc"))->group("Plugins");
 
     const auto availablePlugins = plugins

@@ -7,30 +7,6 @@ set (KACTIVITIES_ONTOLOGIES_DIR ${CMAKE_INSTALL_PREFIX}/share/ontology/kde)
 option (KACTIVITIES_LIBRARY_ONLY "If true, compiles only the KActivities library, without the service and other modules." OFF)
 option (KACTIVITIES_ENABLE_EXCEPTIONS "If you have Boost 1.53, you need to build KActivities with exceptions enabled. This is UNTESTED and EXPERIMENTAL!" OFF)
 
-# TODO: Add support for Nepomuk when it comes to Qt5 world
-# # Checking for Nepomuk
-# macro_optional_find_package (NepomukCore)
-# macro_log_feature (
-#     NepomukCore_FOUND
-#     "Nepomuk Core" "Nepomuk Core" "https://projects.kde.org/nepomuk-core" FALSE ""
-#     "STRONGLY_RECOMMENDED: Nepomuk is needed for some activity-related info"
-#     )
-#
-# if (NepomukCore_FOUND)
-#     find_package (Soprano)
-#     macro_log_feature (
-#         Soprano_FOUND
-#         "Soprano" "Semantic Desktop Storing" "http://soprano.sourceforge.net" TRUE ""
-#         "Soprano is needed to build and use the Nepomuk related functionalities"
-#         )
-#
-#     include (SopranoAddOntology)
-# endif ()
-#
-# if (NepomukCore_FOUND AND Soprano_FOUND)
-#     set (HAVE_NEPOMUK 1)
-# endif ()
-
 # Boosting us a bit
 
 if (NOT KACTIVITIES_LIBRARY_ONLY)
@@ -78,8 +54,8 @@ add_subdirectory (lib)
 
 # Config file
 set (KAMD_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
-set (KAMD_DATA_DIR "${DATA_INSTALL_DIR}/activitymanager/")
-set (KAMD_PLUGIN_DIR "${PLUGIN_INSTALL_DIR}/activitymanager/")
+set (KAMD_DATA_DIR "${DATA_INSTALL_DIR}/kactivitymanagerd/")
+set (KAMD_PLUGIN_DIR "${PLUGIN_INSTALL_DIR}/kactivitymanagerd/")
 configure_file (kactivities-features.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/kactivities-features.h)
 
 include_directories(

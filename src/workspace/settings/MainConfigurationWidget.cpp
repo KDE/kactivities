@@ -202,7 +202,7 @@ void MainConfigurationWidget::load()
     d->pluginSelector->load();
     d->blacklistedApplicationsModel->load();
 
-    const auto statisticsConfig = d->pluginConfig->group("Plugin-org.kde.kactivitymanager.resourcescoring");
+    const auto statisticsConfig = d->pluginConfig->group("Plugin-org.kde.ActivityManager.ResourceScoring");
 
     const auto whatToRemember = (WhatToRemember)statisticsConfig.readEntry("what-to-remember", (int)AllApplications);
     d->radioRememberAllApplications->setChecked(whatToRemember == AllApplications);
@@ -218,7 +218,7 @@ void MainConfigurationWidget::save()
     d->pluginSelector->save();
     d->blacklistedApplicationsModel->save();
 
-    auto statisticsConfig = d->pluginConfig->group("Plugin-org.kde.kactivitymanager.resourcescoring");
+    auto statisticsConfig = d->pluginConfig->group("Plugin-org.kde.ActivityManager.ResourceScoring");
 
     WhatToRemember whatToRemember = AllApplications;
 
@@ -234,7 +234,7 @@ void MainConfigurationWidget::save()
 
     auto pluginListConfig = d->mainConfig->group("Plugins");
 
-    pluginListConfig.writeEntry("org.kde.kactivitymanager.resourcescoringEnabled",
+    pluginListConfig.writeEntry("org.kde.ActivityManager.ResourceScoringEnabled",
                                 whatToRemember != NoApplications);
 
     statisticsConfig.sync();
