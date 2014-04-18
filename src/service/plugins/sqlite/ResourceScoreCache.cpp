@@ -112,7 +112,7 @@ ResourceScoreCache::~ResourceScoreCache()
 void ResourceScoreCache::update()
 {
     QDateTime lastUpdate;
-    qreal score;
+    qreal score = 0;
 
     auto results = Database::self()->exec(
         // This can fail if we have the cache already made
