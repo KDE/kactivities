@@ -52,6 +52,7 @@ ecm_setup_version(${KF5_VERSION}
                   PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/KF5ActivitiesConfigVersion.cmake"
                   SOVERSION 5)
 
+add_definitions(-DTRANSLATION_DOMAIN=\"kactivities5\")
 add_subdirectory (src)
 add_subdirectory (autotests)
 add_subdirectory (tests)
