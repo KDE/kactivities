@@ -1,6 +1,22 @@
 [Desktop Entry]
 Name=Global Shortcuts
+Name[es]=Accesos rápidos de teclado globales
+Name[fi]=Työpöydänlaajuiset pikanäppäimet
+Name[fr]=Raccourcis globaux
+Name[nl]=Globale sneltoetsen
+Name[pt]=Atalhos Globais
+Name[sv]=Globala genvägar
+Name[uk]=Загальні клавіатурні скорочення
+Name[x-test]=xxGlobal Shortcutsxx
 Comment=Adds global keyboard shortcuts for activity switching
+Comment[es]=Añade accesos rápidos de teclado globales para el cambio de actividad
+Comment[fi]=Lisää työpöydänlaajuiset pikanäppäimet aktiviteettien vaihtamiseen
+Comment[fr]=Ajoute des raccourcis clavier globaux pour le changement d'activités
+Comment[nl]=Voegt globale sneltoetsen toe aan omschakelen van activiteit
+Comment[pt]=Adiciona atalhos globais do teclado para a mudança de actividades
+Comment[sv]=Lägger till globala snabbtangenter för aktivitetsbyte
+Comment[uk]=Додає загальні клавіатурні скорочення для перемикання просторів дій
+Comment[x-test]=xxAdds global keyboard shortcuts for activity switchingxx
 Type=Service
 Icon=configure-shortcuts
 

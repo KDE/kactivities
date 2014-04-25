@@ -1,6 +1,22 @@
 [Desktop Entry]
 Name=Activity ranking
+Name[es]=Puntuación de las actividades
+Name[fi]=Aktiviteettien luokittaminen
+Name[fr]=Classement d'activités
+Name[nl]=Activiteitenwaardering
+Name[pt]=Classificação da actividade
+Name[sv]=Aktivitetsrankning
+Name[uk]=Оцінювання просторів дій
+Name[x-test]=xxActivity rankingxx
 Comment=Plugin to rank activities based on usage
+Comment[es]=Complemento para puntuar actividades basado en su uso
+Comment[fi]=Liitännäinen aktiviteettien luokittamiseen käytön mukaan
+Comment[fr]=Module externe pour classer les activités en fonction de leur utilisation
+Comment[nl]=Plug-in om activiteiten te waarderen gebaseerd op gebruik
+Comment[pt]='Plugin' de classificação das actividades com base na utilização
+Comment[sv]=Insticksprogram för rankning av aktiviteter baserat på användning
+Comment[uk]=Додаток для оцінювання просторів дій на основі даних щодо використання
+Comment[x-test]=xxPlugin to rank activities based on usagexx
 Type=Service
 Icon=flag
 

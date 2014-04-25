@@ -1,6 +1,22 @@
 [Desktop Entry]
 Name=Activity Templates
+Name[es]=Plantillas de actividades
+Name[fi]=Aktiviteettimallit
+Name[fr]=Modèles d'activité
+Name[nl]=Sjablonen voor activiteit
+Name[pt]=Modelos de Actividades
+Name[sv]=Aktivitetsmallar
+Name[uk]=Шаблони просторів дій
+Name[x-test]=xxActivity Templatesxx
 Comment=Support for creating templated activities
+Comment[es]=Creación de plantillas de actividades
+Comment[fi]=Tuki aktiviteettimallien tekemiseen
+Comment[fr]=Prise en charge de la création d'activités par modèles
+Comment[nl]=Ondersteuning voor aanmaken van activiteiten volgens sjablonen
+Comment[pt]=Suporte para criar actividades em modelos
+Comment[sv]=Stöd för att skapa aktivitetsmallar
+Comment[uk]=Підтримка створення шаблонних просторів дій
+Comment[x-test]=xxSupport for creating templated activitiesxx
 Type=Service
 Icon=edit-copy
 

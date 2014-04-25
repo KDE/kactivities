@@ -2,6 +2,14 @@
 Encoding=UTF-8
 Type=Service
 Name=File to activity linking plugin
+Name[es]=Complemento para enlazar archivos a actividades
+Name[fi]=Tiedostojen yhdistäminen aktiviteettiin
+Name[fr]=Module externe de liaison entre fichiers et activités
+Name[nl]=Plug-in voor koppelen van bestand aan activiteit
+Name[pt]='Plugin' de ligação de ficheiros a actividades
+Name[sv]=Länkinsticksprogram från fil till aktivitet
+Name[uk]=Додаток прив’язування файлів до просторів дій
+Name[x-test]=xxFile to activity linking pluginxx
 Icon=preferences-activities
 X-KDE-Library=kactivitymanagerd_fileitem_linking_plugin
 ServiceTypes=KFileItemAction/Plugin

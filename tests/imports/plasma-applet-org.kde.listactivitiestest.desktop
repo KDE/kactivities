@@ -1,6 +1,22 @@
 [Desktop Entry]
 Name=List activities test
+Name[es]=Prueba de listado de actividades
+Name[fi]=Aktiviteettien listaamistesti
+Name[fr]=Test de la liste d'activités
+Name[nl]=Lijst maken van activiteitentest
+Name[pt]=Teste da listagem de actividades
+Name[sv]=Lista aktivitetstester
+Name[uk]=Тестування списку просторів дій
+Name[x-test]=xxList activities testxx
 Comment=Strange, but not a Clock
+Comment[es]=Es extraño, pero no es un reloj
+Comment[fi]=Outo, mutta ei kello
+Comment[fr]=Étranges, mais ceci n'est pas une horloge
+Comment[nl]=Vreemd, maar geen klok
+Comment[pt]=Estranho, Mas Não é um Relógio
+Comment[sv]=Underlig, men inte en klocka
+Comment[uk]=Дивно, але не годинник
+Comment[x-test]=xxStrange, but not a Clockxx
 
 Icon=preferences-system-time
 Type=Service
