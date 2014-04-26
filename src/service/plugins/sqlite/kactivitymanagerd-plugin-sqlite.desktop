@@ -1,19 +1,23 @@
 [Desktop Entry]
 Name=Sqlite Feeder
+Name[ca]=Alimentador del Sqlite
 Name[es]=Aprovisionamiento de Sqlite
 Name[fi]=Sqlite-syötteistin
 Name[fr]=Connecteur pour Sqlite
 Name[nl]=Sqlite-feeder
 Name[pt]=Fontes do SQLite
+Name[sk]=Podávač Sqlite
 Name[sv]=SQLite-inmatning
 Name[uk]=Передавання даних Sqlite
 Name[x-test]=xxSqlite Feederxx
 Comment=Plugin to store and score events in Sqlite
+Comment[ca]=Connector per emmagatzemar i classificar esdeveniments en el Sqlite
 Comment[es]=Complemento para guardar y puntuar eventos en Sqlite
 Comment[fi]=Liitännäinen tapahtumien tallentamiseen ja arvostelemiseen Sqlitessa
 Comment[fr]=Module externe de mémorisation et de classement des évènements dans Sqlite
 Comment[nl]=Plug-in om gebeurtenissen in Sqlite op te slaan en van een score te voorzien
 Comment[pt]='Plugin' para guardar e classificar os eventos no SQLite
+Comment[sk]=Plugin na uloženie a bodovanie udalosti v Sqlite
 Comment[sv]=Insticksprogram för att lagra och betygsätta händelser i SQLite
 Comment[uk]=Додаток для зберігання і оцінки подій у Sqlite
 Comment[x-test]=xxPlugin to store and score events in Sqlitexx

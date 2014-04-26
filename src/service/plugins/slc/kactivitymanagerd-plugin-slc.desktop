@@ -1,19 +1,23 @@
 [Desktop Entry]
 Name=Share-Like-Connect
+Name[ca]=«Share-Like-Connect»
 Name[es]=Compartir-Me gusta-Conectar
 Name[fi]=Share-Like-Connect
 Name[fr]=Share-Like-Connect
 Name[nl]='Share-Like-Connect'
 Name[pt]=Share-Like-Connect
+Name[sk]=Share-Like-Connect
 Name[sv]=Share-Like-Connect
 Name[uk]=Оприлюднти-Уподобати-З’єднати
 Name[x-test]=xxShare-Like-Connectxx
 Comment=Provides data to Share-Like-Connect applet
+Comment[ca]=Proporciona dades a la miniaplicació «Share-Like-Connect»
 Comment[es]=Proporciona datos a la miniaplicación Compartir-Me gusta-Conectar
 Comment[fi]=Tarjoaa tietoa Share-Like-Connect-sovelmalle
 Comment[fr]=Fournit des données à l'applet « Share-Like-Connect »
 Comment[nl]=Levert gegevens aan het applet Share-Like-Connect
 Comment[pt]=Fornece os dados à 'applet' do Share-Like-Connect
+Comment[sk]=Poskytuje dáta pre applet Share-Like-Connect
 Comment[sv]=Tillhandahåller data för Share-Like-Connect miniprogram
 Comment[uk]=Надає дані аплетові Оприлюднити-Уподобати-З’єднати
 Comment[x-test]=xxProvides data to Share-Like-Connect appletxx

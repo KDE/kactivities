@@ -1,11 +1,14 @@
 [Desktop Entry]
 Encoding=UTF-8
 Name=Activities testing
+Name[ca]=Prova d'activitats
+Name[cs]=Testování aktivit
 Name[es]=Prueba de actividades
 Name[fi]=Aktiviteettitesti
 Name[fr]=Test des activités
 Name[nl]=Testen van activiteiten
 Name[pt]=Teste das actividades
+Name[sk]=Testovanie aktivít
 Name[sv]=Aktivitetstestning
 Name[uk]=Тестування просторів дій
 Name[x-test]=xxActivities testingxx
