@@ -71,7 +71,7 @@ set(CMAKECONFIG_INSTALL_DIR "${CMAKECONFIG_INSTALL_PREFIX}/KF5Activities")
 ecm_configure_package_config_file("${CMAKE_CURRENT_SOURCE_DIR}/KF5ActivitiesConfig.cmake.in"
    "${CMAKE_CURRENT_BINARY_DIR}/KF5ActivitiesConfig.cmake"
                               INSTALL_DESTINATION  ${CMAKECONFIG_INSTALL_DIR}
-                              PATH_VARS  INCLUDE_INSTALL_DIR CMAKE_INSTALL_PREFIX )
+                              PATH_VARS  KF5_INCLUDE_INSTALL_DIR CMAKE_INSTALL_PREFIX )
 
                            install(FILES  "${CMAKE_CURRENT_BINARY_DIR}/KF5ActivitiesConfig.cmake"
                               "${CMAKE_CURRENT_BINARY_DIR}/KF5ActivitiesConfigVersion.cmake"
@@ -79,7 +79,7 @@ ecm_configure_package_config_file("${CMAKE_CURRENT_SOURCE_DIR}/KF5ActivitiesConf
         COMPONENT Devel )
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/kactivities_version.h
-        DESTINATION ${INCLUDE_INSTALL_DIR} COMPONENT Devel )
+        DESTINATION ${KF5_INCLUDE_INSTALL_DIR} COMPONENT Devel )
 
 # Write out the features
 feature_summary (WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)

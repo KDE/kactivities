@@ -93,7 +93,7 @@ target_link_libraries (
       KF5::DBusAddons
    )
 
-target_include_directories(KF5Activities INTERFACE "$<INSTALL_INTERFACE:${INCLUDE_INSTALL_DIR}/KActivities>" )
+target_include_directories(KF5Activities INTERFACE "$<INSTALL_INTERFACE:${KF5_INCLUDE_INSTALL_DIR}/KActivities>" )
 
 # install
 generate_export_header(KF5Activities BASE_NAME KActivities)
@@ -108,18 +108,18 @@ ecm_generate_headers(KActivities_CamelCase_HEADERS
   PREFIX KActivities
   REQUIRED_HEADERS KActivities_HEADERS
 )
-install(FILES ${KActivities_CamelCase_HEADERS} DESTINATION ${INCLUDE_INSTALL_DIR}/KActivities/KActivities COMPONENT Devel)
+install(FILES ${KActivities_CamelCase_HEADERS} DESTINATION ${KF5_INCLUDE_INSTALL_DIR}/KActivities/KActivities COMPONENT Devel)
 
 install(FILES
    ${KActivities_HEADERS}
    ${CMAKE_CURRENT_BINARY_DIR}/kactivities_export.h
-   DESTINATION ${INCLUDE_INSTALL_DIR}/KActivities/kactivities
+   DESTINATION ${KF5_INCLUDE_INSTALL_DIR}/KActivities/kactivities
    COMPONENT Devel
    )
 
 install(TARGETS KF5Activities
    EXPORT KF5ActivitiesLibraryTargets
-   ${INSTALL_TARGETS_DEFAULT_ARGS}
+   ${KF5_INSTALL_TARGETS_DEFAULT_ARGS}
    )
 
 

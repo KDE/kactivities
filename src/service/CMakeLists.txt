@@ -82,7 +82,7 @@ install (FILES
    )
 
 install (TARGETS
-   kactivitymanagerd ${INSTALL_TARGETS_DEFAULT_ARGS}
+   kactivitymanagerd ${KF5_INSTALL_TARGETS_DEFAULT_ARGS}
    )
 
 install (FILES
