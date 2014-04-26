@@ -16,11 +16,11 @@ if (NOT KACTIVITIES_LIBRARY_ONLY)
 
    if (BOOST_VERSION_BLACKLISTED AND NOT KACTIVITIES_ENABLE_EXCEPTIONS)
       message(
-         FATAL_ERROR
+         WARNING
          "Boost.Container 1.53 has issues when exceptions are disabled. "
-         "You will need a different version of Boost in order to build KActivities, "
-         "or set the KACTIVITIES_ENABLE_EXCEPTIONS option."
+         "We will set the KACTIVITIES_ENABLE_EXCEPTIONS option."
       )
+      set(KACTIVITIES_ENABLE_EXCEPTIONS ON)
    endif()
 endif ()
 
@@ -72,15 +72,17 @@ string (COMPARE EQUAL "${CXX_FEATURES_UNSUPPORTED}" "" CXX_COMPILER_IS_MODERN)
 if (NOT KACTIVITIES_LIBRARY_ONLY)
 
    if (NOT Boost_FOUND)
-      message (FATAL_ERROR
-         "REQUIRED: You need boost libraries (range and containers) in order to build the Activity Manager daemon. If you want to build only the library, set the KACTIVITIES_LIBRARY_ONLY option to ON."
+      message (WARNING
+         "WARNING: You need boost libraries (range and containers) in order to build the Activity Manager daemon. We will only build the library, setting the KACTIVITIES_LIBRARY_ONLY option to ON."
          )
+      set(KACTIVITIES_LIBRARY_ONLY ON)
    endif ()
 
    if (NOT HAVE_CXX11_VARIADIC_TEMPLATES OR NOT HAVE_CXX11_INITIALIZER_LISTS)
-      message (FATAL_ERROR
-         "REQUIRED: You need a more modern compiler in order to build the Activity Manager daemon. If you want to build only the library, set the KACTIVITIES_LIBRARY_ONLY option to ON."
+      message (WARNING
+         "WARNING: You need a more modern compiler in order to build the Activity Manager daemon. We will only build the library, setting the KACTIVITIES_LIBRARY_ONLY option to ON."
          )
+      set(KACTIVITIES_LIBRARY_ONLY ON)
    endif ()
 
    include_directories (${Boost_INCLUDE_DIR})
