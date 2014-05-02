@@ -1,8 +1,10 @@
 [Desktop Entry]
 Name=Virtual desktop switcher
+Name[nl]=Virtueel bureaublad omschakelaar
 Name[uk]=Перемикач віртуальних стільниць
 Name[x-test]=xxVirtual desktop switcherxx
 Comment=When switching to an activity, opens the virtual desktop last used with that activity
+Comment[nl]=Bij het omschakelen naar een activiteit, opent het virtuele bureaublad dat het laatst werd gebruikt met die activiteit
 Comment[uk]=Під час перемикання на простір дій відкриває віртуальну стільницю, яку було використано у цьому просторі останньою
 Comment[x-test]=xxWhen switching to an activity, opens the virtual desktop last used with that activityxx
 

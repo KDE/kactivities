@@ -1,8 +1,10 @@
 [Desktop Entry]
 Name=Global Shortcuts
+Name[nl]=Globale sneltoetsen
 Name[uk]=Загальні клавіатурні скорочення
 Name[x-test]=xxGlobal Shortcutsxx
 Comment=Adds global keyboard shortcuts for activity switching
+Comment[nl]=Voegt globale sneltoetsen toe aan omschakelen van activiteit
 Comment[uk]=Додає загальні клавіатурні скорочення для перемикання просторів дій
 Comment[x-test]=xxAdds global keyboard shortcuts for activity switchingxx
 Type=Service

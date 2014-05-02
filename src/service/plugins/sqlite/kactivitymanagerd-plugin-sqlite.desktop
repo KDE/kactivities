@@ -1,8 +1,10 @@
 [Desktop Entry]
 Name=Sqlite Feeder
+Name[nl]=Sqlite-feeder
 Name[uk]=Передавання даних Sqlite
 Name[x-test]=xxSqlite Feederxx
 Comment=Plugin to store and score events in Sqlite
+Comment[nl]=Plug-in om gebeurtenissen in Sqlite op te slaan en van een score te voorzien
 Comment[uk]=Додаток для зберігання і оцінки подій у Sqlite
 Comment[x-test]=xxPlugin to store and score events in Sqlitexx
 Type=Service

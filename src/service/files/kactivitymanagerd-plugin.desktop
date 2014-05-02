@@ -3,6 +3,7 @@ Type=ServiceType
 X-KDE-ServiceType=ActivityManager/Plugin
 
 Comment=Activity manager plugin
+Comment[nl]=Plug-in van activiteitenbeheerder
 Comment[uk]=Додаток керування просторами дій
 Comment[x-test]=xxActivity manager pluginxx
 

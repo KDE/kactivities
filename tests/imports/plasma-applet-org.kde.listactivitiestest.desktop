@@ -1,8 +1,10 @@
 [Desktop Entry]
 Name=List activities test
+Name[nl]=Lijst maken van activiteitentest
 Name[uk]=Тестування списку просторів дій
 Name[x-test]=xxList activities testxx
 Comment=Strange, but not a Clock
+Comment[nl]=Vreemd, maar geen klok
 Comment[uk]=Дивно, але не годинник
 Comment[x-test]=xxStrange, but not a Clockxx
 

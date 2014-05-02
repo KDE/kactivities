@@ -11,9 +11,11 @@ X-KDE-System-Settings-Parent-Category=workspace-behavior
 X-KDE-Weight=4
 
 Name=Activities
+Name[nl]=Activiteiten
 Name[uk]=Простори дій
 Name[x-test]=xxActivitiesxx
 Comment=Configure the activities system
+Comment[nl]=Het systeem van activiteiten instellen
 Comment[uk]=Налаштування системи просторів дій
 Comment[x-test]=xxConfigure the activities systemxx
 

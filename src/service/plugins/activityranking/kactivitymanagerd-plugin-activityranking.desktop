@@ -1,8 +1,10 @@
 [Desktop Entry]
 Name=Activity ranking
+Name[nl]=Activiteitenwaardering
 Name[uk]=Оцінювання просторів дій
 Name[x-test]=xxActivity rankingxx
 Comment=Plugin to rank activities based on usage
+Comment[nl]=Plug-in om activiteiten te waarderen gebaseerd op gebruik
 Comment[uk]=Додаток для оцінювання просторів дій на основі даних щодо використання
 Comment[x-test]=xxPlugin to rank activities based on usagexx
 Type=Service

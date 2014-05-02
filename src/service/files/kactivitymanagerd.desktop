@@ -7,9 +7,11 @@ X-KDE-StartupNotify=false
 Exec=kactivitymanagerd
 
 Name=Activity Manager
+Name[nl]=Activiteitenbeheerder
 Name[uk]=Керування просторами дій
 Name[x-test]=xxActivity Managerxx
 
 Comment=The activity management backend
+Comment[nl]=De activiteitenbeheerder-backend
 Comment[uk]=Сервер керування просторами дій
 Comment[x-test]=xxThe activity management backendxx

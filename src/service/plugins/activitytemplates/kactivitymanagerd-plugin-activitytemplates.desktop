@@ -1,8 +1,10 @@
 [Desktop Entry]
 Name=Activity Templates
+Name[nl]=Sjablonen voor activiteit
 Name[uk]=Шаблони просторів дій
 Name[x-test]=xxActivity Templatesxx
 Comment=Support for creating templated activities
+Comment[nl]=Ondersteuning voor aanmaken van activiteiten volgens sjablonen
 Comment[uk]=Підтримка створення шаблонних просторів дій
 Comment[x-test]=xxSupport for creating templated activitiesxx
 Type=Service

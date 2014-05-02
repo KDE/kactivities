@@ -1,8 +1,10 @@
 [Desktop Entry]
 Name=Share-Like-Connect
+Name[nl]='Share-Like-Connect'
 Name[uk]=Оприлюднти-Уподобати-З’єднати
 Name[x-test]=xxShare-Like-Connectxx
 Comment=Provides data to Share-Like-Connect applet
+Comment[nl]=Levert gegevens aan het applet Share-Like-Connect
 Comment[uk]=Надає дані аплетові Оприлюднити-Уподобати-З’єднати
 Comment[x-test]=xxProvides data to Share-Like-Connect appletxx
 Type=Service
