@@ -1,12 +1,4 @@
 # vim:set softtabstop=3 shiftwidth=3 tabstop=3 expandtab:
-cmake_minimum_required(VERSION 2.8.12)
-
-project (KActivities)
-
-# =======================================================
-# Information to update before to release this library.
-
-set(KF5_VERSION "4.96.0")
 
 # =======================================================
 # Now that we finished with the boilerplate, start
