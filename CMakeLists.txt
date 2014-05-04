@@ -15,7 +15,7 @@ if ("${CMAKE_SOURCE_DIR}" STREQUAL "${CMAKE_BINARY_DIR}")
 endif ()
 
 # Extra CMake stuff
-find_package (ECM 0.0.12 REQUIRED NO_MODULE)
+find_package (ECM 0.0.13 REQUIRED NO_MODULE)
 set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH} ${ECM_KDE_MODULE_DIR})
 
 include(KDEInstallDirs)
@@ -30,7 +30,7 @@ find_package (Qt5 REQUIRED NO_MODULE COMPONENTS Core DBus)
 
 # KDE Frameworks
 set(KF5_VERSION "4.99.0") # handled by release scripts
-set(KF5_DEP_VERSION "4.98.0") # handled by release scripts
+set(KF5_DEP_VERSION "4.99.0") # handled by release scripts
 find_package (KF5DBusAddons ${KF5_DEP_VERSION} CONFIG REQUIRED)
 
 # Basic includes
