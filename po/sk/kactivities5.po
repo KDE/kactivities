@@ -1,0 +1,172 @@
+# translation of kactivities5.po to Slovak
+# Roman Paholík <wizzardsk@gmail.com>, 2014.
+msgid ""
+msgstr ""
+"Project-Id-Version: kactivities5\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2014-04-27 20:57+0000\n"
+"PO-Revision-Date: 2014-04-25 20:52+0200\n"
+"Last-Translator: Roman Paholík <wizzardsk@gmail.com>\n"
+"Language-Team: Slovak <kde-sk@linux.sk>\n"
+"Language: sk\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Lokalize 1.5\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Roman Paholík"
+
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "wizzardsk@gmail.com"
+
+#: imports/activitymodel.cpp:561
+msgctxt "Header title for activity data model"
+msgid "Activity"
+msgstr "Aktivity"
+
+#: imports/resourcemodel.cpp:513
+msgctxt "Header title for resource data model"
+msgid "Resource"
+msgstr "Zdroj"
+
+#: service/Activities.cpp:155
+msgid "Default"
+msgstr "Predvolené"
+
+#: service/plugins/globalshortcuts/GlobalShortcutsPlugin.cpp:79
+#: service/plugins/globalshortcuts/GlobalShortcutsPlugin.cpp:103
+#, kde-format
+msgctxt "@action"
+msgid "Switch to activity \"%1\""
+msgstr "Prepnúť na aktivitu \"%1\""
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:98
+msgid "Activities..."
+msgstr "Aktivity..."
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:165
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:203
+msgid "Unlink from the current activity"
+msgstr "Odlinkovať z aktuálnej aktivity"
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:170
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:211
+msgid "Link to the current activity"
+msgstr "Odkaz na aktuálnu aktivitu"
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:175
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:235
+msgid "Link to:"
+msgstr "Odkaz na:"
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:182
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:242
+msgid "Unlink from:"
+msgstr "Odlinkovať z:"
+
+#: workspace/kio/KioActivities.cpp:147
+msgid "Current activity"
+msgstr "Aktuálna aktivita"
+
+#: workspace/kio/KioActivities.cpp:249
+msgid "Activity manager is not running properly."
+msgstr "Správca aktivít nebeží správne."
+
+#: workspace/settings/MainConfigurationWidget.cpp:70
+msgid "Activities"
+msgstr "Aktivity"
+
+#: workspace/settings/MainConfigurationWidget.cpp:72
+msgid "(c) 2012 Ivan Cukic"
+msgstr "(c) 2012 Ivan Cukic"
+
+#: workspace/settings/MainConfigurationWidget.cpp:90
+msgid "Available Features"
+msgstr "Dostupné funkcie"
+
+#: workspace/settings/MainConfigurationWidget.cpp:93
+msgid "Plugins"
+msgstr "Moduly"
+
+#: workspace/settings/MainConfigurationWidget.cpp:100
+msgctxt "unit of time. months to keep the history"
+msgid " month"
+msgid_plural " months"
+msgstr[0] " mesiac"
+msgstr[1] " mesiace"
+msgstr[2] " mesiacov"
+
+#: workspace/settings/MainConfigurationWidget.cpp:101
+msgctxt "for in 'keep history for 5 months'"
+msgid "for "
+msgstr "pre "
+
+#: workspace/settings/MainConfigurationWidget.cpp:102
+msgctxt "unlimited number of months"
+msgid "forever"
+msgstr "navždy"
+
+#: workspace/settings/MainConfigurationWidget.cpp:109
+msgid "Forget the last hour"
+msgstr "Zabudnúť poslednú hodinu"
+
+#: workspace/settings/MainConfigurationWidget.cpp:112
+msgid "Forget the last two hours"
+msgstr "Zabudnúť posledné dve hodiny"
+
+#: workspace/settings/MainConfigurationWidget.cpp:115
+msgid "Forget a day"
+msgstr "Zabudnúť deň"
+
+#: workspace/settings/MainConfigurationWidget.cpp:118
+msgid "Forget everything"
+msgstr "Zabudnúť všetko"
+
+#. i18n: ectx: property (text), widget (QCheckBox, checkEnableActivities)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:17
+msgid "Enable activities management"
+msgstr "Povoliť správu aktivít"
+
+#. i18n: ectx: attribute (title), widget (QWidget, tab)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:28
+msgid "Privacy"
+msgstr "Súkromie"
+
+#. i18n: ectx: property (text), widget (QLabel, labelRememberDocuments)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:34
+msgid "Remember opened documents:"
+msgstr "Zapamätať si otvorené dokumenty:"
+
+#. i18n: ectx: property (text), widget (QRadioButton, radioRememberAllApplications)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:45
+msgid "For all applications"
+msgstr "Pre všetky aplikácie"
+
+#. i18n: ectx: property (text), widget (QRadioButton, radioDontRememberApplications)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:55
+msgid "Do not remember"
+msgstr "Nezapamätať si"
+
+#. i18n: ectx: property (text), widget (QRadioButton, radioRememberSpecificApplications)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:62
+msgid "Only for specific applications"
+msgstr "Iba pre špecifické aplikácie"
+
+#. i18n: ectx: property (text), widget (QLabel, labelKeepHistory)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:90
+msgid "Keep history"
+msgstr "Ponechať históriu"
+
+#. i18n: ectx: property (text), widget (QPushButton, buttonClearRecentHistory)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:113
+msgid "Clear recent history"
+msgstr "Vyčistiť nedávnu históriu"
+
+#. i18n: ectx: property (text), widget (QCheckBox, checkBlacklistAllNotOnList)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:150
+msgid "Blacklist all applications not on this list"
+msgstr "Vylúčiť všetky aplikácie, ktoré nie sú na zozname"

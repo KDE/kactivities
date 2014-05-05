@@ -1,0 +1,184 @@
+# Copyright (C) YEAR This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Andrej Vernekar <andrej.vernekar@gmail.com>, 2012.
+# Jure Repinc <jlp@holodeck1.com>, 2013.
+# Andrej Mernik <andrejm@ubuntu.si>, 2013.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2014-04-27 20:57+0000\n"
+"PO-Revision-Date: 2013-06-28 17:25+0200\n"
+"Last-Translator: Andrej Mernik <andrejm@ubuntu.si>\n"
+"Language-Team: Slovenian <lugos-slo@lugos.si>\n"
+"Language: sl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n%100==1 ? 1 : n%100==2 ? 2 : n%100==3 || n"
+"%100==4 ? 3 : 0);\n"
+"X-Generator: Lokalize 1.5\n"
+
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Andrej Vernekar"
+
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "andrej.vernekar@gmail.com"
+
+#: imports/activitymodel.cpp:561
+#, fuzzy
+#| msgid "Activities..."
+msgctxt "Header title for activity data model"
+msgid "Activity"
+msgstr "Dejavnosti ..."
+
+#: imports/resourcemodel.cpp:513
+msgctxt "Header title for resource data model"
+msgid "Resource"
+msgstr ""
+
+#: service/Activities.cpp:155
+msgid "Default"
+msgstr ""
+
+#: service/plugins/globalshortcuts/GlobalShortcutsPlugin.cpp:79
+#: service/plugins/globalshortcuts/GlobalShortcutsPlugin.cpp:103
+#, kde-format
+msgctxt "@action"
+msgid "Switch to activity \"%1\""
+msgstr "Preklopi na dejavnost »%1«"
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:98
+msgid "Activities..."
+msgstr "Dejavnosti ..."
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:165
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:203
+msgid "Unlink from the current activity"
+msgstr "Prekini povezavo s trenutno dejavnostjo"
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:170
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:211
+msgid "Link to the current activity"
+msgstr "Poveži s trenutno dejavnostjo"
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:175
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:235
+msgid "Link to:"
+msgstr "Poveži z:"
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:182
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:242
+msgid "Unlink from:"
+msgstr "Prekini povezavo z:"
+
+#: workspace/kio/KioActivities.cpp:147
+#, fuzzy
+#| msgid "Link to the current activity"
+msgid "Current activity"
+msgstr "Poveži s trenutno dejavnostjo"
+
+#: workspace/kio/KioActivities.cpp:249
+msgid "Activity manager is not running properly."
+msgstr "Upravljalnik dejavnosti ne deluje pravilno."
+
+#: workspace/settings/MainConfigurationWidget.cpp:70
+#, fuzzy
+#| msgid "Activities..."
+msgid "Activities"
+msgstr "Dejavnosti ..."
+
+#: workspace/settings/MainConfigurationWidget.cpp:72
+msgid "(c) 2012 Ivan Cukic"
+msgstr "© 2012 Ivan Cukic"
+
+#: workspace/settings/MainConfigurationWidget.cpp:90
+msgid "Available Features"
+msgstr "Razpoložljive zmožnosti"
+
+#: workspace/settings/MainConfigurationWidget.cpp:93
+msgid "Plugins"
+msgstr "Vstavki"
+
+#: workspace/settings/MainConfigurationWidget.cpp:100
+msgctxt "unit of time. months to keep the history"
+msgid " month"
+msgid_plural " months"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+
+#: workspace/settings/MainConfigurationWidget.cpp:101
+msgctxt "for in 'keep history for 5 months'"
+msgid "for "
+msgstr "za "
+
+#: workspace/settings/MainConfigurationWidget.cpp:102
+msgctxt "unlimited number of months"
+msgid "forever"
+msgstr "vedno"
+
+#: workspace/settings/MainConfigurationWidget.cpp:109
+msgid "Forget the last hour"
+msgstr "Pozabi zadnjo uro"
+
+#: workspace/settings/MainConfigurationWidget.cpp:112
+msgid "Forget the last two hours"
+msgstr "Pozabi zadnji dve uri"
+
+#: workspace/settings/MainConfigurationWidget.cpp:115
+msgid "Forget a day"
+msgstr "Pozabi dan"
+
+#: workspace/settings/MainConfigurationWidget.cpp:118
+msgid "Forget everything"
+msgstr "Pozabi vse"
+
+#. i18n: ectx: property (text), widget (QCheckBox, checkEnableActivities)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:17
+msgid "Enable activities management"
+msgstr "Omogoči upravljanje dejavnosti"
+
+#. i18n: ectx: attribute (title), widget (QWidget, tab)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:28
+msgid "Privacy"
+msgstr "Zasebnost"
+
+#. i18n: ectx: property (text), widget (QLabel, labelRememberDocuments)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:34
+msgid "Remember opened documents:"
+msgstr "Zapomni si odprte dokumente:"
+
+#. i18n: ectx: property (text), widget (QRadioButton, radioRememberAllApplications)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:45
+msgid "For all applications"
+msgstr "Za vse programe"
+
+#. i18n: ectx: property (text), widget (QRadioButton, radioDontRememberApplications)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:55
+msgid "Do not remember"
+msgstr "Ne zapomni si"
+
+#. i18n: ectx: property (text), widget (QRadioButton, radioRememberSpecificApplications)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:62
+msgid "Only for specific applications"
+msgstr "Samo za določene programe"
+
+#. i18n: ectx: property (text), widget (QLabel, labelKeepHistory)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:90
+msgid "Keep history"
+msgstr "Ohrani zgodovino"
+
+#. i18n: ectx: property (text), widget (QPushButton, buttonClearRecentHistory)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:113
+msgid "Clear recent history"
+msgstr "Počisti nedavno zgodovino"
+
+#. i18n: ectx: property (text), widget (QCheckBox, checkBlacklistAllNotOnList)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:150
+msgid "Blacklist all applications not on this list"
+msgstr "Na črni seznam daj vse programe, ki niso na tem seznamu"
