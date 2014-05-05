@@ -29,6 +29,9 @@
 #include <QStandardPaths>
 #include <QVariant>
 
+// KDE
+#include <kdelibs4migration.h>
+
 // Utils
 #include <utils/d_ptr_implementation.h>
 #include <utils/qsqlquery.h>
@@ -72,6 +75,26 @@ Database *Database::self()
     return &instance;
 }
 
+void Database::migrateDatabase(const QString &newDatabaseFile) const
+{
+    // Checking whether we need to transfer the KActivities/KDE4
+    // sqlite database file to the new location.
+    if (QFile(newDatabaseFile).exists()) {
+        return;
+    }
+
+    // Testing for kdehome
+    Kdelibs4Migration migration;
+    if (!migration.kdeHomeFound()) {
+        return;
+    }
+
+    QString oldDatabaseFile(migration.locateLocal("data", "activitymanager/resources/database"));
+    if (!oldDatabaseFile.isEmpty()) {
+        QFile(oldDatabaseFile).copy(newDatabaseFile);
+    }
+}
+
 Database::Database()
     : d()
 {
@@ -81,11 +104,15 @@ Database::Database()
 
     QDir().mkpath(databaseDir);
 
+    const QString newDatabaseFile = databaseDir + QStringLiteral("database");
+
+    migrateDatabase(newDatabaseFile);
+
     d->database = QSqlDatabase::addDatabase(
         QStringLiteral("QSQLITE"),
         QStringLiteral("plugins_sqlite_db_resources"));
 
-    d->database.setDatabaseName(databaseDir + QStringLiteral("database"));
+    d->database.setDatabaseName(newDatabaseFile);
 
     d->database.open();
 

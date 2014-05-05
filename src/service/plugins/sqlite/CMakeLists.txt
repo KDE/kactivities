@@ -42,6 +42,7 @@ target_link_libraries (
    Qt5::Sql
    KF5::ConfigCore
    KF5::DBusAddons
+   KF5::CoreAddons
    )
 
 set_target_properties(

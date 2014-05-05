@@ -55,6 +55,7 @@ private:
     Database();
     ~Database();
 
+    void migrateDatabase(const QString &newDatabaseFile) const;
     void initDatabaseSchema();
 
     D_PTR;

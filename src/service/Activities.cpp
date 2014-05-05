@@ -34,6 +34,7 @@
 #include <kdbusconnectionpool.h>
 #include <klocalizedstring.h>
 #include <kauthorized.h>
+#include <kdelibs4migration.h>
 
 // Utils
 #include <utils/d_ptr_implementation.h>
@@ -57,35 +58,19 @@ Activities::Private::ConfigurationChecker::ConfigurationChecker()
         = QStandardPaths::writableLocation(QStandardPaths::ConfigLocation)
           + '/' + ACTIVITY_MANAGER_CONFIG_FILE_NAME;
 
-    if (!QFile(newConfigLocation).exists()) {
-        // The configuration file does not exist, we need to find the
-        // one from KDE4
-        QString whereToSearch;
+    if (QFile(newConfigLocation).exists()) {
+        return;
+    }
 
-        if (qEnvironmentVariableIsSet("KDEHOME")) {
-            qDebug() << "Using KDEHOME as the location of the old config file";
-            whereToSearch = QString::fromLocal8Bit(qgetenv("KDEHOME"));
+    // Testing for kdehome
+    Kdelibs4Migration migration;
+    if (!migration.kdeHomeFound()) {
+        return;
+    }
 
-        } else {
-            auto homeDir = QDir::home();
-
-            for (const auto testSubdir: { ".kde", ".kde4" }) {
-                if (homeDir.exists(testSubdir)) {
-                    qDebug() << "Using " << testSubdir << " as the location of the old config file";
-                    whereToSearch = homeDir.filePath(testSubdir);
-                    break;
-                }
-            }
-        }
-
-        if (!whereToSearch.isNull()) {
-            QFile oldConfigFile(whereToSearch + "/share/config/activitymanagerrc");
-
-            if (oldConfigFile.exists()) {
-                qDebug() << "Found the old config file " << oldConfigFile.fileName();
-                oldConfigFile.copy(newConfigLocation);
-            }
-        }
+    QString oldConfigFile(migration.locateLocal("config", "activitymanagerrc"));
+    if (!oldConfigFile.isEmpty()) {
+        QFile(oldConfigFile).copy(newConfigLocation);
     }
 }
 
