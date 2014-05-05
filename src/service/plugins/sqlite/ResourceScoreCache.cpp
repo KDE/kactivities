@@ -32,21 +32,80 @@
 #include "Debug.h"
 #include "StatsPlugin.h"
 #include "Database.h"
+#include "Utils.h"
 
 
-/**
- *
- */
+class ResourceScoreCache::Queries {
+private:
+    Queries()
+        : createResourceScoreCacheQuery(Database::self()->addQuery())
+        , getResourceScoreCacheQuery(Database::self()->addQuery())
+        , updateResourceScoreCacheQuery(Database::self()->addQuery())
+        , getScoreAdditionQuery(Database::self()->addQuery())
+    {
+
+        Utils::prepare(Database::self()->database(),
+            createResourceScoreCacheQuery, QStringLiteral(
+            "INSERT INTO ResourceScoreCache "
+            "VALUES (:usedActivity, :initiatingAgent, :targettedResource, "
+                    "0, 0, -1, " // type, score, lastUpdate
+                    ":firstUpdate)"
+        ));
+
+        Utils::prepare(Database::self()->database(),
+            getResourceScoreCacheQuery, QStringLiteral(
+            "SELECT cachedScore, lastUpdate FROM ResourceScoreCache "
+            "WHERE "
+                ":usedActivity      = usedActivity AND "
+                ":initiatingAgent   = initiatingAgent AND "
+                ":targettedResource = targettedResource "
+        ));
+
+        Utils::prepare(Database::self()->database(),
+            updateResourceScoreCacheQuery, QStringLiteral(
+            "UPDATE ResourceScoreCache SET "
+                "cachedScore = :cachedScore, "
+                "lastUpdate  = :lastUpdate "
+            "WHERE "
+                ":usedActivity      = usedActivity AND "
+                ":initiatingAgent   = initiatingAgent AND "
+                ":targettedResource = targettedResource "
+        ));
+
+        Utils::prepare(Database::self()->database(),
+            getScoreAdditionQuery, QStringLiteral(
+            "SELECT start, end "
+            "FROM ResourceEvent "
+            "WHERE "
+                ":usedActivity      = usedActivity AND "
+                ":initiatingAgent   = initiatingAgent AND "
+                ":targettedResource = targettedResource AND "
+                "start > :start"
+        ));
+    }
+
+public:
+    QSqlQuery createResourceScoreCacheQuery;
+    QSqlQuery getResourceScoreCacheQuery;
+    QSqlQuery updateResourceScoreCacheQuery;
+    QSqlQuery getScoreAdditionQuery;
+
+    static Queries &self();
+
+};
+
+ResourceScoreCache::Queries &ResourceScoreCache::Queries::self()
+{
+    static Queries queries;
+    return queries;
+}
+
+
 class ResourceScoreCache::Private {
 public:
     QString activity;
     QString application;
     QString resource;
-
-    static const QString createResourceScoreCacheQuery;
-    static const QString getResourceScoreCacheQuery;
-    static const QString updateResourceScoreCacheQuery;
-    static const QString getScoreAdditionQuery;
 
     inline qreal timeFactor(int days) const
     {
@@ -60,41 +119,6 @@ public:
         return timeFactor(fromTime.daysTo(toTime));
     }
 };
-
-const QString ResourceScoreCache::Private::createResourceScoreCacheQuery
-    = QStringLiteral("INSERT INTO kext_ResourceScoreCache VALUES("
-                     "'%1', " // usedActivity
-                     "'%2', " // initiatingAgent
-                     "'%3', " // targettedResource
-                     "0," // scoreType
-                     "0.0," // cachedScore
-                     "-1," // lastUpdate
-                     "%4" // firstUpdate
-                     ")");
-
-const QString ResourceScoreCache::Private::getResourceScoreCacheQuery
-    = QStringLiteral("SELECT cachedScore, lastUpdate FROM kext_ResourceScoreCache "
-                     "WHERE "
-                     "'%1' = usedActivity AND "
-                     "'%2' = initiatingAgent AND "
-                     "'%3' = targettedResource ");
-
-const QString ResourceScoreCache::Private::updateResourceScoreCacheQuery
-    = QStringLiteral("UPDATE kext_ResourceScoreCache SET "
-                     "cachedScore = %4, "
-                     "lastUpdate = %5 "
-                     "WHERE "
-                     "'%1' = usedActivity AND "
-                     "'%2' = initiatingAgent AND "
-                     "'%3' = targettedResource ");
-
-const QString ResourceScoreCache::Private::getScoreAdditionQuery
-    = QStringLiteral("SELECT start, end FROM nuao_DesktopEvent "
-                     "WHERE "
-                     "'%1' = usedActivity AND "
-                     "'%2' = initiatingAgent AND "
-                     "'%3' = targettedResource AND "
-                     "start > %4");
 
 ResourceScoreCache::ResourceScoreCache(const QString &activity,
                                        const QString &application,
@@ -112,26 +136,26 @@ ResourceScoreCache::~ResourceScoreCache()
 void ResourceScoreCache::update()
 {
     QDateTime lastUpdate;
-    qreal score = 0;
+    qreal score;
 
-    auto results = Database::self()->exec(
-        // This can fail if we have the cache already made
-        Private::createResourceScoreCacheQuery
-            .arg(d->activity)
-            .arg(d->application)
-            .arg(d->resource)
-            .arg(QDateTime::currentDateTime().toTime_t()),
+    // This can fail if we have the cache already made
+    Utils::exec(Queries::self().createResourceScoreCacheQuery,
+        ":usedActivity", d->activity,
+        ":initiatingAgent", d->application,
+        ":targettedResource", d->resource,
+        ":firstUpdate", QDateTime::currentDateTime().toTime_t()
+    );
 
-        // Getting the old score
-        Private::getResourceScoreCacheQuery
-            .arg(d->activity)
-            .arg(d->application)
-            .arg(d->resource)
+    // Getting the old score
+    Utils::exec(Queries::self().getResourceScoreCacheQuery,
+        ":usedActivity", d->activity,
+        ":initiatingAgent", d->application,
+        ":targettedResource", d->resource
     );
 
     // Only and always one result
 
-    for (const auto &result: results) {
+    for (const auto &result: Queries::self().getResourceScoreCacheQuery) {
         const auto time = result[1].toLongLong();
 
         if (time < 0) {
@@ -152,16 +176,16 @@ void ResourceScoreCache::update()
     // Calculating the updated score
     // We are processing all events since the last cache update
 
-    results = Database::self()->exec(
-        Private::getScoreAdditionQuery
-            .arg(d->activity)
-            .arg(d->application)
-            .arg(d->resource)
-            .arg(lastUpdate.toTime_t()));
+    Utils::exec(Queries::self().getScoreAdditionQuery,
+        ":usedActivity", d->activity,
+        ":initiatingAgent", d->application,
+        ":targettedResource", d->resource,
+        ":start", lastUpdate.toTime_t()
+    );
 
-    long start = 0;
+    qlonglong start = 0;
 
-    for (const auto &result: results) {
+    for (const auto &result: Queries::self().getScoreAdditionQuery) {
         start = result[0].toLongLong();
 
         const auto end = result[1].toLongLong();
@@ -179,13 +203,13 @@ void ResourceScoreCache::update()
 
     // Updating the score
 
-    Database::self()->exec(
-        Private::updateResourceScoreCacheQuery
-            .arg(d->activity)
-            .arg(d->application)
-            .arg(d->resource)
-            .arg(score)
-            .arg(start));
+    Utils::exec(Queries::self().updateResourceScoreCacheQuery,
+        ":usedActivity", d->activity,
+        ":initiatingAgent", d->application,
+        ":targettedResource", d->resource,
+        ":cachedScore", score,
+        ":lastUpdate", start
+    );
 
     // Notifying the world
 

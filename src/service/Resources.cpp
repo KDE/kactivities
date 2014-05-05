@@ -73,8 +73,7 @@ void Resources::Private::run()
                 return;
             }
 
-            currentEvents = events;
-            events.clear();
+            std::swap(currentEvents, events);
         }
 
         emit q->ProcessedResourceEvents(currentEvents);

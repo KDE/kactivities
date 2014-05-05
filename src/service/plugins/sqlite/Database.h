@@ -24,6 +24,7 @@
 #include <QObject>
 #include <QDateTime>
 #include <QSqlQuery>
+#include <QSqlError>
 #include <QString>
 #include <QStringList>
 
@@ -35,6 +36,7 @@
 
 class QDateTime;
 class QSqlDatabase;
+class QSqlError;
 
 class Database : public QObject {
     Q_OBJECT
@@ -42,40 +44,14 @@ class Database : public QObject {
 public:
     static Database *self();
 
-    template <typename T>
-    inline QSqlQuery exec(const T &query)
+    inline QSqlQuery addQuery()
     {
-        return database()->exec(query);
+        return QSqlQuery(database());
     }
 
-    template <typename T1, typename T2, typename... Ts>
-    inline QSqlQuery exec(const T1 &query1, const T2 &query2,
-                          const Ts &... queries)
-    {
-        exec(query1);
-        return exec(query2, queries...);
-    }
-
-
-    void openDesktopEvent(const QString &usedActivity,
-                          const QString &initiatingAgent,
-                          const QString &targettedResource,
-                          const QDateTime &start,
-                          const QDateTime &end = QDateTime());
-
-    void closeDesktopEvent(const QString &usedActivity,
-                           const QString &initiatingAgent,
-                           const QString &targettedResource,
-                           const QDateTime &end);
-
-    void getResourceScoreCache(const QString &usedActivity,
-                               const QString &initiatingAgent,
-                               const QString &targettedResource, qreal &score,
-                               QDateTime &lastUpdate);
+    QSqlDatabase &database();
 
 private:
-    QSqlDatabase *database();
-
     Database();
     ~Database();
 

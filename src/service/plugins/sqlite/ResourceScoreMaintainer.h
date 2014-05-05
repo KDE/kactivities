@@ -23,12 +23,11 @@
 // Utils
 #include <utils/d_ptr.h>
 
-
 class ResourceScoreMaintainerPrivate;
 class QString;
 
 /**
- * Thread to process desktop/usage events
+ * ResourceScoreMaintainer represents a queue of resource processing requests.
  */
 class ResourceScoreMaintainer {
 public:

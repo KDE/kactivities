@@ -37,8 +37,10 @@
 #include "Debug.h"
 #include "Database.h"
 #include "ResourceScoreMaintainer.h"
-#include "Rankings.h"
-#include "scoringadaptor.h"
+#include "ResourceLinking.h"
+#include "Utils.h"
+// #include "Rankings.h"
+// #include "scoringadaptor.h"
 #include "../../Event.h"
 
 
@@ -49,13 +51,14 @@ StatsPlugin::StatsPlugin(QObject *parent, const QVariantList &args)
     , m_activities(Q_NULLPTR)
     , m_resources(Q_NULLPTR)
     , m_configWatcher(Q_NULLPTR)
+    , m_resourceLinking(new ResourceLinking(this))
 {
     Q_UNUSED(args)
     s_instance = this;
 
-    new ScoringAdaptor(this);
-    KDBusConnectionPool::threadConnection().registerObject(
-        QStringLiteral("/ActivityManager/Resources/Scoring"), this);
+    // new ScoringAdaptor(this);
+    // KDBusConnectionPool::threadConnection().registerObject(
+    //     QStringLiteral("/ActivityManager/Resources/Scoring"), this);
 
     setName(QStringLiteral("org.kde.ActivityManager.Resources.Scoring"));
 }
@@ -65,8 +68,8 @@ bool StatsPlugin::init(const QHash<QString, QObject *> &modules)
     m_activities = modules[QStringLiteral("activities")];
     m_resources = modules[QStringLiteral("resources")];
 
-    Database::self();
-    Rankings::self();
+    // Database::self();
+    // Rankings::self();
 
     connect(m_resources, SIGNAL(ProcessedResourceEvents(EventList)),
             this, SLOT(addEvents(EventList)));
@@ -119,6 +122,51 @@ void StatsPlugin::loadConfiguration()
     deleteEarlierStats(QString(), config().readEntry("keep-history-for", 0));
 }
 
+void StatsPlugin::openResourceEvent(const QString &usedActivity,
+                                    const QString &initiatingAgent,
+                                    const QString &targettedResource,
+                                    const QDateTime &start,
+                                    const QDateTime &end)
+{
+    Utils::prepare(Database::self()->database(), openResourceEventQuery, QStringLiteral(
+        "INSERT INTO ResourceEvent"
+        "        (usedActivity,  initiatingAgent,  targettedResource,  start,  end) "
+        "VALUES (:usedActivity, :initiatingAgent, :targettedResource, :start, :end)"
+    ));
+
+    Utils::exec(*openResourceEventQuery,
+        ":usedActivity"      , usedActivity      ,
+        ":initiatingAgent"   , initiatingAgent   ,
+        ":targettedResource" , targettedResource ,
+        ":start"             , start.toTime_t()  ,
+        ":end"               , (end.isNull()) ? QVariant() : end.toTime_t()
+    );
+}
+
+void StatsPlugin::closeResourceEvent(const QString &usedActivity,
+                                     const QString &initiatingAgent,
+                                     const QString &targettedResource,
+                                     const QDateTime &end)
+{
+    Utils::prepare(Database::self()->database(), closeResourceEventQuery, QStringLiteral(
+        "UPDATE ResourceEvent "
+        "SET end = :end "
+        "WHERE "
+            ":usedActivity      = usedActivity AND "
+            ":initiatingAgent   = initiatingAgent AND "
+            ":targettedResource = targettedResource AND "
+            "end IS NULL"
+    ));
+
+    Utils::exec(*closeResourceEventQuery,
+        ":usedActivity"      , usedActivity      ,
+        ":initiatingAgent"   , initiatingAgent   ,
+        ":targettedResource" , targettedResource ,
+        ":end"               , end.toTime_t()
+    );
+}
+
+
 StatsPlugin *StatsPlugin::self()
 {
     return s_instance;
@@ -148,7 +196,6 @@ bool StatsPlugin::acceptedEvent(const Event &event)
 void StatsPlugin::addEvents(const EventList &events)
 {
     using namespace kamd::utils;
-    using namespace std::placeholders;
 
     if (m_blockAll || m_whatToRemember == NoApplications) {
         return;
@@ -159,7 +206,7 @@ void StatsPlugin::addEvents(const EventList &events)
 
         switch (event.type) {
             case Event::Accessed:
-                Database::self()->openDesktopEvent(
+                openResourceEvent(
                     currentActivity(), event.application, event.uri,
                     event.timestamp, event.timestamp);
                 ResourceScoreMaintainer::self()->processResource(
@@ -168,14 +215,14 @@ void StatsPlugin::addEvents(const EventList &events)
                 break;
 
             case Event::Opened:
-                Database::self()->openDesktopEvent(
+                openResourceEvent(
                     currentActivity(), event.application, event.uri,
                     event.timestamp);
 
                 break;
 
             case Event::Closed:
-                Database::self()->closeDesktopEvent(
+                closeResourceEvent(
                     currentActivity(), event.application, event.uri,
                     event.timestamp);
                 ResourceScoreMaintainer::self()->processResource(
@@ -199,18 +246,29 @@ void StatsPlugin::addEvents(const EventList &events)
 void StatsPlugin::deleteRecentStats(const QString &activity, int count,
                                     const QString &what)
 {
-    const auto activityCheck = activity.isEmpty()
-        ? QStringLiteral(" 1 ")
-        : QStringLiteral(" usedActivity = '") + activity + QStringLiteral("' ");
+    const auto usedActivity = activity.isEmpty() ? QVariant()
+                                                 : QVariant(activity);
 
     // If we need to delete everything,
     // no need to bother with the count and the date
 
     if (what == QStringLiteral("everything")) {
-        Database::self()->exec(
-            QStringLiteral("DELETE FROM kext_ResourceScoreCache WHERE ") + activityCheck,
-            QStringLiteral("DELETE FROM nuao_DesktopEvent WHERE ") + activityCheck
-        );
+        // Instantiating these every time is not a big overhead
+        // since this method is rarely executed.
+
+        auto removeEvents = Database::self()->addQuery();
+        removeEvents.prepare(
+                "DELETE FROM ResourceEvent "
+                "WHERE usedActivity = COALESCE(:usedActivity, usedActivity)"
+            );
+
+        auto removeScoreCaches = Database::self()->addQuery();
+        removeScoreCaches.prepare(
+                "DELETE FROM ResourceScoreCache "
+                "WHERE usedActivity = COALESCE(:usedActivity, usedActivity)");
+
+        Utils::exec(removeEvents, ":usedActivity", usedActivity);
+        Utils::exec(removeScoreCaches, ":usedActivity", usedActivity);
 
     } else {
 
@@ -223,23 +281,33 @@ void StatsPlugin::deleteRecentStats(const QString &activity, int count,
               : (what[0] == QLatin1Char('m')) ? since.addMonths(-count)
               : since;
 
-        // Maybe we should decrease the scores for the previosuly
-        // cached items. Thkinking it is not that important -
-        // if something was accessed before, it is not really a secret
+        // Maybe we should decrease the scores for the previously
+        // cached items. Thinking it is not that important -
+        // if something was accessed before, and the user did not
+        // remove the history, it is not really a secret.
 
-        static const auto queryRSC = QStringLiteral(
-            "DELETE FROM kext_ResourceScoreCache "
-            " WHERE %1 "
-            " AND firstUpdate > %2 ");
-        static const auto queryDE = QStringLiteral(
-            "DELETE FROM nuao_DesktopEvent "
-            " WHERE %1 "
-            " AND end > %2 ");
+        auto removeEvents = Database::self()->addQuery();
+        removeEvents.prepare(
+                "DELETE FROM ResourceEvent "
+                "WHERE usedActivity = COALESCE(:usedActivity, usedActivity) "
+                "AND end > :since"
+            );
 
-        Database::self()->exec(
-            queryRSC.arg(activityCheck).arg(since.toTime_t()),
-            queryDE.arg(activityCheck).arg(since.toTime_t())
-        );
+        auto removeScoreCaches = Database::self()->addQuery();
+        removeScoreCaches.prepare(
+                "DELETE FROM ResourceScoreCache "
+                "WHERE usedActivity = COALESCE(:usedActivity, usedActivity) "
+                "AND firstUpdate > :since");
+
+        Utils::exec(removeEvents,
+                ":usedActivity", usedActivity,
+                ":since", since.toTime_t()
+            );
+
+        Utils::exec(removeScoreCaches,
+                ":usedActivity", usedActivity,
+                ":since", since.toTime_t()
+            );
     }
 
     emit recentStatsDeleted(activity, count, what);
@@ -251,28 +319,34 @@ void StatsPlugin::deleteEarlierStats(const QString &activity, int months)
         return;
     }
 
-    const auto activityCheck = activity.isEmpty()
-                                   ? QStringLiteral(" 1 ")
-                                   : QStringLiteral(" usedActivity = '")
-                                     + activity + QStringLiteral("' ");
-
     // Deleting a specified length of time
 
     const auto time = QDateTime::currentDateTime().addMonths(-months);
+    const auto usedActivity = activity.isEmpty() ? QVariant()
+                                                 : QVariant(activity);
 
-    static const auto queryRSC = QStringLiteral(
-        "DELETE FROM kext_ResourceScoreCache "
-        " WHERE %1 "
-        " AND lastUpdate < %2 ");
-    static const auto queryDE = QStringLiteral(
-        "DELETE FROM nuao_DesktopEvent "
-        " WHERE %1 "
-        " AND start < %2 ");
+    auto removeEvents = Database::self()->addQuery();
+    removeEvents.prepare(
+            "DELETE FROM ResourceEvent "
+            "WHERE usedActivity = COALESCE(:usedActivity, usedActivity) "
+            "AND start < :time"
+        );
 
-    Database::self()->exec(
-        queryRSC.arg(activityCheck).arg(time.toTime_t()),
-        queryDE.arg(activityCheck).arg(time.toTime_t())
-    );
+    auto removeScoreCaches = Database::self()->addQuery();
+    removeScoreCaches.prepare(
+            "DELETE FROM ResourceScoreCache "
+            "WHERE usedActivity = COALESCE(:usedActivity, usedActivity) "
+            "AND lastUpdate < :time");
+
+    Utils::exec(removeEvents,
+            ":usedActivity", usedActivity,
+            ":time", time.toTime_t()
+        );
+
+    Utils::exec(removeScoreCaches,
+            ":usedActivity", usedActivity,
+            ":time", time.toTime_t()
+        );
 
     emit earlierStatsDeleted(activity, months);
 }

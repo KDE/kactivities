@@ -1,0 +1,4 @@
+
+let g:ctrlpswitcher_project_sources = expand('<sfile>:p:h')."/src"
+let g:ctrlpswitcher_mode = 1
+

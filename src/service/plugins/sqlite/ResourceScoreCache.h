@@ -26,11 +26,11 @@
 // Utils
 #include <utils/d_ptr.h>
 
-
-class ResourceScoreCachePrivate;
-
 /**
+ * ResourceScoreCache handles the persistence of the usage ratings for
+ * the resources.
  *
+ * It contains the logic to update the score of a single resource.
  */
 class ResourceScoreCache {
 public:
@@ -42,6 +42,7 @@ public:
 
 private:
     D_PTR;
+    class Queries;
 };
 
 #endif // PLUGINS_SQLITE_RESOURCE_SCORE_CACHE_H

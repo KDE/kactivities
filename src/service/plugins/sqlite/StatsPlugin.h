@@ -21,15 +21,22 @@
 // Qt
 #include <QObject>
 
-// Boost
+// Boost and STL
+#include <memory>
 #include <boost/container/flat_set.hpp>
 
 // Local
 #include <Plugin.h>
 
-
+class QSqlQuery;
 class QFileSystemWatcher;
 
+/**
+ * Communication with the outer world.
+ *
+ * - Handles configuration
+ * - Filters the events based on the user's configuration.
+ */
 class StatsPlugin : public Plugin {
     Q_OBJECT
     Q_CLASSINFO("D-Bus Interface", "org.kde.ActivityManager.Resources.Scoring")
@@ -45,6 +52,14 @@ public:
 
     QString currentActivity() const;
 
+
+public Q_SLOTS:
+    void deleteRecentStats(const QString &activity, int count,
+                           const QString &what);
+
+    void deleteEarlierStats(const QString &activity, int months);
+
+
 Q_SIGNALS:
     void resourceScoreUpdated(const QString &activity, const QString &client,
                               const QString &resource, double score);
@@ -54,15 +69,22 @@ Q_SIGNALS:
 
     void earlierStatsDeleted(const QString &activity, int months);
 
-public Q_SLOTS:
-    void deleteRecentStats(const QString &activity, int count,
-                           const QString &what);
-
-    void deleteEarlierStats(const QString &activity, int months);
 
 private Q_SLOTS:
     void addEvents(const EventList &events);
     void loadConfiguration();
+
+    void openResourceEvent(const QString &usedActivity,
+                           const QString &initiatingAgent,
+                           const QString &targettedResource,
+                           const QDateTime &start,
+                           const QDateTime &end = QDateTime());
+
+    void closeResourceEvent(const QString &usedActivity,
+                            const QString &initiatingAgent,
+                            const QString &targettedResource,
+                            const QDateTime &end);
+
 
 private:
     inline bool acceptedEvent(const Event &event);
@@ -79,9 +101,14 @@ private:
 
     boost::container::flat_set<QString> m_apps;
 
+    std::unique_ptr<QSqlQuery> openResourceEventQuery;
+    std::unique_ptr<QSqlQuery> closeResourceEventQuery;
+
     bool m_blockedByDefault : 1;
     bool m_blockAll : 1;
     WhatToRemember m_whatToRemember : 2;
+
+    QObject *m_resourceLinking;
 
     static StatsPlugin *s_instance;
 };

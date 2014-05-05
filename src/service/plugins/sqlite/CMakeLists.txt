@@ -8,21 +8,17 @@ set (
    StatsPlugin.cpp
    ResourceScoreCache.cpp
    ResourceScoreMaintainer.cpp
-   Rankings.cpp
+   ResourceLinking.cpp
+   # Rankings.cpp
    ${CMAKE_SOURCE_DIR}/src/utils/qsqlquery.cpp
    ${plugin_implementation_SRCS}
    )
 
 qt5_add_dbus_adaptor (
    sqliteplugin_SRCS
-   org.kde.ActivityManager.Resources.Scoring.xml
-   StatsPlugin.h StatsPlugin
-   )
-
-qt5_add_dbus_adaptor (
-   sqliteplugin_SRCS
-   org.kde.ActivityManager.Rankings.xml
-   Rankings.h Rankings
+   ${CMAKE_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.ResourcesLinking.xml
+   ResourceLinking.h ResourceLinking
+   resourcelinkingadaptor
    )
 
 include_directories (

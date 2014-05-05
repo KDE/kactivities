@@ -98,5 +98,8 @@
       <arg name="state" type="i" direction="out"/>
     </signal>
 
+    <method name="ServiceVersion">
+      <arg type="s" direction="out"/>
+    </method>
   </interface>
 </node>

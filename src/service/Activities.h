@@ -157,6 +157,12 @@ public Q_SLOTS:
      */
     void SetActivityIcon(const QString &activity, const QString &icon);
 
+
+    /**
+     * Returns the version of KActivityManagerD
+     */
+    QString ServiceVersion() const;
+
 public Q_SLOTS:
     /**
      * @returns a list of activities with basic info about them

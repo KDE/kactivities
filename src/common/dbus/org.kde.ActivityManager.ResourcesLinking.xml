@@ -3,43 +3,35 @@
   <interface name="org.kde.ActivityManager.ResourcesLinking">
 
     <method name="LinkResourceToActivity">
-      <arg name="uri" type="s" direction="in"/>
+      <arg name="agent" type="s" direction="in"/>
+      <arg name="resource" type="s" direction="in"/>
       <arg name="activity" type="s" direction="in"/>
     </method>
-
     <method name="LinkResourceToActivity">
-      <arg name="uri" type="s" direction="in"/>
-    </method>
-
-    <method name="UnlinkResourceFromActivity">
-      <arg name="uri" type="s" direction="in"/>
+      <arg name="resource" type="s" direction="in"/>
       <arg name="activity" type="s" direction="in"/>
     </method>
 
     <method name="UnlinkResourceFromActivity">
-      <arg name="uri" type="s" direction="in"/>
-    </method>
-
-    <method name="IsResourceLinkedToActivity">
-      <arg name="uri" type="s" direction="in"/>
+      <arg name="agent" type="s" direction="in"/>
+      <arg name="resource" type="s" direction="in"/>
       <arg name="activity" type="s" direction="in"/>
-      <arg type="b" direction="out"/>
     </method>
-
-    <method name="IsResourceLinkedToActivity">
-      <arg name="uri" type="s" direction="in"/>
-      <arg type="b" direction="out"/>
-    </method>
-
-    <!-- KDE_DEPRECATED -->
-    <method name="ResourcesLinkedToActivity">
-      <arg type="as" direction="out"/>
+    <method name="UnlinkResourceFromActivity">
+      <arg name="resource" type="s" direction="in"/>
       <arg name="activity" type="s" direction="in"/>
     </method>
 
-    <!-- KDE_DEPRECATED -->
-    <method name="ResourcesLinkedToActivity">
-      <arg type="as" direction="out"/>
+    <method name="IsResourceLinkedToActivity">
+      <arg name="agent" type="s" direction="in"/>
+      <arg name="resource" type="s" direction="in"/>
+      <arg name="activity" type="s" direction="in"/>
+      <arg type="b" direction="out"/>
+    </method>
+    <method name="IsResourceLinkedToActivity">
+      <arg name="resource" type="s" direction="in"/>
+      <arg name="activity" type="s" direction="in"/>
+      <arg type="b" direction="out"/>
     </method>
 
   </interface>
