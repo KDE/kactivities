@@ -52,6 +52,9 @@ public:
 
     QString currentActivity() const;
 
+    inline
+    QObject *activitiesInterface() const { return m_activities; }
+
 
 public Q_SLOTS:
     void deleteRecentStats(const QString &activity, int count,

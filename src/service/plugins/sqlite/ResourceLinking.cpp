@@ -37,6 +37,7 @@
 #include "Debug.h"
 #include "Database.h"
 #include "Utils.h"
+#include "StatsPlugin.h"
 #include "resourcelinkingadaptor.h"
 
 ResourceLinking::ResourceLinking(QObject *parent)
@@ -48,13 +49,13 @@ ResourceLinking::ResourceLinking(QObject *parent)
 
 }
 
-void ResourceLinking::LinkResourceToActivity(const QString &initiatingAgent,
-                                             const QString &targettedResource,
-                                             const QString &usedActivity)
+void ResourceLinking::LinkResourceToActivity(QString initiatingAgent,
+                                             QString targettedResource,
+                                             QString usedActivity)
 {
-    qDebug() << "agent" << initiatingAgent
-             << "resource" << targettedResource
-             << "activity" << usedActivity;
+    if (!validateArguments(initiatingAgent, targettedResource, usedActivity)) {
+        return;
+    }
 
     Utils::prepare(Database::self()->database(), linkResourceToActivityQuery, QStringLiteral(
         "INSERT OR REPLACE INTO ResourceLink"
@@ -73,10 +74,14 @@ void ResourceLinking::LinkResourceToActivity(const QString &initiatingAgent,
     );
 }
 
-void ResourceLinking::UnlinkResourceFromActivity(const QString &initiatingAgent,
-                                                 const QString &targettedResource,
-                                                 const QString &usedActivity)
+void ResourceLinking::UnlinkResourceFromActivity(QString initiatingAgent,
+                                                 QString targettedResource,
+                                                 QString usedActivity)
 {
+    if (!validateArguments(initiatingAgent, targettedResource, usedActivity)) {
+        return;
+    }
+
     Utils::prepare(Database::self()->database(), unlinkResourceFromActivityQuery, QStringLiteral(
         "DELETE FROM ResourceLink "
         "WHERE "
@@ -92,10 +97,14 @@ void ResourceLinking::UnlinkResourceFromActivity(const QString &initiatingAgent,
     );
 }
 
-bool ResourceLinking::IsResourceLinkedToActivity(const QString &initiatingAgent,
-                                                 const QString &targettedResource,
-                                                 const QString &usedActivity)
+bool ResourceLinking::IsResourceLinkedToActivity(QString initiatingAgent,
+                                                 QString targettedResource,
+                                                 QString usedActivity)
 {
+    if (!validateArguments(initiatingAgent, targettedResource, usedActivity)) {
+        return false;
+    }
+
     Utils::prepare(Database::self()->database(), isResourceLinkedToActivityQuery, QStringLiteral(
         "SELECT * FROM ResourceLink "
         "WHERE "
@@ -113,3 +122,39 @@ bool ResourceLinking::IsResourceLinkedToActivity(const QString &initiatingAgent,
     return isResourceLinkedToActivityQuery->next();
 }
 
+bool ResourceLinking::validateArguments(QString &initiatingAgent,
+                                        QString &targettedResource,
+                                        QString &usedActivity)
+{
+    Q_UNUSED(initiatingAgent)
+
+    // Validating targetted resource
+    if (targettedResource.startsWith(QStringLiteral("file://"))) {
+        targettedResource = QUrl(targettedResource).toLocalFile();
+    }
+
+    if (targettedResource.startsWith(QStringLiteral("/"))) {
+        QFileInfo file(targettedResource);
+
+        if (!file.exists()) {
+            return false;
+        }
+
+        targettedResource = file.canonicalFilePath();
+    }
+
+    // If the activity is not empty and the passed activity
+    // does not exist, cancel the request
+    if (!usedActivity.isEmpty()
+            && !Plugin::callOn<QStringList, Qt::DirectConnection>(
+                StatsPlugin::self()->activitiesInterface(), "ListActivities", "QStringList")
+            .contains(usedActivity)) {
+        return false;
+    }
+
+    qDebug() << "agent" << initiatingAgent
+             << "resource" << targettedResource
+             << "activity" << usedActivity;
+
+    return true;
+}

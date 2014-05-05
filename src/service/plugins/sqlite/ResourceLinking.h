@@ -45,17 +45,30 @@ public:
     ResourceLinking(QObject *parent);
 
 public Q_SLOTS:
-    void LinkResourceToActivity(const QString &initiatingAgent,
-                                const QString &targettedResource,
-                                const QString &usedActivity = QString());
-    void UnlinkResourceFromActivity(const QString &initiatingAgent,
-                                    const QString &targettedResource,
-                                    const QString &usedActivity = QString());
-    bool IsResourceLinkedToActivity(const QString &initiatingAgent,
-                                    const QString &targettedResource,
-                                    const QString &usedActivity = QString());
+    /**
+     * Links the resource to the activity
+     * @param initiatingAgent application that requests the linking. Leave
+     *     empty if the resource should be linked to the activity regardless
+     *     of which application asks for it.
+     * @param targettedResource resource to link to the activity. Can be a file
+     *     or any other kind of URI. If it is not a globally recognizable URI,
+     *     you should set the initiatingAgent to a specific application.
+     * @param usedActivity Activity to link to. Leave empty to link to all
+     *     activities.
+     */
+    void LinkResourceToActivity(QString initiatingAgent,
+                                QString targettedResource,
+                                QString usedActivity = QString());
+    void UnlinkResourceFromActivity(QString initiatingAgent,
+                                    QString targettedResource,
+                                    QString usedActivity = QString());
+    bool IsResourceLinkedToActivity(QString initiatingAgent,
+                                    QString targettedResource,
+                                    QString usedActivity = QString());
 
 private:
+    bool validateArguments(QString &initiatingAgent, QString &targettedResource,
+                           QString &usedActivity);
     std::unique_ptr<QSqlQuery> linkResourceToActivityQuery;
     std::unique_ptr<QSqlQuery> unlinkResourceFromActivityQuery;
     std::unique_ptr<QSqlQuery> isResourceLinkedToActivityQuery;
