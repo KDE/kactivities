@@ -38,8 +38,6 @@ Consumer::Consumer(QObject *parent)
     : QObject(parent)
     , d(new ConsumerPrivate())
 {
-    qCDebug(KAMD_CORELIB) << "Creating a consumer";
-
     connect(d->cache.get(), SIGNAL(currentActivityChanged(QString)),
             this, SIGNAL(currentActivityChanged(QString)));
     connect(d->cache.get(), SIGNAL(activityAdded(QString)),
