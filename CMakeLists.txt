@@ -32,6 +32,7 @@ find_package (Qt5 REQUIRED NO_MODULE COMPONENTS Core DBus)
 set(KF5_VERSION "4.99.0") # handled by release scripts
 set(KF5_DEP_VERSION "4.99.0") # handled by release scripts
 find_package (KF5DBusAddons ${KF5_DEP_VERSION} CONFIG REQUIRED)
+find_package (KF5I18n ${KF5_DEP_VERSION} CONFIG REQUIRED)
 
 # Basic includes
 include (CPack)
@@ -54,6 +55,9 @@ ecm_setup_version(${KF5_VERSION}
                   SOVERSION 5)
 
 add_definitions(-DTRANSLATION_DOMAIN=\"kactivities5\")
+if (IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/po")
+    ki18n_install(po)
+endif()
 add_subdirectory (src)
 add_subdirectory (autotests)
 add_subdirectory (tests)
