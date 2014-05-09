@@ -18,6 +18,7 @@ set (
    ${CMAKE_SOURCE_DIR}/tests/common/test.cpp
    )
 
+if(NOT WIN32)
 add_executable (
    KActivitiesTest
    ${KActivitiesTest_SRCS}
@@ -30,4 +31,4 @@ target_link_libraries (
    Qt5::DBus
    KF5::Activities
    )
-
+endif()
