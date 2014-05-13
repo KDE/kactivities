@@ -84,6 +84,7 @@ public:
     };
 
 public Q_SLOTS:
+    // Activity control methods
     void setActivityName(const QString &id, const QString &name,
                          const QJSValue &callback);
     void setActivityIcon(const QString &id, const QString &icon,
@@ -97,6 +98,7 @@ public Q_SLOTS:
     void stopActivity(const QString &id, const QJSValue &callback);
     void startActivity(const QString &id, const QJSValue &callback);
 
+    // Model property getters and setters
     void setShownStates(const QString &states);
     QString shownStates() const;
 

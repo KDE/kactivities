@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2012 Ivan Cukic <ivan.cukic(at)kde.org>
+ *   Copyright (C) 2012, 2013, 2014 Ivan Cukic <ivan.cukic(at)kde.org>
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License version 2,
@@ -20,11 +20,24 @@
 #ifndef KACTIVITIES_MODELS_RESOURCE_MODEL_H
 #define KACTIVITIES_MODELS_RESOURCE_MODEL_H
 
-#include <QAbstractListModel>
+// Qt
+#include <QObject>
+#include <QSortFilterProxyModel>
+#include <QJSValue>
+#include <QSqlTableModel>
+#include <QSqlDatabase>
 
-#include "kactivities_models_export.h"
+// STL and Boost
+#include <boost/container/flat_set.hpp>
+#include <memory>
+
+// Local
+#include <lib/core/controller.h>
+#include <lib/core/consumer.h>
+#include <lib/core/info.h>
 
 class QModelIndex;
+class QDBusPendingCallWatcher;
 
 namespace KActivities {
 namespace Models {
@@ -33,111 +46,90 @@ namespace Models {
  * ResourceModel
  */
 
-class KACTIVITIES_MODELS_EXPORT ResourceModel : public QAbstractListModel {
+class ResourceModel : public QSortFilterProxyModel {
     Q_OBJECT
 
-    Q_PROPERTY(QString activity READ activity WRITE setActivity NOTIFY activityChanged)
-    Q_PROPERTY(QString application READ application WRITE setApplication NOTIFY applicationChanged)
-    Q_PROPERTY(int limit READ limit WRITE setLimit NOTIFY limitChanged)
+    /**
+     * Sets for which activity should the resources be shown for.
+     * Special values are:
+     *  - ":current" for the current activity
+     *  - ":any" show resources that are linked to any activity, including "global"
+     *  - ":global" show resources that are globally linked
+     */
+    Q_PROPERTY(QString shownActivity READ shownActivity WRITE setShownActivity NOTIFY shownActivityChanged)
+
+    /**
+     * Sets for which agent should the resources be shown for.
+     * Special values are:
+     *  - ":current" for the current application
+     *  - ":any" show resources that are linked to any agent, including "global"
+     *  - ":global" show resources that are globally linked
+     */
+    Q_PROPERTY(QString shownAgent READ shownAgent WRITE setShownAgent NOTIFY shownAgentChanged)
 
 public:
     ResourceModel(QObject *parent = 0);
     virtual ~ResourceModel();
 
-    /**
-     * What should the model display?
-     */
-    enum ContentMode {
-        Favorites, // Show linked resources first, then the top rated (default)
-        Linked, // Show only linked resources
-        TopRated, // Show only top rated resources
-        Recent // Show recently used resources
-    };
-
     enum Roles {
-        ResourceUrl = Qt::UserRole,
-        ResourceScore,
-        ResourceIconName
+        Resource    = Qt::UserRole,
+        Activity    = Qt::UserRole + 1,
+        Agent       = Qt::UserRole + 2
     };
 
-    virtual int rowCount(const QModelIndex &parent = QModelIndex()) const;
+    QHash<int, QByteArray> roleNames() const Q_DECL_OVERRIDE;
 
-    virtual QVariant data(const QModelIndex &index,
-                          int role = Qt::DisplayRole) const;
-
-    virtual QVariant headerData(int section, Qt::Orientation orientation,
-                                int role = Qt::DisplayRole) const;
+    virtual QVariant data(const QModelIndex &proxyIndex,
+                          int role = Qt::DisplayRole) const Q_DECL_OVERRIDE;
 
 public Q_SLOTS:
-    /**
-     * Shows resources related to specific activity
-     * @param activity activity id.
-     * @note if the activity id is empty, the model
-     * will display resources linked to the current activity
-     * (default)
-     */
-    void setActivity(const QString &activity);
+    // Resource linking control methods
+    void linkResourceToActivity(const QString &resource,
+                                const QJSValue &callback);
+    void linkResourceToActivity(const QString &resource,
+                                const QString &activity,
+                                const QJSValue &callback);
+    void linkResourceToActivity(const QString &agent,
+                                const QString &resource,
+                                const QString &activity,
+                                const QJSValue &callback);
 
-    /**
-     * @returns which activity the model displays
-     */
-    QString activity() const;
+    void unlinkResourceFromActivity(const QString &resource,
+                                    const QJSValue &callback);
+    void unlinkResourceFromActivity(const QString &resource,
+                                    const QString &activity,
+                                    const QJSValue &callback);
+    void unlinkResourceFromActivity(const QString &agent,
+                                    const QString &resource,
+                                    const QString &activity,
+                                    const QJSValue &callback);
 
-    /**
-     * Shows resources related to a specific application
-     * @param application application id
-     * @note if empty, shows resources for all applications
-     * aggregated (default)
-     */
-    void setApplication(const QString &application);
+    // Model property getters and setters
+    void setShownActivity(const QString &activityId);
+    QString shownActivity() const;
 
-    /**
-     * @returns for which application the resources are shown
-     */
-    QString application() const;
+    void setShownAgent(const QString &agent);
+    QString shownAgent() const;
 
-    /**
-     * Limit the number of items to show
-     * @param count number of items to show
-     * @note default is 10, increasing it significantely
-     * can lead to performance degradation
-     */
-    void setLimit(int count);
-
-    /**
-     * @returns the item count limit
-     */
-    int limit() const;
-
-    /**
-     * Sets the list mode
-     */
-    void setContentMode(ContentMode mode);
-
-    /**
-     * @returns display mode
-     */
-    ContentMode contentMode() const;
 
 Q_SIGNALS:
-    void applicationChanged(const QString &application);
-    void activityChanged(const QString &activity);
-    void limitChanged(int limit);
+    void shownActivityChanged();
+    void shownAgentChanged();
+
+private Q_SLOTS:
+    void setCurrentActivity(const QString &activity);
+
 
 private:
-    Q_PRIVATE_SLOT(d, void servicePresenceChanged(bool))
-    Q_PRIVATE_SLOT(d, void resourceScoreUpdated(QString, QString, QString, double))
+    KActivities::Consumer m_service;
 
-    Q_PRIVATE_SLOT(d, void newEntries(QList<Nepomuk2::Query::Result>))
-    Q_PRIVATE_SLOT(d, void entriesRemoved(QList<QUrl>))
-    Q_PRIVATE_SLOT(d, void error(QString))
+    QSqlDatabase   m_database;
+    QSqlTableModel *m_databaseModel;
 
-    Q_PRIVATE_SLOT(d, void setCurrentActivity(QString))
+    QString m_shownActivity;
+    QString m_shownAgent;
 
-    friend class Private;
-
-    class Private;
-    Private *const d;
+    void reloadData();
 };
 
 } // namespace Models

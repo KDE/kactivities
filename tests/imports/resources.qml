@@ -29,14 +29,13 @@ ListView {
     property int implicitWidth: minimumWidth * 1.5
     property int implicitHeight: minimumHeight * 1.5
 
-    property int formFactor: plasmoid.formFactor
-
 
 
     model: modelMain
 
-    Activities.ActivityModel {
+    Activities.ResourceModel {
         id: modelMain
+        shownAgent: "plasmashell/org.kde.tasks"
     }
 
     add: Transition {
@@ -73,14 +72,18 @@ ListView {
     }
 
     delegate: Column {
-        height: 32
+        height: 48
         Text {
             text: name
             height: 16
             font.bold: true
         }
         Text {
-            text: "   id: " + id
+            text: "   icon: " + icon
+            height: 16
+        }
+        Text {
+            text: "   application: " + agent
             height: 16
         }
 

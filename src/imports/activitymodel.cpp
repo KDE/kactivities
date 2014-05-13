@@ -45,7 +45,10 @@
 
 // Local
 #include "utils/remove_if.h"
+#include "utils/continue_with.h"
 #include "utils_p.h"
+
+using kamd::utils::continue_with;
 
 
 namespace KActivities {
@@ -296,18 +299,16 @@ ActivityModel::~ActivityModel()
 
 QHash<int, QByteArray> ActivityModel::roleNames() const
 {
-    QHash<int, QByteArray> roles;
+    return {
+        {Qt::DisplayRole,    "name"},
+        {Qt::DecorationRole, "icon"},
 
-    roles[Qt::DisplayRole]    = "name";
-    roles[Qt::DecorationRole] = "icon";
-
-    roles[ActivityState]      = "state";
-    roles[ActivityId]         = "id";
-    // roles[ActivityName]       = "name";
-    roles[ActivityIcon]       = "iconSource";
-    roles[ActivityBackground] = "background";
-    roles[ActivityCurrent]    = "current";
-    return roles;
+        {ActivityState,      "state"},
+        {ActivityId,         "id"},
+        {ActivityIcon,       "iconSource"},
+        {ActivityBackground, "background"},
+        {ActivityCurrent,    "current"}
+    };
 }
 
 
@@ -563,32 +564,6 @@ QVariant ActivityModel::headerData(int section, Qt::Orientation orientation,
 
     return QVariant();
 }
-
-namespace {
-    template <typename _ReturnType>
-    void continue_with(const QFuture<_ReturnType> &future, QJSValue handler)
-    {
-        auto watcher = new QFutureWatcher<_ReturnType>();
-        QObject::connect(watcher, &QFutureWatcherBase::finished,
-                [=] () mutable {
-                    handler.call(QJSValueList() << future.result());
-                }
-            );
-        watcher->setFuture(future);
-    }
-
-    template <>
-    void continue_with(const QFuture<void> &future, QJSValue handler)
-    {
-        auto watcher = new QFutureWatcher<void>();
-        QObject::connect(watcher, &QFutureWatcherBase::finished,
-                [=] () mutable {
-                    handler.call(QJSValueList());
-                }
-            );
-        watcher->setFuture(future);
-    }
-} // namespace
 
 // QFuture<void> Controller::setActivityName(id, name)
 void ActivityModel::setActivityName(const QString &id, const QString &name,
