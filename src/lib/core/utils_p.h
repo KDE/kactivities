@@ -30,7 +30,6 @@
 // Creates an async call to retrieve a value from the dbus service
 // and initializes the call watcher
 #define KAMD_RETRIEVE_REMOTE_VALUE(Variable, MethodToCall, Target)                      \
-    qDebug() << "Locking mutex for" << #Variable;                                       \
     Variable##Mutex.lock();                                                             \
     const QDBusPendingCall & Variable##Call = Manager::activities()->MethodToCall;      \
     Variable##CallWatcher = new QDBusPendingCallWatcher(Variable##Call, Target);        \
@@ -80,7 +79,6 @@
         Variable##CallWatcher = 0;                                               \
         Variable##Mutex.unlock();                                                \
         call->deleteLater();                                                     \
-        qDebug() << "Unlocked mutex";                                            \
     }
 
 // Implements a value getter
@@ -89,7 +87,6 @@
     {                                                                 \
         if (!Manager::isServicePresent()) return Default;             \
         waitForCallFinished(d->Variable##CallWatcher, &d->Variable##Mutex); \
-        qDebug() << "Returning" << #Variable << d->Variable;          \
         return d->Variable;                                           \
     }
 
@@ -98,7 +95,6 @@ static inline void waitForCallFinished(QDBusPendingCallWatcher * watcher, QMutex
     if (watcher) {
         watcher->waitForFinished();
 
-        qDebug() << "Trying to lock mutex";
         mutex->lock();
         mutex->unlock();
     }
