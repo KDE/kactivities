@@ -142,7 +142,7 @@ public:
      * @note This method is <b>asynchronous</b>. It will return before the
      * resource is actually linked to the activity.
      */
-    void linkResource(const QString &resourceUri);
+    // QFuture<void> linkResource(const QString &resourceUri);
 
     /**
      * Unlinks the specified resource from the activity
@@ -150,7 +150,7 @@ public:
      * @note This method is <b>asynchronous</b>. It will return before the
      * resource is actually unlinked from the activity.
      */
-    void unlinkResource(const QString &resourceUri);
+    // QFuture<void> unlinkResource(const QString &resourceUri);
 
     /**
      * @returns whether a resource is linked to this activity
@@ -158,7 +158,7 @@ public:
      * methods like waitForFinished, cancel, pause on it.
      * @since 5.0
      */
-    QFuture<bool> isResourceLinked(const QString &resourceUri);
+    // QFuture<bool> isResourceLinked(const QString &resourceUri);
 
 Q_SIGNALS:
     /**
