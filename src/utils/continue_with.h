@@ -8,11 +8,14 @@
 #ifndef UTILS_CONTINUE_WITH_H
 #define UTILS_CONTINUE_WITH_H
 
+#include <QFuture>
+#include <QFutureWatcher>
+
 namespace kamd {
 namespace utils {
 
     template <typename _ReturnType>
-    void continue_with(const QFuture<_ReturnType> &future, QJSValue handler)
+    inline void continue_with(const QFuture<_ReturnType> &future, QJSValue handler)
     {
         auto watcher = new QFutureWatcher<_ReturnType>();
         QObject::connect(watcher, &QFutureWatcherBase::finished,
@@ -24,7 +27,7 @@ namespace utils {
     }
 
     template <>
-    void continue_with(const QFuture<void> &future, QJSValue handler)
+    inline void continue_with(const QFuture<void> &future, QJSValue handler)
     {
         auto watcher = new QFutureWatcher<void>();
         QObject::connect(watcher, &QFutureWatcherBase::finished,

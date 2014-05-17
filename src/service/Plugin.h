@@ -20,8 +20,6 @@
 #ifndef PLUGIN_H
 #define PLUGIN_H
 
-#include <kactivities_export.h>
-
 // Qt
 #include <QObject>
 #include <QMetaObject>
@@ -45,7 +43,7 @@
 /**
  *
  */
-class KACTIVITIES_EXPORT Plugin : public Module {
+class Plugin : public Module {
     Q_OBJECT
 
 public:

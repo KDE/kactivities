@@ -44,17 +44,24 @@ public:
     virtual int newInstance();
 
     // static Application * self();
-    static void quit();
+    // static void quit();
 
     Resources &resources() const;
     Activities &activities() const;
     Features &features() const;
 
+public Q_SLOTS:
+    void quit();
+    QString serviceVersion() const;
+
 private Q_SLOTS:
+    void init();
     void loadPlugins();
 
 private:
     D_PTR;
+
+    friend int main(int, char**);
 };
 
 #endif // APPLICATION_H

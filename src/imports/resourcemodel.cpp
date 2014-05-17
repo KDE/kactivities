@@ -167,12 +167,17 @@ QVariant ResourceModel::data(const QModelIndex &proxyIndex, int role) const
 void ResourceModel::linkResourceToActivity(const QString &resource,
                                            const QJSValue &callback)
 {
+    Q_UNUSED(resource)
+    Q_UNUSED(callback)
 }
 
 void ResourceModel::linkResourceToActivity(const QString &resource,
                                            const QString &activity,
                                            const QJSValue &callback)
 {
+    Q_UNUSED(resource)
+    Q_UNUSED(activity)
+    Q_UNUSED(callback)
 }
 
 void ResourceModel::linkResourceToActivity(const QString &agent,
@@ -180,17 +185,26 @@ void ResourceModel::linkResourceToActivity(const QString &agent,
                                            const QString &activity,
                                            const QJSValue &callback)
 {
+    Q_UNUSED(agent)
+    Q_UNUSED(resource)
+    Q_UNUSED(activity)
+    Q_UNUSED(callback)
 }
 
 void ResourceModel::unlinkResourceFromActivity(const QString &resource,
                                                const QJSValue &callback)
 {
+    Q_UNUSED(resource)
+    Q_UNUSED(callback)
 }
 
 void ResourceModel::unlinkResourceFromActivity(const QString &resource,
                                                const QString &activity,
                                                const QJSValue &callback)
 {
+    Q_UNUSED(resource)
+    Q_UNUSED(activity)
+    Q_UNUSED(callback)
 }
 
 void ResourceModel::unlinkResourceFromActivity(const QString &agent,
@@ -198,6 +212,10 @@ void ResourceModel::unlinkResourceFromActivity(const QString &agent,
                                                const QString &activity,
                                                const QJSValue &callback)
 {
+    Q_UNUSED(agent)
+    Q_UNUSED(resource)
+    Q_UNUSED(activity)
+    Q_UNUSED(callback)
 }
 
 

@@ -535,8 +535,3 @@ QStringList Activities::listFeatures(const QStringList &feature) const
     return QStringList();
 }
 
-#include "../lib/core/version.h"
-QString Activities::ServiceVersion() const
-{
-    return KACTIVITIES_VERSION_STRING;
-}
