@@ -14,27 +14,33 @@
 namespace kamd {
 namespace utils {
 
+    namespace detail {
+
     template <typename _ReturnType>
-    inline void continue_with(const QFuture<_ReturnType> &future, QJSValue handler)
+    inline void pass_value(const QFuture<_ReturnType> &future,
+                           QJSValue &handler)
     {
-        auto watcher = new QFutureWatcher<_ReturnType>();
-        QObject::connect(watcher, &QFutureWatcherBase::finished,
-                [=] () mutable {
-                    handler.call(QJSValueList() << future.result());
-                }
-            );
-        watcher->setFuture(future);
+        handler.call({ future.result() });
     }
 
     template <>
-    inline void continue_with(const QFuture<void> &future, QJSValue handler)
+    inline void pass_value(const QFuture<void> &future, QJSValue &handler)
     {
-        auto watcher = new QFutureWatcher<void>();
-        QObject::connect(watcher, &QFutureWatcherBase::finished,
-                [=] () mutable {
-                    handler.call(QJSValueList());
-                }
-            );
+        Q_UNUSED(future)
+        handler.call({});
+    }
+
+    } // namespace detail
+
+
+    template <typename _ReturnType>
+    inline void continue_with(const QFuture<_ReturnType> &future,
+                              QJSValue handler)
+    {
+        auto watcher = new QFutureWatcher<_ReturnType>();
+        QObject::connect(watcher, &QFutureWatcherBase::finished, [=]() mutable {
+            detail::pass_value(future, handler);
+        });
         watcher->setFuture(future);
     }
 
