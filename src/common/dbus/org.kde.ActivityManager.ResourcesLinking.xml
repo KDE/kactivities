@@ -34,5 +34,16 @@
       <arg type="b" direction="out"/>
     </method>
 
+    <signal name="ResourceLinkedToActivity">
+      <arg name="agent" type="s" direction="out"/>
+      <arg name="resource" type="s" direction="out"/>
+      <arg name="activity" type="s" direction="out"/>
+    </signal>
+    <signal name="ResourceUnlinkedFromActivity">
+      <arg name="agent" type="s" direction="out"/>
+      <arg name="resource" type="s" direction="out"/>
+      <arg name="activity" type="s" direction="out"/>
+    </signal>
+
   </interface>
 </node>

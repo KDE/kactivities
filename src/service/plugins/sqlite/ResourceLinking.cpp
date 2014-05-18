@@ -57,21 +57,25 @@ void ResourceLinking::LinkResourceToActivity(QString initiatingAgent,
         return;
     }
 
-    Utils::prepare(Database::self()->database(), linkResourceToActivityQuery, QStringLiteral(
-        "INSERT OR REPLACE INTO ResourceLink"
-        "        (usedActivity,  initiatingAgent,  targettedResource) "
-        "VALUES ( "
-            "COALESCE(:usedActivity,''),"
-            "COALESCE(:initiatingAgent,''),"
-            "COALESCE(:targettedResource,'')"
-        ")"
-    ));
+    Utils::prepare(Database::self()->database(), linkResourceToActivityQuery,
+        QStringLiteral(
+            "INSERT OR REPLACE INTO ResourceLink"
+            "        (usedActivity,  initiatingAgent,  targettedResource) "
+            "VALUES ( "
+                "COALESCE(:usedActivity,''),"
+                "COALESCE(:initiatingAgent,''),"
+                "COALESCE(:targettedResource,'')"
+            ")"
+        ));
 
     Utils::exec(*linkResourceToActivityQuery,
         ":usedActivity"      , usedActivity,
         ":initiatingAgent"   , initiatingAgent,
         ":targettedResource" , targettedResource
     );
+
+    emit ResourceLinkedToActivity(initiatingAgent, targettedResource,
+                                  usedActivity);
 }
 
 void ResourceLinking::UnlinkResourceFromActivity(QString initiatingAgent,
@@ -82,19 +86,23 @@ void ResourceLinking::UnlinkResourceFromActivity(QString initiatingAgent,
         return;
     }
 
-    Utils::prepare(Database::self()->database(), unlinkResourceFromActivityQuery, QStringLiteral(
-        "DELETE FROM ResourceLink "
-        "WHERE "
-        "usedActivity      = COALESCE(:usedActivity     , '') AND "
-        "initiatingAgent   = COALESCE(:initiatingAgent  , '') AND "
-        "targettedResource = COALESCE(:targettedResource, '') "
-    ));
+    Utils::prepare(Database::self()->database(), unlinkResourceFromActivityQuery,
+        QStringLiteral(
+            "DELETE FROM ResourceLink "
+            "WHERE "
+            "usedActivity      = COALESCE(:usedActivity     , '') AND "
+            "initiatingAgent   = COALESCE(:initiatingAgent  , '') AND "
+            "targettedResource = COALESCE(:targettedResource, '') "
+        ));
 
     Utils::exec(*unlinkResourceFromActivityQuery,
         ":usedActivity"      , usedActivity,
         ":initiatingAgent"   , initiatingAgent,
         ":targettedResource" , targettedResource
     );
+
+    emit ResourceUnlinkedFromActivity(initiatingAgent, targettedResource,
+                                      usedActivity);
 }
 
 bool ResourceLinking::IsResourceLinkedToActivity(QString initiatingAgent,
@@ -105,13 +113,14 @@ bool ResourceLinking::IsResourceLinkedToActivity(QString initiatingAgent,
         return false;
     }
 
-    Utils::prepare(Database::self()->database(), isResourceLinkedToActivityQuery, QStringLiteral(
-        "SELECT * FROM ResourceLink "
-        "WHERE "
-        "usedActivity      = COALESCE(:usedActivity     , '') AND "
-        "initiatingAgent   = COALESCE(:initiatingAgent  , '') AND "
-        "targettedResource = COALESCE(:targettedResource, '') "
-    ));
+    Utils::prepare(Database::self()->database(), isResourceLinkedToActivityQuery,
+        QStringLiteral(
+            "SELECT * FROM ResourceLink "
+            "WHERE "
+            "usedActivity      = COALESCE(:usedActivity     , '') AND "
+            "initiatingAgent   = COALESCE(:initiatingAgent  , '') AND "
+            "targettedResource = COALESCE(:targettedResource, '') "
+        ));
 
     Utils::exec(*isResourceLinkedToActivityQuery,
         ":usedActivity"      , usedActivity,
@@ -146,15 +155,15 @@ bool ResourceLinking::validateArguments(QString &initiatingAgent,
     // If the activity is not empty and the passed activity
     // does not exist, cancel the request
     if (!usedActivity.isEmpty()
-            && !Plugin::callOn<QStringList, Qt::DirectConnection>(
-                StatsPlugin::self()->activitiesInterface(), "ListActivities", "QStringList")
-            .contains(usedActivity)) {
+        && !Plugin::callOn<QStringList, Qt::DirectConnection>(
+                StatsPlugin::self()->activitiesInterface(),
+                "ListActivities", "QStringList").contains(usedActivity)) {
         return false;
     }
 
-    qDebug() << "agent" << initiatingAgent
-             << "resource" << targettedResource
-             << "activity" << usedActivity;
+    // qDebug() << "agent" << initiatingAgent
+    //          << "resource" << targettedResource
+    //          << "activity" << usedActivity;
 
     return true;
 }

@@ -119,6 +119,13 @@ Q_SIGNALS:
 private Q_SLOTS:
     void setCurrentActivity(const QString &activity);
 
+    void resourceLinkedToActivity(const QString &initiatingAgent,
+                                  const QString &targettedResource,
+                                  const QString &usedActivity);
+    void resourceUnlinkedFromActivity(const QString &initiatingAgent,
+                                      const QString &targettedResource,
+                                      const QString &usedActivity);
+
 
 private:
     KActivities::Consumer m_service;
@@ -130,6 +137,9 @@ private:
     QString m_shownAgent;
 
     void reloadData();
+
+    class LinkerService;
+    std::shared_ptr<LinkerService> m_linker;
 };
 
 } // namespace Models

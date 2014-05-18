@@ -66,13 +66,21 @@ public Q_SLOTS:
                                     QString targettedResource,
                                     QString usedActivity = QString());
 
+Q_SIGNALS:
+    void ResourceLinkedToActivity(const QString &initiatingAgent,
+                                  const QString &targettedResource,
+                                  const QString &usedActivity);
+    void ResourceUnlinkedFromActivity(const QString &initiatingAgent,
+                                      const QString &targettedResource,
+                                      const QString &usedActivity);
+
 private:
     bool validateArguments(QString &initiatingAgent, QString &targettedResource,
                            QString &usedActivity);
+
     std::unique_ptr<QSqlQuery> linkResourceToActivityQuery;
     std::unique_ptr<QSqlQuery> unlinkResourceFromActivityQuery;
     std::unique_ptr<QSqlQuery> isResourceLinkedToActivityQuery;
-
 };
 
 #endif // PLUGINS_SQLITE_RESOURCE_LINKING_H

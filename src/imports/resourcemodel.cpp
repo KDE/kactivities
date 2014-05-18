@@ -26,12 +26,16 @@
 #include <QIcon>
 #include <QModelIndex>
 #include <QCoreApplication>
+#include <QDBusInterface>
 
 // KDE
 #include <klocalizedstring.h>
 #include <kconfig.h>
 #include <kconfiggroup.h>
 #include <kfileitem.h>
+
+// STL
+#include <mutex>
 
 // Local
 #include "utils/continue_with.h"
@@ -41,10 +45,40 @@ using kamd::utils::continue_with;
 namespace KActivities {
 namespace Models {
 
+class ResourceModel::LinkerService: public QDBusInterface {
+private:
+    LinkerService()
+        : QDBusInterface("org.kde.ActivityManager",
+                         "/ActivityManager/Resources/Linking",
+                         "org.kde.ActivityManager.ResourcesLinking")
+    {
+    }
+
+public:
+    static std::shared_ptr<LinkerService> self()
+    {
+        static std::weak_ptr<LinkerService> s_instance;
+        static std::mutex singleton;
+
+        std::lock_guard<std::mutex> singleton_lock(singleton);
+
+        auto result = s_instance.lock();
+
+        if (s_instance.expired()) {
+            result.reset(new LinkerService());
+            s_instance = result;
+        }
+
+        return std::move(result);
+    }
+
+};
+
 ResourceModel::ResourceModel(QObject *parent)
     : QSortFilterProxyModel(parent)
     , m_shownActivity(QStringLiteral(":current"))
     , m_shownAgent(QStringLiteral(":current"))
+    , m_linker(LinkerService::self())
 {
     // TODO: What to do if the file does not exist?
 
@@ -70,6 +104,11 @@ ResourceModel::ResourceModel(QObject *parent)
 
     connect(&m_service, &KActivities::Consumer::currentActivityChanged,
             this, &ResourceModel::setCurrentActivity);
+
+    connect(m_linker.get(), SIGNAL(ResourceLinkedToActivity(QString, QString, QString)),
+            this, SLOT(resourceLinkedToActivity(QString, QString, QString)));
+    connect(m_linker.get(), SIGNAL(ResourceUnlinkedFromActivity(QString, QString, QString)),
+            this, SLOT(resourceUnlinkedFromActivity(QString, QString, QString)));
 }
 
 ResourceModel::~ResourceModel()
@@ -101,6 +140,7 @@ QString ResourceModel::shownActivity() const
 void ResourceModel::setShownAgent(const QString &agent)
 {
     m_shownAgent = agent;
+
     reloadData();
 }
 
@@ -216,6 +256,49 @@ void ResourceModel::unlinkResourceFromActivity(const QString &agent,
     Q_UNUSED(resource)
     Q_UNUSED(activity)
     Q_UNUSED(callback)
+}
+
+void ResourceModel::resourceLinkedToActivity(const QString &initiatingAgent,
+                                             const QString &targettedResource,
+                                             const QString &usedActivity)
+{
+    Q_UNUSED(targettedResource)
+
+    const bool shouldUpdate =
+        // Testing whether the agent matches
+        (
+            // If the agent is not important
+            m_shownAgent == ":any" ||
+            // or we are listening for the changes for the current agent
+            (m_shownAgent == ":current" && m_shownAgent == initiatingAgent) ||
+            // or for links that are global, and not related to a specific agent
+            (m_shownAgent == ":global" && initiatingAgent == "") ||
+            // or we have a specific agent to listen for
+            m_shownAgent == initiatingAgent
+        ) &&
+        // Testing whether the activity matches
+        (
+            // If the activity is not important
+            m_shownActivity == ":any" ||
+            // or we are listening for the changes for the current activity
+            (m_shownActivity == ":current" && usedActivity == m_service.currentActivity()) ||
+            // or we want the globally linked resources
+            (m_shownActivity == ":global" && usedActivity == "") ||
+            // or we have a specific activity in mind
+            m_shownActivity == usedActivity
+        );
+
+    if (shouldUpdate) {
+        reloadData();
+    }
+}
+
+void ResourceModel::resourceUnlinkedFromActivity(const QString &initiatingAgent,
+                                                 const QString &targettedResource,
+                                                 const QString &usedActivity)
+{
+    // These are the same at the moment
+    resourceLinkedToActivity(initiatingAgent, targettedResource, usedActivity);
 }
 
 
