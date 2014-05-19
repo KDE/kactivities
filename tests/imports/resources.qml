@@ -35,7 +35,8 @@ ListView {
 
     Activities.ResourceModel {
         id: modelMain
-        shownAgent: "plasmashell/org.kde.tasks"
+        shownAgent: "plasmashell/org.kde.tasks,konsole"
+        shownActivity: ":global,:current"
     }
 
     add: Transition {

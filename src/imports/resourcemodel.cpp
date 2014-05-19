@@ -34,8 +34,12 @@
 #include <kconfiggroup.h>
 #include <kfileitem.h>
 
-// STL
+// STL and Boost
 #include <mutex>
+#include <boost/algorithm/string/join.hpp>
+#include <boost/range/numeric.hpp>
+#include <boost/range/algorithm/find_if.hpp>
+#include <boost/range/adaptor/transformed.hpp>
 
 // Local
 #include "utils/continue_with.h"
@@ -76,8 +80,8 @@ public:
 
 ResourceModel::ResourceModel(QObject *parent)
     : QSortFilterProxyModel(parent)
-    , m_shownActivity(QStringLiteral(":current"))
-    , m_shownAgent(QStringLiteral(":current"))
+    , m_shownActivities(QStringLiteral(":current"))
+    , m_shownAgents(QStringLiteral(":current"))
     , m_linker(LinkerService::self())
 {
     // TODO: What to do if the file does not exist?
@@ -128,43 +132,59 @@ QHash<int, QByteArray> ResourceModel::roleNames() const
 
 void ResourceModel::setShownActivity(const QString &activityId)
 {
-    m_shownActivity = activityId;
+    m_shownActivities = activityId.split(',', QString::SkipEmptyParts);
     reloadData();
 }
 
 QString ResourceModel::shownActivity() const
 {
-    return m_shownActivity;
+    return m_shownActivities.join(',');
 }
 
 void ResourceModel::setShownAgent(const QString &agent)
 {
-    m_shownAgent = agent;
+    m_shownAgents = agent.split(',', QString::SkipEmptyParts);
 
     reloadData();
 }
 
 QString ResourceModel::shownAgent() const
 {
-    return m_shownAgent;
+    return m_shownAgents.join(',');
 }
 
 void ResourceModel::reloadData()
 {
-    const QString whereActivity = QStringLiteral("usedActivity=") + (
-        m_shownActivity == ":current" ? "'" + m_service.currentActivity() + "'" :
-        m_shownActivity == ":any"     ? "usedActivity" :
-        m_shownActivity == ":global"  ? "''" :
-                                        "'" + m_shownActivity + "'"
-    );
+    using boost::accumulate;
+    using boost::adaptors::transformed;
 
-    const QString whereAgent = QStringLiteral("initiatingAgent=") + (
-        m_shownAgent == ":current" ? "'" + QCoreApplication::applicationName() + "'" :
-        m_shownAgent == ":any"     ? "initiatingAgent" :
-        m_shownAgent == ":global"  ? "''" :
-                                     "'" + m_shownAgent + "'"
-    );
+    auto activityTest = [&] (const QString &shownActivity) {
+        return QStringLiteral(" OR usedActivity=") + (
+            shownActivity == ":current" ? "'" + m_service.currentActivity() + "'" :
+            shownActivity == ":any"     ? "usedActivity" :
+            shownActivity == ":global"  ? "''" :
+                                          "'" + shownActivity + "'"
+        );
+    };
 
+    auto agentTest = [&] (const QString &shownAgent) {
+        return QStringLiteral(" OR initiatingAgent=") + (
+            shownAgent == ":current" ? "'" + QCoreApplication::applicationName() + "'" :
+            shownAgent == ":any"     ? "initiatingAgent" :
+            shownAgent == ":global"  ? "''" :
+                                       "'" + shownAgent + "'"
+        );
+    };
+
+    const QString whereActivity = QStringLiteral("(0 ") +
+        accumulate(m_shownActivities | transformed(activityTest), QString()) +
+        ')';
+
+    const QString whereAgent = QStringLiteral("(0") +
+        accumulate(m_shownAgents | transformed(agentTest), QString()) +
+        ')';
+
+    qDebug() << whereActivity + " AND " + whereAgent;
     m_databaseModel->setFilter(whereActivity + " AND " + whereAgent);
 }
 
@@ -172,7 +192,7 @@ void ResourceModel::setCurrentActivity(const QString &activity)
 {
     Q_UNUSED(activity)
 
-    if (m_shownActivity == ":current") {
+    if (m_shownActivities.contains(":current")) {
         reloadData();
     }
 }
@@ -264,31 +284,34 @@ void ResourceModel::resourceLinkedToActivity(const QString &initiatingAgent,
 {
     Q_UNUSED(targettedResource)
 
-    const bool shouldUpdate =
-        // Testing whether the agent matches
-        (
-            // If the agent is not important
-            m_shownAgent == ":any" ||
-            // or we are listening for the changes for the current agent
-            (m_shownAgent == ":current" && m_shownAgent == initiatingAgent) ||
-            // or for links that are global, and not related to a specific agent
-            (m_shownAgent == ":global" && initiatingAgent == "") ||
-            // or we have a specific agent to listen for
-            m_shownAgent == initiatingAgent
-        ) &&
-        // Testing whether the activity matches
-        (
+    auto matchingActivity = boost::find_if(m_shownActivities, [&] (const QString &shownActivity) {
+        return
             // If the activity is not important
-            m_shownActivity == ":any" ||
+            shownActivity == ":any" ||
             // or we are listening for the changes for the current activity
-            (m_shownActivity == ":current" && usedActivity == m_service.currentActivity()) ||
+            (shownActivity == ":current"
+                 && usedActivity == m_service.currentActivity()) ||
             // or we want the globally linked resources
-            (m_shownActivity == ":global" && usedActivity == "") ||
+            (shownActivity == ":global" && usedActivity == "") ||
             // or we have a specific activity in mind
-            m_shownActivity == usedActivity
-        );
+            shownActivity == usedActivity;
+    });
 
-    if (shouldUpdate) {
+    auto matchingAgent = boost::find_if(m_shownAgents, [&](const QString &shownAgent) {
+        return
+            // If the agent is not important
+            shownAgent == ":any" ||
+            // or we are listening for the changes for the current agent
+            (shownAgent == ":current"
+                && initiatingAgent == QCoreApplication::applicationName()) ||
+            // or for links that are global, and not related to a specific agent
+            (shownAgent == ":global" && initiatingAgent == "") ||
+            // or we have a specific agent to listen for
+            shownAgent == initiatingAgent;
+    });
+
+    if (matchingActivity != m_shownActivities.end()
+        && matchingAgent != m_shownAgents.end()) {
         reloadData();
     }
 }

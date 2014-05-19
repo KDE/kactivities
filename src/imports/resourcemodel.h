@@ -133,8 +133,8 @@ private:
     QSqlDatabase   m_database;
     QSqlTableModel *m_databaseModel;
 
-    QString m_shownActivity;
-    QString m_shownAgent;
+    QStringList m_shownActivities;
+    QStringList m_shownAgents;
 
     void reloadData();
 

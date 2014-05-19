@@ -4,11 +4,8 @@ set (sdo_SRCS "")
 
 # C++11
 
-if (NepomukCore_FOUND)
-   include_directories (${NEPOMUK_CORE_INCLUDE_DIR})
-   add_subdirectory (fileitemplugin)
-   add_subdirectory (kio)
-endif ()
+add_subdirectory (fileitemplugin)
+add_subdirectory (kio)
 
 find_package(KF5Declarative)
 

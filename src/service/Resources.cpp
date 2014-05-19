@@ -274,10 +274,6 @@ Resources::~Resources()
 void Resources::RegisterResourceEvent(QString application, uint _windowId,
                                       const QString &uri, uint event)
 {
-    Q_ASSERT_X(!uri.startsWith(QStringLiteral("nepomuk:")),
-               "Resources::RegisterResourceEvent",
-               "We do not accept nepomuk URIs for resource events");
-
     if (event > Event::LastEventType
         || uri.isEmpty()
         || application.isEmpty()) {

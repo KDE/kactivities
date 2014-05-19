@@ -57,9 +57,7 @@ public Q_SLOTS:
                                const QString &uri, uint event);
 
     /**
-     * Registers resource's mimetype. If not manually specified, it will
-     * be retrieved if needed from Nepomuk
-     *
+     * Registers resource's mimetype.
      * Note that this will be forgotten when the resource in question is closed.
      * @param uri URI of the resource
      */

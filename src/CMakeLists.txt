@@ -1,9 +1,5 @@
 # vim:set softtabstop=3 shiftwidth=3 tabstop=3 expandtab:
 
-# Installation directory for ontologies. Needed here because
-# it is used in both ontology/ and lib/ subdirectories.
-set (KACTIVITIES_ONTOLOGIES_DIR ${CMAKE_INSTALL_PREFIX}/share/ontology/kde)
-
 option (KACTIVITIES_LIBRARY_ONLY "If true, compiles only the KActivities library, without the service and other modules." OFF)
 option (KACTIVITIES_ENABLE_EXCEPTIONS "If you have Boost 1.53, you need to build KActivities with exceptions enabled. This is UNTESTED and EXPERIMENTAL!" OFF)
 
@@ -107,6 +103,4 @@ if (NOT KACTIVITIES_LIBRARY_ONLY)
    # add_subdirectory (workspace)
 
 endif ()
-
-#add_subdirectory (ontologies)
 

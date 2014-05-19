@@ -159,7 +159,8 @@ Info::Availability Info::availability() const
     if (Manager::activities()->ListActivities().value().contains(d->id)) {
         result = BasicInfo;
 
-        if (Manager::features()->IsFeatureOperational(QStringLiteral("org.kde.ActivityManager.Nepomuk/linking"))) {
+        // TODO: This needs to be changed, test for the new linking feature
+        if (Manager::features()->IsFeatureOperational(QStringLiteral("resources/linking"))) {
             result = Everything;
         }
     }

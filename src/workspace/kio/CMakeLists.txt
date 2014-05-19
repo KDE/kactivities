@@ -9,7 +9,6 @@ include_directories (
    ${CMAKE_CURRENT_BINARY_DIR}
    ${KDE4_INCLUDES}
    ${KDE4_KIO_INCLUDES}
-   ${SOPRANO_INCLUDE_DIR}
    )
 
 ########### next target ###############
@@ -17,13 +16,6 @@ include_directories (
 set (kio_activities_PART_SRCS
    KioActivities.cpp
    )
-
-soprano_add_ontology (
-   kio_activities_PART_SRCS
-   ${CMAKE_SOURCE_DIR}/src/ontologies/kao.trig
-   "KAO" "KDE::Vocabulary" "trig"
-   )
-
 
 kde4_add_plugin (
    kio_activities
@@ -33,8 +25,6 @@ kde4_add_plugin (
 target_link_libraries (
    kio_activities
    ${KDE4_KIO_LIBS}
-   ${NEPOMUK_CORE_LIBRARY}
-   ${SOPRANO_LIBRARIES}
    kactivities
    )
 

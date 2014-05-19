@@ -1,8 +1,6 @@
 #ifndef CONFIG_FEATURES_H_
 #define CONFIG_FEATURES_H_
 
-#cmakedefine01 HAVE_NEPOMUK
-
 #cmakedefine KAMD_DATA_DIR "@KAMD_DATA_DIR@"
 
 #cmakedefine KAMD_PLUGIN_DIR "@KAMD_PLUGIN_DIR@"
