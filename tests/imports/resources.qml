@@ -35,7 +35,7 @@ ListView {
 
     Activities.ResourceModel {
         id: modelMain
-        shownAgent: "plasmashell/org.kde.tasks,konsole"
+        shownAgent: "org.kde.plasma.kickoff"
         shownActivity: ":global,:current"
     }
 
@@ -75,12 +75,12 @@ ListView {
     delegate: Column {
         height: 48
         Text {
-            text: name
+            text: display
             height: 16
             font.bold: true
         }
         Text {
-            text: "   icon: " + icon
+            text: "   icon: " + decoration
             height: 16
         }
         Text {

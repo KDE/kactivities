@@ -122,9 +122,11 @@ ResourceModel::~ResourceModel()
 QHash<int, QByteArray> ResourceModel::roleNames() const
 {
     return {
-        { Qt::DisplayRole,    "name" },
-        { Qt::DecorationRole, "icon" },
-        { Resource,           "resource" },
+        { Qt::DisplayRole,    "display" },
+        { Qt::DecorationRole, "decoration" },
+        // { Qt::DisplayRole,    "name" },
+        // { Qt::DecorationRole, "icon" },
+        { Resource,           "url" },
         { Agent,              "agent" },
         { Activity,           "activity" }
     };
