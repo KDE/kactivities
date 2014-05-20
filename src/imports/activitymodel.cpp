@@ -63,33 +63,13 @@ public:
      * If the state is 0, returns true
      */
     template <typename T>
-    static inline bool matchingState(const QString &activityId,
+    static inline bool matchingState(InfoPtr activity,
                                      T states)
     {
         // Are we filtering activities on their states?
-        if (!states.empty()) {
-            // This is usually not advised (short-lived Info instance
-            // but it comes with no cost since we have an already created
-            // long-lived Controller instance
-            Info activityInfo(activityId);
-            if (!boost::binary_search(states, activityInfo.state()))
-                return false;
-        }
-
-        return true;
-    }
-    /**
-     * Returns whether the the activity has a desired state.
-     * If the state is 0, returns true
-     */
-    template <typename T>
-    static inline bool matchingState(Info * activity,
-                                     T states)
-    {
-        // Are we filtering activities on their states?
-        if (!states.empty()) {
-            if (!boost::binary_search(states, activity->state()))
-                return false;
+        if (!states.empty()
+            && !boost::binary_search(states, activity->state())) {
+            return false;
         }
 
         return true;
@@ -163,7 +143,7 @@ public:
     public:
         BackgroundCache()
             : initialized(false)
-            , plasmaConfig("plasma-org.kde.desktop-appletsrc")
+            , plasmaConfig("plasma-org.kde.plasma.desktop-appletsrc")
         {
             using namespace std::placeholders;
 
@@ -355,13 +335,13 @@ void ActivityModel::onCurrentActivityChanged(const QString &id)
 {
     Q_UNUSED(id)
 
-    for (const auto activity: m_shownActivities) {
+    for (const auto &activity: m_shownActivities) {
         Private::emitActivityUpdated(this, m_shownActivities, activity->id(),
                                      ActivityCurrent);
     }
 }
 
-Info *ActivityModel::registerActivity(const QString &id)
+ActivityModel::InfoPtr ActivityModel::registerActivity(const QString &id)
 {
     auto position = Private::activityPosition(m_knownActivities, id);
 
@@ -369,17 +349,17 @@ Info *ActivityModel::registerActivity(const QString &id)
     //          << " new? not " << (bool)position;
 
     if (position) {
-        return position->second->get();
+        return *(position->second);
 
     } else {
-        auto activityInfo = new Info(id);
+        auto activityInfo = std::make_shared<Info>(id);
 
-        connect(activityInfo, &Info::nameChanged,
-                this,         &ActivityModel::onActivityNameChanged);
-        connect(activityInfo, &Info::iconChanged,
-                this,         &ActivityModel::onActivityIconChanged);
-        connect(activityInfo, &Info::stateChanged,
-                this,         &ActivityModel::onActivityStateChanged);
+        connect(activityInfo.get(), &Info::nameChanged,
+                this,               &ActivityModel::onActivityNameChanged);
+        connect(activityInfo.get(), &Info::iconChanged,
+                this,               &ActivityModel::onActivityIconChanged);
+        connect(activityInfo.get(), &Info::stateChanged,
+                this,               &ActivityModel::onActivityStateChanged);
 
         m_knownActivities.insert(InfoPtr(activityInfo));
 
@@ -394,11 +374,17 @@ void ActivityModel::unregisterActivity(const QString &id)
     auto position = Private::activityPosition(m_knownActivities, id);
 
     if (position) {
+        if (auto shown = Private::activityPosition(m_shownActivities, id)) {
+            Private::model_remove(this, QModelIndex(), shown->first,
+                                  shown->first);
+            m_shownActivities.erase(shown->second);
+        }
+
         m_knownActivities.erase(position->second);
     }
 }
 
-void ActivityModel::showActivity(Info *activityInfo, bool notifyClients)
+void ActivityModel::showActivity(InfoPtr activityInfo, bool notifyClients)
 {
     // Should it really be shown?
     if (!Private::matchingState(activityInfo, m_shownStates)) return;
@@ -407,10 +393,20 @@ void ActivityModel::showActivity(Info *activityInfo, bool notifyClients)
     if (boost::binary_search(m_shownActivities, activityInfo,
                              InfoPtrComparator())) return;
 
-    // qDebug() << m_shownStatesString << "Setting activity visibility to true:"
-    //     << activityInfo->id() << activityInfo->name();
+    auto registeredPosition
+        = Private::activityPosition(m_knownActivities, activityInfo->id());
 
-    auto position = m_shownActivities.insert(activityInfo);
+    if (!registeredPosition) {
+        qDebug() << "Got a request to show an unknown activity, ignoring";
+        return;
+    }
+
+    auto activityInfoPtr = *(registeredPosition->second);
+
+    // qDebug() << m_shownStatesString << "Setting activity visibility to true:"
+    //     << activityInfoPtr->id() << activityInfoPtr->name();
+
+    auto position = m_shownActivities.insert(activityInfoPtr);
 
     if (notifyClients) {
         unsigned int index =
@@ -464,7 +460,11 @@ void ActivityModel::onActivityStateChanged(Info::State state)
                                      ActivityState);
 
     } else {
-        auto info = static_cast<Info*> (sender());
+        auto info = findActivity(sender());
+
+        if (!info) {
+            return;
+        }
 
         // qDebug() << m_shownStatesString << "Activity state has changed: "
         //          << info->id() << " " << info->name()
@@ -565,6 +565,19 @@ QVariant ActivityModel::headerData(int section, Qt::Orientation orientation,
     return QVariant();
 }
 
+ActivityModel::InfoPtr ActivityModel::findActivity(QObject *ptr) const
+{
+    auto info = boost::find_if(m_knownActivities, [ptr] (const InfoPtr &info) {
+            return ptr == info.get();
+        });
+
+    if (info == m_knownActivities.end()) {
+        return nullptr;
+    } else {
+        return *info;
+    }
+}
+
 // QFuture<void> Controller::setActivityName(id, name)
 void ActivityModel::setActivityName(const QString &id, const QString &name,
                                     const QJSValue &callback)
@@ -609,7 +622,6 @@ void ActivityModel::startActivity(const QString &id, const QJSValue &callback)
 {
     continue_with(m_service.startActivity(id), callback);
 }
-
 
 } // namespace Models
 } // namespace KActivities
