@@ -120,10 +120,9 @@ private:
     boost::container::flat_set<State> m_shownStates;
     QString m_shownStatesString;
 
-    typedef std::unique_ptr<Info> InfoPtr;
+    typedef std::shared_ptr<Info> InfoPtr;
 
     struct InfoPtrComparator {
-        template <typename InfoPtr>
         bool operator() (const InfoPtr& left, const InfoPtr& right) const
         {
             const QString &leftName = left->name().toLower();
@@ -136,12 +135,14 @@ private:
     };
 
     boost::container::flat_set<InfoPtr, InfoPtrComparator> m_knownActivities;
-    boost::container::flat_set<Info*, InfoPtrComparator> m_shownActivities;
+    boost::container::flat_set<InfoPtr, InfoPtrComparator> m_shownActivities;
 
-    Info *registerActivity(const QString &id);
+    InfoPtr registerActivity(const QString &id);
     void unregisterActivity(const QString &id);
-    void showActivity(Info *activityInfo, bool notifyClients);
+    void showActivity(InfoPtr activityInfo, bool notifyClients);
     void hideActivity(const QString &id);
+
+    InfoPtr findActivity(QObject *ptr) const;
 
     class Private;
     friend class Private;

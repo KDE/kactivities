@@ -80,6 +80,7 @@ Info::Info(const QString &activity, QObject *parent)
     : QObject(parent)
     , d(new InfoPrivate(this, activity))
 {
+    // qDebug() << "Created an instance of Info: " << (void*)this;
 #define PASS_SIGNAL_HANDLER(SIGNAL_NAME, SLOT_NAME)                            \
     connect(d->cache.get(),  SIGNAL(SIGNAL_NAME(QString)),                     \
             this,            SLOT(SLOT_NAME(QString)));
@@ -104,6 +105,7 @@ Info::Info(const QString &activity, QObject *parent)
 
 Info::~Info()
 {
+    // qDebug() << "Deleted an instance of Info: " << (void*)this;
 }
 
 bool Info::isValid() const
@@ -169,6 +171,8 @@ Info::Availability Info::availability() const
 
 QString Info::name() const
 {
+    // qDebug() << "Getting the name of Info: " << (void*)this;
+
     auto info = d->cache->cfind(d->id);
 
     return info ? info->name : QString();
