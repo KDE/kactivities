@@ -19,7 +19,8 @@
 #include "controller.h"
 #include "consumer_p.h"
 #include "manager_p.h"
-#include "dbusfuture_p.h"
+
+#include "utils/dbusfuture_p.h"
 
 #include <QObject>
 

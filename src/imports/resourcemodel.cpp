@@ -27,6 +27,7 @@
 #include <QModelIndex>
 #include <QCoreApplication>
 #include <QDBusInterface>
+#include <QUuid>
 
 // KDE
 #include <klocalizedstring.h>
@@ -40,9 +41,14 @@
 #include <boost/range/numeric.hpp>
 #include <boost/range/algorithm/find_if.hpp>
 #include <boost/range/adaptor/transformed.hpp>
+#include <boost/range/adaptor/filtered.hpp>
 
 // Local
 #include "utils/continue_with.h"
+#include "utils/range.h"
+#include "utils/continue_with.h"
+#include "utils/dbusfuture_p.h"
+
 
 using kamd::utils::continue_with;
 
@@ -124,33 +130,63 @@ QHash<int, QByteArray> ResourceModel::roleNames() const
     return {
         { Qt::DisplayRole,    "display" },
         { Qt::DecorationRole, "decoration" },
-        // { Qt::DisplayRole,    "name" },
-        // { Qt::DecorationRole, "icon" },
         { Resource,           "url" },
         { Agent,              "agent" },
         { Activity,           "activity" }
     };
 }
 
-void ResourceModel::setShownActivity(const QString &activityId)
+template <typename Validator>
+inline QStringList validateList(
+        const QString &values, Validator validator)
 {
-    m_shownActivities = activityId.split(',', QString::SkipEmptyParts);
-    reloadData();
+    using boost::adaptors::filtered;
+    using kamd::utils::as_collection;
+
+    auto result
+        = as_collection<QStringList>(values.split(',') | filtered(validator));
+
+    if (result.isEmpty()) {
+        result.append(QStringLiteral(":current"));
+    }
+
+    return result;
 }
 
-QString ResourceModel::shownActivity() const
+void ResourceModel::setShownActivities(const QString &activities)
+{
+    m_shownActivities = validateList(activities, [&] (const QString &activity) {
+        return
+            activity == ":current" ||
+            activity == ":any" ||
+            activity == ":global" ||
+            !QUuid(activity).isNull();
+    });
+
+    reloadData();
+    emit shownActivitiesChanged();
+}
+
+void ResourceModel::setShownAgents(const QString &agents)
+{
+    m_shownAgents = validateList(agents, [&] (const QString &agent) {
+        return
+            agent == ":current" ||
+            agent == ":any" ||
+            agent == ":global" ||
+            (!agent.isEmpty() && !agent.contains('\'') && !agent.contains('"'));
+    });
+
+    reloadData();
+    emit shownAgentsChanged();
+}
+
+QString ResourceModel::shownActivities() const
 {
     return m_shownActivities.join(',');
 }
 
-void ResourceModel::setShownAgent(const QString &agent)
-{
-    m_shownAgents = agent.split(',', QString::SkipEmptyParts);
-
-    reloadData();
-}
-
-QString ResourceModel::shownAgent() const
+QString ResourceModel::shownAgents() const
 {
     return m_shownAgents.join(',');
 }
@@ -160,34 +196,38 @@ void ResourceModel::reloadData()
     using boost::accumulate;
     using boost::adaptors::transformed;
 
-    auto activityTest = [&] (const QString &shownActivity) {
+    // Defining the transformation functions for generating the SQL WHERE clause
+    // from the specified activity/agent. They also resolve the special values
+    // like :current, :any and :global.
+
+    auto activityToWhereClause = transformed([&] (const QString &shownActivity) {
         return QStringLiteral(" OR usedActivity=") + (
             shownActivity == ":current" ? "'" + m_service.currentActivity() + "'" :
             shownActivity == ":any"     ? "usedActivity" :
             shownActivity == ":global"  ? "''" :
                                           "'" + shownActivity + "'"
         );
-    };
+    });
 
-    auto agentTest = [&] (const QString &shownAgent) {
+    auto agentToWhereClause = transformed([&] (const QString &shownAgent) {
         return QStringLiteral(" OR initiatingAgent=") + (
             shownAgent == ":current" ? "'" + QCoreApplication::applicationName() + "'" :
             shownAgent == ":any"     ? "initiatingAgent" :
             shownAgent == ":global"  ? "''" :
                                        "'" + shownAgent + "'"
         );
-    };
+    });
 
-    const QString whereActivity = QStringLiteral("(0 ") +
-        accumulate(m_shownActivities | transformed(activityTest), QString()) +
-        ')';
+    // Generating the SQL WHERE part by concatenating the generated clauses.
+    // The generated query will be in the form of '0 OR clause1 OR clause2 ...'
 
-    const QString whereAgent = QStringLiteral("(0") +
-        accumulate(m_shownAgents | transformed(agentTest), QString()) +
-        ')';
+    const QString whereActivity =
+        accumulate(m_shownActivities | activityToWhereClause, QStringLiteral("0"));
 
-    qDebug() << whereActivity + " AND " + whereAgent;
-    m_databaseModel->setFilter(whereActivity + " AND " + whereAgent);
+    const QString whereAgent =
+        accumulate(m_shownAgents | agentToWhereClause, QStringLiteral("0"));
+
+    m_databaseModel->setFilter('(' + whereActivity + ") AND (" + whereAgent + ')');
 }
 
 void ResourceModel::setCurrentActivity(const QString &activity)
@@ -229,17 +269,14 @@ QVariant ResourceModel::data(const QModelIndex &proxyIndex, int role) const
 void ResourceModel::linkResourceToActivity(const QString &resource,
                                            const QJSValue &callback)
 {
-    Q_UNUSED(resource)
-    Q_UNUSED(callback)
+    linkResourceToActivity(resource, m_shownActivities.first(), callback);
 }
 
 void ResourceModel::linkResourceToActivity(const QString &resource,
                                            const QString &activity,
                                            const QJSValue &callback)
 {
-    Q_UNUSED(resource)
-    Q_UNUSED(activity)
-    Q_UNUSED(callback)
+    linkResourceToActivity(m_shownAgents.first(), resource, activity, callback);
 }
 
 void ResourceModel::linkResourceToActivity(const QString &agent,
@@ -247,26 +284,32 @@ void ResourceModel::linkResourceToActivity(const QString &agent,
                                            const QString &activity,
                                            const QJSValue &callback)
 {
-    Q_UNUSED(agent)
-    Q_UNUSED(resource)
-    Q_UNUSED(activity)
-    Q_UNUSED(callback)
+    if (activity == ":any") {
+        qDebug() << ":any is not a valid activity specification for linking";
+        return;
+    }
+
+    kamd::utils::continue_with(
+        DBusFuture::asyncCall<void>(m_linker.get(),
+            QStringLiteral("LinkResourceToActivity"),
+            agent, resource,
+            activity == ":current" ? m_service.currentActivity() :
+            activity == ":global"  ? "" : activity),
+        callback);
 }
 
 void ResourceModel::unlinkResourceFromActivity(const QString &resource,
                                                const QJSValue &callback)
 {
-    Q_UNUSED(resource)
-    Q_UNUSED(callback)
+    unlinkResourceFromActivity(resource, m_shownActivities.first(), callback);
 }
 
 void ResourceModel::unlinkResourceFromActivity(const QString &resource,
                                                const QString &activity,
                                                const QJSValue &callback)
 {
-    Q_UNUSED(resource)
-    Q_UNUSED(activity)
-    Q_UNUSED(callback)
+    unlinkResourceFromActivity(m_shownAgents.first(), resource, activity,
+                               callback);
 }
 
 void ResourceModel::unlinkResourceFromActivity(const QString &agent,
@@ -274,10 +317,18 @@ void ResourceModel::unlinkResourceFromActivity(const QString &agent,
                                                const QString &activity,
                                                const QJSValue &callback)
 {
-    Q_UNUSED(agent)
-    Q_UNUSED(resource)
-    Q_UNUSED(activity)
-    Q_UNUSED(callback)
+    if (activity == ":any") {
+        qDebug() << ":any is not a valid activity specification for linking";
+        return;
+    }
+
+    kamd::utils::continue_with(
+        DBusFuture::asyncCall<void>(m_linker.get(),
+            QStringLiteral("UnlinkResourceFromActivity"),
+            agent, resource,
+            activity == ":current" ? m_service.currentActivity() :
+            activity == ":global"  ? "" : activity),
+        callback);
 }
 
 void ResourceModel::resourceLinkedToActivity(const QString &initiatingAgent,

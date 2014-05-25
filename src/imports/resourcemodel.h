@@ -50,22 +50,24 @@ class ResourceModel : public QSortFilterProxyModel {
     Q_OBJECT
 
     /**
-     * Sets for which activity should the resources be shown for.
+     * Sets for which activities should the resources be shown for.
+     * Coma-separated values.
      * Special values are:
      *  - ":current" for the current activity
      *  - ":any" show resources that are linked to any activity, including "global"
      *  - ":global" show resources that are globally linked
      */
-    Q_PROPERTY(QString shownActivity READ shownActivity WRITE setShownActivity NOTIFY shownActivityChanged)
+    Q_PROPERTY(QString shownActivities READ shownActivities WRITE setShownActivities NOTIFY shownActivitiesChanged)
 
     /**
-     * Sets for which agent should the resources be shown for.
+     * Sets for which agents should the resources be shown for.
+     * Coma-separated values.
      * Special values are:
      *  - ":current" for the current application
      *  - ":any" show resources that are linked to any agent, including "global"
      *  - ":global" show resources that are globally linked
      */
-    Q_PROPERTY(QString shownAgent READ shownAgent WRITE setShownAgent NOTIFY shownAgentChanged)
+    Q_PROPERTY(QString shownAgents READ shownAgents WRITE setShownAgents NOTIFY shownAgentsChanged)
 
 public:
     ResourceModel(QObject *parent = 0);
@@ -105,16 +107,16 @@ public Q_SLOTS:
                                     const QJSValue &callback);
 
     // Model property getters and setters
-    void setShownActivity(const QString &activityId);
-    QString shownActivity() const;
+    void setShownActivities(const QString &activities);
+    QString shownActivities() const;
 
-    void setShownAgent(const QString &agent);
-    QString shownAgent() const;
+    void setShownAgents(const QString &agents);
+    QString shownAgents() const;
 
 
 Q_SIGNALS:
-    void shownActivityChanged();
-    void shownAgentChanged();
+    void shownActivitiesChanged();
+    void shownAgentsChanged();
 
 private Q_SLOTS:
     void setCurrentActivity(const QString &activity);

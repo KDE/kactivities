@@ -19,7 +19,8 @@
 #include "info.h"
 #include "info_p.h"
 #include "manager_p.h"
-#include "dbusfuture_p.h"
+
+#include "utils/dbusfuture_p.h"
 
 #include <QFileSystemWatcher>
 

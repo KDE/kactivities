@@ -54,6 +54,8 @@ void ResourceLinking::LinkResourceToActivity(QString initiatingAgent,
                                              QString usedActivity)
 {
     if (!validateArguments(initiatingAgent, targettedResource, usedActivity)) {
+        qDebug() << "Invalid arguments" << initiatingAgent << targettedResource
+                 << usedActivity;
         return;
     }
 
@@ -83,6 +85,8 @@ void ResourceLinking::UnlinkResourceFromActivity(QString initiatingAgent,
                                                  QString usedActivity)
 {
     if (!validateArguments(initiatingAgent, targettedResource, usedActivity)) {
+        qDebug() << "Invalid arguments" << initiatingAgent << targettedResource
+                 << usedActivity;
         return;
     }
 

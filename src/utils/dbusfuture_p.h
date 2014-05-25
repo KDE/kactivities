@@ -64,7 +64,6 @@ public:
             this->callFinished();
         }
 
-        qCDebug(KAMD_CORELIB) << "Returning a future";
         return this->future();
     }
 
@@ -78,7 +77,6 @@ void DBusCallFutureInterface<_Result>::callFinished()
 {
     deleteLater();
 
-    qCDebug(KAMD_CORELIB) << "This is call end" << reply.isError();
     if (!reply.isError()) {
         this->reportResult(reply.value());
     }

@@ -17,8 +17,9 @@ set (
    mainthreadexecutor_p.cpp
    manager_p.cpp
    activitiescache_p.cpp
-   dbusfuture_p.cpp
    debug_p.cpp
+
+   ${CMAKE_SOURCE_DIR}/src/utils/dbusfuture_p.cpp
 
    version.cpp
    )

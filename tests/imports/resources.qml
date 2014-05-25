@@ -35,8 +35,8 @@ ListView {
 
     Activities.ResourceModel {
         id: modelMain
-        shownAgent: "org.kde.plasma.kickoff"
-        shownActivity: ":global,:current"
+        shownAgents: "org.kde.plasma.kickoff"
+        shownActivities: ":global,:current"
     }
 
     add: Transition {
@@ -78,6 +78,17 @@ ListView {
             text: display
             height: 16
             font.bold: true
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+                    if (display != "tmp") {
+                        modelMain.linkResourceToActivity("/tmp", function () {});
+                    } else {
+                        modelMain.unlinkResourceFromActivity("/tmp", function () {});
+                    }
+                }
+            }
+
         }
         Text {
             text: "   icon: " + decoration

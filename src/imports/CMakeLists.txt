@@ -16,6 +16,8 @@ set (
    activitiesextensionplugin.cpp
    activitymodel.cpp
    resourcemodel.cpp
+
+   ${CMAKE_SOURCE_DIR}/src/utils/dbusfuture_p.cpp
    )
 
 add_library (kactivitiesextensionplugin SHARED ${kactivities_imports_LIB_SRCS})
