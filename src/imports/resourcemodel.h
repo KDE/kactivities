@@ -27,6 +27,9 @@
 #include <QSqlTableModel>
 #include <QSqlDatabase>
 
+// KDE
+#include <kconfiggroup.h>
+
 // STL and Boost
 #include <boost/container/flat_set.hpp>
 #include <memory>
@@ -74,9 +77,9 @@ public:
     virtual ~ResourceModel();
 
     enum Roles {
-        Resource    = Qt::UserRole,
-        Activity    = Qt::UserRole + 1,
-        Agent       = Qt::UserRole + 2
+        ResourceRole = Qt::UserRole,
+        ActivityRole = Qt::UserRole + 1,
+        AgentRole    = Qt::UserRole + 2
     };
 
     QHash<int, QByteArray> roleNames() const Q_DECL_OVERRIDE;
@@ -113,6 +116,17 @@ public Q_SLOTS:
     void setShownAgents(const QString &agents);
     QString shownAgents() const;
 
+    void setOrder(const QStringList &resources);
+
+    KConfigGroup config() const;
+
+    int count() const;
+    QString displayAt(int row) const;
+    QString resourceAt(int row) const;
+
+protected:
+    virtual bool lessThan(const QModelIndex &left, const QModelIndex &right) const Q_DECL_OVERRIDE;
+
 
 Q_SIGNALS:
     void shownActivitiesChanged();
@@ -132,16 +146,22 @@ private Q_SLOTS:
 private:
     KActivities::Consumer m_service;
 
-    QSqlDatabase   m_database;
+    inline
+    QVariant dataForColumn(const QModelIndex &index, int column) const;
+
+    QSqlDatabase m_database;
     QSqlTableModel *m_databaseModel;
 
     QStringList m_shownActivities;
     QStringList m_shownAgents;
+    QStringList m_sorting;
 
     void reloadData();
 
     class LinkerService;
     std::shared_ptr<LinkerService> m_linker;
+
+    KConfigGroup m_config;
 };
 
 } // namespace Models

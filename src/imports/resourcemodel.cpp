@@ -33,6 +33,7 @@
 #include <klocalizedstring.h>
 #include <kconfig.h>
 #include <kconfiggroup.h>
+#include <ksharedconfig.h>
 #include <kfileitem.h>
 
 // STL and Boost
@@ -48,6 +49,11 @@
 #include "utils/range.h"
 #include "utils/continue_with.h"
 #include "utils/dbusfuture_p.h"
+
+#define ACTIVITY_COLUMN 0
+#define AGENT_COLUMN    1
+#define RESOURCE_COLUMN 2
+#define UNKNOWN_COLUMN  3
 
 
 using kamd::utils::continue_with;
@@ -88,7 +94,10 @@ ResourceModel::ResourceModel(QObject *parent)
     : QSortFilterProxyModel(parent)
     , m_shownActivities(QStringLiteral(":current"))
     , m_shownAgents(QStringLiteral(":current"))
+    , m_sorting{"/media/ivan/documents"}
     , m_linker(LinkerService::self())
+    , m_config(KSharedConfig::openConfig("kactivitymanagerd-resourcelinkingrc")
+        ->group("Order"))
 {
     // TODO: What to do if the file does not exist?
 
@@ -119,10 +128,34 @@ ResourceModel::ResourceModel(QObject *parent)
             this, SLOT(resourceLinkedToActivity(QString, QString, QString)));
     connect(m_linker.get(), SIGNAL(ResourceUnlinkedFromActivity(QString, QString, QString)),
             this, SLOT(resourceUnlinkedFromActivity(QString, QString, QString)));
+
+    setDynamicSortFilter(true);
+    sort(0);
 }
 
 ResourceModel::~ResourceModel()
 {
+}
+
+QVariant ResourceModel::dataForColumn(const QModelIndex &index, int column) const
+{
+    return m_databaseModel->data(index.sibling(index.row(), column),
+                                 Qt::DisplayRole);
+}
+
+bool ResourceModel::lessThan(const QModelIndex &left, const QModelIndex &right) const
+{
+    const auto leftResource = dataForColumn(left, RESOURCE_COLUMN).toString();
+    const auto rightResource = dataForColumn(right, RESOURCE_COLUMN).toString();
+
+    const bool hasLeft = m_sorting.contains(leftResource);
+    const bool hasRight = m_sorting.contains(rightResource);
+
+    return
+        ( hasLeft && !hasRight) ? true :
+        (!hasLeft &&  hasRight) ? false :
+        ( hasLeft &&  hasRight) ? m_sorting.indexOf(leftResource) < m_sorting.indexOf(rightResource) :
+        QString::compare(leftResource, rightResource, Qt::CaseInsensitive) < 0;
 }
 
 QHash<int, QByteArray> ResourceModel::roleNames() const
@@ -130,9 +163,9 @@ QHash<int, QByteArray> ResourceModel::roleNames() const
     return {
         { Qt::DisplayRole,    "display" },
         { Qt::DecorationRole, "decoration" },
-        { Resource,           "url" },
-        { Agent,              "agent" },
-        { Activity,           "activity" }
+        { ResourceRole,       "url" },
+        { AgentRole,          "agent" },
+        { ActivityRole,       "activity" }
     };
 }
 
@@ -196,6 +229,9 @@ void ResourceModel::reloadData()
     using boost::accumulate;
     using boost::adaptors::transformed;
 
+    m_sorting = m_config.readEntry(m_shownAgents.first(), QStringList());
+    qDebug() << "Order for reloading" << m_sorting;
+
     // Defining the transformation functions for generating the SQL WHERE clause
     // from the specified activity/agent. They also resolve the special values
     // like :current, :any and :global.
@@ -244,7 +280,7 @@ QVariant ResourceModel::data(const QModelIndex &proxyIndex, int role) const
     auto index = mapToSource(proxyIndex);
 
     if (role == Qt::DisplayRole || role == Qt::DecorationRole) {
-        auto url = m_databaseModel->data(index.sibling(index.row(), 2), Qt::DisplayRole).toString();
+        auto url = dataForColumn(index, RESOURCE_COLUMN).toString();
 
         // TODO: Will probably need some more special handling -
         // for application:/ and a few more
@@ -258,12 +294,12 @@ QVariant ResourceModel::data(const QModelIndex &proxyIndex, int role) const
         return role == Qt::DisplayRole ? file.name() : file.iconName();
     }
 
-    return m_databaseModel->data(index.sibling(index.row(),
-            role == Resource ? 2 :
-            role == Agent    ? 1 :
-            role == Activity ? 0 :
-                               3
-        ), Qt::DisplayRole);
+    return dataForColumn(index,
+            role == ResourceRole ? RESOURCE_COLUMN :
+            role == AgentRole    ? AGENT_COLUMN :
+            role == ActivityRole ? ACTIVITY_COLUMN :
+                                   UNKNOWN_COLUMN
+        );
 }
 
 void ResourceModel::linkResourceToActivity(const QString &resource,
@@ -375,6 +411,36 @@ void ResourceModel::resourceUnlinkedFromActivity(const QString &initiatingAgent,
 {
     // These are the same at the moment
     resourceLinkedToActivity(initiatingAgent, targettedResource, usedActivity);
+}
+
+void ResourceModel::setOrder(const QStringList &resources)
+{
+    m_sorting = resources;
+    m_config.writeEntry(m_shownAgents.first(), m_sorting);
+    m_config.sync();
+    qDebug() << "Order" << m_sorting;
+    reloadData();
+}
+
+KConfigGroup ResourceModel::config() const
+{
+    return KSharedConfig::openConfig("kactivitymanagerd-resourcelinkingrc")
+        ->group("Order");
+}
+
+int ResourceModel::count() const
+{
+    return QSortFilterProxyModel::rowCount();
+}
+
+QString ResourceModel::displayAt(int row) const
+{
+    return data(index(row, 0), Qt::DisplayRole).toString();
+}
+
+QString ResourceModel::resourceAt(int row) const
+{
+    return data(index(row, 0), ResourceRole).toString();
 }
 
 
