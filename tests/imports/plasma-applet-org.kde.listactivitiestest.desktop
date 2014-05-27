@@ -25,6 +25,7 @@ Name[sv]=Lista aktivitetstester
 Name[tr]=Etkinilk sınamasını listele
 Name[uk]=Тестування списку просторів дій
 Name[x-test]=xxList activities testxx
+Name[zh_CN]=显示活动测试项
 Name[zh_TW]=列出活動測試
 Comment=Strange, but not a Clock
 Comment[ca]=És estrany, però no és cap rellotge
@@ -51,6 +52,7 @@ Comment[sv]=Underlig, men inte en klocka
 Comment[tr]=Garip, ancak Saat değil
 Comment[uk]=Дивно, але не годинник
 Comment[x-test]=xxStrange, but not a Clockxx
+Comment[zh_CN]=奇怪，但不是一个时钟
 Comment[zh_TW]=Strange, but not a Clock（這是什麼奇怪的 comment？）
 
 Icon=preferences-system-time
