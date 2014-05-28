@@ -224,10 +224,30 @@ QString ResourceModel::shownAgents() const
     return m_shownAgents.join(',');
 }
 
+QString ResourceModel::activityToWhereClause(const QString &shownActivity) const
+{
+    return QStringLiteral(" OR usedActivity=") + (
+        shownActivity == ":current" ? "'" + m_service.currentActivity() + "'" :
+        shownActivity == ":any"     ? "usedActivity" :
+        shownActivity == ":global"  ? "''" :
+                                      "'" + shownActivity + "'"
+    );
+}
+
+QString ResourceModel::agentToWhereClause(const QString &shownAgent) const
+{
+    return QStringLiteral(" OR initiatingAgent=") + (
+        shownAgent == ":current" ? "'" + QCoreApplication::applicationName() + "'" :
+        shownAgent == ":any"     ? "initiatingAgent" :
+        shownAgent == ":global"  ? "''" :
+                                   "'" + shownAgent + "'"
+    );
+}
+
 void ResourceModel::reloadData()
 {
     using boost::accumulate;
-    using boost::adaptors::transformed;
+    using namespace kamd::utils;
 
     m_sorting = m_config.readEntry(m_shownAgents.first(), QStringList());
     qDebug() << "Order for reloading" << m_sorting;
@@ -236,23 +256,8 @@ void ResourceModel::reloadData()
     // from the specified activity/agent. They also resolve the special values
     // like :current, :any and :global.
 
-    auto activityToWhereClause = transformed([&] (const QString &shownActivity) {
-        return QStringLiteral(" OR usedActivity=") + (
-            shownActivity == ":current" ? "'" + m_service.currentActivity() + "'" :
-            shownActivity == ":any"     ? "usedActivity" :
-            shownActivity == ":global"  ? "''" :
-                                          "'" + shownActivity + "'"
-        );
-    });
-
-    auto agentToWhereClause = transformed([&] (const QString &shownAgent) {
-        return QStringLiteral(" OR initiatingAgent=") + (
-            shownAgent == ":current" ? "'" + QCoreApplication::applicationName() + "'" :
-            shownAgent == ":any"     ? "initiatingAgent" :
-            shownAgent == ":global"  ? "''" :
-                                       "'" + shownAgent + "'"
-        );
-    });
+    auto activityToWhereClause = transformed(&ResourceModel::activityToWhereClause, this);
+    auto agentToWhereClause = transformed(&ResourceModel::agentToWhereClause, this);
 
     // Generating the SQL WHERE part by concatenating the generated clauses.
     // The generated query will be in the form of '0 OR clause1 OR clause2 ...'

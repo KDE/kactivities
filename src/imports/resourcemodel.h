@@ -149,6 +149,9 @@ private:
     inline
     QVariant dataForColumn(const QModelIndex &index, int column) const;
 
+    QString activityToWhereClause(const QString &activity) const;
+    QString agentToWhereClause(const QString &activity) const;
+
     QSqlDatabase m_database;
     QSqlTableModel *m_databaseModel;
 

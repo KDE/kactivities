@@ -21,6 +21,7 @@ if (NOT KACTIVITIES_LIBRARY_ONLY)
 endif ()
 
 if (KACTIVITIES_ENABLE_EXCEPTIONS)
+   string(REPLACE "-fno-exceptions" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
    add_definitions(-fexceptions)
 endif()
 
