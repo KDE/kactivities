@@ -2,7 +2,7 @@
 
 cmake_minimum_required (VERSION 2.8.11)
 
-project (KACTIVITIES)
+project (KActivities)
 
 set(REQUIRED_QT_VERSION 5.2.0)
 
