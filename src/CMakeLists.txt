@@ -53,45 +53,49 @@ configure_file (config-features.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-featu
 
 # main part
 
-string (COMPARE EQUAL "${CXX_FEATURES_UNSUPPORTED}" "" CXX_COMPILER_IS_MODERN)
+option (KACTIVITIES_LIBRARY_ONLY "If true, compiles only the KActivities library, without the service and other modules." OFF)
 
-if (NOT HAVE_CXX11_AUTO OR NOT HAVE_CXX11_LAMBDA OR NOT HAVE_CXX11_UNIQUE_PTR OR NOT HAVE_CXX11_VARIADIC_TEMPLATES OR NOT HAVE_CXX11_INITIALIZER_LISTS)
+if (NOT KACTIVITIES_LIBRARY_ONLY)
+	string (COMPARE EQUAL "${CXX_FEATURES_UNSUPPORTED}" "" CXX_COMPILER_IS_MODERN)
 
-    macro_log_feature (FALSE
-        "C++11 enabled compiler"
-        "GCC >=4.5 or Clang 3.1"
-        "http://www.open-std.org/jtc1/sc22/wg21/" FALSE ""
-        "REQUIRED: You need a more modern compiler in order to build the Activity Manager daemon"
-        )
+	if (NOT HAVE_CXX11_AUTO OR NOT HAVE_CXX11_LAMBDA OR NOT HAVE_CXX11_UNIQUE_PTR OR NOT HAVE_CXX11_VARIADIC_TEMPLATES OR NOT HAVE_CXX11_INITIALIZER_LISTS)
 
-else ()
+			macro_log_feature (FALSE
+					"C++11 enabled compiler"
+					"GCC >=4.5 or Clang 3.1"
+					"http://www.open-std.org/jtc1/sc22/wg21/" FALSE ""
+					"REQUIRED: You need a more modern compiler in order to build the Activity Manager daemon"
+					)
 
-    if (CXX_COMPILER_IS_MODERN)
-        macro_log_feature (
-            CXX_COMPILER_IS_MODERN
-            "C++11 enabled compiler"
-            "Your compiler is state-of-the-art"
-            "http://www.open-std.org/jtc1/sc22/wg21/" FALSE ""
-            "Your compiler doesn't support the following features: ${CXX_FEATURES_UNSUPPORTED} but
-             the list of the supported ones is sufficient for the build: ${CXX_FEATURES_SUPPORTED}"
-            )
-    else ()
-        macro_log_feature (
-            CXX_COMPILER_IS_MODERN
-            "C++11 enabled compiler"
-            "Having to use the latest versions of GCC and Clang would be awesome"
-            "http://www.open-std.org/jtc1/sc22/wg21/" FALSE ""
-            "Your compiler doesn't support the following features: ${CXX_FEATURES_UNSUPPORTED} but
-             the list of the supported ones is sufficient for the build: ${CXX_FEATURES_SUPPORTED}"
-            )
-    endif ()
+	else ()
 
-    add_subdirectory (service)
+			if (CXX_COMPILER_IS_MODERN)
+					macro_log_feature (
+							CXX_COMPILER_IS_MODERN
+							"C++11 enabled compiler"
+							"Your compiler is state-of-the-art"
+							"http://www.open-std.org/jtc1/sc22/wg21/" FALSE ""
+							"Your compiler doesn't support the following features: ${CXX_FEATURES_UNSUPPORTED} but
+							the list of the supported ones is sufficient for the build: ${CXX_FEATURES_SUPPORTED}"
+							)
+			else ()
+					macro_log_feature (
+							CXX_COMPILER_IS_MODERN
+							"C++11 enabled compiler"
+							"Having to use the latest versions of GCC and Clang would be awesome"
+							"http://www.open-std.org/jtc1/sc22/wg21/" FALSE ""
+							"Your compiler doesn't support the following features: ${CXX_FEATURES_UNSUPPORTED} but
+							the list of the supported ones is sufficient for the build: ${CXX_FEATURES_SUPPORTED}"
+							)
+			endif ()
 
-    # No point in having workspace addons without the service
-    add_subdirectory (workspace)
+			add_subdirectory (service)
 
-endif ()
+			# No point in having workspace addons without the service
+			add_subdirectory (workspace)
+
+	endif ()
+endif()
 
 add_subdirectory (ontologies)
 
