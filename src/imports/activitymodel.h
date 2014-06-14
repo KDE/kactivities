@@ -143,6 +143,7 @@ private:
     void unregisterActivity(const QString &id);
     void showActivity(InfoPtr activityInfo, bool notifyClients);
     void hideActivity(const QString &id);
+    void backgroundsUpdated(const QStringList &activities);
 
     InfoPtr findActivity(QObject *ptr) const;
 

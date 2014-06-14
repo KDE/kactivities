@@ -166,14 +166,14 @@ public:
             plasmaConfig.reparseConfiguration();
 
             if (initialized) {
-                reload();
+                reload(false);
             }
         }
 
         void subscribe(ActivityModel *model)
         {
             if (!initialized) {
-                reload();
+                reload(true);
             }
 
             models << model;
@@ -189,9 +189,36 @@ public:
             }
         }
 
-        void reload()
+        QString backgroundFromConfig(const KConfigGroup &config) const
         {
-            forActivity.clear();
+            // Trying for the wallpaper
+            auto wallpaper = config
+                .group("Wallpaper")
+                .group("General")
+                .readEntry("Image", QString());
+
+            if (!wallpaper.isEmpty()) {
+                return wallpaper;
+
+            } else {
+                auto backgroundColor = config
+                    .group("Wallpaper")
+                    .group("General")
+                    .readEntry("Color", QColor(0, 0, 0));
+
+                return backgroundColor.name();
+            }
+        }
+
+        void reload(bool fullReload)
+        {
+            QHash<QString, QString> newBackgrounds;
+
+            if (fullReload) {
+                forActivity.clear();
+            }
+
+            QStringList changedBackgrounds;
 
             for (const auto &cont: plasmaConfigContainments().groupList()) {
 
@@ -201,33 +228,28 @@ public:
                 // Ignore if it has no assigned activity
                 if (activityId.isEmpty()) continue;
 
-                // Ignore if the activity already has a wallpaper
-                if (forActivity.contains(activityId) &&
-                    forActivity[activityId][0] != '#') continue;
+                // Ignore if we have already found the background
+                if (newBackgrounds.contains(activityId) &&
+                    newBackgrounds[activityId][0] != '#') continue;
 
-                // Trying for the wallpaper
-                auto wallpaper = config
-                    .group("Wallpaper")
-                    .group("General")
-                    .readEntry("Image", QString());
+                auto newBackground = backgroundFromConfig(config);
 
-                if (!wallpaper.isEmpty()) {
-                    forActivity[activityId] = wallpaper;
-
-                } else {
-                    auto backgroundColor = config
-                        .group("Wallpaper")
-                        .group("General")
-                        .readEntry("Color", QColor(0, 0, 0));
-
-                    forActivity[activityId] = backgroundColor.name();
+                if (forActivity[activityId] != newBackground) {
+                    changedBackgrounds << activityId;
+                    if (!newBackground.isEmpty()) {
+                        newBackgrounds[activityId] = newBackground;
+                    }
                 }
             }
 
             initialized = true;
 
-            for (auto model: models) {
-                Private::model_reset m(model);
+            if (!changedBackgrounds.isEmpty()) {
+                forActivity = newBackgrounds;
+
+                for (auto model: models) {
+                    model->backgroundsUpdated(changedBackgrounds);
+                }
             }
         }
 
@@ -475,6 +497,14 @@ void ActivityModel::onActivityStateChanged(Info::State state)
         } else {
             hideActivity(info->id());
         }
+    }
+}
+
+void ActivityModel::backgroundsUpdated(const QStringList &activities)
+{
+    for (const auto &activity: activities) {
+        Private::emitActivityUpdated(this, m_shownActivities, activity,
+                                     ActivityBackground);
     }
 }
 
