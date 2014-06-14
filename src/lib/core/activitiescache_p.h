@@ -78,7 +78,7 @@ public:
     void passInfoFromReply(QDBusPendingCallWatcher *watcher, _Functor f);
 
     inline
-    const ActivityInfo * cfind(const QString & id)
+    const ActivityInfo *cfind(const QString & id)
     {
         auto where = std::lower_bound(
             m_activities.begin(), m_activities.end(), ActivityInfo(id));

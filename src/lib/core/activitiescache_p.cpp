@@ -123,6 +123,9 @@ void ActivitiesCache::removeActivity(const QString &id)
         m_activities.erase(where);
         emit activityRemoved(id);
         emit activityListChanged();
+
+    } else {
+        qFatal("Requested to delete an non-existent activity");
     }
 }
 
@@ -172,6 +175,9 @@ void ActivitiesCache::updateActivityState(const QString &id, int state)
         where->state = state;
 
         emit activityStateChanged(id, state);
+
+    } else {
+        qFatal("Requested to update the state of an non-existent activity");
     }
 }
 
@@ -216,10 +222,14 @@ void ActivitiesCache::setActivityInfo(const ActivityInfo &info)
         = std::lower_bound(m_activities.begin(), m_activities.end(), info);
 
     if (where == m_activities.end() || where->id != info.id) {
+        // We haven't found the activity with the specified id.
+        // This means it is a new activity.
         m_activities.insert(where, info);
         emit activityAdded(info.id);
         emit activityListChanged();
+
     } else {
+        // An existing activity changed
         *where = info;
         emit activityChanged(info.id);
     }
@@ -234,6 +244,9 @@ void ActivitiesCache::setActivityName(const QString &id, const QString &name)
         where->name = name;
 
         emit activityNameChanged(id, name);
+
+    } else {
+        qFatal("Requested to rename an non-existent activity");
     }
 }
 
@@ -246,6 +259,9 @@ void ActivitiesCache::setActivityIcon(const QString &id, const QString &icon)
         where->icon = icon;
 
         emit activityIconChanged(id, icon);
+
+    } else {
+        qFatal("Requested to change the icon of an non-existent activity");
     }
 }
 

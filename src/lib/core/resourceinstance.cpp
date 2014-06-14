@@ -47,6 +47,11 @@ public:
 
     static void registerResourceEvent(const QString &application, quintptr wid, const QUrl &uri, Type event)
     {
+        Q_ASSERT_X(!application.isEmpty(), "ResourceInstance::event",
+                   "The application id must not be empty");
+        Q_ASSERT_X(!uri.isEmpty(), "ResourceInstance::event",
+                   "The resource URI must not be empty");
+
         Manager::resources()->RegisterResourceEvent(application, wid, uri.toString(), uint(event));
     }
 };
