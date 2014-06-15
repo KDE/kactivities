@@ -125,7 +125,7 @@ void ActivitiesCache::removeActivity(const QString &id)
         emit activityListChanged();
 
     } else {
-        qFatal("Requested to delete an non-existent activity");
+        // qFatal("Requested to delete an non-existent activity");
     }
 }
 
@@ -177,7 +177,7 @@ void ActivitiesCache::updateActivityState(const QString &id, int state)
         emit activityStateChanged(id, state);
 
     } else {
-        qFatal("Requested to update the state of an non-existent activity");
+        // qFatal("Requested to update the state of an non-existent activity");
     }
 }
 
@@ -246,7 +246,7 @@ void ActivitiesCache::setActivityName(const QString &id, const QString &name)
         emit activityNameChanged(id, name);
 
     } else {
-        qFatal("Requested to rename an non-existent activity");
+        // qFatal("Requested to rename an non-existent activity");
     }
 }
 
@@ -261,7 +261,7 @@ void ActivitiesCache::setActivityIcon(const QString &id, const QString &icon)
         emit activityIconChanged(id, icon);
 
     } else {
-        qFatal("Requested to change the icon of an non-existent activity");
+        // qFatal("Requested to change the icon of an non-existent activity");
     }
 }
 
