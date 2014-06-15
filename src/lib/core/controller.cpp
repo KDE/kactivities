@@ -46,8 +46,9 @@ Controller::~Controller()
 QFuture<void> Controller::setActivityName(const QString &id, const QString &name)
 {
     // Manager::activities()->SetActivityName(id, name);
-    Q_ASSERT_X(activities().contains(id), "Controller::setActivityName",
-               "You can not rename an non-existent activity");
+    // TODO: Make Q_ASSERT_EVENTUALLY_X or somthing similar
+    // Q_ASSERT_X(activities().contains(id), "Controller::setActivityName",
+    //            "You can not rename an non-existent activity");
     Q_ASSERT_X(!name.isEmpty(), "Controller::setActivityName",
                "The activity name can not be an empty string");
 
@@ -61,8 +62,8 @@ QFuture<void> Controller::setActivityName(const QString &id, const QString &name
 QFuture<void> Controller::setActivityIcon(const QString &id,
                                           const QString &icon)
 {
-    Q_ASSERT_X(activities().contains(id), "Controller::setActivityIcon",
-               "You can not change the icon of an non-existent activity");
+    // Q_ASSERT_X(activities().contains(id), "Controller::setActivityIcon",
+    //            "You can not change the icon of an non-existent activity");
 
     // Manager::activities()->SetActivityIcon(id, icon);
     return Manager::isServiceRunning() ?
@@ -75,8 +76,8 @@ QFuture<void> Controller::setActivityIcon(const QString &id,
 
 QFuture<bool> Controller::setCurrentActivity(const QString &id)
 {
-    Q_ASSERT_X(activities().contains(id), "Controller::setCurrentActivity",
-               "You can not set an non-existent activity to be the current");
+    // Q_ASSERT_X(activities().contains(id), "Controller::setCurrentActivity",
+    //            "You can not set an non-existent activity to be the current");
 
     // return Manager::activities()->SetCurrentActivity(id);
     return Manager::isServiceRunning() ?
@@ -101,8 +102,8 @@ QFuture<QString> Controller::addActivity(const QString &name)
 
 QFuture<void> Controller::removeActivity(const QString &id)
 {
-    Q_ASSERT_X(activities().contains(id), "Controller::removeActivity",
-               "You can not remove an non-existent activity");
+    // Q_ASSERT_X(activities().contains(id), "Controller::removeActivity",
+    //            "You can not remove an non-existent activity");
 
     // Manager::activities()->RemoveActivity(id);
     return Manager::isServiceRunning() ?
@@ -114,8 +115,8 @@ QFuture<void> Controller::removeActivity(const QString &id)
 
 QFuture<void> Controller::stopActivity(const QString &id)
 {
-    Q_ASSERT_X(activities().contains(id), "Controller::stopActivity",
-               "You can not stop an non-existent activity");
+    // Q_ASSERT_X(activities().contains(id), "Controller::stopActivity",
+    //            "You can not stop an non-existent activity");
 
     // Manager::activities()->StopActivity(id);
     return Manager::isServiceRunning() ?
@@ -127,8 +128,8 @@ QFuture<void> Controller::stopActivity(const QString &id)
 
 QFuture<void> Controller::startActivity(const QString &id)
 {
-    Q_ASSERT_X(activities().contains(id), "Controller::startActivity",
-               "You can not start an non-existent activity");
+    // Q_ASSERT_X(activities().contains(id), "Controller::startActivity",
+    //            "You can not start an non-existent activity");
 
     // Manager::activities()->StartActivity(id);
     return Manager::isServiceRunning() ?
