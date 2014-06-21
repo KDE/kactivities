@@ -315,8 +315,9 @@ int main(int argc, char **argv)
 
         QTextStream(stdout)
             << "start\tStarts the service\n"
-            // << "stop\tStops the server\n"
+            << "stop\tStops the server\n"
             << "status\tPrints basic server information\n"
+            << "start-daemon\tStarts the service without forking (use with caution)\n"
             << "--help\tThis help message\n";
 
         exit(EXIT_SUCCESS);
