@@ -1,5 +1,6 @@
 [Desktop Entry]
 Name=Activity Templates
+Name[ar]=قوالب الأنشطة
 Name[ca]=Plantilles de les activitats
 Name[ca@valencia]=Plantilles d'activitats
 Name[cs]=Šablony aktivit
@@ -31,6 +32,7 @@ Name[x-test]=xxActivity Templatesxx
 Name[zh_CN]=活动模板
 Name[zh_TW]=活動樣本
 Comment=Support for creating templated activities
+Comment[ar]=دعم إنشاء قوالب أنشطة
 Comment[ca]=Suport per a la creació d'activitats amb plantilles
 Comment[ca@valencia]=Suport per a la creació d'activitats aplantillades
 Comment[de]=Unterstützung für das Erstellen von Vorlagen  für Aktivitäten

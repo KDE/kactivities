@@ -1,5 +1,6 @@
 [Desktop Entry]
 Name=Virtual desktop switcher
+Name[ar]=مبدِّل سطح المكتب الوهميّ
 Name[bs]=Prebacivač virtuelnih radnih površina
 Name[ca]=Commutador pels escriptoris virtuals
 Name[ca@valencia]=Commutador d'escriptoris virtuals
@@ -47,6 +48,7 @@ Name[x-test]=xxVirtual desktop switcherxx
 Name[zh_CN]=虚拟桌面切换器
 Name[zh_TW]=虛擬桌面切換器
 Comment=When switching to an activity, opens the virtual desktop last used with that activity
+Comment[ar]=عند التبديل إلى نشاط ما، يَفتَح آخر سطح مكتب وهميّ مُستخدَم بِذلك النشاط
 Comment[bs]=Pri prebacivanju na aktivnost, otvara vitruelni deskstop koji je zadnji korišten s tom aktivnošću
 Comment[ca]=En canviar a una activitat, obre el darrer escriptori virtual utilitzat amb aquesta activitat
 Comment[ca@valencia]=En canviar a una activitat, obri el darrer escriptori virtual utilitzat amb esta activitat
