@@ -1,0 +1,179 @@
+# Irish translation of kactivitymanagerd_fileitem_linking_plugin
+# Copyright (C) 2012 This_file_is_part_of_KDE
+# This file is distributed under the same license as the kactivitymanagerd_fileitem_linking_plugin package.
+# Kevin Scannell <kscanne@gmail.com>, 2012.
+msgid ""
+msgstr ""
+"Project-Id-Version: kactivitymanagerd_fileitem_linking_plugin\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2014-06-15 08:02+0000\n"
+"PO-Revision-Date: 2012-11-29 14:59-0500\n"
+"Last-Translator: Kevin Scannell <kscanne@gmail.com>\n"
+"Language-Team: Irish <gaeilge-gnulinux@lists.sourceforge.net>\n"
+"Language: ga\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=5; plural=n==1 ? 0 : n==2 ? 1 : n<7 ? 2 : n < 11 ? "
+"3 : 4\n"
+
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Kevin Scannell"
+
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "kscanne@gmail.com"
+
+#: imports/activitymodel.cpp:592
+#, fuzzy
+#| msgid "Activities"
+msgctxt "Header title for activity data model"
+msgid "Activity"
+msgstr "Gníomhartha"
+
+#: service/Activities.cpp:140
+msgid "Default"
+msgstr ""
+
+#: service/plugins/globalshortcuts/GlobalShortcutsPlugin.cpp:79
+#: service/plugins/globalshortcuts/GlobalShortcutsPlugin.cpp:103
+#, kde-format
+msgctxt "@action"
+msgid "Switch to activity \"%1\""
+msgstr "Athraigh go gníomhaíocht \"%1\""
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:98
+#, fuzzy
+#| msgid "Activities"
+msgid "Activities..."
+msgstr "Gníomhartha"
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:165
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:203
+msgid "Unlink from the current activity"
+msgstr "Dínasc ón ghníomhaíocht reatha"
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:170
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:211
+msgid "Link to the current activity"
+msgstr "Nasc leis an ngníomhaíocht reatha"
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:175
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:235
+msgid "Link to:"
+msgstr "Nasc le:"
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:182
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:242
+msgid "Unlink from:"
+msgstr "Dínasc ó:"
+
+#: workspace/kio/KioActivities.cpp:147
+#, fuzzy
+#| msgid "Link to the current activity"
+msgid "Current activity"
+msgstr "Nasc leis an ngníomhaíocht reatha"
+
+#: workspace/kio/KioActivities.cpp:249
+msgid "Activity manager is not running properly."
+msgstr "Tá ainghléas ar an mbainisteoir gníomhaíochta."
+
+#: workspace/settings/MainConfigurationWidget.cpp:70
+#, fuzzy
+#| msgid "Activities"
+msgid "Activities"
+msgstr "Gníomhartha"
+
+#: workspace/settings/MainConfigurationWidget.cpp:72
+msgid "(c) 2012 Ivan Cukic"
+msgstr "© 2012 Ivan Cukic"
+
+#: workspace/settings/MainConfigurationWidget.cpp:90
+msgid "Available Features"
+msgstr "Gnéithe Le Fáil"
+
+#: workspace/settings/MainConfigurationWidget.cpp:93
+msgid "Plugins"
+msgstr "Breiseáin"
+
+#: workspace/settings/MainConfigurationWidget.cpp:100
+msgctxt "unit of time. months to keep the history"
+msgid " month"
+msgid_plural " months"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+msgstr[4] ""
+
+#: workspace/settings/MainConfigurationWidget.cpp:101
+msgctxt "for in 'keep history for 5 months'"
+msgid "for "
+msgstr "ar feadh "
+
+#: workspace/settings/MainConfigurationWidget.cpp:102
+msgctxt "unlimited number of months"
+msgid "forever"
+msgstr "go brách"
+
+#: workspace/settings/MainConfigurationWidget.cpp:109
+msgid "Forget the last hour"
+msgstr ""
+
+#: workspace/settings/MainConfigurationWidget.cpp:112
+msgid "Forget the last two hours"
+msgstr ""
+
+#: workspace/settings/MainConfigurationWidget.cpp:115
+msgid "Forget a day"
+msgstr ""
+
+#: workspace/settings/MainConfigurationWidget.cpp:118
+msgid "Forget everything"
+msgstr ""
+
+#. i18n: ectx: property (text), widget (QCheckBox, checkEnableActivities)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:17
+msgid "Enable activities management"
+msgstr ""
+
+#. i18n: ectx: attribute (title), widget (QWidget, tab)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:28
+msgid "Privacy"
+msgstr "Príobháideacht"
+
+#. i18n: ectx: property (text), widget (QLabel, labelRememberDocuments)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:34
+msgid "Remember opened documents:"
+msgstr ""
+
+#. i18n: ectx: property (text), widget (QRadioButton, radioRememberAllApplications)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:45
+msgid "For all applications"
+msgstr ""
+
+#. i18n: ectx: property (text), widget (QRadioButton, radioDontRememberApplications)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:55
+msgid "Do not remember"
+msgstr ""
+
+#. i18n: ectx: property (text), widget (QRadioButton, radioRememberSpecificApplications)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:62
+msgid "Only for specific applications"
+msgstr ""
+
+#. i18n: ectx: property (text), widget (QLabel, labelKeepHistory)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:90
+msgid "Keep history"
+msgstr ""
+
+#. i18n: ectx: property (text), widget (QPushButton, buttonClearRecentHistory)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:113
+msgid "Clear recent history"
+msgstr ""
+
+#. i18n: ectx: property (text), widget (QCheckBox, checkBlacklistAllNotOnList)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:150
+msgid "Blacklist all applications not on this list"
+msgstr ""
