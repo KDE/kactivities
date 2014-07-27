@@ -77,9 +77,10 @@ public:
     virtual ~ResourceModel();
 
     enum Roles {
-        ResourceRole = Qt::UserRole,
-        ActivityRole = Qt::UserRole + 1,
-        AgentRole    = Qt::UserRole + 2
+        ResourceRole    = Qt::UserRole,
+        ActivityRole    = Qt::UserRole + 1,
+        AgentRole       = Qt::UserRole + 2,
+        DescriptionRole = Qt::UserRole + 3
     };
 
     QHash<int, QByteArray> roleNames() const Q_DECL_OVERRIDE;
@@ -108,6 +109,20 @@ public Q_SLOTS:
                                     const QString &resource,
                                     const QString &activity,
                                     const QJSValue &callback);
+    void unlinkResourceFromActivity(const QStringList &agents,
+                                    const QString &resource,
+                                    const QStringList &activities,
+                                    const QJSValue &callback);
+
+    bool isResourceLinkedToActivity(const QString &resource) const;
+    bool isResourceLinkedToActivity(const QString &resource,
+                                    const QString &activity) const;
+    bool isResourceLinkedToActivity(const QString &agent,
+                                    const QString &resource,
+                                    const QString &activity) const;
+    bool isResourceLinkedToActivity(const QStringList &agents,
+                                    const QString &resource,
+                                    const QStringList &activities) const;
 
     // Model property getters and setters
     void setShownActivities(const QString &activities);
@@ -117,6 +132,8 @@ public Q_SLOTS:
     QString shownAgents() const;
 
     void setOrder(const QStringList &resources);
+    void move(int sourceItem, int destinationItem);
+    void sortItems(Qt::SortOrder sortOrder);
 
     KConfigGroup config() const;
 
@@ -133,15 +150,14 @@ Q_SIGNALS:
     void shownAgentsChanged();
 
 private Q_SLOTS:
-    void setCurrentActivity(const QString &activity);
+    void onCurrentActivityChanged(const QString &activity);
 
-    void resourceLinkedToActivity(const QString &initiatingAgent,
-                                  const QString &targettedResource,
-                                  const QString &usedActivity);
-    void resourceUnlinkedFromActivity(const QString &initiatingAgent,
-                                      const QString &targettedResource,
-                                      const QString &usedActivity);
-
+    void onResourceLinkedToActivity(const QString &initiatingAgent,
+                                    const QString &targettedResource,
+                                    const QString &usedActivity);
+    void onResourceUnlinkedFromActivity(const QString &initiatingAgent,
+                                        const QString &targettedResource,
+                                        const QString &usedActivity);
 
 private:
     KActivities::Consumer m_service;
@@ -150,7 +166,8 @@ private:
     QVariant dataForColumn(const QModelIndex &index, int column) const;
 
     QString activityToWhereClause(const QString &activity) const;
-    QString agentToWhereClause(const QString &activity) const;
+    QString agentToWhereClause(const QString &agent) const;
+    QString whereClause(const QStringList &activities, const QStringList &agents) const;
 
     QSqlDatabase m_database;
     QSqlTableModel *m_databaseModel;
