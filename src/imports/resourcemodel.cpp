@@ -378,8 +378,8 @@ void ResourceModel::unlinkResourceFromActivity(const QString &resource,
                                                const QString &activity,
                                                const QJSValue &callback)
 {
-    unlinkResourceFromActivity(m_shownAgents, resource, {activity},
-                               callback);
+    unlinkResourceFromActivity(m_shownAgents, resource,
+                               QStringList() << activity, callback);
 }
 
 void ResourceModel::unlinkResourceFromActivity(const QString &agent,
@@ -387,7 +387,8 @@ void ResourceModel::unlinkResourceFromActivity(const QString &agent,
                                                const QString &activity,
                                                const QJSValue &callback)
 {
-    unlinkResourceFromActivity({agent}, resource, {activity}, callback);
+    unlinkResourceFromActivity(QStringList() << agent, resource,
+                               QStringList() << activity, callback);
 }
 
 void ResourceModel::unlinkResourceFromActivity(const QStringList &agents,
@@ -429,14 +430,16 @@ bool ResourceModel::isResourceLinkedToActivity(const QString &resource) const
 bool ResourceModel::isResourceLinkedToActivity(const QString &resource,
                                                const QString &activity) const
 {
-    return isResourceLinkedToActivity(m_shownAgents, resource, {activity});
+    return isResourceLinkedToActivity(m_shownAgents, resource,
+                                      QStringList() << activity);
 }
 
 bool ResourceModel::isResourceLinkedToActivity(const QString &agent,
                                                const QString &resource,
                                                const QString &activity) const
 {
-    return isResourceLinkedToActivity({agent}, resource, {activity});
+    return isResourceLinkedToActivity(QStringList() << agent, resource,
+                                      QStringList() << activity);
 }
 
 bool ResourceModel::isResourceLinkedToActivity(const QStringList &agents,
