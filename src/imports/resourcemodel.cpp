@@ -99,6 +99,7 @@ ResourceModel::ResourceModel(QObject *parent)
     , m_shownActivities(QStringLiteral(":current"))
     , m_shownAgents(QStringLiteral(":current"))
     , m_sorting{"/media/ivan/documents"}
+    , m_defaultItemsLoaded(false)
     , m_linker(LinkerService::self())
     , m_config(KSharedConfig::openConfig("kactivitymanagerd-resourcelinkingrc")
         ->group("Order"))
@@ -215,6 +216,7 @@ void ResourceModel::setShownAgents(const QString &agents)
             (!agent.isEmpty() && !agent.contains('\'') && !agent.contains('"'));
     });
 
+    loadDefaultsIfNeeded();
     reloadData();
     emit shownAgentsChanged();
 }
@@ -227,6 +229,17 @@ QString ResourceModel::shownActivities() const
 QString ResourceModel::shownAgents() const
 {
     return m_shownAgents.join(',');
+}
+
+QString ResourceModel::defaultItemsConfig() const
+{
+    return m_defaultItemsConfig;
+}
+
+void ResourceModel::setDefaultItemsConfig(const QString &defaultItemsConfig)
+{
+    m_defaultItemsConfig = defaultItemsConfig;
+    loadDefaultsIfNeeded();
 }
 
 QString ResourceModel::activityToWhereClause(const QString &shownActivity) const
@@ -332,14 +345,14 @@ QVariant ResourceModel::data(const QModelIndex &proxyIndex, int role) const
 }
 
 void ResourceModel::linkResourceToActivity(const QString &resource,
-                                           const QJSValue &callback)
+                                           const QJSValue &callback) const
 {
     linkResourceToActivity(resource, m_shownActivities.first(), callback);
 }
 
 void ResourceModel::linkResourceToActivity(const QString &resource,
                                            const QString &activity,
-                                           const QJSValue &callback)
+                                           const QJSValue &callback) const
 {
     linkResourceToActivity(m_shownAgents.first(), resource, activity, callback);
 }
@@ -347,7 +360,7 @@ void ResourceModel::linkResourceToActivity(const QString &resource,
 void ResourceModel::linkResourceToActivity(const QString &agent,
                                            const QString &resource,
                                            const QString &activity,
-                                           const QJSValue &callback)
+                                           const QJSValue &callback) const
 {
     if (activity == ":any") {
         qWarning() << ":any is not a valid activity specification for linking";
@@ -598,6 +611,45 @@ QString ResourceModel::resourceAt(int row) const
     return data(index(row, 0), ResourceRole).toString();
 }
 
+void ResourceModel::loadDefaultsIfNeeded() const
+{
+    // Did we get a request to actually do anything?
+    if (m_defaultItemsConfig.isEmpty()) return;
+    if (m_shownAgents.size() == 0) return;
+
+    // If we have already loaded the items, just exit
+    if (m_defaultItemsLoaded) return;
+    m_defaultItemsLoaded = true;
+
+    // If there are items in the model, no need to load the defaults
+    if (count() != 0) return;
+
+    // Did we already load the defaults for this agent?
+    QStringList alreadyInitialized = m_config.readEntry("defaultItemsProcessedFor", QStringList());
+    if (alreadyInitialized.contains(m_shownAgents.first())) return;
+    alreadyInitialized << m_shownAgents.first();
+    m_config.writeEntry("defaultItemsProcessedFor", alreadyInitialized);
+    m_config.sync();
+
+    QStringList args = m_defaultItemsConfig.split("/");
+    QString configField = args.takeLast();
+    QString configGroup = args.takeLast();
+    QString configFile = args.join("/");
+
+    qDebug() << "Config"
+             << configFile << " "
+             << configGroup << " "
+             << configField << " ";
+
+    QStringList items = KSharedConfig::openConfig(configFile)
+        ->group(configGroup)
+        .readEntry(configField, QStringList());
+
+    for (const auto& item: items) {
+        qDebug() << "Adding: " << item;
+        linkResourceToActivity(item, ":global", QJSValue());
+    }
+}
 
 } // namespace Models
 } // namespace KActivities

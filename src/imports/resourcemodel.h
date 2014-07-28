@@ -72,6 +72,14 @@ class ResourceModel : public QSortFilterProxyModel {
      */
     Q_PROPERTY(QString shownAgents READ shownAgents WRITE setShownAgents NOTIFY shownAgentsChanged)
 
+    /**
+     * If the model is empty, use this config file to read the default items.
+     * The default items are automatically linked globally, not per-activity.
+     * It needs to have the following format: 'config-namerc/ConfigGroup/ConfigEntry'.
+     * The config entry needs to be a list of strings.
+     */
+    Q_PROPERTY(QString defaultItemsConfig READ defaultItemsConfig WRITE setDefaultItemsConfig)
+
 public:
     ResourceModel(QObject *parent = 0);
     virtual ~ResourceModel();
@@ -91,14 +99,14 @@ public:
 public Q_SLOTS:
     // Resource linking control methods
     void linkResourceToActivity(const QString &resource,
-                                const QJSValue &callback);
+                                const QJSValue &callback) const;
     void linkResourceToActivity(const QString &resource,
                                 const QString &activity,
-                                const QJSValue &callback);
+                                const QJSValue &callback) const;
     void linkResourceToActivity(const QString &agent,
                                 const QString &resource,
                                 const QString &activity,
-                                const QJSValue &callback);
+                                const QJSValue &callback) const;
 
     void unlinkResourceFromActivity(const QString &resource,
                                     const QJSValue &callback);
@@ -130,6 +138,9 @@ public Q_SLOTS:
 
     void setShownAgents(const QString &agents);
     QString shownAgents() const;
+
+    QString defaultItemsConfig() const;
+    void setDefaultItemsConfig(const QString &defaultItemsConfig);
 
     void setOrder(const QStringList &resources);
     void move(int sourceItem, int destinationItem);
@@ -169,6 +180,8 @@ private:
     QString agentToWhereClause(const QString &agent) const;
     QString whereClause(const QStringList &activities, const QStringList &agents) const;
 
+    void loadDefaultsIfNeeded() const;
+
     QSqlDatabase m_database;
     QSqlTableModel *m_databaseModel;
 
@@ -176,12 +189,15 @@ private:
     QStringList m_shownAgents;
     QStringList m_sorting;
 
+    QString m_defaultItemsConfig;
+    mutable bool m_defaultItemsLoaded;
+
     void reloadData();
 
     class LinkerService;
     std::shared_ptr<LinkerService> m_linker;
 
-    KConfigGroup m_config;
+    mutable KConfigGroup m_config;
 };
 
 } // namespace Models
