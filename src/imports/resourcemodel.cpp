@@ -255,6 +255,8 @@ QString ResourceModel::whereClause(const QStringList &activities,
     using boost::accumulate;
     using namespace kamd::utils;
 
+    // qDebug() << "Getting the where clause for: " << activities << " " << agents;
+
     // Defining the transformation functions for generating the SQL WHERE clause
     // from the specified activity/agent. They also resolve the special values
     // like :current, :any and :global.
