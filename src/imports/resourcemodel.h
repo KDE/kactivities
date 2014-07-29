@@ -122,15 +122,15 @@ public Q_SLOTS:
                                     const QStringList &activities,
                                     const QJSValue &callback);
 
-    bool isResourceLinkedToActivity(const QString &resource) const;
+    bool isResourceLinkedToActivity(const QString &resource);
     bool isResourceLinkedToActivity(const QString &resource,
-                                    const QString &activity) const;
+                                    const QString &activity);
     bool isResourceLinkedToActivity(const QString &agent,
                                     const QString &resource,
-                                    const QString &activity) const;
+                                    const QString &activity);
     bool isResourceLinkedToActivity(const QStringList &agents,
                                     const QString &resource,
-                                    const QStringList &activities) const;
+                                    const QStringList &activities);
 
     // Model property getters and setters
     void setShownActivities(const QString &activities);
@@ -182,6 +182,8 @@ private:
 
     void loadDefaultsIfNeeded() const;
 
+    bool loadDatabase();
+    QString m_databaseFile;
     QSqlDatabase m_database;
     QSqlTableModel *m_databaseModel;
 

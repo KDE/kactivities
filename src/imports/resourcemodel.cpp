@@ -110,21 +110,9 @@ ResourceModel::ResourceModel(QObject *parent)
         = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation)
           + QStringLiteral("/kactivitymanagerd/resources/");
 
-    const QString databaseFile = databaseDir + QStringLiteral("database");
+    m_databaseFile = databaseDir + QStringLiteral("database");
 
-    m_database = QSqlDatabase::addDatabase(
-        QStringLiteral("QSQLITE"),
-        QStringLiteral("kactivities_db_resources"));
-
-    m_database.setDatabaseName(databaseFile);
-
-    m_database.open();
-
-    m_databaseModel = new QSqlTableModel(parent, m_database);
-    m_databaseModel->setTable("ResourceLink");
-    m_databaseModel->select();
-
-    setSourceModel(m_databaseModel);
+    loadDatabase();
 
     connect(&m_service, &KActivities::Consumer::currentActivityChanged,
             this, &ResourceModel::onCurrentActivityChanged);
@@ -138,12 +126,38 @@ ResourceModel::ResourceModel(QObject *parent)
     sort(0);
 }
 
+bool ResourceModel::loadDatabase()
+{
+    if (m_database.isValid()) return true;
+    if (!QFile(m_databaseFile).exists()) return false;
+
+    m_database = QSqlDatabase::addDatabase(
+        QStringLiteral("QSQLITE"),
+        QStringLiteral("kactivities_db_resources"));
+
+    m_database.setDatabaseName(m_databaseFile);
+
+    m_database.open();
+
+    m_databaseModel = new QSqlTableModel(this, m_database);
+    m_databaseModel->setTable("ResourceLink");
+    m_databaseModel->select();
+
+    setSourceModel(m_databaseModel);
+
+    reloadData();
+
+    return true;
+}
+
 ResourceModel::~ResourceModel()
 {
 }
 
 QVariant ResourceModel::dataForColumn(const QModelIndex &index, int column) const
 {
+    if (!m_database.isValid()) return QVariant();
+
     return m_databaseModel->data(index.sibling(index.row(), column),
                                  Qt::DisplayRole);
 }
@@ -295,6 +309,7 @@ void ResourceModel::reloadData()
 {
     m_sorting = m_config.readEntry(m_shownAgents.first(), QStringList());
 
+    if (!m_database.isValid()) return;
     m_databaseModel->setFilter(whereClause(m_shownActivities, m_shownAgents));
 }
 
@@ -437,13 +452,13 @@ void ResourceModel::unlinkResourceFromActivity(const QStringList &agents,
     }
 }
 
-bool ResourceModel::isResourceLinkedToActivity(const QString &resource) const
+bool ResourceModel::isResourceLinkedToActivity(const QString &resource)
 {
     return isResourceLinkedToActivity(m_shownAgents, resource, m_shownActivities);
 }
 
 bool ResourceModel::isResourceLinkedToActivity(const QString &resource,
-                                               const QString &activity) const
+                                               const QString &activity)
 {
     return isResourceLinkedToActivity(m_shownAgents, resource,
                                       QStringList() << activity);
@@ -451,7 +466,7 @@ bool ResourceModel::isResourceLinkedToActivity(const QString &resource,
 
 bool ResourceModel::isResourceLinkedToActivity(const QString &agent,
                                                const QString &resource,
-                                               const QString &activity) const
+                                               const QString &activity)
 {
     return isResourceLinkedToActivity(QStringList() << agent, resource,
                                       QStringList() << activity);
@@ -459,8 +474,10 @@ bool ResourceModel::isResourceLinkedToActivity(const QString &agent,
 
 bool ResourceModel::isResourceLinkedToActivity(const QStringList &agents,
                                                const QString &resource,
-                                               const QStringList &activities) const
+                                               const QStringList &activities)
 {
+    if (!m_database.isValid()) return false;
+
     // qDebug() << "ResourceModel: Testing whether the resource is linked to activity: ----------------------------\n"
     //          << "ResourceModel:         Resource: " << resource << "\n"
     //          << "ResourceModel:         Agents: " << agents << "\n"
@@ -487,6 +504,8 @@ void ResourceModel::onResourceLinkedToActivity(const QString &initiatingAgent,
                                                const QString &usedActivity)
 {
     Q_UNUSED(targettedResource)
+
+    if (!loadDatabase()) return;
 
     auto matchingActivity = boost::find_if(m_shownActivities, [&] (const QString &shownActivity) {
         return

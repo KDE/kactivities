@@ -102,7 +102,12 @@ Database::Database()
         = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation)
           + QStringLiteral("/kactivitymanagerd/resources/");
 
-    QDir().mkpath(databaseDir);
+    qDebug() << "Creating directory: " << databaseDir;
+    auto created = QDir().mkpath(databaseDir);
+
+    if (!created || !QDir(databaseDir).exists()) {
+        qWarning() << "Database folder can not be created!";
+    }
 
     const QString newDatabaseFile = databaseDir + QStringLiteral("database");
 
