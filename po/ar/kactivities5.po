@@ -1,0 +1,183 @@
+# Language  translations for PACKAGE package.
+# Copyright (C) 2013 This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+# Safa Alfulaij <safaalfulaij@hotmail.con>, 2013.
+# Automatically generated, 2013.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2014-06-15 08:02+0000\n"
+"PO-Revision-Date: 2013-07-07 23:56+0300\n"
+"Last-Translator: Safa Alfulaij <safaalfulaij@hotmail.con>\n"
+"Language-Team: Arabic <doc@arabeyes.org>\n"
+"Language: ar\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
+"&& n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+"X-Generator: Lokalize 1.4\n"
+
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "صفا الفليج"
+
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "safaalfulaij@hotmail.com"
+
+#: imports/activitymodel.cpp:592
+#, fuzzy
+msgctxt "Header title for activity data model"
+msgid "Activity"
+msgstr "النشاط"
+
+#: service/Activities.cpp:140
+#, fuzzy
+msgid "Default"
+msgstr "الافتراضي"
+
+#: service/plugins/globalshortcuts/GlobalShortcutsPlugin.cpp:79
+#: service/plugins/globalshortcuts/GlobalShortcutsPlugin.cpp:103
+#, fuzzy, kde-format
+msgctxt "@action"
+msgid "Switch to activity \"%1\""
+msgstr "بدِّل إلى النشاط \"%1\""
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:98
+#, fuzzy
+msgid "Activities..."
+msgstr "الأنشطة..."
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:165
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:203
+#, fuzzy
+msgid "Unlink from the current activity"
+msgstr "أزل الوصل من النشاط الحالي"
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:170
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:211
+#, fuzzy
+msgid "Link to the current activity"
+msgstr "أوصِل إلى النشاط الحالي"
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:175
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:235
+#, fuzzy
+msgid "Link to:"
+msgstr "أوصِل إلى:"
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:182
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:242
+#, fuzzy
+msgid "Unlink from:"
+msgstr "أزل الوصل من:"
+
+#: workspace/kio/KioActivities.cpp:147
+#, fuzzy
+msgid "Current activity"
+msgstr "النشاط الحاليّ"
+
+#: workspace/kio/KioActivities.cpp:249
+#, fuzzy
+msgid "Activity manager is not running properly."
+msgstr "مدير الأنشطة لا يعمل بشكل صحيح."
+
+#: workspace/settings/MainConfigurationWidget.cpp:70
+msgid "Activities"
+msgstr "الأنشطة"
+
+#: workspace/settings/MainConfigurationWidget.cpp:72
+msgid "(c) 2012 Ivan Cukic"
+msgstr ""
+
+#: workspace/settings/MainConfigurationWidget.cpp:90
+msgid "Available Features"
+msgstr "المميزات الموجودة"
+
+#: workspace/settings/MainConfigurationWidget.cpp:93
+msgid "Plugins"
+msgstr "الملحقات"
+
+#: workspace/settings/MainConfigurationWidget.cpp:100
+msgctxt "unit of time. months to keep the history"
+msgid " month"
+msgid_plural " months"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+msgstr[4] ""
+msgstr[5] ""
+
+#: workspace/settings/MainConfigurationWidget.cpp:101
+msgctxt "for in 'keep history for 5 months'"
+msgid "for "
+msgstr ""
+
+#: workspace/settings/MainConfigurationWidget.cpp:102
+msgctxt "unlimited number of months"
+msgid "forever"
+msgstr ""
+
+#: workspace/settings/MainConfigurationWidget.cpp:109
+msgid "Forget the last hour"
+msgstr "أنسَ الساعة الأخيرة"
+
+#: workspace/settings/MainConfigurationWidget.cpp:112
+msgid "Forget the last two hours"
+msgstr "أنسَ الساعتان الأخيرتان"
+
+#: workspace/settings/MainConfigurationWidget.cpp:115
+msgid "Forget a day"
+msgstr "أنسَ يوم"
+
+#: workspace/settings/MainConfigurationWidget.cpp:118
+msgid "Forget everything"
+msgstr "أنسَ كل شيء"
+
+#. i18n: ectx: property (text), widget (QCheckBox, checkEnableActivities)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:17
+msgid "Enable activities management"
+msgstr "مكّن إدارة الأنشطة"
+
+#. i18n: ectx: attribute (title), widget (QWidget, tab)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:28
+msgid "Privacy"
+msgstr "الخصوصية"
+
+#. i18n: ectx: property (text), widget (QLabel, labelRememberDocuments)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:34
+msgid "Remember opened documents:"
+msgstr "المستندات المفتوحة لتذكرها:"
+
+#. i18n: ectx: property (text), widget (QRadioButton, radioRememberAllApplications)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:45
+msgid "For all applications"
+msgstr "لكل التطبيقات"
+
+#. i18n: ectx: property (text), widget (QRadioButton, radioDontRememberApplications)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:55
+msgid "Do not remember"
+msgstr "لا تتذكر"
+
+#. i18n: ectx: property (text), widget (QRadioButton, radioRememberSpecificApplications)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:62
+msgid "Only for specific applications"
+msgstr "فقط لتطبيقات معيّنة"
+
+#. i18n: ectx: property (text), widget (QLabel, labelKeepHistory)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:90
+msgid "Keep history"
+msgstr "أبقِ التأريخ"
+
+#. i18n: ectx: property (text), widget (QPushButton, buttonClearRecentHistory)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:113
+msgid "Clear recent history"
+msgstr "أمح التأريخ الأخير"
+
+#. i18n: ectx: property (text), widget (QCheckBox, checkBlacklistAllNotOnList)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:150
+msgid "Blacklist all applications not on this list"
+msgstr ""

@@ -1,0 +1,174 @@
+# translation of kcm_activities.po to Français
+# Copyright (C) YEAR This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+# Joëlle Cornavin <jcorn@free.fr>, 2012, 2013.
+# xavier <ktranslator31@yahoo.fr>, 2013, 2014.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: kcm_activities\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2014-06-15 08:02+0000\n"
+"PO-Revision-Date: 2014-07-07 09:52+0200\n"
+"Last-Translator: casse\n"
+"Language-Team: French <kde-i18n-doc@kde.org>\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Lokalize 1.5\n"
+"X-Environment: kde\n"
+"X-Accelerator-Marker: &\n"
+"X-Text-Markup: kde4\n"
+
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Joëlle Cornavin"
+
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "jcorn@free.fr"
+
+#: imports/activitymodel.cpp:592
+msgctxt "Header title for activity data model"
+msgid "Activity"
+msgstr ""
+
+#: service/Activities.cpp:140
+msgid "Default"
+msgstr "Défaut"
+
+#: service/plugins/globalshortcuts/GlobalShortcutsPlugin.cpp:79
+#: service/plugins/globalshortcuts/GlobalShortcutsPlugin.cpp:103
+#, kde-format
+msgctxt "@action"
+msgid "Switch to activity \"%1\""
+msgstr "Passer à l'activité « %1 »"
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:98
+msgid "Activities..."
+msgstr "Activités..."
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:165
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:203
+msgid "Unlink from the current activity"
+msgstr "Se détacher de l'activité en cours"
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:170
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:211
+msgid "Link to the current activity"
+msgstr "Se connecter à l'activité en cours"
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:175
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:235
+msgid "Link to:"
+msgstr "Se connecter à:"
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:182
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:242
+msgid "Unlink from:"
+msgstr "Se déconnecter de;"
+
+#: workspace/kio/KioActivities.cpp:147
+msgid "Current activity"
+msgstr "Activité en cours"
+
+#: workspace/kio/KioActivities.cpp:249
+msgid "Activity manager is not running properly."
+msgstr "Le gestionnaire d'activités ne tourne pas correctement."
+
+#: workspace/settings/MainConfigurationWidget.cpp:70
+msgid "Activities"
+msgstr "Activités"
+
+#: workspace/settings/MainConfigurationWidget.cpp:72
+msgid "(c) 2012 Ivan Cukic"
+msgstr "(c) 2012 Ivan Cukic"
+
+#: workspace/settings/MainConfigurationWidget.cpp:90
+msgid "Available Features"
+msgstr "Fonctionnalités disponibles"
+
+#: workspace/settings/MainConfigurationWidget.cpp:93
+msgid "Plugins"
+msgstr "Modules externes"
+
+#: workspace/settings/MainConfigurationWidget.cpp:100
+msgctxt "unit of time. months to keep the history"
+msgid " month"
+msgid_plural " months"
+msgstr[0] " mois"
+msgstr[1] " mois"
+
+#: workspace/settings/MainConfigurationWidget.cpp:101
+msgctxt "for in 'keep history for 5 months'"
+msgid "for "
+msgstr "pendant"
+
+#: workspace/settings/MainConfigurationWidget.cpp:102
+msgctxt "unlimited number of months"
+msgid "forever"
+msgstr "indéfiniment"
+
+#: workspace/settings/MainConfigurationWidget.cpp:109
+msgid "Forget the last hour"
+msgstr "Oublier la dernière heure"
+
+#: workspace/settings/MainConfigurationWidget.cpp:112
+msgid "Forget the last two hours"
+msgstr "Oublier les deux dernières heures"
+
+#: workspace/settings/MainConfigurationWidget.cpp:115
+msgid "Forget a day"
+msgstr "Oublier un jour"
+
+#: workspace/settings/MainConfigurationWidget.cpp:118
+msgid "Forget everything"
+msgstr "Oublier tout"
+
+#. i18n: ectx: property (text), widget (QCheckBox, checkEnableActivities)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:17
+msgid "Enable activities management"
+msgstr "Activer la gestion des activités"
+
+#. i18n: ectx: attribute (title), widget (QWidget, tab)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:28
+msgid "Privacy"
+msgstr "Respect de la vie privée"
+
+#. i18n: ectx: property (text), widget (QLabel, labelRememberDocuments)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:34
+msgid "Remember opened documents:"
+msgstr "Mémoriser les documents ouverts :"
+
+#. i18n: ectx: property (text), widget (QRadioButton, radioRememberAllApplications)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:45
+msgid "For all applications"
+msgstr "Pour toutes les applications"
+
+#. i18n: ectx: property (text), widget (QRadioButton, radioDontRememberApplications)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:55
+msgid "Do not remember"
+msgstr "Ne pas mémoriser"
+
+#. i18n: ectx: property (text), widget (QRadioButton, radioRememberSpecificApplications)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:62
+msgid "Only for specific applications"
+msgstr "Uniquement pour des applications spécifiques"
+
+#. i18n: ectx: property (text), widget (QLabel, labelKeepHistory)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:90
+msgid "Keep history"
+msgstr "Conserver l'historique"
+
+#. i18n: ectx: property (text), widget (QPushButton, buttonClearRecentHistory)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:113
+msgid "Clear recent history"
+msgstr "Effacer l'historique récent"
+
+#. i18n: ectx: property (text), widget (QCheckBox, checkBlacklistAllNotOnList)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:150
+msgid "Blacklist all applications not on this list"
+msgstr ""
+"Mettre en liste noire toutes les applications ne figurant pas sur cette liste"
