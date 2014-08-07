@@ -98,13 +98,13 @@ ResourceModel::ResourceModel(QObject *parent)
     : QSortFilterProxyModel(parent)
     , m_shownActivities(QStringLiteral(":current"))
     , m_shownAgents(QStringLiteral(":current"))
-    , m_sorting{"/media/ivan/documents"}
     , m_defaultItemsLoaded(false)
     , m_linker(LinkerService::self())
     , m_config(KSharedConfig::openConfig("kactivitymanagerd-resourcelinkingrc")
         ->group("Order"))
 {
     // TODO: What to do if the file does not exist?
+    // qDebug() << "Creating a resource model instance";
 
     const QString databaseDir
         = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation)
@@ -131,10 +131,13 @@ bool ResourceModel::loadDatabase()
     if (m_database.isValid()) return true;
     if (!QFile(m_databaseFile).exists()) return false;
 
+    // TODO: Database connection naming could be smarter (thread-id-based,
+    // reusing connections...?)
     m_database = QSqlDatabase::addDatabase(
         QStringLiteral("QSQLITE"),
-        QStringLiteral("kactivities_db_resources"));
+        QStringLiteral("kactivities_db_resources_") + QString::number((long)this));
 
+    // qDebug() << "Database file is: " << m_databaseFile;
     m_database.setDatabaseName(m_databaseFile);
 
     m_database.open();
@@ -373,7 +376,7 @@ void ResourceModel::linkResourceToActivity(const QString &resource,
 }
 
 void ResourceModel::linkResourceToActivity(const QString &agent,
-                                           const QString &resource,
+                                           const QString &_resource,
                                            const QString &activity,
                                            const QJSValue &callback) const
 {
@@ -381,6 +384,8 @@ void ResourceModel::linkResourceToActivity(const QString &agent,
         qWarning() << ":any is not a valid activity specification for linking";
         return;
     }
+
+    auto resource = validateResource(_resource);
 
     // qDebug() << "ResourceModel: Linking resource to activity: --------------------------------------------------\n"
     //          << "ResourceModel:         Resource: " << resource << "\n"
@@ -422,10 +427,12 @@ void ResourceModel::unlinkResourceFromActivity(const QString &agent,
 }
 
 void ResourceModel::unlinkResourceFromActivity(const QStringList &agents,
-                                               const QString &resource,
+                                               const QString &_resource,
                                                const QStringList &activities,
                                                const QJSValue &callback)
 {
+    auto resource = validateResource(_resource);
+
     // qDebug() << "ResourceModel: Unlinking resource from activity: ----------------------------------------------\n"
     //          << "ResourceModel:         Resource: " << resource << "\n"
     //          << "ResourceModel:         Agents: " << agents << "\n"
@@ -473,10 +480,12 @@ bool ResourceModel::isResourceLinkedToActivity(const QString &agent,
 }
 
 bool ResourceModel::isResourceLinkedToActivity(const QStringList &agents,
-                                               const QString &resource,
+                                               const QString &_resource,
                                                const QStringList &activities)
 {
     if (!m_database.isValid()) return false;
+
+    auto resource = validateResource(_resource);
 
     // qDebug() << "ResourceModel: Testing whether the resource is linked to activity: ----------------------------\n"
     //          << "ResourceModel:         Resource: " << resource << "\n"
@@ -492,8 +501,13 @@ bool ResourceModel::isResourceLinkedToActivity(const QStringList &agents,
     query.exec();
 
     auto result = query.next();
+
     // qDebug() << "Query: " << query.lastQuery();
-    // qDebug() << "Error: " << query.lastError();
+    //
+    // if (query.lastError().isValid()) {
+    //     qDebug() << "Error: " << query.lastError();
+    // }
+    //
     // qDebug() << "Result: " << result;
 
     return result;
@@ -627,7 +641,7 @@ QString ResourceModel::displayAt(int row) const
 
 QString ResourceModel::resourceAt(int row) const
 {
-    return data(index(row, 0), ResourceRole).toString();
+    return validateResource(data(index(row, 0), ResourceRole).toString());
 }
 
 void ResourceModel::loadDefaultsIfNeeded() const
@@ -655,19 +669,25 @@ void ResourceModel::loadDefaultsIfNeeded() const
     QString configGroup = args.takeLast();
     QString configFile = args.join("/");
 
-    qDebug() << "Config"
-             << configFile << " "
-             << configGroup << " "
-             << configField << " ";
+    // qDebug() << "Config"
+    //          << configFile << " "
+    //          << configGroup << " "
+    //          << configField << " ";
 
     QStringList items = KSharedConfig::openConfig(configFile)
         ->group(configGroup)
         .readEntry(configField, QStringList());
 
     for (const auto& item: items) {
-        qDebug() << "Adding: " << item;
+        // qDebug() << "Adding: " << item;
         linkResourceToActivity(item, ":global", QJSValue());
     }
+}
+
+QString ResourceModel::validateResource(const QString &resource) const
+{
+    return resource.startsWith(QStringLiteral("file://")) ?
+            QUrl(resource).toLocalFile() : resource;
 }
 
 } // namespace Models

@@ -195,6 +195,7 @@ private:
     mutable bool m_defaultItemsLoaded;
 
     void reloadData();
+    QString validateResource(const QString &resource) const;
 
     class LinkerService;
     std::shared_ptr<LinkerService> m_linker;
