@@ -122,7 +122,8 @@ Application::Application()
 
 void Application::loadPlugins()
 {
-    val offers = KServiceTypeTrader::self()->query("ActivityManager/Plugin");
+    val offers = KServiceTypeTrader::self()->query("ActivityManager/Plugin",
+                                                   "[X-KDE-PluginInfo-EnabledByDefault]");
 
     val config = KSharedConfig::openConfig("activitymanagerrc");
     auto disabledPlugins = config->group("Global").readEntry("disabledPlugins", QStringList());
