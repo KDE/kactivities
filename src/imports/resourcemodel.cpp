@@ -549,6 +549,8 @@ void ResourceModel::onResourceLinkedToActivity(const QString &initiatingAgent,
 
     if (matchingActivity != m_shownActivities.end()
         && matchingAgent != m_shownAgents.end()) {
+        // TODO: This might be smarter possibly, but might collide
+        // with the sql model
         reloadData();
     }
 }
@@ -566,8 +568,7 @@ void ResourceModel::setOrder(const QStringList &resources)
     m_sorting = resources;
     m_config.writeEntry(m_shownAgents.first(), m_sorting);
     m_config.sync();
-    // qDebug() << "Order" << m_sorting;
-    reloadData();
+    invalidate();
 }
 
 void ResourceModel::move(int sourceItem, int destinationItem)
