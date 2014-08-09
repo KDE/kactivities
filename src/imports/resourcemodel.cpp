@@ -135,7 +135,7 @@ bool ResourceModel::loadDatabase()
     // reusing connections...?)
     m_database = QSqlDatabase::addDatabase(
         QStringLiteral("QSQLITE"),
-        QStringLiteral("kactivities_db_resources_") + QString::number((long)this));
+        QStringLiteral("kactivities_db_resources_") + QString::number((quintptr)this));
 
     // qDebug() << "Database file is: " << m_databaseFile;
     m_database.setDatabaseName(m_databaseFile);
