@@ -367,7 +367,7 @@ int main(int argc, char **argv)
 
         QProcess::startDetached(
                 KAMD_INSTALL_PREFIX "/bin/kactivitymanagerd",
-                {"start-daemon"}
+                QStringList{"start-daemon"}
             );
 
         return application.exec();
