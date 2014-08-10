@@ -38,7 +38,6 @@
 
 // Utils
 #include <utils/d_ptr_implementation.h>
-#include <utils/find_if_assoc.h>
 #include <utils/range.h>
 
 // Local
