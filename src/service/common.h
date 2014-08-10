@@ -19,8 +19,10 @@
 
 #define ACTIVITY_MANAGER_SERVICE \
     QStringLiteral("org.kde.ActivityManager")
+
+// can't use string literal concatenation in QStringLiteral in MSVC
 #define ACTIVITY_MANAGER_OBJECT_TYPE(A) \
-    QStringLiteral(ACTIVITY_MANAGER_SERVICE #A)
+    QLatin1String(ACTIVITY_MANAGER_SERVICE #A)
 #define ACTIVITY_MANAGER_OBJECT_PATH(A) \
-    QStringLiteral("/ActivityManager/" #A)
+    QLatin1String("/ActivityManager/" #A)
 
