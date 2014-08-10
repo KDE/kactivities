@@ -106,7 +106,20 @@ public:
     static inline bool isPluginEnabled(const KConfigGroup &config,
                                 const QString &plugin)
     {
-        return config.readEntry(plugin, true);
+        // TODO: This should not be hard-coded, switch to .desktop files
+        if (plugin == "kactivitymanagerd_plugin_sqlite.so") {
+            // SQLite plugin is necessary for the proper workspace behaviour
+            return true;
+
+        } else {
+            return config.readEntry(plugin,
+                plugin == "kactivitymanagerd_plugin_slc.so" ? true :
+                // Add other enabled-by-default plugins
+                                                              false
+                // kactivitymanagerd_plugin_activitytemplates.so - false
+                // kactivitymanagerd_plugin_virtualdesktopswitch.so - false
+                );
+        }
     }
 
     Resources *resources;
@@ -153,6 +166,7 @@ void Application::loadPlugins()
 
     // TODO: Return the plugin system
     // TODO: Properly load plugins when KF5::KService becomes more stable
+    //       if we want to have 3rd party plugins. If not, leave as is.
 
     const QDir pluginsDir(QStringLiteral(KAMD_INSTALL_PREFIX "/" KAMD_PLUGIN_DIR));
     const auto plugins = pluginsDir.entryList(QStringList{ QStringLiteral("kactivitymanagerd*.so") }, QDir::Files);

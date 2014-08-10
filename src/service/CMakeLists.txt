@@ -13,6 +13,8 @@ find_package (KF5CoreAddons ${KF5_DEP_VERSION} CONFIG REQUIRED)
 find_package (KF5I18n ${KF5_DEP_VERSION} CONFIG REQUIRED)
 find_package (KF5Service ${KF5_DEP_VERSION} CONFIG REQUIRED)
 find_package (KF5WindowSystem ${KF5_DEP_VERSION} CONFIG REQUIRED)
+find_package (KF5GlobalAccel ${KF5_DEP_VERSION} CONFIG REQUIRED)
+find_package (KF5XmlGui ${KF5_DEP_VERSION} CONFIG REQUIRED)
 
 # Standard stuff
 

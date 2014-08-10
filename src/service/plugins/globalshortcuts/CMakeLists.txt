@@ -25,6 +25,12 @@ add_library (
 target_link_libraries (
    kactivitymanagerd_plugin_globalshortcuts
    Qt5::Core
+   Qt5::DBus
+   Qt5::Widgets
+   KF5::ConfigCore
+   KF5::GlobalAccel
+   KF5::I18n
+   KF5::XmlGui
    )
 
 set_target_properties(

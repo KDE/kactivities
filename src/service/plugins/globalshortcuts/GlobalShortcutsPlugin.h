@@ -23,26 +23,30 @@
 
 class QSignalMapper;
 class KActionCollection;
+class QAction;
 
 class GlobalShortcutsPlugin : public Plugin {
     Q_OBJECT
+    Q_PLUGIN_METADATA(IID "org.kde.ActivityManager.plugins.globalshortcutsplugin")
 
 public:
-    GlobalShortcutsPlugin(QObject *parent, const QVariantList &args);
+    GlobalShortcutsPlugin(QObject *parent = Q_NULLPTR, const QVariantList &args = QVariantList());
     virtual ~GlobalShortcutsPlugin();
 
     virtual bool init(const QHash<QString, QObject *> &modules) Q_DECL_OVERRIDE;
 
 private Q_SLOTS:
     void activityAdded(const QString &activity);
-    void activityRemoved(const QString &activity);
+    void activityRemoved(const QString &activity = QString());
     void activityChanged(const QString &activity);
 
 private:
     inline QString activityName(const QString &activity) const;
+    inline QString activityForAction(QAction *action) const;
 
     QObject *m_activitiesService;
     QSignalMapper *m_signalMapper;
+    QStringList m_activitiesList;
     KActionCollection *m_actionCollection;
 };
 

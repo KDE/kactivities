@@ -4,5 +4,4 @@ add_subdirectory (slc)
 add_subdirectory (sqlite)
 add_subdirectory (activitytemplates)
 add_subdirectory (virtualdesktopswitch)
-
-# add_subdirectory (globalshortcuts)
+add_subdirectory (globalshortcuts)
