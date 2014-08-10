@@ -48,6 +48,7 @@
 #include <signal.h>
 #include <stdlib.h>
 #include <memory>
+#include <functional>
 
 // Local
 #include "Activities.h"
