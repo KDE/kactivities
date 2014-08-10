@@ -25,6 +25,9 @@ add_library (
 target_link_libraries (
    kactivitymanagerd_plugin_virtualdesktopswitch
    Qt5::Core
+   Qt5::DBus
+   KF5::ConfigCore
+   KF5::WindowSystem
    )
 
 set_target_properties(

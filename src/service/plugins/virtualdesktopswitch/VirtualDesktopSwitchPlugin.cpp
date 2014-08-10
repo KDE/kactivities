@@ -20,7 +20,7 @@
 #include <QString>
 #include <Debug.h>
 
-// #include <KWindowSystem>
+#include <kwindowsystem.h>
 
 const auto configPattern = QStringLiteral("desktop-for-%1");
 
@@ -76,4 +76,4 @@ void VirtualDesktopSwitchPlugin::activityRemoved(const QString &activity)
     config().sync();
 }
 
-KAMD_EXPORT_PLUGIN(VirtualDesktopSwitchPlugin, "activitymanger_plugin_virtualdesktopswitch")
+// KAMD_EXPORT_PLUGIN(VirtualDesktopSwitchPlugin, "activitymanger_plugin_virtualdesktopswitch")

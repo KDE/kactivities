@@ -20,13 +20,12 @@
 
 #include <Plugin.h>
 
-#include <utils/override.h>
-
 class VirtualDesktopSwitchPlugin : public Plugin {
     Q_OBJECT
+    Q_PLUGIN_METADATA(IID "org.kde.ActivityManager.plugins.virtualdesktopswitch")
 
 public:
-    VirtualDesktopSwitchPlugin(QObject *parent, const QVariantList &args);
+    VirtualDesktopSwitchPlugin(QObject *parent = Q_NULLPTR, const QVariantList &args = QVariantList());
     virtual ~VirtualDesktopSwitchPlugin();
 
     virtual bool init(const QHash<QString, QObject *> &modules) Q_DECL_OVERRIDE;
