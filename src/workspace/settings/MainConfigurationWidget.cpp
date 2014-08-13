@@ -76,6 +76,7 @@ MainConfigurationWidget::MainConfigurationWidget(QWidget *parent, QVariantList a
     d->mainConfig = KSharedConfig::openConfig("kactivitymanagerdrc");
     d->pluginConfig = KSharedConfig::openConfig("kactivitymanagerd-pluginsrc");
 
+    // Loading the plugin selector
     d->pluginSelector = new KPluginSelector(this);
     d->pluginSelector->addPlugins(plugins, KPluginSelector::ReadConfigFile,
                                   i18n("Available Features"), QString(),
@@ -85,12 +86,12 @@ MainConfigurationWidget::MainConfigurationWidget(QWidget *parent, QVariantList a
     // Keep history initialization
 
     d->spinKeepHistory->setRange(0, INT_MAX);
+    d->spinKeepHistory->setSpecialValueText(i18nc("unlimited number of months", "forever"));
 
-    // TODO: We need to have the special text for the spinbox
-    // d->spinKeepHistory->setSuffix(ki18ncp("unit of time. months to keep the history",
-    //                                       " month", " months"));
-    // d->spinKeepHistory->setPrefix(i18nc("for in 'keep history for 5 months'", "for "));
-    // d->spinKeepHistory->setSpecialValueText(i18nc("unlimited number of months", "forever"));
+    // We don't have KSpingBox anymore, lets keep it alive :)
+    connect(d->spinKeepHistory, SIGNAL(valueChanged(int)),
+            this, SLOT(spinKeepHistoryValueChanged(int)));
+    spinKeepHistoryValueChanged(0);
 
     // Clear recent history button
 
@@ -247,6 +248,16 @@ void MainConfigurationWidget::forgetDay()
 void MainConfigurationWidget::forgetAll()
 {
     forget(0, "everything");
+}
+
+void MainConfigurationWidget::spinKeepHistoryValueChanged(int value)
+{
+    static auto months = ki18ncp("unit of time. months to keep the history", " month", " months");
+
+    if (value) {
+        d->spinKeepHistory->setPrefix(i18nc("for in 'keep history for 5 months'", "for "));
+        d->spinKeepHistory->setSuffix(months.subs(value).toString());
+    }
 }
 
 #include "MainConfigurationWidget.moc"

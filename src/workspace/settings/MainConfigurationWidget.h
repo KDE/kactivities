@@ -45,6 +45,8 @@ private Q_SLOTS:
     void forgetDay();
     void forgetAll();
 
+    void spinKeepHistoryValueChanged(int value);
+
 private:
     enum WhatToRemember {
         AllApplications = 0,
