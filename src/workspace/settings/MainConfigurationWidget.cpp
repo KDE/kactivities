@@ -36,8 +36,6 @@
 #include <KService>
 #include <KServiceTypeTrader>
 
-#include <Plasma/PackageStructure>
-
 #include "ui_MainConfigurationWidgetBase.h"
 #include "BlacklistedApplicationsModel.h"
 
