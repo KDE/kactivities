@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2011, 2012 Ivan Cukic ivan.cukic(at)kde.org
+ *   Copyright (C) 2011, 2012, 2013, 2014 Ivan Cukic <ivan.cukic(at)kde.org>
  *
  *   This program is free software; you can redistribute it and/or
  *   modify it under the terms of the GNU General Public License as
@@ -27,6 +27,7 @@
 // Local
 #include "slcadaptor.h"
 
+KAMD_EXPORT_PLUGIN(slcplugin, SlcPlugin, "kactivitymanagerd-plugin-slc.json")
 
 SlcPlugin::SlcPlugin(QObject *parent, const QVariantList &args)
     : Plugin(parent)
@@ -118,4 +119,5 @@ bool SlcPlugin::init(const QHash<QString, QObject *> &modules)
     return true;
 }
 
-// KAMD_EXPORT_PLUGIN(SlcPlugin, "activitymanger_plugin_slc")
+#include "SlcPlugin.moc"
+

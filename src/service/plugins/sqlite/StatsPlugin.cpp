@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2011, 2012 Ivan Cukic <ivan.cukic(at)kde.org>
+ *   Copyright (C) 2011, 2012, 2013, 2014 Ivan Cukic <ivan.cukic(at)kde.org>
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License version 2,
@@ -43,6 +43,7 @@
 // #include "scoringadaptor.h"
 #include "../../Event.h"
 
+KAMD_EXPORT_PLUGIN(sqliteplugin, StatsPlugin, "kactivitymanagerd-plugin-sqlite.json")
 
 StatsPlugin *StatsPlugin::s_instance = Q_NULLPTR;
 
@@ -351,4 +352,5 @@ void StatsPlugin::deleteEarlierStats(const QString &activity, int months)
     emit earlierStatsDeleted(activity, months);
 }
 
-// KAMD_EXPORT_PLUGIN(StatsPlugin, "activitymanger_plugin_sqlite")
+#include "StatsPlugin.moc"
+

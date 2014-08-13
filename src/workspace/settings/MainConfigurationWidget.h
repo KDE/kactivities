@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2012 Ivan Cukic <ivan.cukic(at)kde.org>
+ *   Copyright (C) 2012, 2013, 2014 Ivan Cukic <ivan.cukic(at)kde.org>
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License version 2,
@@ -39,16 +39,11 @@ public Q_SLOTS:
     virtual void save() Q_DECL_OVERRIDE;
 
 private Q_SLOTS:
-    void updateLayout();
-
     void forget(int count, const QString &what);
     void forgetLastHour();
     void forgetTwoHours();
     void forgetDay();
     void forgetAll();
-
-protected:
-    bool eventFilter(QObject *obj, QEvent *event);
 
 private:
     enum WhatToRemember {

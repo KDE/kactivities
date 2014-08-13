@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2012 Ivan Cukic <ivan.cukic@kde.org>
+ *   Copyright (C) 2012, 2013, 2014 Ivan Cukic <ivan.cukic(at)kde.org>
  *
  *   This program is free software; you can redistribute it and/or
  *   modify it under the terms of the GNU General Public License as
@@ -22,7 +22,7 @@
 
 class VirtualDesktopSwitchPlugin : public Plugin {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.kde.ActivityManager.plugins.virtualdesktopswitch")
+    // Q_PLUGIN_METADATA(IID "org.kde.ActivityManager.plugins.virtualdesktopswitch")
 
 public:
     VirtualDesktopSwitchPlugin(QObject *parent = Q_NULLPTR, const QVariantList &args = QVariantList());

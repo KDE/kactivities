@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2012 Ivan Cukic <ivan.cukic@kde.org>
+ *   Copyright (C) 2012, 2013, 2014 Ivan Cukic <ivan.cukic(at)kde.org>
  *
  *   This program is free software; you can redistribute it and/or
  *   modify it under the terms of the GNU General Public License as
@@ -21,6 +21,9 @@
 // Qt
 #include <QStringList>
 #include <QString>
+
+KAMD_EXPORT_PLUGIN(templatesplugin, TemplatesPlugin, "kactivitymanagerd-plugin-activitytemplates.json")
+
 
 TemplatesPlugin::TemplatesPlugin(QObject *parent, const QVariantList &args)
     : Plugin(parent)
@@ -90,4 +93,5 @@ void TemplatesPlugin::setValue(const QStringList &property,
 
 }
 
-// KAMD_EXPORT_PLUGIN(TemplatesPlugin, "kactivitymanagerd_plugin_activitytemplates")
+#include "TemplatesPlugin.moc"
+

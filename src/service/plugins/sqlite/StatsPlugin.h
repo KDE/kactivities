@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2011, 2012 Ivan Cukic <ivan.cukic@kde.org>
+ *   Copyright (C) 2011, 2012, 2013, 2014 Ivan Cukic <ivan.cukic(at)kde.org>
  *
  *   This program is free software; you can redistribute it and/or
  *   modify it under the terms of the GNU General Public License as
@@ -40,7 +40,7 @@ class QFileSystemWatcher;
 class StatsPlugin : public Plugin {
     Q_OBJECT
     Q_CLASSINFO("D-Bus Interface", "org.kde.ActivityManager.Resources.Scoring")
-    Q_PLUGIN_METADATA(IID "org.kde.ActivityManager.plugins.sqlite")
+    // Q_PLUGIN_METADATA(IID "org.kde.ActivityManager.plugins.sqlite")
 
 public:
     explicit StatsPlugin(QObject *parent = Q_NULLPTR,

@@ -31,6 +31,12 @@ target_link_libraries (
    KF5::GlobalAccel
    KF5::I18n
    KF5::XmlGui
+   KF5::CoreAddons
+   )
+
+kservice_desktop_to_json(
+   kactivitymanagerd_plugin_globalshortcuts
+   kactivitymanagerd-plugin-globalshortcuts.desktop
    )
 
 set_target_properties(
@@ -39,5 +45,5 @@ set_target_properties(
    )
 
 install (TARGETS kactivitymanagerd_plugin_globalshortcuts DESTINATION ${KAMD_PLUGIN_DIR})
-# install (FILES kactivitymanagerd-plugin-globalshortcuts.desktop DESTINATION ${SERVICES_INSTALL_DIR})
+install (FILES kactivitymanagerd-plugin-globalshortcuts.desktop DESTINATION ${SERVICES_INSTALL_DIR})
 

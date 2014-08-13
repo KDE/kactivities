@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2012 Ivan Cukic <ivan.cukic@kde.org>
+ *   Copyright (C) 2012, 2013, 2014 Ivan Cukic <ivan.cukic(at)kde.org>
  *
  *   This program is free software; you can redistribute it and/or
  *   modify it under the terms of the GNU General Public License as
@@ -26,7 +26,7 @@ class KActionCollection;
 class TemplatesPlugin : public Plugin {
     Q_OBJECT
     // Q_CLASSINFO("D-Bus Interface", "org.kde.ActivityManager.SLC")
-    Q_PLUGIN_METADATA(IID "org.kde.ActivityManager.plugins.activitytemplates")
+    // Q_PLUGIN_METADATA(IID "org.kde.ActivityManager.plugins.activitytemplates")
 
 public:
     TemplatesPlugin(QObject *parent = Q_NULLPTR,

@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2012 Ivan Cukic <ivan.cukic(at)kde.org>
+ *   Copyright (C) 2012, 2013, 2014 Ivan Cukic <ivan.cukic(at)kde.org>
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License version 2,
@@ -35,7 +35,6 @@
 #include <KPluginInfo>
 #include <KService>
 #include <KServiceTypeTrader>
-// #include <kdeclarative/kdeclarative.h>
 
 #include <Plasma/PackageStructure>
 
@@ -56,7 +55,6 @@ public:
     KSharedConfig::Ptr pluginConfig;
     KPluginSelector *pluginSelector;
     BlacklistedApplicationsModel *blacklistedApplicationsModel;
-    // KDeclarative::KDeclarative kdeclarative;
 
     QObject *viewBlacklistedApplicationsRoot;
     QQuickView *viewBlacklistedApplications;
@@ -79,12 +77,9 @@ MainConfigurationWidget::MainConfigurationWidget(QWidget *parent, QVariantList a
     d->pluginConfig = KSharedConfig::openConfig("kactivitymanagerd-pluginsrc");
 
     d->pluginSelector = new KPluginSelector(this);
-    d->pluginSelector->addPlugins(
-        plugins,
-        KPluginSelector::ReadConfigFile,
-        i18n("Available Features"),
-        QString(),
-        d->mainConfig);
+    d->pluginSelector->addPlugins(plugins, KPluginSelector::ReadConfigFile,
+                                  i18n("Available Features"), QString(),
+                                  d->mainConfig);
     d->tabWidget->addTab(d->pluginSelector, i18n("Plugins"));
 
     // Keep history initialization
@@ -121,6 +116,7 @@ MainConfigurationWidget::MainConfigurationWidget(QWidget *parent, QVariantList a
     d->checkEnableActivities->setVisible(false);
 
     // Blacklist applications
+
     d->blacklistedApplicationsModel = new BlacklistedApplicationsModel(this);
 
     auto layout = new QGridLayout(d->viewBlacklistedApplicationsContainer);
@@ -133,29 +129,19 @@ MainConfigurationWidget::MainConfigurationWidget(QWidget *parent, QVariantList a
         d->viewBlacklistedApplications,
         d->viewBlacklistedApplicationsContainer);
 
-    // d->viewBlacklistedApplicationsContainer->add(container);
 
     container->setFocusPolicy(Qt::TabFocus);
-    d->viewBlacklistedApplications->rootContext()->setContextProperty("applicationModel", d->blacklistedApplicationsModel);
+    d->viewBlacklistedApplications->rootContext()->setContextProperty(
+        "applicationModel", d->blacklistedApplicationsModel);
     d->viewBlacklistedApplications->setSource(
-            QStringLiteral(KAMD_INSTALL_PREFIX "/" KAMD_DATA_DIR) + "/workspace/settings/BlacklistApplicationView.qml");
+        QStringLiteral(KAMD_INSTALL_PREFIX "/" KAMD_DATA_DIR)
+        + "/workspace/settings/BlacklistApplicationView.qml");
 
     layout->addWidget(container);
 
-    // QQmlComponent component(engine, QUrl(QStringLiteral(KAMD_INSTALL_PREFIX "/" KAMD_DATA_DIR) + "/workspace/settings/BlacklistApplicationView.qml"));
-    // qDebug() << "QML Errors: " << component.errors();
-    // d->viewBlacklistedApplicationsRoot = component.create();
-    // d->viewBlacklistedApplicationsRoot->setProperty("width", 300); // d->viewBlacklistedApplications->width());
-    // // scene->addItem((QGraphicsItem*)d->viewBlacklistedApplicationsRoot);
-    // d->viewBlacklistedApplicationsRootContainer = component.create();
-
-    d->viewBlacklistedApplications->installEventFilter(this);
-
     // React to changes
 
-    connect(d->checkEnableActivities, SIGNAL(toggled(bool)), this, SLOT(changed()));
     connect(d->radioRememberAllApplications, SIGNAL(toggled(bool)), this, SLOT(changed()));
-    connect(d->radioRememberSpecificApplications, SIGNAL(toggled(bool)), this, SLOT(changed()));
     connect(d->radioDontRememberApplications, SIGNAL(toggled(bool)), this, SLOT(changed()));
     connect(d->spinKeepHistory, SIGNAL(valueChanged(int)), this, SLOT(changed()));
     connect(d->pluginSelector, SIGNAL(changed(bool)), this, SLOT(changed()));
@@ -163,8 +149,10 @@ MainConfigurationWidget::MainConfigurationWidget(QWidget *parent, QVariantList a
 
     connect(d->radioRememberSpecificApplications, SIGNAL(toggled(bool)),
             d->blacklistedApplicationsModel, SLOT(setEnabled(bool)));
+
     connect(d->radioRememberSpecificApplications, SIGNAL(toggled(bool)),
             d->viewBlacklistedApplicationsContainer, SLOT(setEnabled(bool)));
+
     connect(d->radioRememberSpecificApplications, SIGNAL(toggled(bool)),
             d->checkBlacklistAllNotOnList, SLOT(setEnabled(bool)));
 
@@ -173,25 +161,6 @@ MainConfigurationWidget::MainConfigurationWidget(QWidget *parent, QVariantList a
     d->checkBlacklistAllNotOnList->setEnabled(false);
     d->blacklistedApplicationsModel->setEnabled(false);
     d->viewBlacklistedApplicationsContainer->setEnabled(false);
-}
-
-void MainConfigurationWidget::updateLayout()
-{
-    // d->viewBlacklistedApplicationsRoot->setProperty("width",
-    //                                                 d->viewBlacklistedApplicationsContainer->width() - 32);
-    // d->viewBlacklistedApplicationsRoot->setProperty("minimumHeight",
-    //                                                 d->viewBlacklistedApplicationsContainer->height() - 32);
-}
-
-bool MainConfigurationWidget::eventFilter(QObject *obj, QEvent *event)
-{
-    if (obj == d->viewBlacklistedApplications) {
-        if (event->type() == QEvent::Resize) {
-            updateLayout();
-        }
-    }
-
-    return false;
 }
 
 void MainConfigurationWidget::defaults()
@@ -208,15 +177,19 @@ void MainConfigurationWidget::load()
     d->pluginSelector->load();
     d->blacklistedApplicationsModel->load();
 
-    const auto statisticsConfig = d->pluginConfig->group("Plugin-org.kde.ActivityManager.ResourceScoring");
+    const auto statisticsConfig = d->pluginConfig->group(
+        "Plugin-org.kde.ActivityManager.ResourceScoring");
 
-    const auto whatToRemember = (WhatToRemember)statisticsConfig.readEntry("what-to-remember", (int)AllApplications);
+    const auto whatToRemember = (WhatToRemember)statisticsConfig.readEntry(
+        "what-to-remember", (int)AllApplications);
+
     d->radioRememberAllApplications->setChecked(whatToRemember == AllApplications);
     d->radioRememberSpecificApplications->setChecked(whatToRemember == SpecificApplications);
     d->radioDontRememberApplications->setChecked(whatToRemember == NoApplications);
 
     d->spinKeepHistory->setValue(statisticsConfig.readEntry("keep-history-for", 0));
-    d->checkBlacklistAllNotOnList->setChecked(statisticsConfig.readEntry("blocked-by-default", false));
+    d->checkBlacklistAllNotOnList->setChecked(
+        statisticsConfig.readEntry("blocked-by-default", false));
 }
 
 void MainConfigurationWidget::save()
@@ -224,15 +197,13 @@ void MainConfigurationWidget::save()
     d->pluginSelector->save();
     d->blacklistedApplicationsModel->save();
 
-    auto statisticsConfig = d->pluginConfig->group("Plugin-org.kde.ActivityManager.ResourceScoring");
+    auto statisticsConfig = d->pluginConfig->group(
+        "Plugin-org.kde.ActivityManager.ResourceScoring");
 
-    WhatToRemember whatToRemember = AllApplications;
-
-    if (d->radioRememberSpecificApplications->isChecked()) {
-        whatToRemember = SpecificApplications;
-    } else if (d->radioDontRememberApplications->isChecked()) {
-        whatToRemember = NoApplications;
-    }
+    const auto whatToRemember =
+        d->radioRememberSpecificApplications->isChecked() ? SpecificApplications :
+        d->radioDontRememberApplications->isChecked()     ? NoApplications :
+        /* otherwise */                                     AllApplications;
 
     statisticsConfig.writeEntry("what-to-remember", (int)whatToRemember);
     statisticsConfig.writeEntry("keep-history-for", d->spinKeepHistory->value());

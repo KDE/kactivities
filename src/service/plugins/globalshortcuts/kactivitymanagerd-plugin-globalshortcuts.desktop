@@ -17,7 +17,7 @@ Name[fr]=Raccourcis globaux
 Name[gl]=Atallos globais
 Name[he]=קישורים גלובאלים
 Name[hu]=Globális billentyűparancsok
-Name[ia]=Vias breve Global 
+Name[ia]=Vias breve Global
 Name[is]=Altækir flýtihnappar
 Name[it]=Scorciatoie globali
 Name[kk]=Жалпы жүйелік тіркесімдер
@@ -107,5 +107,5 @@ X-KDE-PluginInfo-Website=http://plasma.kde.org/
 X-KDE-PluginInfo-Category=
 X-KDE-PluginInfo-Depends=
 X-KDE-PluginInfo-License=GPL
-X-KDE-PluginInfo-EnabledByDefault=true
+X-KDE-PluginInfo-EnabledByDefault=false
 

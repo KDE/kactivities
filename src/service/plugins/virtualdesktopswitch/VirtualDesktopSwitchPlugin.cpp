@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2012 Ivan Cukic <ivan.cukic@kde.org>
+ *   Copyright (C) 2012, 2013, 2014 Ivan Cukic <ivan.cukic(at)kde.org>
  *
  *   This program is free software; you can redistribute it and/or
  *   modify it under the terms of the GNU General Public License as
@@ -21,6 +21,8 @@
 #include <Debug.h>
 
 #include <kwindowsystem.h>
+
+KAMD_EXPORT_PLUGIN(virtualdesktopswitchplugin, VirtualDesktopSwitchPlugin, "kactivitymanagerd-plugin-virtualdesktopswitch.json")
 
 const auto configPattern = QStringLiteral("desktop-for-%1");
 
@@ -76,4 +78,5 @@ void VirtualDesktopSwitchPlugin::activityRemoved(const QString &activity)
     config().sync();
 }
 
-// KAMD_EXPORT_PLUGIN(VirtualDesktopSwitchPlugin, "activitymanger_plugin_virtualdesktopswitch")
+#include "VirtualDesktopSwitchPlugin.moc"
+

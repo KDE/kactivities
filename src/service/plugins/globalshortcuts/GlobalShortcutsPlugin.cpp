@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2012 Ivan Cukic <ivan.cukic@kde.org>
+ *   Copyright (C) 2012, 2013, 2014 Ivan Cukic <ivan.cukic(at)kde.org>
  *   Copyright (C) 2012 Makis Marimpis <makhsm@gmail.com>
  *
  *   This program is free software; you can redistribute it and/or
@@ -26,6 +26,8 @@
 #include <KActionCollection>
 #include <KGlobalAccel>
 #include <KLocalizedString>
+
+KAMD_EXPORT_PLUGIN(globalshortcutsplugin, GlobalShortcutsPlugin, "kactivitymanagerd-plugin-globalshortcuts.json")
 
 const auto objectNamePattern = QStringLiteral("switch-to-activity-%1");
 const auto objectNamePatternLength = objectNamePattern.length() - 2;
@@ -127,4 +129,5 @@ QString GlobalShortcutsPlugin::activityName(const QString &activity) const
         Q_ARG(QString, activity));
 }
 
-// KAMD_EXPORT_PLUGIN(GlobalShortcutsPlugin, "kactivitymanagerd_plugin_globalshortcuts")
+#include "GlobalShortcutsPlugin.moc"
+

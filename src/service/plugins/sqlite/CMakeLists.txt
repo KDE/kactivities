@@ -32,7 +32,7 @@ include_directories (
    )
 
 add_library (
-   kactivitymanagerd_plugin_sqlite SHARED
+   kactivitymanagerd_plugin_sqlite MODULE
    ${sqliteplugin_SRCS}
    )
 
@@ -45,11 +45,16 @@ target_link_libraries (
    KF5::CoreAddons
    )
 
+kservice_desktop_to_json(
+   kactivitymanagerd_plugin_sqlite
+   kactivitymanagerd-plugin-sqlite.desktop
+   )
+
 set_target_properties(
    kactivitymanagerd_plugin_sqlite
    PROPERTIES PREFIX ""
    )
 
 install (TARGETS kactivitymanagerd_plugin_sqlite DESTINATION ${KAMD_PLUGIN_DIR})
-# install (FILES kactivitymanagerd-plugin-sqlite.desktop DESTINATION ${SERVICES_INSTALL_DIR})
+install (FILES kactivitymanagerd-plugin-sqlite.desktop DESTINATION ${SERVICES_INSTALL_DIR})
 

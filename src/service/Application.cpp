@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2010, 2011, 2012 Ivan Cukic <ivan.cukic(at)kde.org>
+ *   Copyright (C) 2010, 2011, 2012, 2013, 2014 Ivan Cukic <ivan.cukic(at)kde.org>
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License version 2,
@@ -39,9 +39,11 @@
 #include <ksharedconfig.h>
 #include <kdbusconnectionpool.h>
 #include <kdbusservice.h>
+#include <kplugintrader.h>
 
 // Boost and utils
 #include <boost/range/adaptor/filtered.hpp>
+#include <boost/range/adaptor/transformed.hpp>
 #include <utils/d_ptr_implementation.h>
 
 // System
@@ -105,21 +107,23 @@ public:
     }
 
     static inline bool isPluginEnabled(const KConfigGroup &config,
-                                const QString &plugin)
+                                QExplicitlySharedDataPointer<KService> plugin)
+                                // const QExplicitlySharedDataPointer<KService> &plugin)
     {
-        // TODO: This should not be hard-coded, switch to .desktop files
-        if (plugin == "kactivitymanagerd_plugin_sqlite.so") {
+        const auto pluginName
+            = plugin->property("X-KDE-PluginInfo-Name",
+                               QVariant::String).toString();
+        // qDebug() << "Plugin Name is " << pluginName;
+
+        if (pluginName == "org.kde.ActivityManager.ResourceScoring") {
             // SQLite plugin is necessary for the proper workspace behaviour
             return true;
 
         } else {
-            return config.readEntry(plugin,
-                plugin == "kactivitymanagerd_plugin_slc.so" ? true :
-                // Add other enabled-by-default plugins
-                                                              false
-                // kactivitymanagerd_plugin_activitytemplates.so - false
-                // kactivitymanagerd_plugin_virtualdesktopswitch.so - false
-                );
+            return config.readEntry(
+                pluginName + "Enabled",
+                plugin->property("X-KDE-PluginInfo-EnabledByDefault",
+                                 QVariant::Bool).toBool());
         }
     }
 
@@ -165,70 +169,33 @@ void Application::loadPlugins()
     using namespace boost::adaptors;
     using namespace std::placeholders;
 
-    // TODO: Return the plugin system
-    // TODO: Properly load plugins when KF5::KService becomes more stable
-    //       if we want to have 3rd party plugins. If not, leave as is.
+    const auto pluginsDir(QLatin1String(KAMD_INSTALL_PREFIX "/" KAMD_PLUGIN_DIR));
+    QCoreApplication::addLibraryPath(pluginsDir);
 
-    const QDir pluginsDir(QLatin1String(KAMD_INSTALL_PREFIX "/" KAMD_PLUGIN_DIR));
-    const auto plugins = pluginsDir.entryList(QStringList{ QStringLiteral("kactivitymanagerd*.so") }, QDir::Files);
-    const auto config = KSharedConfig::openConfig(QStringLiteral("kactivitymanagerdrc"))->group("Plugins");
+    const auto config
+        = KSharedConfig::openConfig(QStringLiteral("kactivitymanagerdrc"))
+              ->group("Plugins");
+    const auto allOffers
+        = KServiceTypeTrader::self()->query("ActivityManager/Plugin");
 
-    const auto availablePlugins = plugins
-            | filtered(std::bind(Private::isPluginEnabled, config, _1));
+    const auto filteredOffers = allOffers
+        | filtered(std::bind(Private::isPluginEnabled, config, _1));
 
-    for (const auto &plugin: availablePlugins) {
-        QPluginLoader loader(pluginsDir.absoluteFilePath(plugin));
-        // qDebug() << pluginsDir.absoluteFilePath(plugin);
-
-        auto pluginInstance = dynamic_cast<Plugin *>(loader.instance());
+    for (const auto &offer : filteredOffers) {
+        QString error;
+        auto pluginInstance = dynamic_cast<Plugin*>(
+                offer->createInstance<QObject>(this, {}, &error)
+            );
 
         if (pluginInstance) {
             pluginInstance->init(Module::get());
-            qCDebug(KAMD_LOG_APPLICATION)   << "[   OK   ] loaded:  " << plugin;
+            qCDebug(KAMD_LOG_APPLICATION)   << "[   OK   ] loaded:  " << offer->name();
 
         } else {
-            qCWarning(KAMD_LOG_APPLICATION) << "[ FAILED ] loading: " << plugin
-                       << loader.errorString();
+            qCWarning(KAMD_LOG_APPLICATION) << "[ FAILED ] loading: " << offer->name() << error;
             // TODO: Show a notification
         }
     }
-
-    // const auto offers = KServiceTypeTrader::self()->query(QStringLiteral("ActivityManager/Plugin"));
-
-    // for (const auto &service: offers) {
-    //     if (!disabledPlugins.contains(service->library())) {
-    //         disabledPlugins.append(
-    //                 service->property("X-ActivityManager-PluginOverrides", QVariant::StringList).toStringList()
-    //             );
-    //     }
-    // }
-
-    // qCDebug(KAMD_APPLICATION) << "These are the disabled plugins:" << disabledPlugins;
-
-    // // Loading plugins and initializing them
-    // for (const auto &service: offers) {
-    //     if (disabledPlugins.contains(service->library()) ||
-    //             disabledPlugins.contains(service->property("X-KDE-PluginInfo-Name").toString() + "Enabled")) {
-    //         continue;
-    //     }
-
-    //     const auto factory = KPluginLoader(service->library()).factory();
-
-    //     if (!factory) {
-    //         continue;
-    //     }
-
-    //     const auto plugin = factory->create < Plugin > (this);
-
-    //     if (plugin) {
-    //         qCDebug(KAMD_APPLICATION) << "Got the plugin: " << service->library();
-    //         d->plugins << plugin;
-    //     }
-    // }
-
-    // for (Plugin * plugin: d->plugins) {
-    //     plugin->init(Module::get());
-    // }
 }
 
 Application::~Application()

@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2012 Ivan Cukic <ivan.cukic(at)kde.org>
+ *   Copyright (C) 2012, 2013, 2014 Ivan Cukic <ivan.cukic(at)kde.org>
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License version 2,
@@ -92,8 +92,6 @@ void BlacklistedApplicationsModel::load()
     }
 
     auto query = d->database.exec("SELECT DISTINCT(initiatingAgent) FROM ResourceScoreCache ORDER BY initiatingAgent");
-
-    qDebug() << d->database.lastError();
 
     if (d->applications.length() > 0) {
         beginRemoveRows(QModelIndex(), 0, d->applications.length() - 1);
