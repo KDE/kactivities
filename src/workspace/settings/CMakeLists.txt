@@ -1,16 +1,9 @@
 # vim:set softtabstop=3 shiftwidth=3 tabstop=3 expandtab:
-
 project (KCMActivities)
 
-include_directories (
-   ${CMAKE_SOURCE_DIR}/src
-   ${CMAKE_BINARY_DIR}/src
-   ${CMAKE_CURRENT_SOURCE_DIR}
-   ${CMAKE_CURRENT_BINARY_DIR}
-   ${KDE4_INCLUDES}
-   ${KDECLARATIVE_INCLUDE_DIR}
-   ${CMAKE_CURRENT_SOURCE_DIR}/ui/
-   )
+find_package (Qt5 REQUIRED NO_MODULE COMPONENTS Core Quick Sql Qml DBus)
+find_package (KF5KCMUtils ${KF5_DEP_VERSION} CONFIG REQUIRED)
+find_package (KF5Declarative ${KF5_DEP_VERSION} CONFIG REQUIRED)
 
 set (KAMD_KCM_SRCS
    kcm_activities.cpp
@@ -18,21 +11,23 @@ set (KAMD_KCM_SRCS
    BlacklistedApplicationsModel.cpp
    )
 
-kde4_add_ui_files (
+ki18n_wrap_ui(
    KAMD_KCM_SRCS
    ui/MainConfigurationWidgetBase.ui
    )
 
-kde4_add_plugin (kcm_activities ${KAMD_KCM_SRCS})
+add_library (kcm_activities MODULE ${KAMD_KCM_SRCS})
 
 target_link_libraries (kcm_activities
-   ${KDE4_KDEUI_LIBS}
-   ${KDE4_KCMUTILS_LIBS}
-   ${QT_QTSQL_LIBRARY}
-   ${QT_QTDECLARATIVE_LIBRARY}
-   ${QT_QTOPENGL_LIBRARY}
-   ${KDECLARATIVE_LIBRARIES}
-   ${KDE4_PLASMA_LIBS}
+   Qt5::Quick
+   Qt5::Core
+   Qt5::Sql
+   Qt5::Qml
+   Qt5::DBus
+   KF5::KCMUtils
+   KF5::I18n
+   KF5::Service
+   KF5::Declarative
    )
 
 install (TARGETS kcm_activities

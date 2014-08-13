@@ -18,103 +18,90 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import QtQuick 1.1
-import org.kde.qtextracomponents 0.1
-import org.kde.plasma.core 0.1 as PlasmaCore
-import org.kde.plasma.components 0.1 as PlasmaComponents
+import QtQuick 2.0
+import org.kde.kquickcontrolsaddons 2.0
+import QtQuick.Controls 1.0 as QtControls
 
-Flow {
-    id: main
+QtControls.ScrollView {
+    anchors.fill: parent
 
-    /* property declarations --------------------------{{{ */
-    property int minimumHeight: 100
-    /* }}} */
+    Flow {
+        id: main
 
-    /* signal declarations ----------------------------{{{ */
-    /* }}} */
+        SystemPalette {
+            id: colors
+        }
 
-    /* JavaScript functions ---------------------------{{{ */
-    /* }}} */
+        width: parent.parent.width
 
-    /* object properties ------------------------------{{{ */
-    spacing: 16
-    anchors {
-        fill         : parent
-        rightMargin  : 8
-        bottomMargin : 8
-        leftMargin   : 8
-    }
+        property int minimumHeight: 100
 
-    height: Math.max(childrenRect.height, minimumHeight)
+        spacing: 16
 
-    opacity: if (applicationModel.enabled) {1} else {.3}
-    Behavior on opacity { NumberAnimation { duration: 150 } }
-    /* }}} */
+        height: Math.max(childrenRect.height, minimumHeight)
 
-    /* child objects ----------------------------------{{{ */
-    Repeater {
-        model: applicationModel
-        Column {
-            id: item
+        opacity: applicationModel.enabled ? 1 : .3
+        Behavior on opacity { NumberAnimation { duration: 150 } }
 
-            property bool blocked: model.blocked
+        Repeater {
+            model: applicationModel
+            Column {
+                id: item
 
-            Item {
-                id: mainIcon
+                property bool blocked: model.blocked
 
-                width  : 64 + 20
-                height : 64 + 20
+                Item {
+                    id: mainIcon
 
-                QIconItem {
-                    id: icon
-                    icon: model.icon
+                    width  : 64 + 20
+                    height : 64 + 20
 
-                    anchors.fill    : parent
-                    anchors.margins : 10
+                    QIconItem {
+                        id: icon
+                        icon: model.icon
 
-                    opacity: if (item.blocked) {0.5} else {1.0}
-                    Behavior on opacity { NumberAnimation { duration: 150 } }
-                }
+                        anchors.fill    : parent
+                        anchors.margins : 10
 
-                QIconItem {
-                    id: iconNo
-                    icon: "dialog-cancel"
-
-                    anchors {
-                        right  : parent.right
-                        bottom : parent.bottom
+                        opacity: item.blocked ? 0.5 : 1.0
+                        Behavior on opacity { NumberAnimation { duration: 150 } }
                     }
 
-                    width   : 48
-                    height  : 48
-                    opacity : (1 - icon.opacity) * 2
+                    QIconItem {
+                        id: iconNo
+                        icon: "dialog-cancel"
+
+                        anchors {
+                            right  : parent.right
+                            bottom : parent.bottom
+                        }
+
+                        width   : 48
+                        height  : 48
+                        opacity : (1 - icon.opacity) * 2
+                    }
+
+                    MouseArea {
+                        onClicked: applicationModel.toggleApplicationBlocked(model.index)
+                        anchors.fill: parent
+                    }
                 }
 
-                MouseArea {
-                    onClicked: applicationModel.toggleApplicationBlocked(model.index)
-                    anchors.fill: parent
+                Text {
+                    elide   : Text.ElideRight
+                    width   : mainIcon.width
+
+                    text    : model.title
+                    opacity : icon.opacity
+                    color   : colors.windowText
+
+                    anchors.margins          : 10
+                    anchors.horizontalCenter : parent.horizontalCenter
+                    horizontalAlignment      : Text.AlignHCenter
                 }
-            }
-
-            Text {
-                elide   : Text.ElideRight
-                width   : mainIcon.width
-
-                text    : model.title;
-                opacity : icon.opacity
-
-                anchors.margins          : 10
-                anchors.horizontalCenter : parent.horizontalCenter
-                horizontalAlignment      : Text.AlignHCenter
             }
         }
     }
-    /* }}} */
 
-    /* states -----------------------------------------{{{ */
-    /* }}} */
-
-    /* transitions ------------------------------------{{{ */
-    /* }}} */
 }
 

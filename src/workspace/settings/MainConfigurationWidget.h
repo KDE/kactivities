@@ -23,7 +23,6 @@
 #include <KCModule>
 #include <KPluginFactory>
 
-#include <utils/override.h>
 #include <utils/d_ptr.h>
 
 /**

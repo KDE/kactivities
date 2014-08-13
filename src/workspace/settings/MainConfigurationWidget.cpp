@@ -21,13 +21,13 @@
 
 #include <QDebug>
 #include <QMenu>
-#include <QDeclarativeContext>
-#include <QDeclarativeEngine>
-#include <QDeclarativeComponent>
+#include <QQmlContext>
+#include <QQmlEngine>
+#include <QQmlComponent>
 #include <QDBusInterface>
 #include <QDBusPendingCall>
 
-#include <QGraphicsObject>
+#include <QQuickView>
 
 #include <KLocalizedString>
 #include <KAboutData>
@@ -35,7 +35,7 @@
 #include <KPluginInfo>
 #include <KService>
 #include <KServiceTypeTrader>
-#include <kdeclarative.h>
+// #include <kdeclarative/kdeclarative.h>
 
 #include <Plasma/PackageStructure>
 
@@ -44,8 +44,9 @@
 
 #include <utils/d_ptr_implementation.h>
 
+#include "kactivities-features.h"
+
 K_PLUGIN_FACTORY(ActivitiesKCMFactory, registerPlugin<MainConfigurationWidget>();)
-K_EXPORT_PLUGIN(ActivitiesKCMFactory("kcm_activities", "kcm_activities"))
 
 class MainConfigurationWidget::Private : public Ui::MainConfigurationWidgetBase {
 public:
@@ -55,23 +56,17 @@ public:
     KSharedConfig::Ptr pluginConfig;
     KPluginSelector *pluginSelector;
     BlacklistedApplicationsModel *blacklistedApplicationsModel;
-    KDeclarative kdeclarative;
-    Plasma::PackageStructure::Ptr structure;
-    QGraphicsObject *viewBlacklistedApplicationsRoot;
+    // KDeclarative::KDeclarative kdeclarative;
+
+    QObject *viewBlacklistedApplicationsRoot;
+    QQuickView *viewBlacklistedApplications;
 };
 
 MainConfigurationWidget::MainConfigurationWidget(QWidget *parent, QVariantList args)
-    : KCModule(ActivitiesKCMFactory::componentData(), parent)
+    : KCModule(parent, args)
     , d()
 {
     Q_UNUSED(args)
-
-    const auto about = new KAboutData(
-        "kio_activities", 0, ki18n("Activities"),
-        KDE_VERSION_STRING, KLocalizedString(), KAboutData::License_GPL,
-        ki18n("(c) 2012 Ivan Cukic"));
-
-    setAboutData(about);
 
     d->setupUi(this);
 
@@ -96,10 +91,11 @@ MainConfigurationWidget::MainConfigurationWidget(QWidget *parent, QVariantList a
 
     d->spinKeepHistory->setRange(0, INT_MAX);
 
-    d->spinKeepHistory->setSuffix(ki18ncp("unit of time. months to keep the history",
-                                          " month", " months"));
-    d->spinKeepHistory->setPrefix(i18nc("for in 'keep history for 5 months'", "for "));
-    d->spinKeepHistory->setSpecialValueText(i18nc("unlimited number of months", "forever"));
+    // TODO: We need to have the special text for the spinbox
+    // d->spinKeepHistory->setSuffix(ki18ncp("unit of time. months to keep the history",
+    //                                       " month", " months"));
+    // d->spinKeepHistory->setPrefix(i18nc("for in 'keep history for 5 months'", "for "));
+    // d->spinKeepHistory->setSpecialValueText(i18nc("unlimited number of months", "forever"));
 
     // Clear recent history button
 
@@ -127,21 +123,31 @@ MainConfigurationWidget::MainConfigurationWidget(QWidget *parent, QVariantList a
     // Blacklist applications
     d->blacklistedApplicationsModel = new BlacklistedApplicationsModel(this);
 
-    QGraphicsScene *scene = new QGraphicsScene(this);
-    d->viewBlacklistedApplications->setScene(scene);
-    QDeclarativeEngine *engine = new QDeclarativeEngine(this);
+    auto layout = new QGridLayout(d->viewBlacklistedApplicationsContainer);
 
-    d->kdeclarative.setDeclarativeEngine(engine);
-    d->kdeclarative.initialize();
-    d->kdeclarative.setupBindings();
-    d->structure = Plasma::PackageStructure::load("Plasma/Generic");
+    d->viewBlacklistedApplications = new QQuickView();
+    d->viewBlacklistedApplications->setColor(
+        QGuiApplication::palette().window().color());
 
-    engine->rootContext()->setContextProperty("applicationModel", d->blacklistedApplicationsModel);
-    QDeclarativeComponent component(engine, QUrl(QString(KAMD_DATA_DIR) + "workspace/settings/BlacklistApplicationView.qml"));
-    // qDebug() << "Errors: " << component.errors();
-    d->viewBlacklistedApplicationsRoot = qobject_cast<QGraphicsObject *>(component.create());
-    d->viewBlacklistedApplicationsRoot->setProperty("width", d->viewBlacklistedApplications->width());
-    scene->addItem(d->viewBlacklistedApplicationsRoot);
+    QWidget *container = QWidget::createWindowContainer(
+        d->viewBlacklistedApplications,
+        d->viewBlacklistedApplicationsContainer);
+
+    // d->viewBlacklistedApplicationsContainer->add(container);
+
+    container->setFocusPolicy(Qt::TabFocus);
+    d->viewBlacklistedApplications->rootContext()->setContextProperty("applicationModel", d->blacklistedApplicationsModel);
+    d->viewBlacklistedApplications->setSource(
+            QStringLiteral(KAMD_INSTALL_PREFIX "/" KAMD_DATA_DIR) + "/workspace/settings/BlacklistApplicationView.qml");
+
+    layout->addWidget(container);
+
+    // QQmlComponent component(engine, QUrl(QStringLiteral(KAMD_INSTALL_PREFIX "/" KAMD_DATA_DIR) + "/workspace/settings/BlacklistApplicationView.qml"));
+    // qDebug() << "QML Errors: " << component.errors();
+    // d->viewBlacklistedApplicationsRoot = component.create();
+    // d->viewBlacklistedApplicationsRoot->setProperty("width", 300); // d->viewBlacklistedApplications->width());
+    // // scene->addItem((QGraphicsItem*)d->viewBlacklistedApplicationsRoot);
+    // d->viewBlacklistedApplicationsRootContainer = component.create();
 
     d->viewBlacklistedApplications->installEventFilter(this);
 
@@ -158,7 +164,7 @@ MainConfigurationWidget::MainConfigurationWidget(QWidget *parent, QVariantList a
     connect(d->radioRememberSpecificApplications, SIGNAL(toggled(bool)),
             d->blacklistedApplicationsModel, SLOT(setEnabled(bool)));
     connect(d->radioRememberSpecificApplications, SIGNAL(toggled(bool)),
-            d->viewBlacklistedApplications, SLOT(setEnabled(bool)));
+            d->viewBlacklistedApplicationsContainer, SLOT(setEnabled(bool)));
     connect(d->radioRememberSpecificApplications, SIGNAL(toggled(bool)),
             d->checkBlacklistAllNotOnList, SLOT(setEnabled(bool)));
 
@@ -166,15 +172,15 @@ MainConfigurationWidget::MainConfigurationWidget(QWidget *parent, QVariantList a
 
     d->checkBlacklistAllNotOnList->setEnabled(false);
     d->blacklistedApplicationsModel->setEnabled(false);
-    d->viewBlacklistedApplications->setEnabled(false);
+    d->viewBlacklistedApplicationsContainer->setEnabled(false);
 }
 
 void MainConfigurationWidget::updateLayout()
 {
-    d->viewBlacklistedApplicationsRoot->setProperty("width",
-                                                    d->viewBlacklistedApplications->width() - 32);
-    d->viewBlacklistedApplicationsRoot->setProperty("minimumHeight",
-                                                    d->viewBlacklistedApplications->height() - 32);
+    // d->viewBlacklistedApplicationsRoot->setProperty("width",
+    //                                                 d->viewBlacklistedApplicationsContainer->width() - 32);
+    // d->viewBlacklistedApplicationsRoot->setProperty("minimumHeight",
+    //                                                 d->viewBlacklistedApplicationsContainer->height() - 32);
 }
 
 bool MainConfigurationWidget::eventFilter(QObject *obj, QEvent *event)

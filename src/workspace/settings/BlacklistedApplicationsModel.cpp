@@ -27,7 +27,6 @@
 #include <QVariant>
 #include <QDebug>
 
-#include <KStandardDirs>
 #include <KService>
 #include <KConfig>
 #include <KSharedConfig>
@@ -54,15 +53,18 @@ public:
 BlacklistedApplicationsModel::BlacklistedApplicationsModel(QObject *parent)
     : QAbstractListModel(parent)
 {
-    QHash<int, QByteArray> roles;
-    roles[ApplicationIdRole] = "name";
-    roles[Qt::DecorationRole] = "icon";
-    roles[Qt::DisplayRole] = "title";
-    roles[BlockedApplicationRole] = "blocked";
-    setRoleNames(roles);
-
     d->enabled = false;
     d->pluginConfig = KSharedConfig::openConfig("kactivitymanagerd-pluginsrc");
+}
+
+QHash<int, QByteArray> BlacklistedApplicationsModel::roleNames() const
+{
+    return {
+        { ApplicationIdRole, "name"},
+        { Qt::DecorationRole, "icon"},
+        { Qt::DisplayRole, "title"},
+        { BlockedApplicationRole, "blocked" }
+    };
 }
 
 void BlacklistedApplicationsModel::load()
@@ -77,7 +79,9 @@ void BlacklistedApplicationsModel::load()
 
     // Reading new applications from the database
 
-    const auto path = KStandardDirs::locateLocal("data", "kactivitymanagerd/resources/database", true);
+    const QString path
+        = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation)
+          + QStringLiteral("/kactivitymanagerd/resources/database");
 
     d->database = QSqlDatabase::addDatabase("QSQLITE", "plugins_sqlite_db_resources");
     d->database.setDatabaseName(path);
@@ -87,7 +91,9 @@ void BlacklistedApplicationsModel::load()
         return;
     }
 
-    auto query = d->database.exec("SELECT DISTINCT(initiatingAgent) FROM kext_ResourceScoreCache ORDER BY initiatingAgent");
+    auto query = d->database.exec("SELECT DISTINCT(initiatingAgent) FROM ResourceScoreCache ORDER BY initiatingAgent");
+
+    qDebug() << d->database.lastError();
 
     if (d->applications.length() > 0) {
         beginRemoveRows(QModelIndex(), 0, d->applications.length() - 1);
@@ -97,6 +103,8 @@ void BlacklistedApplicationsModel::load()
 
     while (query.next()) {
         const auto name = query.value(0).toString();
+
+        qDebug() << "New name: " << name;
 
         if (defaultBlockedValue) {
             if (!allowedApplications.contains(name)) {

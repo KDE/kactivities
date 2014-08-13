@@ -42,7 +42,7 @@
            <item>
             <widget class="QRadioButton" name="radioRememberAllApplications">
              <property name="text">
-              <string>For all applications</string>
+              <string>For a&amp;ll applications</string>
              </property>
              <property name="checked">
               <bool>true</bool>
@@ -52,14 +52,14 @@
            <item>
             <widget class="QRadioButton" name="radioDontRememberApplications">
              <property name="text">
-              <string>Do not remember</string>
+              <string>&amp;Do not remember</string>
              </property>
             </widget>
            </item>
            <item>
             <widget class="QRadioButton" name="radioRememberSpecificApplications">
              <property name="text">
-              <string>Only for specific applications</string>
+              <string>O&amp;nly for specific applications</string>
              </property>
             </widget>
            </item>
@@ -92,7 +92,7 @@
              </widget>
             </item>
             <item>
-             <widget class="KIntSpinBox" name="spinKeepHistory"/>
+             <widget class="QSpinBox" name="spinKeepHistory"/>
             </item>
             <item>
              <spacer name="horizontalSpacer">
@@ -134,15 +134,20 @@
           <bool>true</bool>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_5">
-          <property name="margin">
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
            <number>0</number>
           </property>
           <item>
-           <widget class="QGraphicsView" name="viewBlacklistedApplications">
-            <property name="horizontalScrollBarPolicy">
-             <enum>Qt::ScrollBarAlwaysOff</enum>
-            </property>
-           </widget>
+           <widget class="QWidget" name="viewBlacklistedApplicationsContainer" native="true"/>
           </item>
           <item>
            <widget class="QCheckBox" name="checkBlacklistAllNotOnList">
@@ -173,13 +178,6 @@
    </item>
   </layout>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>KIntSpinBox</class>
-   <extends>QSpinBox</extends>
-   <header>knuminput.h</header>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections>
   <connection>

@@ -101,7 +101,7 @@ if (NOT KACTIVITIES_LIBRARY_ONLY)
    add_subdirectory (service)
 
    # No point in having workspace addons without the service
-   # add_subdirectory (workspace)
+   add_subdirectory (workspace)
 
 endif ()
 
