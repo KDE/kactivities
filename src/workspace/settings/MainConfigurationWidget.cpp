@@ -162,6 +162,10 @@ MainConfigurationWidget::MainConfigurationWidget(QWidget *parent, QVariantList a
     d->viewBlacklistedApplicationsContainer->setEnabled(false);
 }
 
+MainConfigurationWidget::~MainConfigurationWidget()
+{
+}
+
 void MainConfigurationWidget::defaults()
 {
     d->checkEnableActivities->setChecked(true);

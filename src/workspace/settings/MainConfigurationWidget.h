@@ -32,6 +32,7 @@ class MainConfigurationWidget : public KCModule {
     Q_OBJECT
 public:
     MainConfigurationWidget(QWidget *parent, QVariantList args);
+    ~MainConfigurationWidget();
 
 public Q_SLOTS:
     virtual void defaults() Q_DECL_OVERRIDE;

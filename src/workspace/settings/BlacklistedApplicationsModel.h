@@ -34,6 +34,7 @@ class BlacklistedApplicationsModel : public QAbstractListModel {
 
 public:
     BlacklistedApplicationsModel(QObject *parent = Q_NULLPTR);
+    ~BlacklistedApplicationsModel();
 
     enum Roles {
         ApplicationIdRole = Qt::UserRole + 1,

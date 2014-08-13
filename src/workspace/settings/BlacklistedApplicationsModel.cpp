@@ -57,6 +57,10 @@ BlacklistedApplicationsModel::BlacklistedApplicationsModel(QObject *parent)
     d->pluginConfig = KSharedConfig::openConfig("kactivitymanagerd-pluginsrc");
 }
 
+BlacklistedApplicationsModel::~BlacklistedApplicationsModel()
+{
+}
+
 QHash<int, QByteArray> BlacklistedApplicationsModel::roleNames() const
 {
     return {
