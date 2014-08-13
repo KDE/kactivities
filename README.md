@@ -10,9 +10,3 @@ Workspace
 Plugins for KDE workspace to easier integrate activities (KIO, etc.)
 
 
-## Links
-
-- Wiki: <http://community.kde.org/Plasma/Activities>
-- Mailing list: <https://mail.kde.org/mailman/listinfo/plasma-devel>
-- IRC channel: #plasma on Freenode
-- Git repository: <https://projects.kde.org/projects/kde/kdelibs/kactivities/repository>
