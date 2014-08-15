@@ -8,8 +8,8 @@
       <arg name="activity" type="s" direction="in"/>
     </method>
     <method name="LinkResourceToActivity">
+      <arg name="agent" type="s" direction="in"/>
       <arg name="resource" type="s" direction="in"/>
-      <arg name="activity" type="s" direction="in"/>
     </method>
 
     <method name="UnlinkResourceFromActivity">
@@ -18,8 +18,8 @@
       <arg name="activity" type="s" direction="in"/>
     </method>
     <method name="UnlinkResourceFromActivity">
+      <arg name="agent" type="s" direction="in"/>
       <arg name="resource" type="s" direction="in"/>
-      <arg name="activity" type="s" direction="in"/>
     </method>
 
     <method name="IsResourceLinkedToActivity">
@@ -29,8 +29,8 @@
       <arg type="b" direction="out"/>
     </method>
     <method name="IsResourceLinkedToActivity">
+      <arg name="agent" type="s" direction="in"/>
       <arg name="resource" type="s" direction="in"/>
-      <arg name="activity" type="s" direction="in"/>
       <arg type="b" direction="out"/>
     </method>
 

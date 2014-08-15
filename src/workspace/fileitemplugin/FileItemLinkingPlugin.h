@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2012 Ivan Cukic <ivan.cukic(at)kde.org>
+ *   Copyright (C) 2012, 2013, 2014 Ivan Cukic <ivan.cukic(at)kde.org>
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License version 2,
@@ -20,11 +20,13 @@
 #ifndef FILE_ITEM_LINKING_PLUGIN_H
 #define FILE_ITEM_LINKING_PLUGIN_H
 
-#include <kabstractfileitemactionplugin.h>
+#include <KAbstractFileItemActionPlugin>
 
 #include <QList>
 #include <QAction>
 #include <QVariant>
+
+#include <utils/d_ptr.h>
 
 /**
  * FileItemLinkingPlugin
@@ -32,14 +34,13 @@
 class FileItemLinkingPlugin : public KAbstractFileItemActionPlugin {
 public:
     FileItemLinkingPlugin(QObject *parent, const QVariantList &);
-    virtual ~FileItemLinkingPlugin();
+    ~FileItemLinkingPlugin();
 
-    virtual QList<QAction *> actions(const KFileItemListProperties &fileItemInfos,
-                                     QWidget *parentWidget);
+    QList<QAction *> actions(const KFileItemListProperties &fileItemInfos,
+                             QWidget *parentWidget) Q_DECL_OVERRIDE;
 
 private:
-    class Private;
-    Private *const d;
+    D_PTR;
 };
 
 #endif // FILE_ITEM_LINKING_PLUGIN_H

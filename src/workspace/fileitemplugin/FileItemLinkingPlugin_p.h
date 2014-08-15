@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2012 Ivan Cukic <ivan.cukic(at)kde.org>
+ *   Copyright (C) 2012, 2013, 2014 Ivan Cukic <ivan.cukic(at)kde.org>
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License version 2,
@@ -21,63 +21,67 @@
 #define FILE_ITEM_LINKING_PLUGIN_P_H
 
 #include "FileItemLinkingPlugin.h"
-#include <kabstractfileitemactionplugin.h>
 
 #include <QThread>
+#include <QUrl>
 
-#include <KUrl>
+#include <KFileItemListProperties>
 
 #include "lib/core/consumer.h"
 #include "lib/core/info.h"
+
+typedef QList<QAction *> ActionList;
 
 class FileItemLinkingPlugin::Private : public QObject {
     Q_OBJECT
 
 public:
-    KActivities::Consumer activities;
-    KUrl::List items;
+    Private();
+
+    QAction *root;
     QMenu *rootMenu;
-    QThread *thread;
+    KFileItemListProperties items;
+
+    QAction *basicAction(QWidget *parentWidget);
+
+    KActivities::Consumer activities;
 
 public Q_SLOTS:
+    void activitiesServiceStatusChanged(KActivities::Consumer::ServiceStatus status);
+    void rootActionHovered();
+    void setActions(const ActionList &actions);
+
     void actionTriggered();
-    void showActions();
+    void loadAllActions();
 
-    void addAction(
-        const QString &activity,
-        bool link,
-        const QString &title = QString(),
-        const QString &icon = QString());
-
-    void addSeparator(const QString &title);
-
-    void finishedLoading();
+private:
+    bool shouldLoad : 1;
 };
 
-class FileItemLinkingPluginLoader : public QThread {
+class FileItemLinkingPluginActionLoader: public QThread {
     Q_OBJECT
 
 public:
-    FileItemLinkingPluginLoader(
-        QObject *parent, const KUrl::List &items);
+    FileItemLinkingPluginActionLoader(const KFileItemListProperties &items);
+
+    void run() Q_DECL_OVERRIDE;
+
+    QAction *createAction(const QString &activity, bool link,
+                          const QString &title = QString(),
+                          const QString &icon = QString()) const;
+    QAction *createSeparator(const QString &title) const;
 
 Q_SIGNALS:
-    void requestAction(
-        const QString &activity,
-        bool link,
-        const QString &title = QString(),
-        const QString &icon = QString());
+    void result(const ActionList &actions);
 
-    void requestSeparator(const QString &title);
-
-    void finishedLoading();
-
-protected:
-    void run(); //override
-
-public:
+private:
+    KFileItemListProperties items;
     KActivities::Consumer activities;
-    KUrl::List m_items;
+};
+
+class FileItemLinkingPluginActionStaticInit {
+public:
+    FileItemLinkingPluginActionStaticInit();
 };
 
 #endif // FILE_ITEM_LINKING_PLUGIN_P_H

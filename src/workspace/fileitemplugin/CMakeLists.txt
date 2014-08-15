@@ -1,24 +1,37 @@
 # vim:set softtabstop=3 shiftwidth=3 tabstop=3 expandtab:
 
+find_package(KF5 REQUIRED COMPONENTS KIO)
+find_package (Qt5 REQUIRED NO_MODULE COMPONENTS Sql)
+
 include_directories (
    ${CMAKE_SOURCE_DIR}/src
    ${CMAKE_BINARY_DIR}/src
    ${CMAKE_CURRENT_SOURCE_DIR}
    ${CMAKE_CURRENT_BINARY_DIR}
-   ${KDE4_INCLUDES}
    )
-
 
 set (kactivitymanagerd_fileitem_linking_plugin_SRCS
    FileItemLinkingPlugin.cpp
+   ${CMAKE_SOURCE_DIR}/src/utils/qsqlquery.cpp
    )
 
-kde4_add_plugin (kactivitymanagerd_fileitem_linking_plugin ${kactivitymanagerd_fileitem_linking_plugin_SRCS})
+add_library (
+   kactivitymanagerd_fileitem_linking_plugin MODULE
+   ${kactivitymanagerd_fileitem_linking_plugin_SRCS}
+   )
+
+kservice_desktop_to_json(
+   kactivitymanagerd_fileitem_linking_plugin
+   kactivitymanagerd_fileitem_linking_plugin.desktop
+   )
 
 target_link_libraries (
    kactivitymanagerd_fileitem_linking_plugin
-   ${KDE4_KIO_LIBS}
-   kactivities
+   Qt5::Core
+   Qt5::Sql
+   KF5::KIOFileWidgets
+   KF5::I18n
+   KF5::Activities
    )
 
 install (TARGETS kactivitymanagerd_fileitem_linking_plugin DESTINATION ${PLUGIN_INSTALL_DIR})

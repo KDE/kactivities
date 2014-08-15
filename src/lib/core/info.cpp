@@ -187,34 +187,6 @@ QString Info::icon() const
     return info ? info->icon : QString();
 }
 
-// QFuture<void> Info::linkResource(const QString &resourceUri)
-// {
-//     // Manager::resourcesLinking()->LinkResourceToActivity(resourceUri, d->id);
-//     return Manager::isServiceRunning() ?
-//         DBusFuture::asyncCall<void>(
-//             Manager::resourcesLinking(), QStringLiteral("LinkResourceToActivity"), resourceUri, d->id)
-//         :
-//         DBusFuture::fromVoid();
-// }
-//
-// QFuture<void> Info::unlinkResource(const QString &resourceUri)
-// {
-//     // Manager::resourcesLinking()->UnlinkResourceFromActivity(resourceUri, d->id);
-//     return Manager::isServiceRunning() ?
-//         DBusFuture::asyncCall<void>(
-//             Manager::resourcesLinking(), QStringLiteral("UnlinkResourceFromActivity"), resourceUri, d->id)
-//         :
-//         DBusFuture::fromVoid();
-// }
-//
-// QFuture<bool> Info::isResourceLinked(const QString &resourceUri)
-// {
-//     // return Manager::resourcesLinking()->IsResourceLinkedToActivity(resourceUri, d->id);
-//     return DBusFuture::asyncCall<bool>(
-//         Manager::resourcesLinking(),
-//         QStringLiteral("IsResourceLinkedToActivity"), resourceUri, d->id);
-// }
-
 } // namespace KActivities
 
 #include "moc_info.cpp"
