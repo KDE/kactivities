@@ -61,8 +61,8 @@ void ResourceLinking::LinkResourceToActivity(QString initiatingAgent,
                                              QString usedActivity)
 {
     if (!validateArguments(initiatingAgent, targettedResource, usedActivity)) {
-        qDebug() << "Invalid arguments" << initiatingAgent << targettedResource
-                 << usedActivity;
+        qWarning() << "Invalid arguments" << initiatingAgent
+                   << targettedResource << usedActivity;
         return;
     }
 
@@ -84,12 +84,12 @@ void ResourceLinking::LinkResourceToActivity(QString initiatingAgent,
     );
 
     if (!usedActivity.isEmpty()) {
-        qDebug() << "Sending link event added: activities:/" << usedActivity;
+        // qDebug() << "Sending link event added: activities:/" << usedActivity;
         org::kde::KDirNotify::emitFilesAdded(QStringLiteral("activities:/")
                                              + usedActivity);
 
         if (usedActivity == m_activities.currentActivity()) {
-            qDebug() << "Sending link event added: activities:/current";
+            // qDebug() << "Sending link event added: activities:/current";
             org::kde::KDirNotify::emitFilesAdded(
                 QStringLiteral("activities:/current"));
         }
@@ -104,8 +104,8 @@ void ResourceLinking::UnlinkResourceFromActivity(QString initiatingAgent,
                                                  QString usedActivity)
 {
     if (!validateArguments(initiatingAgent, targettedResource, usedActivity)) {
-        qDebug() << "Invalid arguments" << initiatingAgent << targettedResource
-                 << usedActivity;
+        qWarning() << "Invalid arguments" << initiatingAgent
+                   << targettedResource << usedActivity;
         return;
     }
 
@@ -129,14 +129,12 @@ void ResourceLinking::UnlinkResourceFromActivity(QString initiatingAgent,
         auto mangled = QString::fromLatin1(targettedResource.toUtf8().toBase64(
             QByteArray::Base64UrlEncoding | QByteArray::OmitTrailingEquals));
 
-        qDebug() << "targettedResource " << targettedResource << " - " << mangled;
-
-        qDebug() << "Sending link event removed: activities:/" << usedActivity << '/' << mangled;
+        // qDebug() << "Sending link event removed: activities:/" << usedActivity << '/' << mangled;
         org::kde::KDirNotify::emitFilesRemoved(
             { QStringLiteral("activities:/") + usedActivity + '/' + mangled });
 
         if (usedActivity == m_activities.currentActivity()) {
-            qDebug() << "Sending link event removed: activities:/current/" << mangled;
+            // qDebug() << "Sending link event removed: activities:/current/" << mangled;
             org::kde::KDirNotify::emitFilesRemoved({
                 QStringLiteral("activities:/current/") + mangled});
         }
@@ -212,14 +210,14 @@ bool ResourceLinking::validateArguments(QString &initiatingAgent,
 void ResourceLinking::onActivityAdded(const QString &activity)
 {
     // Notify KIO
-    qDebug() << "Added: activities:/  (" << activity << ")";
+    // qDebug() << "Added: activities:/  (" << activity << ")";
     org::kde::KDirNotify::emitFilesAdded(QStringLiteral("activities:/"));
 }
 
 void ResourceLinking::onActivityRemoved(const QString &activity)
 {
     // Notify KIO
-    qDebug() << "Removed: activities:/" << activity;
+    // qDebug() << "Removed: activities:/" << activity;
     org::kde::KDirNotify::emitFilesRemoved(
         { QStringLiteral("activities:/") + activity });
 
@@ -229,7 +227,7 @@ void ResourceLinking::onActivityRemoved(const QString &activity)
 void ResourceLinking::onCurrentActivityChanged(const QString &activity)
 {
     // Notify KIO
-    qDebug() << "Changed: activities:/current -> " << activity;
+    // qDebug() << "Changed: activities:/current -> " << activity;
     org::kde::KDirNotify::emitFilesAdded(
         { QStringLiteral("activities:/current") });
 }
