@@ -31,6 +31,7 @@
 #include <QSqlField>
 #include <QSqlError>
 #include <QSqlDriver>
+#include <QByteArray>
 
 #include <KLocalizedString>
 #include <KUser>
@@ -69,7 +70,20 @@ public:
         }
 
         if (filePath) {
-            *filePath = path.mid(path.indexOf("/")).toString();
+            auto strippedPath = path.mid(path.indexOf("/") + 1);
+            auto splitPosition = strippedPath.indexOf("/");
+
+            if (splitPosition == -1) {
+                // if we have only one path segment
+                *filePath = demangledPath(strippedPath.toString());
+
+            } else {
+                // if we have sub-paths
+                auto head = strippedPath.mid(0, splitPosition);
+                auto tail = strippedPath.mid(splitPosition);
+
+                *filePath = demangledPath(head.toString()) + tail.toString();
+            }
         }
 
         return path.length() == 0 ? RootItem
@@ -113,15 +127,29 @@ public:
             }
         }
 
-        QString mangled = path;
-        mangled.replace("/", "_");
+        auto mangled = mangledPath(path);
+        // QProcess::execute("kdialog", { "--passivepopup", mangled });
+
         uds.insert(KIO::UDSEntry::UDS_NAME, mangled);
         uds.insert(KIO::UDSEntry::UDS_DISPLAY_NAME, url.fileName());
         uds.insert(KIO::UDSEntry::UDS_TARGET_URL, url.url());
         uds.insert(KIO::UDSEntry::UDS_LOCAL_PATH, path);
-        uds.insert(KIO::UDSEntry::UDS_LINK_DEST, path);
 
         return uds;
+    }
+
+    QString mangledPath(const QString &path) const
+    {
+        // return QString::fromUtf8(QUrl::toPercentEncoding(path));
+        return QString::fromLatin1(path.toUtf8().toBase64(
+            QByteArray::Base64UrlEncoding | QByteArray::OmitTrailingEquals));
+    }
+
+    QString demangledPath(const QString &mangled) const
+    {
+        // return QUrl::fromPercentEncoding(mangled.toUtf8());
+        return QString::fromUtf8(QByteArray::fromBase64(mangled.toLatin1(),
+            QByteArray::Base64UrlEncoding | QByteArray::OmitTrailingEquals));
     }
 
     // KActivities::Consumer activities;
@@ -164,10 +192,25 @@ bool ActivitiesProtocol::rewriteUrl(const QUrl &url, QUrl &newUrl)
     switch (d->pathType(url, &activity, &path)) {
         case Private::RootItem:
         case Private::ActivityRootItem:
+            if (activity == "current") {
+                KActivities::Consumer activities;
+                d->syncActivities(activities);
+                newUrl = QStringLiteral("activities:/")
+                         + activities.currentActivity();
+                return true;
+            }
             return false;
 
         case Private::ActivityPathItem:
+        {
+            // auto demangled = d->demangledPath(path);
+            // QProcess::execute("kdialog",
+            //                   { "--passivepopup",
+            //                     path.midRef(1).toString() + "\n" + demangled });
+
             newUrl = QUrl::fromLocalFile(path);
+            return true;
+        }
 
         default:
             return true;
@@ -184,9 +227,23 @@ void ActivitiesProtocol::listDir(const QUrl &url)
         case Private::RootItem:
         {
             KIO::UDSEntryList udslist;
+
+            KIO::UDSEntry uds;
+            uds.insert(KIO::UDSEntry::UDS_NAME, QStringLiteral("current"));
+            uds.insert(KIO::UDSEntry::UDS_DISPLAY_NAME, i18n("Current activity"));
+            uds.insert(KIO::UDSEntry::UDS_DISPLAY_TYPE, i18n("Activity"));
+            uds.insert(KIO::UDSEntry::UDS_ICON_NAME, QStringLiteral("preferences-activities"));
+            uds.insert(KIO::UDSEntry::UDS_FILE_TYPE, S_IFDIR);
+            uds.insert(KIO::UDSEntry::UDS_MIME_TYPE, QStringLiteral("inode/directory"));
+            uds.insert(KIO::UDSEntry::UDS_ACCESS, 0500);
+            uds.insert(KIO::UDSEntry::UDS_USER, KUser().loginName());
+            uds.insert(KIO::UDSEntry::UDS_TARGET_URL, QStringLiteral("activities:/") + activities.currentActivity());
+            udslist << uds;
+
             for (const auto activity: activities.activities()) {
                 udslist << d->activityEntry(activity);
             }
+
             listEntries(udslist);
             finished();
             break;
@@ -201,6 +258,10 @@ void ActivitiesProtocol::listDir(const QUrl &url)
             if (!database) {
                 finished();
                 break;
+            }
+
+            if (activity == "current") {
+                activity = activities.currentActivity();
             }
 
             static const auto queryString = QStringLiteral(
@@ -263,6 +324,11 @@ void ActivitiesProtocol::stat(const QUrl& url)
         {
             KActivities::Consumer activities;
             d->syncActivities(activities);
+
+            if (activity == "current") {
+                activity = activities.currentActivity();
+            }
+
             statEntry(d->activityEntry(activity));
             finished();
             break;
