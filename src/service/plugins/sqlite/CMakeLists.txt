@@ -41,8 +41,10 @@ target_link_libraries (
    Qt5::Core
    Qt5::Sql
    KF5::ConfigCore
+   KF5::KIOCore
    KF5::DBusAddons
    KF5::CoreAddons
+   KF5::Activities
    )
 
 kservice_desktop_to_json(

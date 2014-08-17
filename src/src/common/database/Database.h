@@ -1,5 +1,5 @@
 /*
- * Copyright 2012, 2013, 2014 Ivan Cukic <ivan.cukic@kde.org>
+ * Copyright 2014 Ivan Cukic <ivan.cukic@kde.org>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -18,30 +18,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef KIO_ACTIVITIES_H
-#define KIO_ACTIVITIES_H
-
-#include <KIO/ForwardingSlaveBase>
+#ifndef COMMON_DATABASE_H
+#define COMMON_DATABASE_H
 
 #include <utils/d_ptr.h>
+#include <memory>
+#include <QSqlQuery>
 
-class ActivitiesProtocol : public KIO::ForwardingSlaveBase {
-    Q_OBJECT
-
+class Database {
 public:
-    ActivitiesProtocol(const QByteArray &poolSocket, const QByteArray &appSocket);
-    ~ActivitiesProtocol();
+    enum Source {
+        ResourcesDatabase
+    };
 
-protected:
-    bool rewriteUrl(const QUrl &url, QUrl &newUrl) Q_DECL_OVERRIDE;
-    void listDir(const QUrl &url) Q_DECL_OVERRIDE;
-    void prepareUDSEntry(KIO::UDSEntry &entry, bool listing = false) const Q_DECL_OVERRIDE;
-    void stat(const QUrl& url) Q_DECL_OVERRIDE;
-    void mimetype(const QUrl& url) Q_DECL_OVERRIDE;
-    void del(const QUrl& url, bool isfile) Q_DECL_OVERRIDE;
+    static
+    std::shared_ptr<Database> instance(Source source);
+
+    QSqlQuery query(const QString &query) const;
+    QSqlQuery query() const;
+
+    ~Database();
+    Database();
 
 private:
     D_PTR;
 };
 
-#endif // KIO_ACTIVITIES_H
+#endif // COMMON_DATABASE_H
+

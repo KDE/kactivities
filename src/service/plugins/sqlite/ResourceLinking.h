@@ -25,6 +25,9 @@
 #include <memory>
 #include <boost/container/flat_set.hpp>
 
+// KDE
+#include <lib/core/consumer.h>
+
 // Local
 #include <Plugin.h>
 
@@ -66,6 +69,7 @@ public Q_SLOTS:
                                     QString targettedResource,
                                     QString usedActivity = QString());
 
+
 Q_SIGNALS:
     void ResourceLinkedToActivity(const QString &initiatingAgent,
                                   const QString &targettedResource,
@@ -74,6 +78,11 @@ Q_SIGNALS:
                                       const QString &targettedResource,
                                       const QString &usedActivity);
 
+private Q_SLOTS:
+    void onActivityAdded(const QString &activity);
+    void onActivityRemoved(const QString &activity);
+    void onCurrentActivityChanged(const QString &activity);
+
 private:
     bool validateArguments(QString &initiatingAgent, QString &targettedResource,
                            QString &usedActivity);
@@ -81,6 +90,8 @@ private:
     std::unique_ptr<QSqlQuery> linkResourceToActivityQuery;
     std::unique_ptr<QSqlQuery> unlinkResourceFromActivityQuery;
     std::unique_ptr<QSqlQuery> isResourceLinkedToActivityQuery;
+
+    KActivities::Consumer m_activities;
 };
 
 #endif // PLUGINS_SQLITE_RESOURCE_LINKING_H

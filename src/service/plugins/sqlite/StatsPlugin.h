@@ -30,6 +30,7 @@
 
 class QSqlQuery;
 class QFileSystemWatcher;
+class ResourceLinking;
 
 /**
  * Communication with the outer world.
@@ -111,7 +112,7 @@ private:
     bool m_blockAll : 1;
     WhatToRemember m_whatToRemember : 2;
 
-    QObject *m_resourceLinking;
+    ResourceLinking *m_resourceLinking;
 
     static StatsPlugin *s_instance;
 };

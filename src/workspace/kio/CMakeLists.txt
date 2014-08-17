@@ -7,25 +7,31 @@ include_directories (
    ${CMAKE_BINARY_DIR}/src
    ${CMAKE_CURRENT_SOURCE_DIR}
    ${CMAKE_CURRENT_BINARY_DIR}
-   ${KDE4_INCLUDES}
-   ${KDE4_KIO_INCLUDES}
    )
+
+find_package (Qt5 REQUIRED NO_MODULE COMPONENTS Sql)
+find_package(KF5 REQUIRED COMPONENTS KIO I18n)
 
 ########### next target ###############
 
 set (kio_activities_PART_SRCS
    KioActivities.cpp
+   ${CMAKE_SOURCE_DIR}/src/utils/qsqlquery.cpp
+   ${CMAKE_SOURCE_DIR}/src/common/database/Database.cpp
    )
 
-kde4_add_plugin (
-   kio_activities
+add_library (
+   kio_activities MODULE
    ${kio_activities_PART_SRCS}
    )
 
 target_link_libraries (
    kio_activities
-   ${KDE4_KIO_LIBS}
-   kactivities
+   Qt5::Sql
+   KF5::KIOCore
+   KF5::DBusAddons
+   KF5::Activities
+   KF5::I18n
    )
 
 install (
