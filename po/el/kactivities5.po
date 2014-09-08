@@ -1,0 +1,188 @@
+# kactivitymanagerd_fileitem_linking_plugin.po translation el
+# Copyright (C) YEAR This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Stelios <sstavra@gmail.com>, 2012.
+# Antonis Geralis <gaantonio@civil.auth.gr>, 2013, 2014.
+msgid ""
+msgstr ""
+"Project-Id-Version: kactivitymanagerd_fileitem_linking_plugin\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2014-08-18 08:02+0000\n"
+"PO-Revision-Date: 2014-02-03 02:22+0200\n"
+"Last-Translator: Antonis Geralis <gaantonio@civil.auth.gr>\n"
+"Language-Team: Greek <kde-i18n-doc@kde.org>\n"
+"Language: el\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Lokalize 1.5\n"
+
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Stelios"
+
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "sstavra@gmail.com"
+
+#: imports/activitymodel.cpp:592
+#, fuzzy
+#| msgid "Activities..."
+msgctxt "Header title for activity data model"
+msgid "Activity"
+msgstr "Δραστηριότητες..."
+
+#: service/Activities.cpp:139
+msgid "Default"
+msgstr ""
+
+#: service/plugins/globalshortcuts/GlobalShortcutsPlugin.cpp:84
+#: service/plugins/globalshortcuts/GlobalShortcutsPlugin.cpp:119
+#, kde-format
+msgctxt "@action"
+msgid "Switch to activity \"%1\""
+msgstr "Εναλλαγή στη δραστηριότητα \"%1\""
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:111
+#: workspace/kio/KioActivities.cpp:309
+#, fuzzy
+#| msgid "Activities..."
+msgid "Activities"
+msgstr "Δραστηριότητες..."
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:114
+msgid "Loading..."
+msgstr ""
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:141
+#, fuzzy
+#| msgid "Activity manager is not running properly."
+msgid "The Activity Manager is not running"
+msgstr "Ο διαχειριστής δραστηριοτήτων δεν εκτελείται κανονικά."
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:185
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:252
+msgid "Link to the current activity"
+msgstr "Σύνδεση στην τρέχουσα δραστηριότητα"
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:188
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:257
+msgid "Unlink from the current activity"
+msgstr "Αποσύνδεση από την τρέχουσα δραστηριότητα"
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:191
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:261
+msgid "Link to:"
+msgstr "Σύνδεση σε:"
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:196
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:269
+msgid "Unlink from:"
+msgstr "Αποσύνδεση από:"
+
+#: workspace/kio/KioActivities.cpp:108 workspace/kio/KioActivities.cpp:234
+#, fuzzy
+#| msgid "Activities..."
+msgid "Activity"
+msgstr "Δραστηριότητες..."
+
+#: workspace/kio/KioActivities.cpp:233
+#, fuzzy
+#| msgid "Link to the current activity"
+msgid "Current activity"
+msgstr "Σύνδεση στην τρέχουσα δραστηριότητα"
+
+#: workspace/settings/MainConfigurationWidget.cpp:80
+msgid "Available Features"
+msgstr "Διαθέσιμες λειτουργίες"
+
+#: workspace/settings/MainConfigurationWidget.cpp:82
+msgid "Plugins"
+msgstr "Πρόσθετα"
+
+#: workspace/settings/MainConfigurationWidget.cpp:87
+msgctxt "unlimited number of months"
+msgid "forever"
+msgstr "για πάντα"
+
+#: workspace/settings/MainConfigurationWidget.cpp:99
+msgid "Forget the last hour"
+msgstr "Να ξεχαστεί η τελευταία ώρα"
+
+#: workspace/settings/MainConfigurationWidget.cpp:102
+msgid "Forget the last two hours"
+msgstr "Να ξεχαστούν οι δύο τελευταίες ώρες"
+
+#: workspace/settings/MainConfigurationWidget.cpp:105
+msgid "Forget a day"
+msgstr "Να ξεχαστεί η ημέρα"
+
+#: workspace/settings/MainConfigurationWidget.cpp:108
+msgid "Forget everything"
+msgstr "Να ξεχαστούν όλα"
+
+#: workspace/settings/MainConfigurationWidget.cpp:257
+msgctxt "unit of time. months to keep the history"
+msgid " month"
+msgid_plural " months"
+msgstr[0] ""
+msgstr[1] ""
+
+#: workspace/settings/MainConfigurationWidget.cpp:260
+msgctxt "for in 'keep history for 5 months'"
+msgid "for "
+msgstr "για "
+
+#. i18n: ectx: property (text), widget (QCheckBox, checkEnableActivities)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:17
+msgid "Enable activities management"
+msgstr "Ενεργοποίηση διαχείρισης δραστηριοτήτων"
+
+#. i18n: ectx: attribute (title), widget (QWidget, tab)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:28
+msgid "Privacy"
+msgstr "Ιδιωτικό απόρρητο"
+
+#. i18n: ectx: property (text), widget (QLabel, labelRememberDocuments)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:34
+msgid "Remember opened documents:"
+msgstr "Απομνημόνευση ανοιχτών εγγράφων:"
+
+#. i18n: ectx: property (text), widget (QRadioButton, radioRememberAllApplications)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:45
+#, fuzzy
+#| msgid "For all applications"
+msgid "For a&ll applications"
+msgstr "Για όλες τις εφαρμογές"
+
+#. i18n: ectx: property (text), widget (QRadioButton, radioDontRememberApplications)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:55
+#, fuzzy
+#| msgid "Do not remember"
+msgid "&Do not remember"
+msgstr "Να μη γίνει απομνημόνευση"
+
+#. i18n: ectx: property (text), widget (QRadioButton, radioRememberSpecificApplications)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:62
+#, fuzzy
+#| msgid "Only for specific applications"
+msgid "O&nly for specific applications"
+msgstr "Μόνο για ορισμένες εφαρμογές"
+
+#. i18n: ectx: property (text), widget (QLabel, labelKeepHistory)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:90
+msgid "Keep history"
+msgstr "Διατήρηση ιστορικού"
+
+#. i18n: ectx: property (text), widget (QPushButton, buttonClearRecentHistory)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:113
+msgid "Clear recent history"
+msgstr "Καθαρισμός πρόσφατου ιστορικού"
+
+#. i18n: ectx: property (text), widget (QCheckBox, checkBlacklistAllNotOnList)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:155
+msgid "Blacklist all applications not on this list"
+msgstr ""
+"Να μπουν σε μαύρη λίστα όλες οι εφαρμογές που δεν είναι σε αυτήν τη λίστα"
