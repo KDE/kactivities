@@ -127,11 +127,13 @@ public:
         }
     }
 
+    bool loadPlugin(KService::Ptr offer);
+
     Resources *resources;
     Activities *activities;
     Features *features;
 
-    QList<Plugin *> plugins;
+    QStringList pluginIds;
 
     static Application *s_instance;
 };
@@ -164,6 +166,38 @@ void Application::init()
             QDBusConnection::ExportAllSlots);
 }
 
+bool Application::Private::loadPlugin(KService::Ptr offer)
+{
+    if (!offer) {
+        qCWarning(KAMD_LOG_APPLICATION) << "[ FAILED ] plugin offer not valid";
+        return false;
+    }
+
+    if (pluginIds.contains(offer->storageId())) {
+        qCDebug(KAMD_LOG_APPLICATION)   << "[   OK   ] already loaded:  " << offer->name();
+        return true;
+    }
+
+    QString error;
+    auto pluginInstance = dynamic_cast<Plugin*>(
+            offer->createInstance<QObject>(Q_NULLPTR, {}, &error)
+        );
+
+    if (pluginInstance) {
+        pluginInstance->init(Module::get());
+
+        pluginIds << offer->storageId();
+
+        qCDebug(KAMD_LOG_APPLICATION)   << "[   OK   ] loaded:  " << offer->name();
+        return true;
+
+    } else {
+        qCWarning(KAMD_LOG_APPLICATION) << "[ FAILED ] loading: " << offer->name() << error;
+        // TODO: Show a notification
+        return false;
+    }
+}
+
 void Application::loadPlugins()
 {
     using namespace boost::adaptors;
@@ -182,28 +216,24 @@ void Application::loadPlugins()
         | filtered(std::bind(Private::isPluginEnabled, config, _1));
 
     for (const auto &offer : filteredOffers) {
-        QString error;
-        auto pluginInstance = dynamic_cast<Plugin*>(
-                offer->createInstance<QObject>(this, {}, &error)
-            );
-
-        if (pluginInstance) {
-            pluginInstance->init(Module::get());
-            qCDebug(KAMD_LOG_APPLICATION)   << "[   OK   ] loaded:  " << offer->name();
-
-        } else {
-            qCWarning(KAMD_LOG_APPLICATION) << "[ FAILED ] loading: " << offer->name() << error;
-            // TODO: Show a notification
-        }
+        d->loadPlugin(offer);
     }
+}
+
+bool Application::loadPlugin(const QString &plugin)
+{
+    auto offer = KService::serviceByStorageId(plugin);
+
+    if (!offer) {
+        qCWarning(KAMD_LOG_APPLICATION) << "[ FAILED ] not found: " << plugin;
+        return false;
+    }
+
+    return d->loadPlugin(offer);
 }
 
 Application::~Application()
 {
-    for (const auto plugin: d->plugins) {
-        delete plugin;
-    }
-
     for (const auto thread: s_moduleThreads) {
         thread->quit();
         thread->wait();

@@ -53,6 +53,7 @@ public:
 public Q_SLOTS:
     void quit();
     QString serviceVersion() const;
+    bool loadPlugin(const QString &plugin);
 
 private Q_SLOTS:
     void init();
