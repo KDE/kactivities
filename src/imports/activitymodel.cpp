@@ -656,4 +656,4 @@ void ActivityModel::startActivity(const QString &id, const QJSValue &callback)
 } // namespace Models
 } // namespace KActivities
 
-#include "activitymodel.moc"
+// #include "activitymodel.moc"

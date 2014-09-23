@@ -209,6 +209,8 @@ bool ResourceLinking::validateArguments(QString &initiatingAgent,
 
 void ResourceLinking::onActivityAdded(const QString &activity)
 {
+    Q_UNUSED(activity);
+
     // Notify KIO
     // qDebug() << "Added: activities:/  (" << activity << ")";
     org::kde::KDirNotify::emitFilesAdded(QStringLiteral("activities:/"));
@@ -226,6 +228,8 @@ void ResourceLinking::onActivityRemoved(const QString &activity)
 
 void ResourceLinking::onCurrentActivityChanged(const QString &activity)
 {
+    Q_UNUSED(activity);
+
     // Notify KIO
     // qDebug() << "Changed: activities:/current -> " << activity;
     org::kde::KDirNotify::emitFilesAdded(

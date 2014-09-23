@@ -238,4 +238,4 @@ void BlacklistedApplicationsModel::setEnabled(bool enabled)
     emit enabledChanged(enabled);
 }
 
-#include <BlacklistedApplicationsModel.moc>
+// #include <BlacklistedApplicationsModel.moc>

@@ -190,4 +190,4 @@ QString Info::icon() const
 } // namespace KActivities
 
 #include "moc_info.cpp"
-#include "moc_info_p.cpp"
+// #include "moc_info_p.cpp"

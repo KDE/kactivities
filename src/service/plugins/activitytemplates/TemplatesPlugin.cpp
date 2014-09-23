@@ -55,6 +55,7 @@ QStringList TemplatesPlugin::templates() const
 
 QStringList TemplatesPlugin::templateFor(const QString &activity) const
 {
+    Q_UNUSED(activity);
     return { QStringLiteral("Default Template") };
 }
 
@@ -90,7 +91,8 @@ QDBusVariant TemplatesPlugin::value(const QStringList &property) const
 void TemplatesPlugin::setValue(const QStringList &property,
         const QDBusVariant &value)
 {
-
+    Q_UNUSED(property);
+    Q_UNUSED(value);
 }
 
 #include "TemplatesPlugin.moc"

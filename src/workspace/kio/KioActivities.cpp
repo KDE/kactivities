@@ -48,8 +48,7 @@
 
 class ActivitiesProtocol::Private {
 public:
-    Private(ActivitiesProtocol *parent)
-        : kio(parent)
+    Private()
     {
     }
 
@@ -153,9 +152,6 @@ public:
     }
 
     // KActivities::Consumer activities;
-
-private:
-    ActivitiesProtocol *const kio;
 };
 
 
@@ -178,7 +174,6 @@ extern "C" int Q_DECL_EXPORT kdemain(int argc, char **argv)
 ActivitiesProtocol::ActivitiesProtocol(const QByteArray &poolSocket,
                                        const QByteArray &appSocket)
     : KIO::ForwardingSlaveBase("activities", poolSocket, appSocket)
-    , d(this)
 {
 }
 
@@ -358,7 +353,9 @@ void ActivitiesProtocol::mimetype(const QUrl& url)
 
 void ActivitiesProtocol::del(const QUrl& url, bool isfile)
 {
+    Q_UNUSED(url);
+    Q_UNUSED(isfile);
 }
 
 
-#include "KioActivities.moc"
+// #include "KioActivities.moc"

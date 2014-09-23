@@ -141,4 +141,4 @@ QFuture<void> Controller::startActivity(const QString &id)
 
 } // namespace KActivities
 
-#include "controller.moc"
+// #include "controller.moc"
