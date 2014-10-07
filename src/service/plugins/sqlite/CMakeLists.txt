@@ -9,7 +9,6 @@ set (
    ResourceScoreCache.cpp
    ResourceScoreMaintainer.cpp
    ResourceLinking.cpp
-   # Rankings.cpp
    ${CMAKE_SOURCE_DIR}/src/utils/qsqlquery.cpp
    ${plugin_implementation_SRCS}
    )

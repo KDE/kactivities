@@ -39,8 +39,6 @@
 #include "ResourceScoreMaintainer.h"
 #include "ResourceLinking.h"
 #include "Utils.h"
-// #include "Rankings.h"
-// #include "scoringadaptor.h"
 #include "../../Event.h"
 
 KAMD_EXPORT_PLUGIN(sqliteplugin, StatsPlugin, "kactivitymanagerd-plugin-sqlite.json")
@@ -70,7 +68,6 @@ bool StatsPlugin::init(const QHash<QString, QObject *> &modules)
     m_resources = modules[QStringLiteral("resources")];
 
     // Database::self();
-    // Rankings::self();
 
     connect(m_resources, SIGNAL(ProcessedResourceEvents(EventList)),
             this, SLOT(addEvents(EventList)));
