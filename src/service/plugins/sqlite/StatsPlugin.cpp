@@ -67,7 +67,7 @@ bool StatsPlugin::init(const QHash<QString, QObject *> &modules)
     m_activities = modules[QStringLiteral("activities")];
     m_resources = modules[QStringLiteral("resources")];
 
-    // Database::self();
+    Database::self();
 
     connect(m_resources, SIGNAL(ProcessedResourceEvents(EventList)),
             this, SLOT(addEvents(EventList)));
