@@ -1,0 +1,171 @@
+# Translation of kcm_activities to Norwegian Bokmål
+#
+# Bjørn Steensrud <bjornst@skogkatt.homelinux.org>, 2012, 2014.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2014-09-24 07:44+0000\n"
+"PO-Revision-Date: 2014-09-09 12:52+0200\n"
+"Last-Translator: Bjørn Steensrud <bjornst@skogkatt.homelinux.org>\n"
+"Language-Team: Norwegian Bokmål <i18n-nb@lister.ping.uio.no>\n"
+"Language: nb\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Lokalize 1.5\n"
+"X-Environment: kde\n"
+"X-Accelerator-Marker: &\n"
+"X-Text-Markup: kde4\n"
+
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Bjørn Steensrud"
+
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "bjornst@skogkatt.homelinux.org"
+
+#: imports/activitymodel.cpp:592
+msgctxt "Header title for activity data model"
+msgid "Activity"
+msgstr "Aktivitet"
+
+#: service/Activities.cpp:139
+msgid "Default"
+msgstr "Standard"
+
+#: service/plugins/globalshortcuts/GlobalShortcutsPlugin.cpp:84
+#: service/plugins/globalshortcuts/GlobalShortcutsPlugin.cpp:119
+#, kde-format
+msgctxt "@action"
+msgid "Switch to activity \"%1\""
+msgstr "Bytt til aktivitet «%1»"
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:111
+#: workspace/kio/KioActivities.cpp:304
+msgid "Activities"
+msgstr "Aktiviteter"
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:114
+msgid "Loading..."
+msgstr "Laster …"
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:141
+msgid "The Activity Manager is not running"
+msgstr "Aktivitetsbehandler kjører ikke."
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:185
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:252
+msgid "Link to the current activity"
+msgstr "Lenk til gjeldende aktivitet"
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:188
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:257
+msgid "Unlink from the current activity"
+msgstr "Lenk fra gjeldende aktivitet"
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:191
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:261
+msgid "Link to:"
+msgstr "Lenk til:"
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:196
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:269
+msgid "Unlink from:"
+msgstr "Lenk fra:"
+
+#: workspace/kio/KioActivities.cpp:107 workspace/kio/KioActivities.cpp:229
+msgid "Activity"
+msgstr "Aktivitet"
+
+#: workspace/kio/KioActivities.cpp:228
+msgid "Current activity"
+msgstr "Gjeldende aktivitet"
+
+#: workspace/settings/MainConfigurationWidget.cpp:80
+msgid "Available Features"
+msgstr "Tilgjengelige funksjoner"
+
+#: workspace/settings/MainConfigurationWidget.cpp:82
+msgid "Plugins"
+msgstr "Programtillegg"
+
+#: workspace/settings/MainConfigurationWidget.cpp:87
+msgctxt "unlimited number of months"
+msgid "forever"
+msgstr "alltid"
+
+#: workspace/settings/MainConfigurationWidget.cpp:99
+msgid "Forget the last hour"
+msgstr "Glem den siste timen"
+
+#: workspace/settings/MainConfigurationWidget.cpp:102
+msgid "Forget the last two hours"
+msgstr "Glem de to siste timene"
+
+#: workspace/settings/MainConfigurationWidget.cpp:105
+msgid "Forget a day"
+msgstr "Glem en dag"
+
+#: workspace/settings/MainConfigurationWidget.cpp:108
+msgid "Forget everything"
+msgstr "Glem alt"
+
+#: workspace/settings/MainConfigurationWidget.cpp:257
+msgctxt "unit of time. months to keep the history"
+msgid " month"
+msgid_plural " months"
+msgstr[0] " måned"
+msgstr[1] " måneder"
+
+#: workspace/settings/MainConfigurationWidget.cpp:260
+msgctxt "for in 'keep history for 5 months'"
+msgid "for "
+msgstr "i "
+
+#. i18n: ectx: property (text), widget (QCheckBox, checkEnableActivities)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:17
+msgid "Enable activities management"
+msgstr "Slå på håndtering av aktiviteter"
+
+#. i18n: ectx: attribute (title), widget (QWidget, tab)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:28
+msgid "Privacy"
+msgstr "Personvern"
+
+#. i18n: ectx: property (text), widget (QLabel, labelRememberDocuments)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:34
+msgid "Remember opened documents:"
+msgstr "Husk åpnede dokumenter:"
+
+#. i18n: ectx: property (text), widget (QRadioButton, radioRememberAllApplications)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:45
+msgid "For a&ll applications"
+msgstr "For a&lle programmer"
+
+#. i18n: ectx: property (text), widget (QRadioButton, radioDontRememberApplications)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:55
+msgid "&Do not remember"
+msgstr "&Ikke husk"
+
+#. i18n: ectx: property (text), widget (QRadioButton, radioRememberSpecificApplications)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:62
+msgid "O&nly for specific applications"
+msgstr "&Bare for oppgitte programmer"
+
+#. i18n: ectx: property (text), widget (QLabel, labelKeepHistory)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:90
+msgid "Keep history"
+msgstr "Behold historie"
+
+#. i18n: ectx: property (text), widget (QPushButton, buttonClearRecentHistory)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:113
+msgid "Clear recent history"
+msgstr "Tøm nylig historie"
+
+#. i18n: ectx: property (text), widget (QCheckBox, checkBlacklistAllNotOnList)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:155
+msgid "Blacklist all applications not on this list"
+msgstr "Svartelist alle programmer som ikke er på denne lista"
