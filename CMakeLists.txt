@@ -29,7 +29,7 @@ set (CMAKE_AUTOMOC ON)
 find_package (Qt5 REQUIRED NO_MODULE COMPONENTS Core DBus)
 
 # KDE Frameworks
-set(KF5_VERSION "5.4.0") # handled by release scripts
+set(KF5_VERSION "5.5.0") # handled by release scripts
 set(KF5_DEP_VERSION "5.4.0") # handled by release scripts
 find_package (KF5DBusAddons ${KF5_DEP_VERSION} CONFIG REQUIRED)
 find_package (KF5I18n ${KF5_DEP_VERSION} CONFIG REQUIRED)
