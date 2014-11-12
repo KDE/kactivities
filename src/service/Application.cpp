@@ -203,7 +203,7 @@ void Application::loadPlugins()
     using namespace boost::adaptors;
     using namespace std::placeholders;
 
-    const auto pluginsDir(QLatin1String(KAMD_INSTALL_PREFIX "/" KAMD_PLUGIN_DIR));
+    const auto pluginsDir(QLatin1String(KAMD_PLUGIN_DIR));
     QCoreApplication::addLibraryPath(pluginsDir);
 
     const auto config
