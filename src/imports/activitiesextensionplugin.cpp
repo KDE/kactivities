@@ -22,6 +22,7 @@
 #include <QtQml>
 
 #include "activitymodel.h"
+#include "activityinfo.h"
 #include "resourcemodel.h"
 
 #include <QDebug>
@@ -36,6 +37,7 @@ void ActivitiesExtensionPlugin::registerTypes(const char *uri)
     Q_ASSERT(QLatin1String(uri) == QLatin1String("org.kde.activities"));
 
     qmlRegisterType<KActivities::Imports::ActivityModel>(uri, 0, 1, "ActivityModel");
+    qmlRegisterType<KActivities::Imports::ActivityInfo>(uri, 0, 1, "ActivityInfo");
     qmlRegisterType<KActivities::Imports::ResourceModel>(uri, 0, 1, "ResourceModel");
 }
 

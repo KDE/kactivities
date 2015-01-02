@@ -15,6 +15,7 @@ set (
    kactivities_imports_LIB_SRCS
    activitiesextensionplugin.cpp
    activitymodel.cpp
+   activityinfo.cpp
    resourcemodel.cpp
 
    ${CMAKE_SOURCE_DIR}/src/utils/dbusfuture_p.cpp
