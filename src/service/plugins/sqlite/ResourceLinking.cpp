@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2011, 2012 Ivan Cukic <ivan.cukic(at)kde.org>
+ *   Copyright (C) 2011, 2012, 2013, 2014, 2015 Ivan Cukic <ivan.cukic(at)kde.org>
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License version 2,
@@ -60,6 +60,8 @@ void ResourceLinking::LinkResourceToActivity(QString initiatingAgent,
                                              QString targettedResource,
                                              QString usedActivity)
 {
+    // qDebug() << "Linking " << targettedResource << " to " << usedActivity << " from " << initiatingAgent;
+
     if (!validateArguments(initiatingAgent, targettedResource, usedActivity)) {
         qWarning() << "Invalid arguments" << initiatingAgent
                    << targettedResource << usedActivity;
@@ -103,6 +105,8 @@ void ResourceLinking::UnlinkResourceFromActivity(QString initiatingAgent,
                                                  QString targettedResource,
                                                  QString usedActivity)
 {
+    // qDebug() << "Unlinking " << targettedResource << " from " << usedActivity << " from " << initiatingAgent;
+
     if (!validateArguments(initiatingAgent, targettedResource, usedActivity)) {
         qWarning() << "Invalid arguments" << initiatingAgent
                    << targettedResource << usedActivity;
@@ -189,6 +193,16 @@ bool ResourceLinking::validateArguments(QString &initiatingAgent,
         }
 
         targettedResource = file.canonicalFilePath();
+    }
+
+    // Handling special values for activities
+    if (usedActivity == ":current") {
+        usedActivity =
+            Plugin::callOn<QString, Qt::DirectConnection>(
+                StatsPlugin::self()->activitiesInterface(),
+                "CurrentActivity", "QString");
+    } else if (usedActivity == ":global") {
+        usedActivity = "";
     }
 
     // If the activity is not empty and the passed activity
