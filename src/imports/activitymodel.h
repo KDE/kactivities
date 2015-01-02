@@ -17,8 +17,8 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef KACTIVITIES_MODELS_ACTIVITY_MODEL_H
-#define KACTIVITIES_MODELS_ACTIVITY_MODEL_H
+#ifndef KACTIVITIES_IMPORTS_ACTIVITY_MODEL_H
+#define KACTIVITIES_IMPORTS_ACTIVITY_MODEL_H
 
 // Qt
 #include <QObject>
@@ -38,7 +38,7 @@ class QModelIndex;
 class QDBusPendingCallWatcher;
 
 namespace KActivities {
-namespace Models {
+namespace Imports {
 
 /**
  * ActivityModel
@@ -151,7 +151,8 @@ private:
     friend class Private;
 };
 
-} // namespace Models
+} // namespace Imports
 } // namespace KActivities
 
-#endif // KACTIVITIES_MODELS_ACTIVITY_MODEL_H
+#endif // KACTIVITIES_IMPORTS_ACTIVITY_MODEL_H
+

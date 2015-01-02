@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2012, 2013, 2014 Ivan Cukic <ivan.cukic(at)kde.org>
+ *   Copyright (C) 2012, 2013, 2014, 2015 Ivan Cukic <ivan.cukic(at)kde.org>
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License version 2,
@@ -52,7 +52,7 @@ using kamd::utils::continue_with;
 
 
 namespace KActivities {
-namespace Models {
+namespace Imports {
 
 class ActivityModel::Private {
 public:
@@ -653,7 +653,8 @@ void ActivityModel::startActivity(const QString &id, const QJSValue &callback)
     continue_with(m_service.startActivity(id), callback);
 }
 
-} // namespace Models
+} // namespace Imports
 } // namespace KActivities
 
 // #include "activitymodel.moc"
+

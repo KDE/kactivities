@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2012 Ivan Cukic <ivan.cukic(at)kde.org>
+ *   Copyright (C) 2012, 2013, 2014, 2015 Ivan Cukic <ivan.cukic(at)kde.org>
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU Library General Public License as
@@ -35,7 +35,7 @@ void ActivitiesExtensionPlugin::registerTypes(const char *uri)
 {
     Q_ASSERT(QLatin1String(uri) == QLatin1String("org.kde.activities"));
 
-    qmlRegisterType<KActivities::Models::ActivityModel>(uri, 0, 1, "ActivityModel");
-    qmlRegisterType<KActivities::Models::ResourceModel>(uri, 0, 1, "ResourceModel");
+    qmlRegisterType<KActivities::Imports::ActivityModel>(uri, 0, 1, "ActivityModel");
+    qmlRegisterType<KActivities::Imports::ResourceModel>(uri, 0, 1, "ResourceModel");
 }
 

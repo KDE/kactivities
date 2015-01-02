@@ -63,7 +63,7 @@
 using kamd::utils::continue_with;
 
 namespace KActivities {
-namespace Models {
+namespace Imports {
 
 class ResourceModel::LinkerService: public QDBusInterface {
 private:
@@ -691,7 +691,8 @@ QString ResourceModel::validateResource(const QString &resource) const
             QUrl(resource).toLocalFile() : resource;
 }
 
-} // namespace Models
+} // namespace Imports
 } // namespace KActivities
 
 // #include "resourcemodel.moc"
+
