@@ -177,6 +177,10 @@ void Database::initDatabaseSchema()
         updateSchemaInfoQuery.arg(QStringLiteral("version"),
                                            currentSchemaVersion),
 
+        // The ResourceEvent table saves the Opened/Closed event pairs for
+        // a resource. The Accessed event is mapped to those.
+        // Focussing events are not stored in order not to get a
+        // huge database file and to lessen writes to the disk.
         QStringLiteral("CREATE TABLE IF NOT EXISTS ResourceEvent ("
                        "usedActivity TEXT, "
                        "initiatingAgent TEXT, "
@@ -185,6 +189,8 @@ void Database::initDatabaseSchema()
                        "end INTEGER "
                        ")"),
 
+        // The ResourceScoreCache table stores the calcualted scores
+        // for resources based on the recorded events.
         QStringLiteral("CREATE TABLE IF NOT EXISTS ResourceScoreCache ("
                        "usedActivity TEXT, "
                        "initiatingAgent TEXT, "
@@ -197,6 +203,11 @@ void Database::initDatabaseSchema()
                        ")"),
 
         // Introduced in 2014.05.05
+        // The ResourceLink table stores the information, formerly kept by
+        // Nepomuk, of which resources are linked to which activities.
+        // The additional features compared to the old days are
+        // the ability to limit the link to specific applications, and
+        // to create global links.
         QStringLiteral("CREATE TABLE IF NOT EXISTS ResourceLink ("
                        "usedActivity TEXT, "
                        "initiatingAgent TEXT, "
