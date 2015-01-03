@@ -191,23 +191,18 @@ public:
 
         QString backgroundFromConfig(const KConfigGroup &config) const
         {
+            auto wallpaperPlugin = config.readEntry("wallpaperplugin");
+            auto wallpaperConfig = config.group("Wallpaper").group(wallpaperPlugin).group("General");
+
             // Trying for the wallpaper
-            auto wallpaper = config
-                .group("Wallpaper")
-                .group("General")
-                .readEntry("Image", QString());
+            auto wallpaper = wallpaperConfig.readEntry("Image", QString());
 
             if (!wallpaper.isEmpty()) {
                 return wallpaper;
-
-            } else {
-                auto backgroundColor = config
-                    .group("Wallpaper")
-                    .group("General")
-                    .readEntry("Color", QColor(0, 0, 0));
-
-                return backgroundColor.name();
             }
+
+            auto backgroundColor = wallpaperConfig.readEntry("Color", QColor(0, 0, 0));
+            return backgroundColor.name();
         }
 
         void reload(bool fullReload)
