@@ -260,7 +260,6 @@ Resources::Resources(QObject *parent)
     KDBusConnectionPool::threadConnection().registerObject(
         ACTIVITY_MANAGER_OBJECT_PATH(Resources), this);
 
-    // TODO:
     d->connect(KWindowSystem::self(), SIGNAL(windowRemoved(WId)),
             SLOT(windowClosed(WId)));
     d->connect(KWindowSystem::self(), SIGNAL(activeWindowChanged(WId)),

@@ -154,8 +154,8 @@ void Application::init()
 
     // KAMD is a daemon, if it crashes it is not a problem as
     // long as it restarts properly
-    // TODO:
-    // KCrash::setFlags(KCrash::AutoRestart);
+    // TODO: Restart on crash
+    //       KCrash::setFlags(KCrash::AutoRestart);
     d->resources  = runInQThread<Resources>();
     d->activities = runInQThread<Activities>();
     d->features   = runInQThread<Features>();
@@ -193,7 +193,7 @@ bool Application::Private::loadPlugin(KService::Ptr offer)
 
     } else {
         qCWarning(KAMD_LOG_APPLICATION) << "[ FAILED ] loading: " << offer->name() << error;
-        // TODO: Show a notification
+        // TODO: Show a notification for a plugin that failed to load
         return false;
     }
 }

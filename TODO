@@ -1,10 +1,27 @@
-Add focus and modification	(src/service/plugins/sqlite/StatsPlugin.cpp:176)
-A possible problem is that theoretically the dangling ones can be	(src/service/plugins/activityranking/ActivityRanking.cpp:316)
-Move this to job-based execution	(src/service/Activities.cpp:140)
-Remove	(src/service/Event.h:57)
-Test whether necessary services are running	(src/workspace/kio/KioActivities.cpp:245)
-This should be also done from time to time,	(src/service/plugins/sqlite/StatsPlugin.cpp:111)
-This should be tested - something is wrong here	(src/service/plugins/activityranking/ActivityRanking.cpp:541)
-update the service info	(src/lib/core/resourceinstance.cpp:152)
-update the service info	(src/lib/core/resourceinstance.cpp:162)
-We should move away from any GUI code	(src/service/Application.cpp:107)
+src/imports/resourcemodel.cpp:106:  NOTE: What to do if the file does not exist?
+       Ignoring that case since the daemon creates it on startup.
+       Is it plausible that somebody will instantiate the ResourceModel
+       before the daemon is started?
+src/imports/resourcemodel.cpp:136:  TODO: Database connection naming could be smarter (thread-id-based,
+       reusing connections...?)
+src/imports/resourcemodel.cpp:338:  TODO: Will probably need some more special handling -
+       for application:/ and a few more
+src/imports/resourcemodel.cpp:554:  TODO: This might be smarter possibly, but might collide
+       with the SQL model. Implement a custom model with internal
+       cache instead of basing it on QSqlModel.
+
+src/service/plugins/sqlite/StatsPlugin.cpp:118:  TODO: Event cleanup should be also done from time to time,
+       not only on startup
+src/service/plugins/sqlite/StatsPlugin.cpp:238:  TODO: Add focus and modification
+
+src/service/Application.cpp:157:  TODO: Restart on crash
+       KCrash::setFlags(KCrash::AutoRestart);
+src/service/Application.cpp:196:  TODO: Show a notification for a plugin that failed to load
+
+src/lib/core/controller.cpp:41:  TODO: Make Q_ASSERT_EVENTUALLY_X or something similar
+
+src/lib/core/info.cpp:165:  TODO: This needs to be changed, test for the new linking feature
+
+src/lib/core/resourceinstance.cpp:145:  TODO: update the service info
+src/lib/core/resourceinstance.cpp:157:  TODO: update the service info
+

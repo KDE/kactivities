@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, 2011, 2012 Ivan Cukic <ivan.cukic(at)kde.org>
+ * Copyright (c) 2010, 2011, 2012, 2013, 2014, 2015 Ivan Cukic <ivan.cukic(at)kde.org>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -25,10 +25,7 @@
 
 #include <QSet>
 
-#include "utils_p.h"
 #include "activitiescache_p.h"
-
-class QDBusPendingCallWatcher;
 
 namespace KActivities {
 

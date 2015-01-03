@@ -26,16 +26,8 @@
 
 namespace KActivities {
 
-// class ControllerPrivate : public QObject {
-// public:
-//     ControllerPrivate(Controller *parent)
-//     {
-//     }
-// };
-
 Controller::Controller(QObject *parent)
     : Consumer(parent)
-    // , d(new ControllerPrivate())
 {
 }
 
@@ -46,9 +38,7 @@ Controller::~Controller()
 QFuture<void> Controller::setActivityName(const QString &id, const QString &name)
 {
     // Manager::activities()->SetActivityName(id, name);
-    // TODO: Make Q_ASSERT_EVENTUALLY_X or somthing similar
-    // Q_ASSERT_X(activities().contains(id), "Controller::setActivityName",
-    //            "You can not rename an non-existent activity");
+    // TODO: Make Q_ASSERT_EVENTUALLY_X or something similar
     Q_ASSERT_X(!name.isEmpty(), "Controller::setActivityName",
                "The activity name can not be an empty string");
 

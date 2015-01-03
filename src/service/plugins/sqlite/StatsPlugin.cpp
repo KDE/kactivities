@@ -115,8 +115,8 @@ void StatsPlugin::loadConfiguration()
     }
 
     // Delete old events, as per configuration
-    // TODO: This should be also done from time to time,
-    // not only on startup
+    // TODO: Event cleanup should be also done from time to time,
+    //       not only on startup
     deleteEarlierStats(QString(), config().readEntry("keep-history-for", 0));
 }
 

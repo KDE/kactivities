@@ -180,7 +180,6 @@ bool Activities::Private::setCurrentActivity(const QString &activity)
     }
 
     // Start activity
-    // TODO: Move this to job-based execution
     q->StartActivity(activity);
 
     //   - change the current activity and signal the change

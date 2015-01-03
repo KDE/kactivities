@@ -469,9 +469,6 @@ void ActivityModel::onActivityIconChanged(const QString &icon)
 
 void ActivityModel::onActivityStateChanged(Info::State state)
 {
-    // TODO: Implement this properly
-    // auto activity = static_cast<Info*> (sender());
-
     if (m_shownStates.empty()) {
         Private::emitActivityUpdated(this, m_shownActivities, sender(),
                                      ActivityState);
@@ -482,10 +479,6 @@ void ActivityModel::onActivityStateChanged(Info::State state)
         if (!info) {
             return;
         }
-
-        // qDebug() << m_shownStatesString << "Activity state has changed: "
-        //          << info->id() << " " << info->name()
-        //          << " to: " << state;
 
         if (boost::binary_search(m_shownStates, state)) {
             showActivity(info, true);

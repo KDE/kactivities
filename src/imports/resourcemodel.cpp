@@ -103,8 +103,10 @@ ResourceModel::ResourceModel(QObject *parent)
     , m_config(KSharedConfig::openConfig("kactivitymanagerd-resourcelinkingrc")
         ->group("Order"))
 {
-    // TODO: What to do if the file does not exist?
-    // qDebug() << "Creating a resource model instance";
+    // NOTE: What to do if the file does not exist?
+    //       Ignoring that case since the daemon creates it on startup.
+    //       Is it plausible that somebody will instantiate the ResourceModel
+    //       before the daemon is started?
 
     const QString databaseDir
         = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation)
@@ -132,7 +134,7 @@ bool ResourceModel::loadDatabase()
     if (!QFile(m_databaseFile).exists()) return false;
 
     // TODO: Database connection naming could be smarter (thread-id-based,
-    // reusing connections...?)
+    //       reusing connections...?)
     m_database = QSqlDatabase::addDatabase(
         QStringLiteral("QSQLITE"),
         QStringLiteral("kactivities_db_resources_") + QString::number((quintptr)this));
@@ -334,7 +336,7 @@ QVariant ResourceModel::data(const QModelIndex &proxyIndex, int role) const
         auto url = dataForColumn(index, RESOURCE_COLUMN).toString();
 
         // TODO: Will probably need some more special handling -
-        // for application:/ and a few more
+        //       for application:/ and a few more
 
         if (url.startsWith('/')) {
             url = QStringLiteral("file://") + url;
@@ -550,7 +552,8 @@ void ResourceModel::onResourceLinkedToActivity(const QString &initiatingAgent,
     if (matchingActivity != m_shownActivities.end()
         && matchingAgent != m_shownAgents.end()) {
         // TODO: This might be smarter possibly, but might collide
-        // with the sql model
+        //       with the SQL model. Implement a custom model with internal
+        //       cache instead of basing it on QSqlModel.
         reloadData();
     }
 }
