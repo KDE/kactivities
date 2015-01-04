@@ -50,9 +50,6 @@ Consumer::Consumer(QObject *parent)
     connect(d->cache.get(), &ActivitiesCache::activityListChanged,
             this, [=]() { emit activitiesChanged(activities()); });
 
-    connect(d->cache.get(), SIGNAL(serviceStatusChanged(Consumer::ServiceStatus)),
-            this, SIGNAL(serviceStatusChanged(Consumer::ServiceStatus)));
-
     // connect(d->cache.get(), SIGNAL(activityStateChanged(QString,int)),
     //         this, SIGNAL(activityStateChanged(QString,int)));
 }
