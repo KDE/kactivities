@@ -19,6 +19,7 @@
 
 #include "activitiescache_p.h"
 #include "manager_p.h"
+#include "debug_p.h"
 
 #include <mutex>
 #include <memory>
@@ -53,7 +54,7 @@ std::shared_ptr<ActivitiesCache> ActivitiesCache::self()
 ActivitiesCache::ActivitiesCache()
     : m_status(Consumer::NotRunning)
 {
-    // qDebug() << "ActivitiesCache: Creating a new instance";
+    qCDebug(KAMD_CORELIB) << "ActivitiesCache: Creating a new instance";
     using org::kde::ActivityManager::Activities;
 
     auto activities = Manager::self()->activities();
@@ -87,7 +88,7 @@ ActivitiesCache::ActivitiesCache()
 
 void ActivitiesCache::setServiceStatus(bool status)
 {
-    // qDebug() << "Setting service status to:" << status;
+    qCDebug(KAMD_CORELIB) << "Setting service status to:" << status;
     loadOfflineDefaults();
 
     if (status) {
@@ -109,12 +110,12 @@ void ActivitiesCache::loadOfflineDefaults()
 
 ActivitiesCache::~ActivitiesCache()
 {
-    // qDebug() << "ActivitiesCache: Destroying the instance";
+    qCDebug(KAMD_CORELIB) << "ActivitiesCache: Destroying the instance";
 }
 
 void ActivitiesCache::removeActivity(const QString &id)
 {
-    // qDebug() << "Removing the activity";
+    qCDebug(KAMD_CORELIB) << "Removing the activity";
 
     auto where = std::lower_bound(
         m_activities.begin(), m_activities.end(), ActivityInfo(id));
@@ -131,7 +132,7 @@ void ActivitiesCache::removeActivity(const QString &id)
 
 void ActivitiesCache::updateAllActivities()
 {
-    // qDebug() << "Updating all";
+    qCDebug(KAMD_CORELIB) << "Updating all";
     m_status = Consumer::Unknown;
     emit serviceStatusChanged(m_status);
 
@@ -154,7 +155,7 @@ void ActivitiesCache::updateAllActivities()
 
 void ActivitiesCache::updateActivity(const QString &id)
 {
-    // qDebug() << "Updating activity" << id;
+    qCDebug(KAMD_CORELIB) << "Updating activity" << id;
 
     auto call = Manager::self()->activities()->asyncCall(
         QStringLiteral("ActivityInformation"), id);
@@ -166,7 +167,7 @@ void ActivitiesCache::updateActivity(const QString &id)
 
 void ActivitiesCache::updateActivityState(const QString &id, int state)
 {
-    // qDebug() << "Updating activity state" << id << "to" << state;
+    qCDebug(KAMD_CORELIB) << "Updating activity state" << id << "to" << state;
 
     auto where = std::lower_bound(
         m_activities.begin(), m_activities.end(), ActivityInfo(id));
@@ -188,9 +189,11 @@ void ActivitiesCache::passInfoFromReply(QDBusPendingCallWatcher *watcher, _Funct
 
     if (!reply.isError()) {
         auto replyValue = reply.template argumentAt <0>();
-        // qDebug() << "Got some reply" << replyValue;
+        qCDebug(KAMD_CORELIB) << "Got some reply" << replyValue;
 
         ((*this).*f)(replyValue);
+    } else {
+        qCWarning(KAMD_CORELIB) << "DBus call to " << reply.reply().member() << "failed with" << reply.error().message();
     }
 
     watcher->deleteLater();
@@ -210,13 +213,13 @@ void ActivitiesCache::setAllActivitiesFromReply(QDBusPendingCallWatcher *watcher
 
 void ActivitiesCache::setCurrentActivityFromReply(QDBusPendingCallWatcher *watcher)
 {
-    // qDebug() << "reply...";
+    qCDebug(KAMD_CORELIB) << "reply...";
     passInfoFromReply<QString>(watcher, &ActivitiesCache::setCurrentActivity);
 }
 
 void ActivitiesCache::setActivityInfo(const ActivityInfo &info)
 {
-    // qDebug() << "Setting activity info" << info.id;
+    qCDebug(KAMD_CORELIB) << "Setting activity info" << info.id;
 
     auto where
         = std::lower_bound(m_activities.begin(), m_activities.end(), info);
@@ -267,7 +270,7 @@ void ActivitiesCache::setActivityIcon(const QString &id, const QString &icon)
 
 void ActivitiesCache::setAllActivities(const ActivityInfoList &_activities)
 {
-    // qDebug() << "Setting all activities";
+    qCDebug(KAMD_CORELIB) << "Setting all activities";
 
     m_activities.clear();
 
@@ -286,7 +289,7 @@ void ActivitiesCache::setAllActivities(const ActivityInfoList &_activities)
 
 void ActivitiesCache::setCurrentActivity(const QString &activity)
 {
-    // qDebug() << "Setting current activity to" << activity;
+    qCDebug(KAMD_CORELIB) << "Setting current activity to" << activity;
 
     if (m_currentActivity == activity) {
         return;
