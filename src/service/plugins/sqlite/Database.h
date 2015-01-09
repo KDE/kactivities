@@ -17,8 +17,8 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef PLUGINS_SQLITE_DATABASE_CONNECTION_H
-#define PLUGINS_SQLITE_DATABASE_CONNECTION_H
+#ifndef PLUGINS_SQLITE_RESOURCESDATABASE_H
+#define PLUGINS_SQLITE_RESOURCESDATABASE_H
 
 // Qt
 #include <QObject>
@@ -38,27 +38,27 @@ class QDateTime;
 class QSqlDatabase;
 class QSqlError;
 
-class Database : public QObject {
+namespace Common {
+    class Database;
+} // namespace Common
+
+class ResourcesDatabaseMigrator : public QObject {
     Q_OBJECT
 
 public:
-    static Database *self();
-
-    inline QSqlQuery addQuery()
-    {
-        return QSqlQuery(database());
-    }
-
-    QSqlDatabase &database();
+    // static Database *self();
 
 private:
-    Database();
-    ~Database();
+    ResourcesDatabaseMigrator();
+    ~ResourcesDatabaseMigrator();
 
     void migrateDatabase(const QString &newDatabaseFile) const;
-    void initDatabaseSchema();
 
     D_PTR;
+
+    friend Common::Database &resourcesDatabase();
 };
 
-#endif // PLUGINS_SQLITE_DATABASE_CONNECTION_H
+Common::Database &resourcesDatabase();
+
+#endif // PLUGINS_SQLITE_RESOURCESDATABASE_H

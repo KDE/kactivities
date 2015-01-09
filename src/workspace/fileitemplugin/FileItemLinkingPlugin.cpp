@@ -22,7 +22,7 @@
 
 #include <kfileitemlistproperties.h>
 #include <utils/d_ptr_implementation.h>
-#include <utils/qsqlquery.h>
+#include <utils/qsqlquery_iterator.h>
 
 #include <QMenu>
 #include <QCursor>
