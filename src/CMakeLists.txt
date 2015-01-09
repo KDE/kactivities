@@ -17,7 +17,7 @@ if (NOT KACTIVITIES_LIBRARY_ONLY)
          "We will set the KACTIVITIES_ENABLE_EXCEPTIONS option."
          )
       set (KACTIVITIES_ENABLE_EXCEPTIONS ON)
-   endi ()
+   endif ()
 endif ()
 
 if (KACTIVITIES_ENABLE_EXCEPTIONS)
