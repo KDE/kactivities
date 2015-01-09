@@ -11,19 +11,19 @@ if (NOT KACTIVITIES_LIBRARY_ONLY)
    string (REGEX MATCH "1053.." BOOST_VERSION_BLACKLISTED ${Boost_VERSION})
 
    if (BOOST_VERSION_BLACKLISTED AND NOT KACTIVITIES_ENABLE_EXCEPTIONS)
-      message(
+      message (
          WARNING
          "Boost.Container 1.53 has issues when exceptions are disabled. "
          "We will set the KACTIVITIES_ENABLE_EXCEPTIONS option."
-      )
-      set(KACTIVITIES_ENABLE_EXCEPTIONS ON)
-   endif()
+         )
+      set (KACTIVITIES_ENABLE_EXCEPTIONS ON)
+   endi ()
 endif ()
 
 if (KACTIVITIES_ENABLE_EXCEPTIONS)
-   string(REPLACE "-fno-exceptions" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
-   add_definitions(-fexceptions)
-endif()
+   string (REPLACE "-fno-exceptions" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+   add_definitions (-fexceptions)
+endif ()
 
 # Testing for C++0x/C++11 features
 include (CheckCxxFeatures)
@@ -37,11 +37,11 @@ cxx_check_feature ("c++11" "initializer-lists"  "N2672" HAVE_CXX11_INITIALIZER_L
 
 # We can now actually require some C++11 features even for the library
 if (NOT HAVE_CXX11_AUTO OR NOT HAVE_CXX11_LAMBDA OR NOT HAVE_CXX11_UNIQUE_PTR)
-   message(
+   message (
       FATAL_ERROR
       "You need a C++ compiler that supports the following C++11 features: auto, lambdas and move semantics."
-   )
-endif()
+      )
+endif ()
 
 # =======================================================
 # Starting the actual project definition
@@ -55,7 +55,7 @@ set (KAMD_DATA_DIR "${KF5_DATA_INSTALL_DIR}/kactivitymanagerd/")
 set (KAMD_PLUGIN_DIR "${CMAKE_INSTALL_FULL_PLUGINDIR}/kactivitymanagerd/")
 configure_file (kactivities-features.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/kactivities-features.h)
 
-include_directories(
+include_directories (
    ${CMAKE_CURRENT_BINARY_DIR}
    ${CMAKE_CURRENT_SOURCE_DIR}
    ${CMAKE_CURRENT_BINARY_DIR}/lib/core
@@ -72,14 +72,14 @@ if (NOT KACTIVITIES_LIBRARY_ONLY)
       message (WARNING
          "WARNING: You need boost libraries (range and containers) in order to build the Activity Manager daemon. We will only build the library, setting the KACTIVITIES_LIBRARY_ONLY option to ON."
          )
-      set(KACTIVITIES_LIBRARY_ONLY ON)
+      set (KACTIVITIES_LIBRARY_ONLY ON)
    endif ()
 
    if (NOT HAVE_CXX11_VARIADIC_TEMPLATES OR NOT HAVE_CXX11_INITIALIZER_LISTS)
       message (WARNING
          "WARNING: You need a more modern compiler in order to build the Activity Manager daemon. We will only build the library, setting the KACTIVITIES_LIBRARY_ONLY option to ON."
          )
-      set(KACTIVITIES_LIBRARY_ONLY ON)
+      set (KACTIVITIES_LIBRARY_ONLY ON)
    endif ()
 
    include_directories (${Boost_INCLUDE_DIR})

@@ -62,7 +62,7 @@ add_library (
    KF5Activities SHARED
    ${KActivities_LIB_SRCS}
    )
-add_library(KF5::Activities ALIAS KF5Activities)
+add_library (KF5::Activities ALIAS KF5Activities)
 
 include_directories (
    ${CMAKE_SOURCE_DIR}/src
@@ -86,42 +86,64 @@ target_link_libraries (
       KF5::DBusAddons
    )
 
-target_include_directories(KF5Activities INTERFACE "$<INSTALL_INTERFACE:${KF5_INCLUDE_INSTALL_DIR}/KActivities>" )
+target_include_directories (
+   KF5Activities
+   INTERFACE "$<INSTALL_INTERFACE:${KF5_INCLUDE_INSTALL_DIR}/KActivities>"
+   )
 
 # install
-generate_export_header(KF5Activities BASE_NAME KActivities)
+generate_export_header (KF5Activities BASE_NAME KActivities)
 
-ecm_generate_headers(KActivities_CamelCase_HEADERS
-  HEADER_NAMES
-  Consumer
-  Controller
-  Info
-  ResourceInstance
-  Version
-  PREFIX KActivities
-  REQUIRED_HEADERS KActivities_HEADERS
-)
-install(FILES ${KActivities_CamelCase_HEADERS} DESTINATION ${KF5_INCLUDE_INSTALL_DIR}/KActivities/KActivities COMPONENT Devel)
+ecm_generate_headers (
+   KActivities_CamelCase_HEADERS
+   HEADER_NAMES
+   Consumer
+   Controller
+   Info
+   ResourceInstance
+   Version
+   PREFIX KActivities
+   REQUIRED_HEADERS KActivities_HEADERS
+   )
+install (
+   FILES ${KActivities_CamelCase_HEADERS}
+   DESTINATION ${KF5_INCLUDE_INSTALL_DIR}/KActivities/KActivities
+   COMPONENT Devel
+   )
 
-install(FILES
-   ${KActivities_HEADERS}
-   ${CMAKE_CURRENT_BINARY_DIR}/kactivities_export.h
+install (
+   FILES ${KActivities_HEADERS} ${CMAKE_CURRENT_BINARY_DIR}/kactivities_export.h
    DESTINATION ${KF5_INCLUDE_INSTALL_DIR}/KActivities/kactivities
    COMPONENT Devel
    )
 
-install(TARGETS KF5Activities
+install (
+   TARGETS KF5Activities
    EXPORT KF5ActivitiesLibraryTargets
    ${KF5_INSTALL_TARGETS_DEFAULT_ARGS}
    )
 
 
 if (NOT WIN32)
-   configure_file (${CMAKE_CURRENT_SOURCE_DIR}/libKActivities.pc.cmake ${CMAKE_CURRENT_BINARY_DIR}/libKActivities.pc)
-   install (FILES ${CMAKE_CURRENT_BINARY_DIR}/libKActivities.pc DESTINATION ${LIB_INSTALL_DIR}/pkgconfig )
+   configure_file (
+      ${CMAKE_CURRENT_SOURCE_DIR}/libKActivities.pc.cmake
+      ${CMAKE_CURRENT_BINARY_DIR}/libKActivities.pc
+      )
+   install (
+      FILES ${CMAKE_CURRENT_BINARY_DIR}/libKActivities.pc
+      DESTINATION ${LIB_INSTALL_DIR}/pkgconfig
+      )
 endif ()
 
-include(ECMGeneratePriFile)
-ecm_generate_pri_file(BASE_NAME KActivities LIB_NAME KF5Activities DEPS "KDBusAddons" FILENAME_VAR PRI_FILENAME INCLUDE_INSTALL_DIR ${KF5_INCLUDE_INSTALL_DIR}/KActivities)
-install(FILES ${PRI_FILENAME} DESTINATION ${ECM_MKSPECS_INSTALL_DIR})
+include (ECMGeneratePriFile)
+ecm_generate_pri_file (
+   BASE_NAME KActivities
+   LIB_NAME KF5Activities
+   DEPS "KDBusAddons"
+   FILENAME_VAR PRI_FILENAME INCLUDE_INSTALL_DIR ${KF5_INCLUDE_INSTALL_DIR}/KActivities
+   )
+install (
+   FILES ${PRI_FILENAME}
+   DESTINATION ${ECM_MKSPECS_INSTALL_DIR}
+   )
 

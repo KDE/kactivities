@@ -31,16 +31,22 @@ target_link_libraries (
    KF5::CoreAddons
    )
 
-set_target_properties(
+set_target_properties (
    kactivitymanagerd_plugin_activitytemplates
    PROPERTIES PREFIX ""
    )
 
-kservice_desktop_to_json(
+kservice_desktop_to_json (
    kactivitymanagerd_plugin_activitytemplates
    kactivitymanagerd-plugin-activitytemplates.desktop
    )
 
-install (TARGETS kactivitymanagerd_plugin_activitytemplates DESTINATION ${KAMD_PLUGIN_DIR})
-install (FILES kactivitymanagerd-plugin-activitytemplates.desktop DESTINATION ${SERVICES_INSTALL_DIR})
+install (
+   TARGETS kactivitymanagerd_plugin_activitytemplates
+   DESTINATION ${KAMD_PLUGIN_DIR}
+   )
+install (
+   FILES kactivitymanagerd-plugin-activitytemplates.desktop
+   DESTINATION ${SERVICES_INSTALL_DIR}
+   )
 

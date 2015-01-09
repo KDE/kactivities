@@ -31,17 +31,23 @@ target_link_libraries (
    KF5::CoreAddons
    )
 
-kservice_desktop_to_json(
+kservice_desktop_to_json (
    kactivitymanagerd_plugin_virtualdesktopswitch
    kactivitymanagerd-plugin-virtualdesktopswitch.desktop
    )
 
 
-set_target_properties(
+set_target_properties (
    kactivitymanagerd_plugin_virtualdesktopswitch
    PROPERTIES PREFIX ""
    )
 
-install (TARGETS kactivitymanagerd_plugin_virtualdesktopswitch DESTINATION ${KAMD_PLUGIN_DIR})
-install (FILES kactivitymanagerd-plugin-virtualdesktopswitch.desktop DESTINATION ${SERVICES_INSTALL_DIR})
+install (
+   TARGETS kactivitymanagerd_plugin_virtualdesktopswitch
+   DESTINATION ${KAMD_PLUGIN_DIR}
+   )
+install (
+   FILES kactivitymanagerd-plugin-virtualdesktopswitch.desktop
+   DESTINATION ${SERVICES_INSTALL_DIR}
+   )
 

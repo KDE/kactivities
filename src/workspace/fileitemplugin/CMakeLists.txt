@@ -1,6 +1,6 @@
 # vim:set softtabstop=3 shiftwidth=3 tabstop=3 expandtab:
 
-find_package(KF5 REQUIRED COMPONENTS KIO)
+find_package (KF5 REQUIRED COMPONENTS KIO)
 find_package (Qt5 REQUIRED NO_MODULE COMPONENTS Sql)
 
 include_directories (
@@ -20,7 +20,7 @@ add_library (
    ${kactivitymanagerd_fileitem_linking_plugin_SRCS}
    )
 
-kservice_desktop_to_json(
+kservice_desktop_to_json (
    kactivitymanagerd_fileitem_linking_plugin
    kactivitymanagerd_fileitem_linking_plugin.desktop
    )
@@ -34,5 +34,11 @@ target_link_libraries (
    KF5::Activities
    )
 
-install (TARGETS kactivitymanagerd_fileitem_linking_plugin DESTINATION ${PLUGIN_INSTALL_DIR})
-install (FILES kactivitymanagerd_fileitem_linking_plugin.desktop DESTINATION ${SERVICES_INSTALL_DIR})
+install (
+   TARGETS kactivitymanagerd_fileitem_linking_plugin
+   DESTINATION ${PLUGIN_INSTALL_DIR}
+   )
+install (
+   FILES kactivitymanagerd_fileitem_linking_plugin.desktop
+   DESTINATION ${SERVICES_INSTALL_DIR}
+   )

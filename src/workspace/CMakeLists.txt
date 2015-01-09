@@ -3,6 +3,6 @@
 add_subdirectory (fileitemplugin)
 add_subdirectory (kio)
 
-find_package(KF5Declarative)
+find_package (KF5Declarative)
 add_subdirectory (settings)
 

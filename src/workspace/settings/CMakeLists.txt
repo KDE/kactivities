@@ -11,7 +11,7 @@ set (KAMD_KCM_SRCS
    BlacklistedApplicationsModel.cpp
    )
 
-ki18n_wrap_ui(
+ki18n_wrap_ui (
    KAMD_KCM_SRCS
    ui/MainConfigurationWidgetBase.ui
    )
@@ -30,15 +30,17 @@ target_link_libraries (kcm_activities
    KF5::Declarative
    )
 
-install (TARGETS kcm_activities
+install (
+   TARGETS kcm_activities
    DESTINATION ${PLUGIN_INSTALL_DIR}
    )
 
-install (FILES kcm_activities.desktop
+install (
+   FILES kcm_activities.desktop
    DESTINATION ${SERVICES_INSTALL_DIR}
    )
 
-install (FILES
-   qml/BlacklistApplicationView.qml
+install (
+   FILES qml/BlacklistApplicationView.qml
    DESTINATION ${KF5_DATA_INSTALL_DIR}/kactivitymanagerd/workspace/settings
    )

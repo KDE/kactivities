@@ -10,7 +10,7 @@ include_directories (
    )
 
 find_package (Qt5 REQUIRED NO_MODULE COMPONENTS Sql)
-find_package(KF5 REQUIRED COMPONENTS KIO I18n)
+find_package (KF5 REQUIRED COMPONENTS KIO I18n)
 
 ########### next target ###############
 
@@ -35,17 +35,13 @@ target_link_libraries (
    )
 
 install (
-   TARGETS
-   kio_activities
-   DESTINATION
-   ${PLUGIN_INSTALL_DIR}
+   TARGETS kio_activities
+   DESTINATION ${PLUGIN_INSTALL_DIR}
    )
 
 ########### install files ###############
 
 install (
-   FILES
-   activities.protocol
-   DESTINATION
-   ${SERVICES_INSTALL_DIR}
+   FILES activities.protocol
+   DESTINATION ${SERVICES_INSTALL_DIR}
    )
