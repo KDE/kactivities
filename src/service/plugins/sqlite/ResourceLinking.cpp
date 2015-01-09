@@ -68,7 +68,7 @@ void ResourceLinking::LinkResourceToActivity(QString initiatingAgent,
         return;
     }
 
-    Utils::prepare(Database::self()->database(), linkResourceToActivityQuery,
+    Utils::prepare(resourcesDatabase(), linkResourceToActivityQuery,
         QStringLiteral(
             "INSERT OR REPLACE INTO ResourceLink"
             "        (usedActivity,  initiatingAgent,  targettedResource) "
@@ -113,7 +113,7 @@ void ResourceLinking::UnlinkResourceFromActivity(QString initiatingAgent,
         return;
     }
 
-    Utils::prepare(Database::self()->database(), unlinkResourceFromActivityQuery,
+    Utils::prepare(resourcesDatabase(), unlinkResourceFromActivityQuery,
         QStringLiteral(
             "DELETE FROM ResourceLink "
             "WHERE "
@@ -156,7 +156,7 @@ bool ResourceLinking::IsResourceLinkedToActivity(QString initiatingAgent,
         return false;
     }
 
-    Utils::prepare(Database::self()->database(), isResourceLinkedToActivityQuery,
+    Utils::prepare(resourcesDatabase(), isResourceLinkedToActivityQuery,
         QStringLiteral(
             "SELECT * FROM ResourceLink "
             "WHERE "

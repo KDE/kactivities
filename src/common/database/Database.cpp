@@ -21,18 +21,21 @@
 #include "Database.h"
 
 #include <utils/d_ptr_implementation.h>
+#include <common/database/schema/ResourcesDatabaseSchema.h>
 
-#include <QStandardPaths>
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QSqlField>
 #include <QSqlError>
 #include <QSqlDriver>
 #include <QThread>
+#include <QDebug>
 
 #include <memory>
 #include <mutex>
 #include <map>
+
+namespace Common {
 
 class Database::Private {
 public:
@@ -41,41 +44,77 @@ public:
 
 namespace {
     std::mutex databases_mutex;
-    std::map<Qt::HANDLE, std::weak_ptr<Database>> databases;
+
+    struct DatabaseInfo {
+        Qt::HANDLE thread;
+        Database::OpenMode openMode;
+    };
+
+    bool operator<(const DatabaseInfo &left, const DatabaseInfo &right)
+    {
+        return
+            left.thread < right.thread     ? true  :
+            left.thread > right.thread     ? false :
+            left.openMode < right.openMode;
+    }
+
+    std::map<DatabaseInfo, std::weak_ptr<Database>> databases;
 };
 
-std::shared_ptr<Database> Database::instance(Source source)
+Database::Ptr Database::instance(Source source, OpenMode openMode)
 {
     Q_UNUSED(source) // for the time being
 
-    Qt::HANDLE thread = QThread::currentThreadId();
     std::lock_guard<std::mutex> lock(databases_mutex);
 
-    auto search = databases.find(thread);
+    // We are saving instances per thread and per read/write mode
+    DatabaseInfo info;
+    info.thread   = QThread::currentThreadId();
+    info.openMode = openMode;
+
+    // Do we have an instance matching the request?
+    auto search = databases.find(info);
     if (search != databases.end()) {
         auto ptr = search->second.lock();
 
         if (ptr) {
+            qDebug() << "Matched an existing database";
             return std::move(ptr);
         }
     }
 
+    // Creating a new database instance
+    qDebug() << "We do not have an instance for this thread / mode";
     auto ptr = std::make_shared<Database>();
 
     ptr->d->database = QSqlDatabase::addDatabase(
-        "QSQLITE",
-        "kactivities_db_resources_" + QString::number((quintptr)thread));
-    ptr->d->database.setConnectOptions("QSQLITE_OPEN_READONLY");
+            "QSQLITE",
+            "kactivities_db_resources_"
+                // Adding the thread number to the db name
+                + QString::number((quintptr)info.thread)
+                // And whether it is read-only or read-write
+                + (info.openMode == ReadOnly ? "_readonly" : "_readwrite")
+        );
 
-    ptr->d->database.setDatabaseName(
-            QStandardPaths::writableLocation(
-                QStandardPaths::GenericDataLocation)
-            + QStringLiteral("/kactivitymanagerd/resources/database"));
+    if (info.openMode == ReadOnly) {
+        ptr->d->database.setConnectOptions("QSQLITE_OPEN_READONLY");
+    }
+
+    // We are allowing the database file to be overridden mostly for testing purposes
+    ptr->d->database.setDatabaseName(ResourcesDatabaseSchema::path());
 
     if (!ptr->d->database.open()) {
+        qDebug() << "Database is not open: "
+                 << ptr->d->database.connectionName()
+                 << ptr->d->database.databaseName()
+                 << ptr->d->database.lastError();
+
+        if (info.openMode == ReadWrite) {
+            qFatal("Opening the database in RW mode should always succeed");
+        }
         ptr.reset();
     } else {
-        databases[thread] = ptr;
+        databases[info] = ptr;
     }
 
     return std::move(ptr);
@@ -91,14 +130,38 @@ Database::~Database()
 {
 }
 
-QSqlQuery Database::query() const
+QSqlQuery Database::createQuery() const
 {
     return QSqlQuery(d->database);
 }
 
-QSqlQuery Database::query(const QString &query) const
+QSqlQuery Database::execQuery(const QString &query) const
 {
+#ifdef QT_NO_DEBUG
     return QSqlQuery(query, d->database);
+#else
+    auto result = QSqlQuery(query, d->database);
+
+    if (result.lastError().isValid()) {
+        qWarning() << "SQL: "
+                   << "\n    error: " << result.lastError()
+                   << "\n    query: " << query;
+    }
+
+    return result;
+#endif
 }
 
+QSqlQuery Database::execQueries(const QStringList &queries) const
+{
+    QSqlQuery result;
+
+    for (const auto query: queries) {
+        result = execQuery(query);
+    }
+
+    return result;
+}
+
+} // namespace Common
 

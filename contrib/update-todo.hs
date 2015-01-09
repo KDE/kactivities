@@ -83,7 +83,7 @@ process filename = do
                 putStrLn $
                     concat $
                     map (\case (lineNo, todoItem) ->
-                                filename ++ ":" ++ (show lineNo) ++ ": " ++ todoItem
+                                filename ++ ":" ++ (show lineNo) ++ ":\n" ++ todoItem
                         ) todoItems
             else
                 return ()

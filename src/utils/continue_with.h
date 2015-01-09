@@ -11,6 +11,7 @@
 #include <QFuture>
 #include <QFutureWatcher>
 #include <QDebug>
+#include <QJSValue>
 
 namespace kamd {
 namespace utils {

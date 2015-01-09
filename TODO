@@ -1,27 +1,60 @@
-src/imports/resourcemodel.cpp:106:  NOTE: What to do if the file does not exist?
+src/imports/resourcemodel.cpp:106:
+ NOTE: What to do if the file does not exist?
        Ignoring that case since the daemon creates it on startup.
        Is it plausible that somebody will instantiate the ResourceModel
        before the daemon is started?
-src/imports/resourcemodel.cpp:136:  TODO: Database connection naming could be smarter (thread-id-based,
+src/imports/resourcemodel.cpp:136:
+ TODO: Database connection naming could be smarter (thread-id-based,
        reusing connections...?)
-src/imports/resourcemodel.cpp:338:  TODO: Will probably need some more special handling -
+src/imports/resourcemodel.cpp:338:
+ TODO: Will probably need some more special handling -
        for application:/ and a few more
-src/imports/resourcemodel.cpp:554:  TODO: This might be smarter possibly, but might collide
+src/imports/resourcemodel.cpp:554:
+ TODO: This might be smarter possibly, but might collide
        with the SQL model. Implement a custom model with internal
        cache instead of basing it on QSqlModel.
 
-src/service/plugins/sqlite/StatsPlugin.cpp:118:  TODO: Event cleanup should be also done from time to time,
+src/service/plugins/sqlite/StatsPlugin.cpp:119:
+ TODO: Event cleanup should be also done from time to time,
        not only on startup
-src/service/plugins/sqlite/StatsPlugin.cpp:238:  TODO: Add focus and modification
+src/service/plugins/sqlite/StatsPlugin.cpp:239:
+ TODO: Add focus and modification
 
-src/service/Application.cpp:157:  TODO: Restart on crash
+src/service/Application.cpp:157:
+ TODO: Restart on crash
        KCrash::setFlags(KCrash::AutoRestart);
-src/service/Application.cpp:196:  TODO: Show a notification for a plugin that failed to load
+src/service/Application.cpp:196:
+ TODO: Show a notification for a plugin that failed to load
 
-src/lib/core/controller.cpp:41:  TODO: Make Q_ASSERT_EVENTUALLY_X or something similar
+src/common/database/schema/ResourcesDatabaseSchema.cpp:93:
+ TODO: This will require some refactoring after we introduce more databases
 
-src/lib/core/info.cpp:165:  TODO: This needs to be changed, test for the new linking feature
+src/lib/core/controller.cpp:41:
+ TODO: Make Q_ASSERT_EVENTUALLY_X or something similar
 
-src/lib/core/resourceinstance.cpp:145:  TODO: update the service info
-src/lib/core/resourceinstance.cpp:157:  TODO: update the service info
+src/lib/core/info.cpp:165:
+ TODO: This needs to be changed, test for the new linking feature
+
+src/lib/core/resourceinstance.cpp:145:
+ TODO: update the service info
+src/lib/core/resourceinstance.cpp:157:
+ TODO: update the service info
+
+src/lib/stats/resultset.h:40:
+ TODO: REMOVE!!!
+src/lib/stats/resultset.h:47:
+ TODO: Consider making this to be more than just forward iterator.
+       Maybe even a random-access one.
+
+src/lib/stats/resultset.cpp:74:
+ TODO: Implement types
+ QStringList types() const;
+src/lib/stats/resultset.cpp:186:
+ TODO: We need to group by and sum scores at some point.
+       This is a minor use-case, but someone might want to
+       have lists for two agents merged into one or
+       something similar. This applies to other queries
+       as well.
+src/lib/stats/resultset.cpp:225:
+ TODO: Get this to work
 

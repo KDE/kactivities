@@ -25,17 +25,28 @@
 #include <memory>
 #include <QSqlQuery>
 
+namespace Common {
+
 class Database {
 public:
+    typedef std::shared_ptr<Database> Ptr;
+
     enum Source {
         ResourcesDatabase
     };
 
-    static
-    std::shared_ptr<Database> instance(Source source);
+    enum OpenMode {
+        ReadWrite,
+        ReadOnly
+    };
 
-    QSqlQuery query(const QString &query) const;
-    QSqlQuery query() const;
+    static Ptr instance(Source source, OpenMode openMode);
+
+    QSqlQuery execQueries(const QStringList &queries) const;
+    QSqlQuery execQuery(const QString &query) const;
+    QSqlQuery createQuery() const;
+
+    QSqlDatabase &db() const;
 
     ~Database();
     Database();
@@ -43,6 +54,8 @@ public:
 private:
     D_PTR;
 };
+
+} // namespace Common
 
 #endif // COMMON_DATABASE_H
 

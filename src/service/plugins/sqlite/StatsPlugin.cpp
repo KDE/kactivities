@@ -67,7 +67,8 @@ bool StatsPlugin::init(const QHash<QString, QObject *> &modules)
     m_activities = modules[QStringLiteral("activities")];
     m_resources = modules[QStringLiteral("resources")];
 
-    Database::self();
+    // Initializing the database
+    resourcesDatabase();
 
     connect(m_resources, SIGNAL(ProcessedResourceEvents(EventList)),
             this, SLOT(addEvents(EventList)));
@@ -126,7 +127,7 @@ void StatsPlugin::openResourceEvent(const QString &usedActivity,
                                     const QDateTime &start,
                                     const QDateTime &end)
 {
-    Utils::prepare(Database::self()->database(), openResourceEventQuery, QStringLiteral(
+    Utils::prepare(resourcesDatabase(), openResourceEventQuery, QStringLiteral(
         "INSERT INTO ResourceEvent"
         "        (usedActivity,  initiatingAgent,  targettedResource,  start,  end) "
         "VALUES (:usedActivity, :initiatingAgent, :targettedResource, :start, :end)"
@@ -146,7 +147,7 @@ void StatsPlugin::closeResourceEvent(const QString &usedActivity,
                                      const QString &targettedResource,
                                      const QDateTime &end)
 {
-    Utils::prepare(Database::self()->database(), closeResourceEventQuery, QStringLiteral(
+    Utils::prepare(resourcesDatabase(), closeResourceEventQuery, QStringLiteral(
         "UPDATE ResourceEvent "
         "SET end = :end "
         "WHERE "
@@ -254,13 +255,13 @@ void StatsPlugin::deleteRecentStats(const QString &activity, int count,
         // Instantiating these every time is not a big overhead
         // since this method is rarely executed.
 
-        auto removeEvents = Database::self()->addQuery();
+        auto removeEvents = resourcesDatabase().createQuery();
         removeEvents.prepare(
                 "DELETE FROM ResourceEvent "
                 "WHERE usedActivity = COALESCE(:usedActivity, usedActivity)"
             );
 
-        auto removeScoreCaches = Database::self()->addQuery();
+        auto removeScoreCaches = resourcesDatabase().createQuery();
         removeScoreCaches.prepare(
                 "DELETE FROM ResourceScoreCache "
                 "WHERE usedActivity = COALESCE(:usedActivity, usedActivity)");
@@ -284,14 +285,14 @@ void StatsPlugin::deleteRecentStats(const QString &activity, int count,
         // if something was accessed before, and the user did not
         // remove the history, it is not really a secret.
 
-        auto removeEvents = Database::self()->addQuery();
+        auto removeEvents = resourcesDatabase().createQuery();
         removeEvents.prepare(
                 "DELETE FROM ResourceEvent "
                 "WHERE usedActivity = COALESCE(:usedActivity, usedActivity) "
                 "AND end > :since"
             );
 
-        auto removeScoreCaches = Database::self()->addQuery();
+        auto removeScoreCaches = resourcesDatabase().createQuery();
         removeScoreCaches.prepare(
                 "DELETE FROM ResourceScoreCache "
                 "WHERE usedActivity = COALESCE(:usedActivity, usedActivity) "
@@ -323,14 +324,14 @@ void StatsPlugin::deleteEarlierStats(const QString &activity, int months)
     const auto usedActivity = activity.isEmpty() ? QVariant()
                                                  : QVariant(activity);
 
-    auto removeEvents = Database::self()->addQuery();
+    auto removeEvents = resourcesDatabase().createQuery();
     removeEvents.prepare(
             "DELETE FROM ResourceEvent "
             "WHERE usedActivity = COALESCE(:usedActivity, usedActivity) "
             "AND start < :time"
         );
 
-    auto removeScoreCaches = Database::self()->addQuery();
+    auto removeScoreCaches = resourcesDatabase().createQuery();
     removeScoreCaches.prepare(
             "DELETE FROM ResourceScoreCache "
             "WHERE usedActivity = COALESCE(:usedActivity, usedActivity) "

@@ -26,7 +26,7 @@
 
 // Utils
 #include <utils/d_ptr_implementation.h>
-#include <utils/qsqlquery.h>
+#include <utils/qsqlquery_iterator.h>
 
 // Local
 #include "Debug.h"
@@ -38,13 +38,13 @@
 class ResourceScoreCache::Queries {
 private:
     Queries()
-        : createResourceScoreCacheQuery(Database::self()->addQuery())
-        , getResourceScoreCacheQuery(Database::self()->addQuery())
-        , updateResourceScoreCacheQuery(Database::self()->addQuery())
-        , getScoreAdditionQuery(Database::self()->addQuery())
+        : createResourceScoreCacheQuery(resourcesDatabase().createQuery())
+        , getResourceScoreCacheQuery(resourcesDatabase().createQuery())
+        , updateResourceScoreCacheQuery(resourcesDatabase().createQuery())
+        , getScoreAdditionQuery(resourcesDatabase().createQuery())
     {
 
-        Utils::prepare(Database::self()->database(),
+        Utils::prepare(resourcesDatabase(),
             createResourceScoreCacheQuery, QStringLiteral(
             "INSERT INTO ResourceScoreCache "
             "VALUES (:usedActivity, :initiatingAgent, :targettedResource, "
@@ -52,7 +52,7 @@ private:
                     ":firstUpdate)"
         ));
 
-        Utils::prepare(Database::self()->database(),
+        Utils::prepare(resourcesDatabase(),
             getResourceScoreCacheQuery, QStringLiteral(
             "SELECT cachedScore, lastUpdate FROM ResourceScoreCache "
             "WHERE "
@@ -61,7 +61,7 @@ private:
                 ":targettedResource = targettedResource "
         ));
 
-        Utils::prepare(Database::self()->database(),
+        Utils::prepare(resourcesDatabase(),
             updateResourceScoreCacheQuery, QStringLiteral(
             "UPDATE ResourceScoreCache SET "
                 "cachedScore = :cachedScore, "
@@ -72,7 +72,7 @@ private:
                 ":targettedResource = targettedResource "
         ));
 
-        Utils::prepare(Database::self()->database(),
+        Utils::prepare(resourcesDatabase(),
             getScoreAdditionQuery, QStringLiteral(
             "SELECT start, end "
             "FROM ResourceEvent "

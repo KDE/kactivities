@@ -17,7 +17,7 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#include "qsqlquery.h"
+#include "qsqlquery_iterator.h"
 
 NextValueIterator<QSqlQuery> begin(QSqlQuery &query)
 {
