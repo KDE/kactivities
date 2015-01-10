@@ -40,6 +40,6 @@ target_link_libraries (
 
 ## install
 
-install (TARGETS kactivitiesextensionplugin DESTINATION ${QML_INSTALL_DIR}/org/kde/activities)
-install (FILES qmldir DESTINATION ${QML_INSTALL_DIR}/org/kde/activities)
+install (TARGETS kactivitiesextensionplugin DESTINATION ${KDE_INSTALL_QMLDIR}/org/kde/activities)
+install (FILES qmldir DESTINATION ${KDE_INSTALL_QMLDIR}/org/kde/activities)
 

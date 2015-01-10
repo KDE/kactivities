@@ -88,7 +88,7 @@ target_link_libraries (
 
 target_include_directories (
    KF5Activities
-   INTERFACE "$<INSTALL_INTERFACE:${KF5_INCLUDE_INSTALL_DIR}/KActivities>"
+   INTERFACE "$<INSTALL_INTERFACE:${KDE_INSTALL_INCLUDEDIR_KF5}/KActivities>"
    )
 
 # install
@@ -107,13 +107,13 @@ ecm_generate_headers (
    )
 install (
    FILES ${KActivities_CamelCase_HEADERS}
-   DESTINATION ${KF5_INCLUDE_INSTALL_DIR}/KActivities/KActivities
+   DESTINATION ${KDE_INSTALL_INCLUDEDIR_KF5}/KActivities/KActivities
    COMPONENT Devel
    )
 
 install (
    FILES ${KActivities_HEADERS} ${CMAKE_CURRENT_BINARY_DIR}/kactivities_export.h
-   DESTINATION ${KF5_INCLUDE_INSTALL_DIR}/KActivities/kactivities
+   DESTINATION ${KDE_INSTALL_INCLUDEDIR_KF5}/KActivities/kactivities
    COMPONENT Devel
    )
 
@@ -131,7 +131,7 @@ if (NOT WIN32)
       )
    install (
       FILES ${CMAKE_CURRENT_BINARY_DIR}/libKActivities.pc
-      DESTINATION ${LIB_INSTALL_DIR}/pkgconfig
+      DESTINATION ${KDE_INSTALL_LIBDIR}/pkgconfig
       )
 endif ()
 
@@ -140,7 +140,7 @@ ecm_generate_pri_file (
    BASE_NAME KActivities
    LIB_NAME KF5Activities
    DEPS "KDBusAddons"
-   FILENAME_VAR PRI_FILENAME INCLUDE_INSTALL_DIR ${KF5_INCLUDE_INSTALL_DIR}/KActivities
+   FILENAME_VAR PRI_FILENAME INCLUDE_INSTALL_DIR ${KDE_INSTALL_INCLUDEDIR_KF5}/KActivities
    )
 install (
    FILES ${PRI_FILENAME}

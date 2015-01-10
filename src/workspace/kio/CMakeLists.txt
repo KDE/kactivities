@@ -36,12 +36,12 @@ target_link_libraries (
 
 install (
    TARGETS kio_activities
-   DESTINATION ${PLUGIN_INSTALL_DIR}
+   DESTINATION ${KDE_INSTALL_PLUGINDIR}
    )
 
 ########### install files ###############
 
 install (
    FILES activities.protocol
-   DESTINATION ${SERVICES_INSTALL_DIR}
+   DESTINATION ${KDE_INSTALL_KSERVICES5DIR}
    )

@@ -54,6 +54,6 @@ install (
    )
 install (
    FILES kactivitymanagerd-plugin-slc.desktop
-   DESTINATION ${SERVICES_INSTALL_DIR}
+   DESTINATION ${KDE_INSTALL_KSERVICES5DIR}
    )
 

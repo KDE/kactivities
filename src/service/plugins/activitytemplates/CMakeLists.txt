@@ -47,6 +47,6 @@ install (
    )
 install (
    FILES kactivitymanagerd-plugin-activitytemplates.desktop
-   DESTINATION ${SERVICES_INSTALL_DIR}
+   DESTINATION ${KDE_INSTALL_KSERVICES5DIR}
    )
 

@@ -51,7 +51,7 @@ add_subdirectory (lib)
 
 # Config file
 set (KAMD_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
-set (KAMD_DATA_DIR "${KF5_DATA_INSTALL_DIR}/kactivitymanagerd/")
+set (KAMD_DATA_DIR "${KDE_INSTALL_DATADIR_KF5}/kactivitymanagerd/")
 set (KAMD_PLUGIN_DIR "${CMAKE_INSTALL_FULL_PLUGINDIR}/kactivitymanagerd/")
 configure_file (kactivities-features.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/kactivities-features.h)
 

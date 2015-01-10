@@ -62,6 +62,6 @@ install (
    )
 install (
    FILES kactivitymanagerd-plugin-sqlite.desktop
-   DESTINATION ${SERVICES_INSTALL_DIR}
+   DESTINATION ${KDE_INSTALL_KSERVICES5DIR}
    )
 

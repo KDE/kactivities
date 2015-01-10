@@ -48,6 +48,6 @@ install (
    )
 install (
    FILES kactivitymanagerd-plugin-virtualdesktopswitch.desktop
-   DESTINATION ${SERVICES_INSTALL_DIR}
+   DESTINATION ${KDE_INSTALL_KSERVICES5DIR}
    )
 

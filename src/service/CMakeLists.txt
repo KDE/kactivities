@@ -81,7 +81,7 @@ target_link_libraries (kactivitymanagerd
 
 install (FILES
    files/kactivitymanagerd.desktop
-   DESTINATION ${SERVICES_INSTALL_DIR}
+   DESTINATION ${KDE_INSTALL_KSERVICES5DIR}
    )
 
 install (TARGETS
@@ -90,6 +90,6 @@ install (TARGETS
 
 install (FILES
    files/kactivitymanagerd-plugin.desktop
-   DESTINATION ${SERVICETYPES_INSTALL_DIR}
+   DESTINATION ${KDE_INSTALL_KSERVICETYPES5DIR}
    )
 

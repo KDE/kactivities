@@ -65,7 +65,7 @@ add_subdirectory (src)
 add_subdirectory (autotests)
 add_subdirectory (tests)
 
-set (CMAKECONFIG_INSTALL_DIR "${CMAKECONFIG_INSTALL_PREFIX}/KF5Activities")
+set (CMAKECONFIG_INSTALL_DIR "${KDE_INSTALL_CMAKEPACKAGEDIR}/KF5Activities")
 
 install (
    EXPORT KF5ActivitiesLibraryTargets
@@ -75,7 +75,7 @@ install (
    )
 
 # create a Config.cmake and a ConfigVersion.cmake file and install them
-set (CMAKECONFIG_INSTALL_DIR "${CMAKECONFIG_INSTALL_PREFIX}/KF5Activities")
+set (CMAKECONFIG_INSTALL_DIR "${KDE_INSTALL_CMAKEPACKAGEDIR}/KF5Activities")
 
 ecm_configure_package_config_file (
    "${CMAKE_CURRENT_SOURCE_DIR}/KF5ActivitiesConfig.cmake.in"
@@ -93,7 +93,7 @@ install (
 
 install (
    FILES ${CMAKE_CURRENT_BINARY_DIR}/kactivities_version.h
-   DESTINATION ${KF5_INCLUDE_INSTALL_DIR} COMPONENT Devel
+   DESTINATION ${KDE_INSTALL_INCLUDEDIR_KF5} COMPONENT Devel
    )
 
 # Write out the features
