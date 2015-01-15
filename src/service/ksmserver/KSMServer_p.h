@@ -50,9 +50,6 @@ private Q_SLOTS:
     void startCallFinished(QDBusPendingCallWatcher *watcher);
     void stopCallFinished(QDBusPendingCallWatcher *watcher);
 
-    void subSessionOpened();
-    void subSessionClosed();
-    void subSessionCloseCanceled();
     void subSessionSendEvent(int event);
 
 private:

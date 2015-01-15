@@ -38,7 +38,7 @@
 // Local
 #include <Debug.h>
 
-#define KWIN_SERVICE QStringLiteral("org.kde.kwin")
+#define KWIN_SERVICE QStringLiteral("org.kde.KWin")
 
 KSMServer::Private::Private(KSMServer *parent)
     : serviceWatcher(new QDBusServiceWatcher(this))
@@ -69,7 +69,12 @@ void KSMServer::Private::serviceOwnerChanged(const QString &service,
 
         if (KDBusConnectionPool::threadConnection().interface()->isServiceRegistered(KWIN_SERVICE)) {
             // Creating the new dbus interface
-            kwin = new QDBusInterface(KWIN_SERVICE, QStringLiteral("/KWin"), QStringLiteral("org.kde.kwin"));
+            // TODO: in multi-head environment there are multiple kwin instances
+            // running and they will export different dbus name on different
+            // root window. We have no support for that currently.
+            // In future, the session management for Wayland may also need to be
+            // reimplemented in some way.
+            kwin = new QDBusInterface(KWIN_SERVICE, QStringLiteral("/KWin"), QStringLiteral("org.kde.KWin"));
 
             // If the service is valid, initialize it
             // otherwise delete the object
@@ -178,6 +183,8 @@ void KSMServer::Private::startCallFinished(QDBusPendingCallWatcher *call)
 
         if (!retval) {
             subSessionSendEvent(KSMServer::Stopped);
+        } else {
+            subSessionSendEvent(KSMServer::Started);
         }
     }
 
@@ -198,6 +205,8 @@ void KSMServer::Private::stopCallFinished(QDBusPendingCallWatcher *call)
 
         if (!retval) {
             subSessionSendEvent(KSMServer::FailedToStop);
+        } else {
+            subSessionSendEvent(KSMServer::Stopped);
         }
     }
 
@@ -213,19 +222,4 @@ void KSMServer::Private::subSessionSendEvent(int event)
     emit q->activitySessionStateChanged(processingActivity, event);
 
     processingActivity.clear();
-}
-
-void KSMServer::Private::subSessionOpened()
-{
-    subSessionSendEvent(KSMServer::Started);
-}
-
-void KSMServer::Private::subSessionClosed()
-{
-    subSessionSendEvent(KSMServer::Stopped);
-}
-
-void KSMServer::Private::subSessionCloseCanceled()
-{
-    subSessionSendEvent(KSMServer::FailedToStop);
 }
