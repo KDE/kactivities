@@ -89,6 +89,12 @@ private Q_SLOTS:
                             const QString &targettedResource,
                             const QDateTime &end);
 
+    void saveResourceTitle(const QString &url, const QString &title,
+                           bool autoTitle = false);
+    void saveResourceMimetype(const QString &url, const QString &mimetype,
+                              bool autoMimetype = false);
+    void insertResourceInfo(const QString &url);
+    void detectResourceInfo(const QString &url);
 
 private:
     inline bool acceptedEvent(const Event &event);
@@ -107,6 +113,10 @@ private:
 
     std::unique_ptr<QSqlQuery> openResourceEventQuery;
     std::unique_ptr<QSqlQuery> closeResourceEventQuery;
+
+    std::unique_ptr<QSqlQuery> insertResourceInfoQuery;
+    std::unique_ptr<QSqlQuery> saveResourceTitleQuery;
+    std::unique_ptr<QSqlQuery> saveResourceMimetypeQuery;
 
     bool m_blockedByDefault : 1;
     bool m_blockAll : 1;
