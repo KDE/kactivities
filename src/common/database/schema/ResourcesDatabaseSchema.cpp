@@ -30,7 +30,7 @@ const QString name = QStringLiteral("Resources");
 
 QString version()
 {
-    return "2014.05.05";
+    return "2015.01.18";
 }
 
 QStringList schema()
@@ -85,6 +85,22 @@ QStringList schema()
                "initiatingAgent TEXT, "
                "targettedResource TEXT, "
                "PRIMARY KEY(usedActivity, initiatingAgent, targettedResource)"
+           ")"
+
+        << // @since 2015.01.18
+           // The ResourceInfo table stores the collected information about a
+           // resource that is not agent nor activity related like the
+           // title and the mime type.
+           // If these are automatically retrieved (works for files), the
+           // flag is set to true. This is done for the agents to be able to
+           // override these.
+           "CREATE TABLE IF NOT EXISTS ResourceInfo ("
+               "targettedResource TEXT, "
+               "title TEXT, "
+               "mimetype TEXT, "
+               "autoTitle INTEGER, "
+               "autoMimetype INTEGER, "
+               "PRIMARY KEY(targettedResource)"
            ")"
 
        ;
