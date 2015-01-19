@@ -342,7 +342,7 @@ void ActivitiesProtocol::mimetype(const QUrl& url)
     switch (d->pathType(url)) {
         case Private::RootItem:
         case Private::ActivityRootItem:
-            mimeType(QStringLiteral("inode/directory"));
+            mimetype(QStringLiteral("inode/directory"));
             finished();
             break;
 

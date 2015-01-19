@@ -187,7 +187,7 @@ QHash<int, QByteArray> ResourceModel::roleNames() const
     return {
         { Qt::DisplayRole,    "display" },
         { Qt::DecorationRole, "decoration" },
-        { ResourceRole,       "url" },
+        { ResourceRole,       "uri" },
         { AgentRole,          "agent" },
         { ActivityRole,       "activity" },
         { DescriptionRole,    "subtitle" }
@@ -333,16 +333,16 @@ QVariant ResourceModel::data(const QModelIndex &proxyIndex, int role) const
 
     if (role == Qt::DisplayRole || role == DescriptionRole
             || role == Qt::DecorationRole) {
-        auto url = dataForColumn(index, RESOURCE_COLUMN).toString();
+        auto uri = dataForColumn(index, RESOURCE_COLUMN).toString();
 
         // TODO: Will probably need some more special handling -
         //       for application:/ and a few more
 
-        if (url.startsWith('/')) {
-            url = QStringLiteral("file://") + url;
+        if (uri.startsWith('/')) {
+            uri = QStringLiteral("file://") + uri;
         }
 
-        KFileItem file(url);
+        KFileItem file(uri);
 
         if (file.mimetype() == "application/x-desktop") {
             KDesktopFile desktop(file.localPath());

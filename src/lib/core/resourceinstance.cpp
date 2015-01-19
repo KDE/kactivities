@@ -143,7 +143,7 @@ void ResourceInstance::setMimetype(const QString &mimetype)
 
     d->mimetype = mimetype;
     // TODO: update the service info
-    Manager::resources()->RegisterResourceMimeType(d->uri.toString(), mimetype);
+    Manager::resources()->RegisterResourceMimetype(d->uri.toString(), mimetype);
 }
 
 void ResourceInstance::setTitle(const QString &title)
