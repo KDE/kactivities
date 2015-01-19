@@ -25,6 +25,7 @@
 
 #include "QueryTest.h"
 #include "ResultSetTest.h"
+#include "ResultSetQuickCheckTest.h"
 
 class TestRunner: public QObject {
 public:
@@ -103,6 +104,7 @@ int main(int argc, char *argv[])
 
     ADD_TEST(Query)
     ADD_TEST(ResultSet)
+    ADD_TEST(ResultSetQuickCheck)
 
     runner.start();
 

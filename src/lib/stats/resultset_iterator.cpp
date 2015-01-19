@@ -45,7 +45,8 @@ public:
 
         } else {
             Result result;
-            result.uri = resultSet->d->query.value(0).toString();
+            result.uri   = resultSet->d->query.value(0).toString();
+            result.score = resultSet->d->query.value(1).toDouble();
             currentValue = boost::make_optional(result);
 
         }

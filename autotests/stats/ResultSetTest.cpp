@@ -45,23 +45,22 @@ ResultSetTest::ResultSetTest(QObject *parent)
 {
 }
 
-QString concatenateResults(const KAStats::ResultSet &results)
-{
-    using boost::accumulate;
+namespace {
+    QString getBarredUri(const KAStats::ResultSet::Result &result)
+    {
+        return result.uri + "|";
+    }
 
-    return std::accumulate(
-            results.begin(),
-            results.end(),
-            QStringLiteral("|"),
-            [] (const QString &acc, const KAStats::ResultSet::Result &result) {
-                return acc + result.uri + "|";
-            });
+    QString concatenateResults(const KAStats::ResultSet &results)
+    {
+        using boost::accumulate;
+        using boost::adaptors::transformed;
 
-    return boost::accumulate(results,
-            QStringLiteral("|"),
-            [] (const QString &acc, const KAStats::ResultSet::Result &result) {
-                return acc + result.uri + "|";
-            });
+        return accumulate(
+                results | transformed(getBarredUri),
+                QStringLiteral("|")
+            );
+    }
 }
 
 void ResultSetTest::testLinkedResources()
@@ -153,9 +152,7 @@ void ResultSetTest::testUsedResources()
 
 void ResultSetTest::initTestCase()
 {
-    CHECK_CONDITION(isActivityManagerRunning, FailIfFalse);
-
-    QTemporaryDir dir;
+    QTemporaryDir dir(QDir::tempPath() + "/KActivitiesStatsTest_ResultSetTest_XXXXXX");
     dir.setAutoRemove(false);
 
     if (!dir.isValid()) {
