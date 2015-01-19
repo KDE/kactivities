@@ -84,17 +84,20 @@ Database::Ptr Database::instance(Source source, OpenMode openMode)
     }
 
     // Creating a new database instance
-    qDebug() << "We do not have an instance for this thread / mode";
+    // qDebug() << "We do not have an instance for this thread / mode";
     auto ptr = std::make_shared<Database>();
 
-    ptr->d->database = QSqlDatabase::addDatabase(
-            "QSQLITE",
+    auto databaseConnectionName =
             "kactivities_db_resources_"
                 // Adding the thread number to the db name
                 + QString::number((quintptr)info.thread)
                 // And whether it is read-only or read-write
-                + (info.openMode == ReadOnly ? "_readonly" : "_readwrite")
-        );
+                + (info.openMode == ReadOnly ? "_readonly" : "_readwrite");
+
+    ptr->d->database
+        = QSqlDatabase::contains(databaseConnectionName)
+              ? QSqlDatabase::database(databaseConnectionName)
+              : QSqlDatabase::addDatabase("QSQLITE", databaseConnectionName);
 
     if (info.openMode == ReadOnly) {
         ptr->d->database.setConnectOptions("QSQLITE_OPEN_READONLY");
@@ -135,14 +138,14 @@ QSqlQuery Database::createQuery() const
     return QSqlQuery(d->database);
 }
 
-QSqlQuery Database::execQuery(const QString &query) const
+QSqlQuery Database::execQuery(const QString &query, bool ignoreErrors) const
 {
 #ifdef QT_NO_DEBUG
     return QSqlQuery(query, d->database);
 #else
     auto result = QSqlQuery(query, d->database);
 
-    if (result.lastError().isValid()) {
+    if (!ignoreErrors && result.lastError().isValid()) {
         qWarning() << "SQL: "
                    << "\n    error: " << result.lastError()
                    << "\n    query: " << query;

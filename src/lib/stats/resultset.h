@@ -30,7 +30,10 @@ class KACTIVITIESSTATS_EXPORT ResultSet {
 public:
     struct Result {
         QString uri;
+        double score;
     };
+
+    typedef Result value_type;
 
     ResultSet(Query query);
     ~ResultSet();

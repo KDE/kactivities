@@ -174,11 +174,11 @@ public:
 
         auto query = _query;
 
-        return debug_and_return(query
+        return query
                 // .replace("$orderingColumn", orderingColumn)
                 .replace("$agentsFilter", agentsFilter.join(" OR "))
                 .replace("$activitiesFilter", activitiesFilter.join(" OR "))
-            );
+            ;
     }
 
     QString usedResourcesQuery() const
@@ -189,8 +189,10 @@ public:
         //       something similar. This applies to other queries
         //       as well.
         static const QString _query =
-            "SELECT   rsc.targettedResource "
+            "SELECT   rsc.targettedResource, rsc.cachedScore "
             "FROM     ResourceScoreCache rsc "
+            "    LEFT JOIN ResourceInfo ri "
+            "    ON rsc.targettedResource = ri.targettedResource "
             "WHERE    ($agentsFilter) AND ($activitiesFilter) "
             "ORDER BY $orderingColumn rsc.targettedResource ASC";
 
@@ -213,11 +215,11 @@ public:
 
         auto query = _query;
 
-        return debug_and_return(query
+        return query
                 .replace("$orderingColumn", orderingColumn)
                 .replace("$agentsFilter", agentsFilter.join(" OR "))
                 .replace("$activitiesFilter", activitiesFilter.join(" OR "))
-            );
+            ;
     }
 
     QString allResourcesQuery() const
@@ -257,7 +259,10 @@ ResultSet::Result ResultSet::at(int index) const
 
     d->query.seek(index);
 
-    return Result { d->query.value(0).toString() };
+    return Result {
+        d->query.value(0).toString(),
+        d->query.value(1).toDouble()
+    };
 }
 
 QStringList ResultSet::_results_() const

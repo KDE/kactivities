@@ -43,7 +43,7 @@ public:
     static Ptr instance(Source source, OpenMode openMode);
 
     QSqlQuery execQueries(const QStringList &queries) const;
-    QSqlQuery execQuery(const QString &query) const;
+    QSqlQuery execQuery(const QString &query, bool ignoreErrors = false) const;
     QSqlQuery createQuery() const;
 
     QSqlDatabase &db() const;

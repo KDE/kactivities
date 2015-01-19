@@ -140,7 +140,8 @@ void initSchema(Database &database)
     QString dbSchemaVersion;
 
     auto query = database.execQuery(
-        QStringLiteral("SELECT value FROM SchemaInfo WHERE key = 'version'"));
+        QStringLiteral("SELECT value FROM SchemaInfo WHERE key = 'version'"),
+        /* ignore error */ true);
 
     if (query.next()) {
         dbSchemaVersion = query.value(0).toString();
@@ -155,10 +156,12 @@ void initSchema(Database &database)
     // We left the world of Nepomuk, and all the ontologies went
     // across the sea to the Undying Lands
     if (dbSchemaVersion < QStringLiteral("2014.04.14")) {
-        database.execQueries({
+        database.execQuery(
             QStringLiteral("ALTER TABLE nuao_DesktopEvent RENAME TO ResourceEvent"),
-            QStringLiteral("ALTER TABLE kext_ResourceScoreCache RENAME TO ResourceScoreCache")
-        });
+            /* ignore error */ true);
+        database.execQuery(
+            QStringLiteral("ALTER TABLE kext_ResourceScoreCache RENAME TO ResourceScoreCache"),
+            /* ignore error */ true);
     }
 
     const QString insertSchemaInfoQuery
