@@ -73,7 +73,7 @@ bool StatsPlugin::init(const QHash<QString, QObject *> &modules)
 
     connect(m_resources, SIGNAL(ProcessedResourceEvents(EventList)),
             this, SLOT(addEvents(EventList)));
-    connect(m_resources, SIGNAL(RegisteredResourceMimeType(QString, QString)),
+    connect(m_resources, SIGNAL(RegisteredResourceMimetype(QString, QString)),
             this, SLOT(saveResourceMimetype(QString, QString)));
     connect(m_resources, SIGNAL(RegisteredResourceTitle(QString, QString)),
             this, SLOT(saveResourceTitle(QString, QString)));
@@ -170,16 +170,16 @@ void StatsPlugin::closeResourceEvent(const QString &usedActivity,
     );
 }
 
-void StatsPlugin::detectResourceInfo(const QString &_url)
+void StatsPlugin::detectResourceInfo(const QString &_uri)
 {
-    QString file = _url;
+    QString file = _uri;
 
     if (!file.startsWith('/')) {
-        QUrl url(_url);
+        QUrl uri(_uri);
 
-        if (!url.isLocalFile()) return;
+        if (!uri.isLocalFile()) return;
 
-        file = url.toLocalFile();
+        file = uri.toLocalFile();
 
         if(!QFile::exists(file)) return;
     }
@@ -191,7 +191,7 @@ void StatsPlugin::detectResourceInfo(const QString &_url)
 
 }
 
-void StatsPlugin::insertResourceInfo(const QString &url)
+void StatsPlugin::insertResourceInfo(const QString &uri)
 {
     Utils::prepare(resourcesDatabase(), insertResourceInfoQuery, QStringLiteral(
         "INSERT INTO ResourceInfo( "
@@ -210,14 +210,14 @@ void StatsPlugin::insertResourceInfo(const QString &url)
     ));
 
     Utils::exec(*insertResourceInfoQuery,
-        ":targettedResource", url
+        ":targettedResource", uri
     );
 }
 
-void StatsPlugin::saveResourceTitle(const QString &url, const QString &title,
+void StatsPlugin::saveResourceTitle(const QString &uri, const QString &title,
                                     bool autoTitle)
 {
-    insertResourceInfo(url);
+    insertResourceInfo(uri);
 
     Utils::prepare(resourcesDatabase(), saveResourceTitleQuery, QStringLiteral(
         "UPDATE ResourceInfo SET "
@@ -228,17 +228,17 @@ void StatsPlugin::saveResourceTitle(const QString &url, const QString &title,
     ));
 
     Utils::exec(*saveResourceTitleQuery,
-        ":targettedResource" , url                     ,
+        ":targettedResource" , uri                     ,
         ":title"             , title                   ,
         ":autoTitle"         , (autoTitle ? "1" : "0")
     );
 }
 
-void StatsPlugin::saveResourceMimetype(const QString &url,
+void StatsPlugin::saveResourceMimetype(const QString &uri,
                                        const QString &mimetype,
                                        bool autoMimetype)
 {
-    insertResourceInfo(url);
+    insertResourceInfo(uri);
 
     Utils::prepare(resourcesDatabase(), saveResourceMimetypeQuery, QStringLiteral(
         "UPDATE ResourceInfo SET "
@@ -249,7 +249,7 @@ void StatsPlugin::saveResourceMimetype(const QString &url,
     ));
 
     Utils::exec(*saveResourceMimetypeQuery,
-        ":targettedResource" , url                        ,
+        ":targettedResource" , uri                        ,
         ":mimetype"          , mimetype                   ,
         ":autoMimetype"      , (autoMimetype ? "1" : "0")
     );

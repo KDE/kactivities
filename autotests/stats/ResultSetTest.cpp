@@ -54,13 +54,13 @@ QString concatenateResults(const KAStats::ResultSet &results)
             results.end(),
             QStringLiteral("|"),
             [] (const QString &acc, const KAStats::ResultSet::Result &result) {
-                return acc + result.url + "|";
+                return acc + result.uri + "|";
             });
 
     return boost::accumulate(results,
             QStringLiteral("|"),
             [] (const QString &acc, const KAStats::ResultSet::Result &result) {
-                return acc + result.url + "|";
+                return acc + result.uri + "|";
             });
 }
 
@@ -77,8 +77,8 @@ void ResultSetTest::testLinkedResources()
     //                         | OrderAlphabetically
     //                     );
     //
-    //     QCOMPARE(result.at(0).url, QStringLiteral("/path/mid1_a1"));
-    //     QCOMPARE(result.at(1).url, QStringLiteral("/path/mid2_a1"));
+    //     QCOMPARE(result.at(0).uri, QStringLiteral("/path/mid1_a1"));
+    //     QCOMPARE(result.at(1).uri, QStringLiteral("/path/mid2_a1"));
     // }
 
 }
@@ -98,16 +98,16 @@ void ResultSetTest::testUsedResources()
 
         qDebug() << "-----------------------------";
         for (const auto &item: result) {
-            qDebug() << "Item: " << item.url;
+            qDebug() << "Item: " << item.uri;
         }
         qDebug() << "-----------------------------";
 
-        QCOMPARE(result.at(0).url, QStringLiteral("/path/high5_act1_kast"));
-        QCOMPARE(result.at(1).url, QStringLiteral("/path/high7_act1_kast"));
-        QCOMPARE(result.at(2).url, QStringLiteral("/path/high8_act1_kast"));
+        QCOMPARE(result.at(0).uri, QStringLiteral("/path/high5_act1_kast"));
+        QCOMPARE(result.at(1).uri, QStringLiteral("/path/high7_act1_kast"));
+        QCOMPARE(result.at(2).uri, QStringLiteral("/path/high8_act1_kast"));
 
         // END!
-        QCOMPARE(result.at(3).url, QString());
+        QCOMPARE(result.at(3).uri, QString());
 
         // Testing whether range works
         QCOMPARE(QStringLiteral("|/path/high5_act1_kast|/path/high7_act1_kast|/path/high8_act1_kast|"),
@@ -121,8 +121,8 @@ void ResultSetTest::testUsedResources()
                         | Agent{"gvim"}
                         );
 
-        QCOMPARE(result.at(0).url, QStringLiteral("/path/high1_act1_gvim"));
-        QCOMPARE(result.at(1).url, QStringLiteral("/path/high4_act1_gvim"));
+        QCOMPARE(result.at(0).uri, QStringLiteral("/path/high1_act1_gvim"));
+        QCOMPARE(result.at(1).uri, QStringLiteral("/path/high4_act1_gvim"));
     }
 
     TEST_CHUNK("Getting the used resources by the highest score, global agent")
@@ -132,9 +132,9 @@ void ResultSetTest::testUsedResources()
                         | Agent::global()
                         );
 
-        QCOMPARE(result.at(0).url, QStringLiteral("/path/mid6_act1_glob"));
-        QCOMPARE(result.at(1).url, QStringLiteral("/path/mid7_act1_glob"));
-        QCOMPARE(result.at(2).url, QStringLiteral("/path/mid8_act1_glob"));
+        QCOMPARE(result.at(0).uri, QStringLiteral("/path/mid6_act1_glob"));
+        QCOMPARE(result.at(1).uri, QStringLiteral("/path/mid7_act1_glob"));
+        QCOMPARE(result.at(2).uri, QStringLiteral("/path/mid8_act1_glob"));
     }
 
     TEST_CHUNK("Getting the used resources by the highest score, any agent")
@@ -145,9 +145,9 @@ void ResultSetTest::testUsedResources()
                         | Activity::any()
                         );
 
-        QCOMPARE(result.at(0).url, QStringLiteral("/path/high1_act1_gvim"));
-        QCOMPARE(result.at(1).url, QStringLiteral("/path/high2_act2_kate"));
-        QCOMPARE(result.at(2).url, QStringLiteral("/path/high3_act1_kate"));
+        QCOMPARE(result.at(0).uri, QStringLiteral("/path/high1_act1_gvim"));
+        QCOMPARE(result.at(1).uri, QStringLiteral("/path/high2_act2_kate"));
+        QCOMPARE(result.at(2).uri, QStringLiteral("/path/high3_act1_kate"));
     }
 }
 

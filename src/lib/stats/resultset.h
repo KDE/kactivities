@@ -29,7 +29,7 @@ namespace Stats {
 class KACTIVITIESSTATS_EXPORT ResultSet {
 public:
     struct Result {
-        QString url;
+        QString uri;
     };
 
     ResultSet(Query query);

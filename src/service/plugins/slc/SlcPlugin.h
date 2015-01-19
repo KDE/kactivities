@@ -33,7 +33,7 @@ public:
 
 private Q_SLOTS:
     void registeredResourceEvent(const Event &event);
-    void registeredResourceMimeType(const QString &uri, const QString &mimetype);
+    void registeredResourceMimetype(const QString &uri, const QString &mimetype);
     void registeredResourceTitle(const QString &uri, const QString &title);
 
 public Q_SLOTS:
