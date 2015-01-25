@@ -153,6 +153,26 @@ private:
     const ColumnType Type::* memberptr;
 };
 
+template <typename Range, typename ColumnMemberPointer, typename MergeFunction>
+inline auto groupBy(const Range &range,
+                    const ColumnMemberPointer &memberptr,
+                    const MergeFunction &merge)
+    -> std::vector<typename Range::value_type>
+{
+    std::vector<typename Range::value_type> result;
+
+    for (const auto& item: range) {
+        if (result.size() == 0 || result.back().*memberptr != item.*memberptr) {
+            result.push_back(item);
+        } else {
+            merge(result.back(), item);
+        }
+    }
+
+    return result;
+}
+
+
 #endif // QUICKCHECK_DATABASE_COMMON_H
 
 // vim: set foldmethod=marker:

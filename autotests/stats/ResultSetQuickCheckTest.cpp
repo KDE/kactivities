@@ -320,11 +320,9 @@ void ResultSetQuickCheckTest::testUsedResourcesForAgents()
     using boost::sort;
     using boost::adaptors::filtered;
 
-    TEST_CHUNK("Filtering by a specific agent, alphabetical order by URL")
-
     foreach (const auto &agent, agentsList) {
 
-        auto memItems = to_vector(
+        auto memItems = ResourceScoreCache::groupByResource(
                 resourceScoreCaches
                 | filtered(ResourceScoreCache::initiatingAgent() == agent)
             );
@@ -341,8 +339,6 @@ void ResultSetQuickCheckTest::testUsedResourcesForAgents()
         QCOMPARE(concatAll(memItems, false), concatAll(dbItems, false));
 
     }
-
-    TEST_CHUNK("Filtering by a specific agent, highest scores first")
 
     foreach (const auto &agent, agentsList) {
 
