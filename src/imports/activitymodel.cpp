@@ -194,15 +194,19 @@ public:
             auto wallpaperPlugin = config.readEntry("wallpaperplugin");
             auto wallpaperConfig = config.group("Wallpaper").group(wallpaperPlugin).group("General");
 
-            // Trying for the wallpaper
-            auto wallpaper = wallpaperConfig.readEntry("Image", QString());
-
-            if (!wallpaper.isEmpty()) {
-                return wallpaper;
+            if (wallpaperConfig.hasKey("Image")) {
+                // Trying for the wallpaper
+                auto wallpaper = wallpaperConfig.readEntry("Image", QString());
+                if (!wallpaper.isEmpty()) {
+                    return wallpaper;
+                }
+            }
+            if (wallpaperConfig.hasKey("Color")) {
+                auto backgroundColor = wallpaperConfig.readEntry("Color", QColor(0, 0, 0));
+                return backgroundColor.name();
             }
 
-            auto backgroundColor = wallpaperConfig.readEntry("Color", QColor(0, 0, 0));
-            return backgroundColor.name();
+            return QString();
         }
 
         void reload(bool fullReload)
