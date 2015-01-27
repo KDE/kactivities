@@ -45,9 +45,10 @@ public:
 
         } else {
             Result result;
-            result.uri   = resultSet->d->query.value(0).toString();
-            result.score = resultSet->d->query.value(1).toDouble();
-            currentValue = boost::make_optional(result);
+            result.resource = resultSet->d->query.value("resource").toString();
+            result.title    = resultSet->d->query.value("title").toString();
+            result.score    = resultSet->d->query.value("score").toDouble();
+            currentValue    = boost::make_optional(result);
 
         }
     }

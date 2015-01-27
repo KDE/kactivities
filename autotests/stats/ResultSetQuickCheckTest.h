@@ -46,7 +46,7 @@ private Q_SLOTS:
 
     void cleanupTestCase();
 
-private:
+public:
     QScopedPointer<KActivities::Consumer> activities;
 
     struct PrimaryKeyOrder {
@@ -77,6 +77,7 @@ private:
     void generateResouceScoreCaches();
 
     void pushToDatabase();
+    void pullFromDatabase();
 };
 
 

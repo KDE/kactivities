@@ -42,6 +42,8 @@
 #include <common/database/Database.h>
 #include <common/test.h>
 
+#include <utils/qsqlquery_iterator.h>
+
 #define NUMBER_ACTIVITIES 10
 #define NUMBER_AGENTS     10
 #define NUMBER_RESOURCES  50
@@ -49,57 +51,109 @@
 
 namespace KAStats = KActivities::Experimental::Stats;
 
+static ResultSetQuickCheckTest * instance;
+
 ResultSetQuickCheckTest::ResultSetQuickCheckTest(QObject *parent)
     : Test(parent)
     , activities(new KActivities::Consumer())
 {
+    instance = this;
 }
 
 namespace {
-
-    // Convert any range to a vector {{{
-    template <typename Range>
-    std::vector<typename Range::value_type> to_vector(Range &&range)
+    QString resourceTitle(const ResourceScoreCache::Item &item)
     {
-        return std::vector<typename Range::value_type>(range.begin(), range.end());
+        // We need to find the title
+        ResourceInfo::Item key;
+        key.targettedResource = item.targettedResource;
+
+        auto &infos = instance->resourceInfos;
+
+        auto ri = infos.lower_bound(key);
+
+        return
+            (ri != infos.cend() && ri->targettedResource == item.targettedResource) ?
+            ri->title : item.targettedResource;
     }
-    /// }}}
 
-    // {{{ helpers to perform accumulate and generate a string
-    struct ItemAccumulator {
-        ItemAccumulator(bool showScore)
-            : showScore(showScore)
-        {
-        }
-
-        QString operator() (const QString &acc, ResourceScoreCache::Item item) const
-        {
-            return acc + item.targettedResource
-                + (showScore ? ( '(' + QString::number(item.cachedScore) + ')' ) : QString())
-                + ' ';
-        }
-
-        QString operator()(const QString &acc,
-                           const KAStats::ResultSet::Result &item) const
-        {
-            return acc + item.uri
-                + (showScore ? ( '(' + QString::number(item.score) + ')' ) : QString())
-                + ' ';
-        }
-
-    private:
-        bool showScore;
-    };
-
-    template <typename Range>
-    inline
-    QString concatAll(const Range &range, bool showScore)
+    QString toQString(const ResourceScoreCache::Item &item)
     {
-        return boost::accumulate(range, QStringLiteral(" "),
-                ItemAccumulator(showScore));
+        return
+            item.targettedResource
+            + ':' + resourceTitle(item)
+            + '(' + QString::number(item.cachedScore) + ')';
     }
-    // }}}
 
+    QString toQString(const KAStats::ResultSet::Result &item)
+    {
+        return
+            item.resource
+            + ':' + item.title
+            + '(' + QString::number(item.score) + ')';
+    }
+
+    bool operator==(const ResourceScoreCache::Item &left,
+                    const KAStats::ResultSet::Result &right)
+    {
+        return left.targettedResource == right.resource
+               && resourceTitle(left) == right.title
+               && qFuzzyCompare(left.cachedScore, right.score);
+    }
+
+    template<typename Left>
+    void assert_range_equal(const Left &left, const KAStats::ResultSet &right,
+            const char * file, int line)
+    {
+        auto leftIt  = left.cbegin();
+        auto rightIt = right.cbegin();
+        auto leftEnd  = left.cend();
+        auto rightEnd = right.cend();
+
+        bool equal = true;
+
+        QString leftLine;
+        QString rightLine;
+
+        for (; leftIt != leftEnd && rightIt != rightEnd; ++leftIt, ++rightIt) {
+            auto leftString = toQString(*leftIt);
+            auto rightString = toQString(*rightIt);
+
+            if (*leftIt == *rightIt) {
+                rightString.fill('.');
+
+            } else {
+                equal = false;
+            }
+
+            int longer  = qMax(leftString.length(), rightString.length());
+            leftString  = leftString.leftJustified(longer);
+            rightString = rightString.leftJustified(longer, '.');
+
+            leftLine += " " + leftString;
+            rightLine += " " + rightString;
+        }
+
+        if (equal) {
+            // So far, we are equal, but do we have the same number
+            // of elements - did we reach the end of both ranges?
+            if (leftIt != leftEnd) {
+                QTest::qFail("The left range is longer than the right one", file, line);
+            }
+
+            if (rightIt != rightEnd) {
+                QTest::qFail("The right range is longer than the left one", file, line);
+            }
+
+        } else {
+
+            qDebug() << "Ranges differ:\n"
+                     << "MEM: " << leftLine << '\n'
+                     << "LIB: " << rightLine;
+            QTest::qFail("Results do not match", file, line);
+        }
+    }
+
+#define ASSERT_RANGE_EQUAL(L, R) assert_range_equal(L, R, __FILE__, __LINE__)
 }
 
 // {{{ Data init
@@ -107,32 +161,46 @@ void ResultSetQuickCheckTest::initTestCase()
 {
     qsrand(time(NULL));
 
-    QTemporaryDir dir(QDir::tempPath() + "/KActivitiesStatsTest_ResultSetQuickCheckTest_XXXXXX");
-    dir.setAutoRemove(false);
+    QString databaseFile;
 
-    if (!dir.isValid()) {
-        qFatal("Can not create a temporary directory");
+    int dbArgIndex = QCoreApplication::arguments().indexOf("--ResultSetQuickCheckDatabase");
+    if (dbArgIndex > 0) {
+        databaseFile = QCoreApplication::arguments()[dbArgIndex+1];
+
+        qDebug() << "Using an existing database: " + databaseFile;
+        Common::ResourcesDatabaseSchema::overridePath(databaseFile);
+
+        pullFromDatabase();
+
+    } else {
+
+        QTemporaryDir dir(QDir::tempPath() + "/KActivitiesStatsTest_ResultSetQuickCheckTest_XXXXXX");
+        dir.setAutoRemove(false);
+
+        if (!dir.isValid()) {
+            qFatal("Can not create a temporary directory");
+        }
+
+        databaseFile = dir.path() + "/database";
+
+        qDebug() << "Creating database in " << databaseFile;
+        Common::ResourcesDatabaseSchema::overridePath(databaseFile);
+
+        while (activities->serviceStatus() == KActivities::Consumer::Unknown) {
+            QCoreApplication::processEvents();
+        }
+
+        generateActivitiesList();
+        generateAgentList();
+        generateTypesList();
+        generateResourcesList();
+
+        generateResourcesInfos();
+        generateResouceScoreCaches();
+
+        pushToDatabase();
     }
 
-    const auto databaseFile = dir.path() + "/database";
-
-    Common::ResourcesDatabaseSchema::overridePath(databaseFile);
-    qDebug() << "Creating database in " << databaseFile;
-
-    // Renaming the activity1 to the current acitivty
-    while (activities->serviceStatus() == KActivities::Consumer::Unknown) {
-        QCoreApplication::processEvents();
-    }
-
-    generateActivitiesList();
-    generateAgentList();
-    generateTypesList();
-    generateResourcesList();
-
-    generateResourcesInfos();
-    generateResouceScoreCaches();
-
-    pushToDatabase();
 
     qDebug() << "Init finished";
 }
@@ -199,7 +267,10 @@ void ResultSetQuickCheckTest::generateResourcesInfos()
         ri.title = "Title_" + QString::number(qrand() % 100);
         ri.mimetype = randItem(typesList);
 
-        resourceInfos.insert(ri);
+        // We want every n-th or so to be without the title
+        if (qrand() % 3) {
+            resourceInfos.insert(ri);
+        }
     }
 }
 
@@ -302,6 +373,36 @@ void ResultSetQuickCheckTest::pushToDatabase()
     std::cerr << std::endl;
 }
 
+
+void ResultSetQuickCheckTest::pullFromDatabase()
+{
+    auto database = Common::Database::instance(Common::Database::ResourcesDatabase,
+                                               Common::Database::ReadWrite);
+
+    auto rscQuery = database->execQuery("SELECT * FROM ResourceScoreCache");
+
+    for (const auto &rsc: rscQuery) {
+        ResourceScoreCache::Item item;
+        item.usedActivity      = rsc["usedActivity"].toString();
+        item.initiatingAgent   = rsc["initiatingAgent"].toString();
+        item.targettedResource = rsc["targettedResource"].toString();
+        item.cachedScore       = rsc["cachedScore"].toDouble();
+        item.firstUpdate       = rsc["firstUpdate"].toInt();
+        item.lastUpdate        = rsc["lastUpdate"].toInt();
+        resourceScoreCaches.insert(item);
+    }
+
+    auto riQuery = database->execQuery("SELECT * FROM ResourceInfo");
+
+    for (const auto& ri: riQuery) {
+        ResourceInfo::Item item;
+        item.targettedResource = ri["targettedResource"].toString();
+        item.title             = ri["title"].toString();
+        item.mimetype          = ri["mimetype"].toString();
+        resourceInfos.insert(item);
+    }
+}
+
 void ResultSetQuickCheckTest::cleanupTestCase()
 {
     emit testFinished();
@@ -321,44 +422,30 @@ void ResultSetQuickCheckTest::testUsedResourcesForAgents()
     using boost::adaptors::filtered;
 
     foreach (const auto &agent, agentsList) {
-
         auto memItems = ResourceScoreCache::groupByResource(
                 resourceScoreCaches
                 | filtered(ResourceScoreCache::initiatingAgent() == agent)
             );
 
-        // Testing when sorting by URL
-        sort(memItems, ResourceScoreCache::targettedResource().asc());
+        auto baseTerm = UsedResources | Agent{agent} | Activity::any();
 
-        ResultSet dbItems = UsedResources
-                                | Agent{agent}
-                                | Activity::any()
-                                | OrderAlphabetically
-                                ;
+        #define ORDERING_TEST(Column, Dir, OrderFlag)                          \
+        {                                                                      \
+            sort(memItems, ResourceScoreCache::Column().Dir()                  \
+                           | ResourceScoreCache::targettedResource().asc());   \
+            ResultSet dbItems = baseTerm | OrderFlag;                          \
+            ASSERT_RANGE_EQUAL(memItems, dbItems);                             \
+        }
 
-        QCOMPARE(concatAll(memItems, false), concatAll(dbItems, false));
+        ORDERING_TEST(targettedResource, asc,  OrderAlphabetically)
+        ORDERING_TEST(cachedScore,       desc, HighScoredFirst);
+        ORDERING_TEST(lastUpdate,        desc, RecentlyUsedFirst);
+        ORDERING_TEST(firstUpdate,       desc, RecentlyCreatedFirst);
 
-    }
-
-    foreach (const auto &agent, agentsList) {
-
-        auto memItems = to_vector(
-                resourceScoreCaches
-                | filtered(ResourceScoreCache::initiatingAgent() == agent)
-            );
-
-        // Testing when sorting by URL
-        sort(memItems, ResourceScoreCache::cachedScore().desc());
-
-        ResultSet dbItems = UsedResources
-                                | Agent{agent}
-                                | Activity::any()
-                                | HighScoredFirst
-                                ;
-
-        QCOMPARE(concatAll(memItems, true), concatAll(dbItems, true));
+        #undef ORDERING_TEST
 
     }
+
 }
 
 void ResultSetQuickCheckTest::testUsedResourcesForActivities()

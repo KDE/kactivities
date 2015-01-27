@@ -29,7 +29,8 @@ namespace Stats {
 class KACTIVITIESSTATS_EXPORT ResultSet {
 public:
     struct Result {
-        QString uri;
+        QString resource;
+        QString title;
         double score;
     };
 
