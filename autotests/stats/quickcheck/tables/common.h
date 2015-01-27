@@ -48,6 +48,28 @@ public:
     }
 
     // Column comparator functor {{{
+    template <typename Comp1, typename Comp2>
+    class CompositeComparator {
+    public:
+        CompositeComparator(Comp1 comp1, Comp2 comp2)
+            : comp1(comp1)
+            , comp2(comp2)
+        {
+        }
+
+        inline bool operator()(const Type &left, const Type &right) const
+        {
+            return
+                comp1(left, right) ? true :
+                comp1(right, left) ? false :
+                comp2(left, right);
+        }
+
+    private:
+        const Comp1 comp1;
+        const Comp2 comp2;
+    };
+
     class Comparator {
     public:
         Comparator(const ColumnType Type::* memberptr, bool invert)
@@ -60,6 +82,12 @@ public:
         {
             return (invert) ? right.*memberptr < left.*memberptr
                             : left.*memberptr < right.*memberptr;
+        }
+
+        template <typename Comp2>
+        CompositeComparator<Comparator, Comp2> operator | (const Comp2 &comp2)
+        {
+            return CompositeComparator<Comparator, Comp2>(*this, comp2);
         }
 
     private:

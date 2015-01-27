@@ -183,25 +183,34 @@ public:
 
     QString usedResourcesQuery() const
     {
-        // TODO: We need to group by and sum scores at some point.
-        //       This is a minor use-case, but someone might want to
-        //       have lists for two agents merged into one or
-        //       something similar. This applies to other queries
-        //       as well.
+        // TODO: We need to correct the scores based on the time that passed
+        //       since the cache was last updated
         static const QString _query =
-            "SELECT   rsc.targettedResource, rsc.cachedScore "
-            "FROM     ResourceScoreCache rsc "
-            "    LEFT JOIN ResourceInfo ri "
+            "SELECT "
+            "    rsc.targettedResource as resource "
+            "  , SUM(rsc.cachedScore) as score "
+            "  , MIN(rsc.firstUpdate) as firstUpdate "
+            "  , MAX(rsc.lastUpdate) as lastUpdate "
+            "  , COALESCE(ri.title, rsc.targettedResource) as title "
+
+            "FROM "
+            "    ResourceScoreCache rsc "
+            "LEFT JOIN "
+            "    ResourceInfo ri "
             "    ON rsc.targettedResource = ri.targettedResource "
-            "WHERE    ($agentsFilter) AND ($activitiesFilter) "
-            "ORDER BY $orderingColumn rsc.targettedResource ASC";
+
+            "WHERE "
+            "    ($agentsFilter) AND ($activitiesFilter) "
+
+            "GROUP BY resource, title "
+            "ORDER BY $orderingColumn resource ASC";
 
         // ORDER BY column
         auto ordering = queryDefinition.ordering();
         QString orderingColumn =
-                ordering == HighScoredFirst      ? "rsc.cachedScore DESC,"
-              : ordering == RecentlyCreatedFirst ? "rsc.firstUpdate DESC,"
-              : ordering == RecentlyUsedFirst    ? "rsc.lastUpdate DESC,"
+                ordering == HighScoredFirst      ? "score DESC,"
+              : ordering == RecentlyCreatedFirst ? "firstUpdate DESC,"
+              : ordering == RecentlyUsedFirst    ? "lastUpdate DESC,"
               : QString();
 
 
@@ -260,8 +269,9 @@ ResultSet::Result ResultSet::at(int index) const
     d->query.seek(index);
 
     return Result {
-        d->query.value(0).toString(),
-        d->query.value(1).toDouble()
+        d->query.value("resource").toString(),
+        d->query.value("title").toString(),
+        d->query.value("score").toDouble()
     };
 }
 
