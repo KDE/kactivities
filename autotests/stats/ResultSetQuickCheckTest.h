@@ -30,6 +30,7 @@
 
 #include "quickcheck/tables/ResourceScoreCache.h"
 #include "quickcheck/tables/ResourceInfo.h"
+#include "quickcheck/tables/ResourceLink.h"
 
 using boost::container::flat_set;
 
@@ -43,6 +44,8 @@ private Q_SLOTS:
 
     void testUsedResourcesForAgents();
     void testUsedResourcesForActivities();
+
+    void testLinkedResourcesForAgents();
 
     void cleanupTestCase();
 
@@ -60,6 +63,7 @@ public:
 
     TABLE(ResourceScoreCache) resourceScoreCaches;
     TABLE(ResourceInfo)       resourceInfos;
+    TABLE(ResourceLink)       resourceLinks;
 
     QString randItem(const QStringList &choices) const;
 
@@ -69,12 +73,13 @@ public:
     QStringList resourcesList;
 
     void generateActivitiesList();
-    void generateAgentList();
+    void generateAgentsList();
     void generateTypesList();
     void generateResourcesList();
 
-    void generateResourcesInfos();
-    void generateResouceScoreCaches();
+    void generateResourceInfos();
+    void generateResourceScoreCaches();
+    void generateResourceLinks();
 
     void pushToDatabase();
     void pullFromDatabase();

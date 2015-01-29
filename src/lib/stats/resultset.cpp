@@ -100,7 +100,7 @@ public:
     {
         if (agent == ":any") return "1";
 
-        return "rsc.initiatingAgent = '" + (
+        return "agent = '" + (
                 agent == ":global"  ? "" :
                 agent == ":current" ? QCoreApplication::instance()->applicationName() :
                                       agent
@@ -111,7 +111,7 @@ public:
     {
         if (activity == ":any") return "1";
 
-        return "rsc.usedActivity = '" + (
+        return "activity = '" + (
                 activity == ":global"  ? "" :
                 activity == ":current" ? getCurrentActivity() :
                                          activity
@@ -138,30 +138,42 @@ public:
 
     QString linkedResourcesQuery() const
     {
-        // static const QString _query =
-        //     "SELECT   rl.targettedResource "
-        //     "FROM     ResourceLink rl "
-        //     "    LEFT JOIN ResourceScoreCache rsc "
-        //     "    ON   rl.targettedResource = rsc.targettedResource "
-        //     "WHERE    ($agentsFilter) AND ($activitiesFilter) "
-        //     "ORDER BY $orderingColumn rsc.targettedResource ASC ";
+        // TODO: We need to correct the scores based on the time that passed
+        //       since the cache was last updated, although, for this query,
+        //       scores are not that important.
         static const QString _query =
-            "SELECT   rl.targettedResource "
-            "FROM     ResourceLink rl "
-            "WHERE    ($agentsFilter) AND ($activitiesFilter) "
-            "ORDER BY rsc.targettedResource ASC ";
+            "SELECT "
+            "    rl.targettedResource as resource "
+            "  , SUM(rsc.cachedScore) as score "
+            "  , MIN(rsc.firstUpdate) as firstUpdate "
+            "  , MAX(rsc.lastUpdate) as lastUpdate "
+            "  , COALESCE(ri.title, rsc.targettedResource) as title "
+            "  , rl.usedActivity as activity "
+            "  , rl.initiatingAgent as agent "
 
-        Q_ASSERT_X(queryDefinition.ordering() == OrderAlphabetically,
-                "Linked resource query creation",
-                "Alternative orderings for the linked resources are not supported");
+            "FROM "
+            "    ResourceLink rl "
+            "LEFT JOIN "
+            "    ResourceScoreCache rsc "
+            "    ON rl.targettedResource = rsc.targettedResource "
+            "LEFT JOIN "
+            "    ResourceInfo ri "
+            "    ON rl.targettedResource = ri.targettedResource "
+
+            "WHERE "
+            "    ($agentsFilter) AND ($activitiesFilter) "
+
+            "GROUP BY resource, title "
+            "ORDER BY $orderingColumn resource ASC";
 
         // ORDER BY column
-        // auto ordering = queryDefinition.ordering();
-        // QString orderingColumn =
-        //         ordering == HighScoredFirst      ? "rsc.cachedScore DESC,"
-        //       : ordering == RecentlyCreatedFirst ? "rsc.firstUpdate DESC,"
-        //       : ordering == RecentlyUsedFirst    ? "rsc.lastUpdate DESC,"
-        //       : QString();
+        auto ordering = queryDefinition.ordering();
+        QString orderingColumn =
+                ordering == HighScoredFirst      ? "score DESC,"
+              : ordering == RecentlyCreatedFirst ? "firstUpdate DESC,"
+              : ordering == RecentlyUsedFirst    ? "lastUpdate DESC,"
+              : ordering == OrderByTitle         ? "title ASC,"
+              : QString();
 
 
         // WHERE clause for filtering on agents
@@ -175,7 +187,7 @@ public:
         auto query = _query;
 
         return query
-                // .replace("$orderingColumn", orderingColumn)
+                .replace("$orderingColumn", orderingColumn)
                 .replace("$agentsFilter", agentsFilter.join(" OR "))
                 .replace("$activitiesFilter", activitiesFilter.join(" OR "))
             ;
@@ -192,6 +204,8 @@ public:
             "  , MIN(rsc.firstUpdate) as firstUpdate "
             "  , MAX(rsc.lastUpdate) as lastUpdate "
             "  , COALESCE(ri.title, rsc.targettedResource) as title "
+            "  , rsc.usedActivity as activity "
+            "  , rsc.initiatingAgent as agent "
 
             "FROM "
             "    ResourceScoreCache rsc "
@@ -211,6 +225,7 @@ public:
                 ordering == HighScoredFirst      ? "score DESC,"
               : ordering == RecentlyCreatedFirst ? "firstUpdate DESC,"
               : ordering == RecentlyUsedFirst    ? "lastUpdate DESC,"
+              : ordering == OrderByTitle         ? "title ASC,"
               : QString();
 
 
