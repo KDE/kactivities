@@ -220,7 +220,47 @@ void ResultSetQuickCheckTest::initTestCase()
     }
 
 
-    qDebug() << "Init finished";
+    if (QCoreApplication::arguments().contains("--show-data")) {
+        QString rscs;
+        for (const auto& rsc: resourceScoreCaches) {
+            rscs += '(' + rsc.targettedResource +
+                    ',' + rsc.usedActivity +
+                    ',' + rsc.initiatingAgent +
+                    ',' + rsc.cachedScore +
+                    ')';
+        }
+
+        QString ris;
+        for (const auto& ri: resourceInfos) {
+            ris += '(' + ri.targettedResource +
+                   ',' + ri.title +
+                   ',' + ri.mimetype +
+                   ')';
+        }
+
+        QString rls;
+        for (const auto& rl: resourceLinks) {
+            rls += '(' + rl.targettedResource +
+                   ',' + rl.usedActivity +
+                   ',' + rl.initiatingAgent +
+                   ')';
+        }
+
+        qDebug() << "\nUsed data: -----------------------------"
+                 << "\nActivities: " << activitiesList
+                 << "\nAgents: "     << agentsList
+                 << "\nTypes: "      << typesList
+                 << "\nResources: "  << resourcesList
+                 << "\n----------------------------------------"
+        ; qDebug()
+                 << "\n RSCs: " << rscs
+        ; qDebug()
+                 << "\n RIs:  " << ris
+        ; qDebug()
+                 << "\n RLs:  " << rls
+                 << "\n----------------------------------------"
+                 ;
+    }
 }
 
 void ResultSetQuickCheckTest::generateActivitiesList()
@@ -230,8 +270,6 @@ void ResultSetQuickCheckTest::generateActivitiesList()
     while (activitiesList.size() < NUMBER_ACTIVITIES) {
         activitiesList << QUuid::createUuid().toString().mid(1, 36);
     }
-
-    qDebug() << "Generated/Activities:" << activitiesList;
 }
 
 void ResultSetQuickCheckTest::generateAgentsList()
@@ -239,8 +277,6 @@ void ResultSetQuickCheckTest::generateAgentsList()
     for (int i = 0; i < NUMBER_AGENTS; ++i) {
         agentsList << "Agent_" + QString::number(i);
     }
-
-    qDebug() << "Generated/Agents:" << agentsList;
 }
 
 void ResultSetQuickCheckTest::generateTypesList()
@@ -337,6 +373,34 @@ void ResultSetQuickCheckTest::pushToDatabase()
                                                Common::Database::ReadWrite);
 
     Common::ResourcesDatabaseSchema::initSchema(*database);
+
+    // Inserting activities, so that a test can be replicated
+    database->execQuery("CREATE TABLE Activity (activity TEXT)");
+    for (const auto& activity: activitiesList) {
+        database->execQuery(QStringLiteral("INSERT INTO Activity VALUES ('%1')")
+                .arg(activity));
+    }
+
+    // Inserting agent, so that a test can be replicated
+    database->execQuery("CREATE TABLE Agent (agent TEXT)");
+    for (const auto& agent: agentsList) {
+        database->execQuery(QStringLiteral("INSERT INTO Agent VALUES ('%1')")
+                .arg(agent));
+    }
+
+    // Inserting types, so that a test can be replicated
+    database->execQuery("CREATE TABLE Type (type TEXT)");
+    for (const auto& type: typesList) {
+        database->execQuery(QStringLiteral("INSERT INTO Type VALUES ('%1')")
+                .arg(type));
+    }
+
+    // Inserting resources, so that a test can be replicated
+    database->execQuery("CREATE TABLE Resource (resource TEXT)");
+    for (const auto& resource: resourcesList) {
+        database->execQuery(QStringLiteral("INSERT INTO Resource VALUES ('%1')")
+                .arg(resource));
+    }
 
     // Inserting resource score caches
     qDebug() << "Inserting" << resourceScoreCaches.size() << "items into ResourceScoreCache";
@@ -444,6 +508,27 @@ void ResultSetQuickCheckTest::pullFromDatabase()
     auto database = Common::Database::instance(Common::Database::ResourcesDatabase,
                                                Common::Database::ReadWrite);
 
+    auto activityQuery = database->execQuery("SELECT * FROM Activity");
+    for (const auto& activity: activityQuery) {
+        activitiesList << activity[0].toString();
+    }
+
+    auto agentQuery = database->execQuery("SELECT * FROM Agent");
+    for (const auto& agent: agentQuery) {
+        agentsList << agent[0].toString();
+    }
+
+    auto typeQuery = database->execQuery("SELECT * FROM Type");
+    for (const auto& type: typeQuery) {
+        typesList << type[0].toString();
+    }
+
+    auto resourceQuery = database->execQuery("SELECT * FROM Resource");
+    for (const auto& resource: resourceQuery) {
+        resourcesList << resource[0].toString();
+    }
+
+
     auto rscQuery = database->execQuery("SELECT * FROM ResourceScoreCache");
 
     for (const auto &rsc: rscQuery) {
@@ -465,6 +550,16 @@ void ResultSetQuickCheckTest::pullFromDatabase()
         item.title             = ri["title"].toString();
         item.mimetype          = ri["mimetype"].toString();
         resourceInfos.insert(item);
+    }
+
+    auto rlQuery = database->execQuery("SELECT * FROM ResourceLink");
+
+    for (const auto& rl: rlQuery) {
+        ResourceLink::Item item;
+        item.targettedResource = rl["targettedResource"].toString();
+        item.usedActivity      = rl["usedActivity"].toString();
+        item.initiatingAgent   = rl["initiatingAgent"].toString();
+        resourceLinks.insert(item);
     }
 }
 
