@@ -17,31 +17,40 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef RESOURCEINFO_TABLE_H
-#define RESOURCEINFO_TABLE_H
+#ifndef RESOURCELINK_TABLE_H
+#define RESOURCELINK_TABLE_H
 
 #include <QString>
 
 #include "common.h"
 
-namespace ResourceInfo {
+namespace ResourceLink {
     struct Item {
+        QString usedActivity;
+        QString initiatingAgent;
         QString targettedResource;
-        QString title;
-        QString mimetype;
 
-        const QString &primaryKey() const
+        inline std::tuple<const QString &, const QString &, const QString &>
+        primaryKey() const
         {
-            return targettedResource;
+            return std::tie(targettedResource, usedActivity, initiatingAgent);
         }
-
     };
 
+    DECL_COLUMN(QString, usedActivity);
+    DECL_COLUMN(QString, initiatingAgent);
     DECL_COLUMN(QString, targettedResource);
-    DECL_COLUMN(QString, title);
-    DECL_COLUMN(QString, mimetype);
 
-}
+    template <typename Range>
+    inline std::vector<Item> groupByResource(const Range &range)
+    {
+        return groupBy(range, &Item::targettedResource,
+                       [](Item &acc, const Item &item) {
+                           acc.usedActivity += item.usedActivity + ' ';
+                           acc.initiatingAgent += item.initiatingAgent + ' ';
+                       });
+    }
 
-#endif // RESOURCEINFO_TABLE_H
+} // namespace ResourceLink
 
+#endif // RESOURCELINK_TABLE_H

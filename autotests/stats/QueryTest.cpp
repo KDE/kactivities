@@ -158,9 +158,9 @@ void QueryTest::testNormalSyntaxOrderingManipulation()
 
     QCOMPARE(query.ordering(), RecentlyCreatedFirst);
 
-    query.setOrdering(OrderAlphabetically);
+    query.setOrdering(OrderByUrl);
 
-    QCOMPARE(query.ordering(), OrderAlphabetically);
+    QCOMPARE(query.ordering(), OrderByUrl);
 }
 
 void QueryTest::testFancySyntaxBasic()
@@ -197,7 +197,7 @@ void QueryTest::testFancySyntaxAgentDefinition()
     TEST_CHUNK("Testing the fancy syntax, agent definition")
 
     {
-        auto query = LinkedResources | OrderAlphabetically;
+        auto query = LinkedResources | OrderByUrl;
         QCOMPARE(query.agents(), QStringList() << ":current");
     }
 
@@ -222,7 +222,7 @@ void QueryTest::testFancySyntaxTypeDefinition()
     TEST_CHUNK("Testing the fancy syntax, type definition")
 
     {
-        auto query = LinkedResources | OrderAlphabetically;
+        auto query = LinkedResources | OrderByUrl;
         QCOMPARE(query.types(), QStringList() << ":any");
     }
 
@@ -247,7 +247,7 @@ void QueryTest::testFancySyntaxActivityDefinition()
     TEST_CHUNK("Testing the fancy syntax, activity definition")
 
     {
-        auto query = LinkedResources | OrderAlphabetically;
+        auto query = LinkedResources | OrderByUrl;
         QCOMPARE(query.activities(), QStringList() << ":current");
     }
 
@@ -272,8 +272,8 @@ void QueryTest::testFancySyntaxOrderingDefinition()
     TEST_CHUNK("Testing the fancy syntax, activity definition")
 
     {
-        auto query = LinkedResources | OrderAlphabetically;
-        QCOMPARE(query.ordering(), OrderAlphabetically);
+        auto query = LinkedResources | OrderByUrl;
+        QCOMPARE(query.ordering(), OrderByUrl);
     }
 
     {
@@ -287,8 +287,8 @@ void QueryTest::testFancySyntaxOrderingDefinition()
     }
 
     {
-        auto query = LinkedResources | RecentlyCreatedFirst | OrderAlphabetically;
-        QCOMPARE(query.ordering(), OrderAlphabetically);
+        auto query = LinkedResources | RecentlyCreatedFirst | OrderByUrl;
+        QCOMPARE(query.ordering(), OrderByUrl);
     }
 
     {

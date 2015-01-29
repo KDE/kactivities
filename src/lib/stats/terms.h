@@ -44,7 +44,8 @@ namespace Terms {
         HighScoredFirst,      ///< Resources with the highest scores first
         RecentlyUsedFirst,    ///< Recently used resources first
         RecentlyCreatedFirst, ///< Recently created resources first
-        OrderAlphabetically   ///< Order by uri, alphabetically
+        OrderByUrl,           ///< Order by uri, alphabetically
+        OrderByTitle          ///< Order by uri, alphabetically
     };
 
     /**

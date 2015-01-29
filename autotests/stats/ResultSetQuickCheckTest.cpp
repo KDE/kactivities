@@ -61,27 +61,36 @@ ResultSetQuickCheckTest::ResultSetQuickCheckTest(QObject *parent)
 }
 
 namespace {
-    QString resourceTitle(const ResourceScoreCache::Item &item)
+    QString resourceTitle(const QString &resource)
     {
         // We need to find the title
         ResourceInfo::Item key;
-        key.targettedResource = item.targettedResource;
+        key.targettedResource = resource;
 
         auto &infos = instance->resourceInfos;
 
         auto ri = infos.lower_bound(key);
 
         return
-            (ri != infos.cend() && ri->targettedResource == item.targettedResource) ?
-            ri->title : item.targettedResource;
+            (ri != infos.cend() && ri->targettedResource == resource) ?
+            ri->title : resource;
     }
 
     QString toQString(const ResourceScoreCache::Item &item)
     {
         return
             item.targettedResource
-            + ':' + resourceTitle(item)
+            + ':' + resourceTitle(item.targettedResource)
             + '(' + QString::number(item.cachedScore) + ')';
+    }
+
+    QString toQString(const ResourceLink::Item &item)
+    {
+        return
+            item.targettedResource
+            + ':' + resourceTitle(item.targettedResource)
+            // + '(' + QString::number(0/* item.score */) + ')'
+            ;
     }
 
     QString toQString(const KAStats::ResultSet::Result &item)
@@ -96,8 +105,16 @@ namespace {
                     const KAStats::ResultSet::Result &right)
     {
         return left.targettedResource == right.resource
-               && resourceTitle(left) == right.title
+               && resourceTitle(left.targettedResource) == right.title
                && qFuzzyCompare(left.cachedScore, right.score);
+    }
+
+    bool operator==(const ResourceLink::Item &left,
+                    const KAStats::ResultSet::Result &right)
+    {
+        return left.targettedResource == right.resource
+               && resourceTitle(left.targettedResource) == right.title;
+               // && qFuzzyCompare(left.cachedScore, right.score);
     }
 
     template<typename Left>
@@ -191,12 +208,13 @@ void ResultSetQuickCheckTest::initTestCase()
         }
 
         generateActivitiesList();
-        generateAgentList();
+        generateAgentsList();
         generateTypesList();
         generateResourcesList();
 
-        generateResourcesInfos();
-        generateResouceScoreCaches();
+        generateResourceInfos();
+        generateResourceScoreCaches();
+        generateResourceLinks();
 
         pushToDatabase();
     }
@@ -212,13 +230,17 @@ void ResultSetQuickCheckTest::generateActivitiesList()
     while (activitiesList.size() < NUMBER_ACTIVITIES) {
         activitiesList << QUuid::createUuid().toString().mid(1, 36);
     }
+
+    qDebug() << "Generated/Activities:" << activitiesList;
 }
 
-void ResultSetQuickCheckTest::generateAgentList()
+void ResultSetQuickCheckTest::generateAgentsList()
 {
     for (int i = 0; i < NUMBER_AGENTS; ++i) {
         agentsList << "Agent_" + QString::number(i);
     }
+
+    qDebug() << "Generated/Agents:" << agentsList;
 }
 
 void ResultSetQuickCheckTest::generateTypesList()
@@ -259,22 +281,22 @@ void ResultSetQuickCheckTest::generateResourcesList()
     }
 }
 
-void ResultSetQuickCheckTest::generateResourcesInfos()
+void ResultSetQuickCheckTest::generateResourceInfos()
 {
     foreach (const QString &resource, resourcesList) {
+        // We want every n-th or so to be without the title
+        if (qrand() % 3) continue;
+
         ResourceInfo::Item ri;
         ri.targettedResource = resource;
         ri.title = "Title_" + QString::number(qrand() % 100);
         ri.mimetype = randItem(typesList);
 
-        // We want every n-th or so to be without the title
-        if (qrand() % 3) {
-            resourceInfos.insert(ri);
-        }
+        resourceInfos.insert(ri);
     }
 }
 
-void ResultSetQuickCheckTest::generateResouceScoreCaches()
+void ResultSetQuickCheckTest::generateResourceScoreCaches()
 {
     for (int i = 0; i < NUMBER_CACHES; ++i) {
         ResourceScoreCache::Item rsc;
@@ -291,6 +313,23 @@ void ResultSetQuickCheckTest::generateResouceScoreCaches()
     }
 }
 
+void ResultSetQuickCheckTest::generateResourceLinks()
+{
+    foreach (const QString &resource, resourcesList) {
+        // We don't want all the resources to be linked
+        // to something
+        if (qrand() % 2) continue;
+
+        ResourceLink::Item rl;
+
+        rl.targettedResource = resource;
+        rl.usedActivity      = randItem(activitiesList);
+        rl.initiatingAgent   = randItem(agentsList);
+
+        resourceLinks.insert(rl);
+    }
+}
+
 void ResultSetQuickCheckTest::pushToDatabase()
 {
     // Creating the database, and pushing some dummy data into it
@@ -299,11 +338,9 @@ void ResultSetQuickCheckTest::pushToDatabase()
 
     Common::ResourcesDatabaseSchema::initSchema(*database);
 
-    int i;
-
     // Inserting resource score caches
     qDebug() << "Inserting" << resourceScoreCaches.size() << "items into ResourceScoreCache";
-    i = 0;
+    int i = 0;
 
     foreach (const auto &rsc, resourceScoreCaches) {
         std::cerr << '.';
@@ -367,6 +404,34 @@ void ResultSetQuickCheckTest::pushToDatabase()
             .arg(ri.targettedResource)
             .arg(ri.title)
             .arg(ri.mimetype)
+        );
+
+    }
+    std::cerr << std::endl;
+
+    // Inserting resource links
+    qDebug() << "Inserting" << resourceLinks.size() << "items into ResourceLink";
+    i = 0;
+
+    foreach (const auto &rl, resourceLinks) {
+        std::cerr << '.';
+
+        if (++i % 10 == 0) std::cerr << i;
+
+        database->execQuery(QStringLiteral(
+            "INSERT INTO ResourceLink ("
+                "  targettedResource"
+                ", usedActivity"
+                ", initiatingAgent"
+            ") VALUES ("
+                "  '%1' " // targettedResource
+                ", '%2' " // usedActivity
+                ", '%3' " // initiatingAgent
+            ")"
+        )
+            .arg(rl.targettedResource)
+            .arg(rl.usedActivity)
+            .arg(rl.initiatingAgent)
         );
 
     }
@@ -437,7 +502,7 @@ void ResultSetQuickCheckTest::testUsedResourcesForAgents()
             ASSERT_RANGE_EQUAL(memItems, dbItems);                             \
         }
 
-        ORDERING_TEST(targettedResource, asc,  OrderAlphabetically)
+        ORDERING_TEST(targettedResource, asc,  OrderByUrl)
         ORDERING_TEST(cachedScore,       desc, HighScoredFirst);
         ORDERING_TEST(lastUpdate,        desc, RecentlyUsedFirst);
         ORDERING_TEST(firstUpdate,       desc, RecentlyCreatedFirst);
@@ -450,6 +515,40 @@ void ResultSetQuickCheckTest::testUsedResourcesForAgents()
 
 void ResultSetQuickCheckTest::testUsedResourcesForActivities()
 {
+}
+
+void ResultSetQuickCheckTest::testLinkedResourcesForAgents()
+{
+    using namespace KAStats;
+    using namespace KAStats::Terms;
+    using boost::sort;
+    using boost::adaptors::filtered;
+
+    foreach (const auto &agent, agentsList) {
+        auto memItems = ResourceLink::groupByResource(
+                resourceLinks
+                | filtered(ResourceLink::initiatingAgent() == agent)
+            );
+
+        auto baseTerm = LinkedResources | Agent{agent} | Activity::any();
+
+        #define ORDERING_TEST(Column, Dir, OrderFlag)                          \
+        {                                                                      \
+            sort(memItems, ResourceLink::Column().Dir()                        \
+                           | ResourceLink::targettedResource().asc());         \
+            ResultSet dbItems = baseTerm | OrderFlag;                          \
+            ASSERT_RANGE_EQUAL(memItems, dbItems);                             \
+        }
+
+        ORDERING_TEST(targettedResource, asc,  OrderByUrl)
+        // ORDERING_TEST(cachedScore,       desc, HighScoredFirst);
+        // ORDERING_TEST(lastUpdate,        desc, RecentlyUsedFirst);
+        // ORDERING_TEST(firstUpdate,       desc, RecentlyCreatedFirst);
+
+        #undef ORDERING_TEST
+
+    }
+
 }
 
 // vim: set foldmethod=marker:
