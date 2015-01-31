@@ -48,7 +48,7 @@ using namespace Terms;
 
 class ResultSet::Private {
 public:
-    Common::Database::Ptr db;
+    Common::Database::Ptr database;
     QSqlQuery query;
     Query queryDefinition;
 
@@ -63,7 +63,7 @@ public:
 
         auto selection = queryDefinition.selection();
 
-        query = db->execQuery(
+        query = database->execQuery(
                 selection == LinkedResources ? linkedResourcesQuery()
               : selection == UsedResources   ? usedResourcesQuery()
               : selection == AllResources    ? allResourcesQuery()
@@ -268,8 +268,8 @@ ResultSet::ResultSet(Query query)
 {
     using namespace Common;
 
-    d->db = Database::instance(Database::ResourcesDatabase, Database::ReadOnly);
-    Q_ASSERT_X(d->db, "ResultSet constructor", "Database is NULL");
+    d->database = Database::instance(Database::ResourcesDatabase, Database::ReadOnly);
+    Q_ASSERT_X(d->database, "ResultSet constructor", "Database is NULL");
 
     d->queryDefinition = query;
 

@@ -93,7 +93,7 @@ Database::Ptr Database::instance(Source source, OpenMode openMode)
 
     auto databaseConnectionName =
             "kactivities_db_resources_"
-                // Adding the thread number to the db name
+                // Adding the thread number to the database name
                 + QString::number((quintptr)info.thread)
                 // And whether it is read-only or read-write
                 + (info.openMode == ReadOnly ? "_readonly" : "_readwrite");
