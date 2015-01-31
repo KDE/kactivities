@@ -1,3 +1,55 @@
+
+libKActivities
+==============
+src/lib/core/controller.cpp:41:
+ TODO: Make Q_ASSERT_EVENTUALLY_X or something similar
+
+src/lib/core/info.cpp:165:
+ TODO: This needs to be changed, test for the new linking feature
+
+src/lib/core/resourceinstance.cpp:145:
+ TODO: update the service info
+src/lib/core/resourceinstance.cpp:157:
+ TODO: update the service info
+
+
+libKActivitiesStats
+===================
+src/lib/stats/resultset.h:48:
+ TODO: Consider making this to be more than just forward iterator.
+       Maybe even a random-access one.
+
+src/lib/stats/resultset.cpp:74:
+ TODO: Implement types
+ QStringList types() const;
+src/lib/stats/resultset.cpp:141:
+ TODO: We need to correct the scores based on the time that passed
+       since the cache was last updated, although, for this query,
+       scores are not that important.
+src/lib/stats/resultset.cpp:202:
+ TODO: We need to correct the scores based on the time that passed
+       since the cache was last updated
+src/lib/stats/resultset.cpp:257:
+ TODO: Get this to work
+
+
+KActivityManagerD
+=================
+src/service/plugins/sqlite/StatsPlugin.cpp:124:
+ TODO: Event cleanup should be also done from time to time,
+       not only on startup
+src/service/plugins/sqlite/StatsPlugin.cpp:331:
+ TODO: Add focus and modification
+
+src/service/Application.cpp:157:
+ TODO: Restart on crash
+       KCrash::setFlags(KCrash::AutoRestart);
+src/service/Application.cpp:196:
+ TODO: Show a notification for a plugin that failed to load
+
+
+QML imports
+===========
 src/imports/resourcemodel.cpp:106:
  NOTE: What to do if the file does not exist?
        Ignoring that case since the daemon creates it on startup.
@@ -14,47 +66,12 @@ src/imports/resourcemodel.cpp:554:
        with the SQL model. Implement a custom model with internal
        cache instead of basing it on QSqlModel.
 
-src/service/plugins/sqlite/StatsPlugin.cpp:119:
- TODO: Event cleanup should be also done from time to time,
-       not only on startup
-src/service/plugins/sqlite/StatsPlugin.cpp:239:
- TODO: Add focus and modification
 
-src/service/Application.cpp:157:
- TODO: Restart on crash
-       KCrash::setFlags(KCrash::AutoRestart);
-src/service/Application.cpp:196:
- TODO: Show a notification for a plugin that failed to load
+Workspace plugins
+=================
 
-src/common/database/schema/ResourcesDatabaseSchema.cpp:93:
+Other
+=====
+src/common/database/schema/ResourcesDatabaseSchema.cpp:109:
  TODO: This will require some refactoring after we introduce more databases
-
-src/lib/core/controller.cpp:41:
- TODO: Make Q_ASSERT_EVENTUALLY_X or something similar
-
-src/lib/core/info.cpp:165:
- TODO: This needs to be changed, test for the new linking feature
-
-src/lib/core/resourceinstance.cpp:145:
- TODO: update the service info
-src/lib/core/resourceinstance.cpp:157:
- TODO: update the service info
-
-src/lib/stats/resultset.h:40:
- TODO: REMOVE!!!
-src/lib/stats/resultset.h:47:
- TODO: Consider making this to be more than just forward iterator.
-       Maybe even a random-access one.
-
-src/lib/stats/resultset.cpp:74:
- TODO: Implement types
- QStringList types() const;
-src/lib/stats/resultset.cpp:186:
- TODO: We need to group by and sum scores at some point.
-       This is a minor use-case, but someone might want to
-       have lists for two agents merged into one or
-       something similar. This applies to other queries
-       as well.
-src/lib/stats/resultset.cpp:225:
- TODO: Get this to work
 

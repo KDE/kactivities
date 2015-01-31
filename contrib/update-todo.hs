@@ -21,9 +21,32 @@ mapDir proc fp = do
                   else getDirectoryContents fp >>=
                   mapM_ (mapDir proc . (fp </>)) . filter (`notElem` [".", ".."])
 
-main :: IO ()
-main = mapDir process "src"
+printTitle :: String -> IO()
+printTitle title = do
+        putStrLn ""
+        putStrLn title
+        putStrLn $ map (\_ -> '=') title
 
+main :: IO ()
+main = do
+    printTitle "libKActivities"
+    mapDir process "src/lib/core"
+
+    printTitle "libKActivitiesStats"
+    mapDir process "src/lib/stats"
+
+    printTitle "KActivityManagerD"
+    mapDir process "src/service"
+
+    printTitle "QML imports"
+    mapDir process "src/imports"
+
+    printTitle "Workspace plugins"
+    mapDir process "src/workspace"
+
+    printTitle "Other"
+    mapDir process "src/common"
+    mapDir process "src/utils"
 
 -- Parsing methods
 
@@ -35,6 +58,7 @@ isTodoBlock :: (Integer, [String]) -> Bool
 isTodoBlock (_, block) =
         (not $ null block) && (
             (startswith "// TODO: " $ head block) ||
+            (startswith "// FIXME: " $ head block) ||
             (startswith "// NOTE: " $ head block)
         )
 

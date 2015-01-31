@@ -142,29 +142,32 @@ public:
         //       since the cache was last updated, although, for this query,
         //       scores are not that important.
         static const QString _query =
-            "SELECT "
-            "    rl.targettedResource as resource "
-            "  , SUM(rsc.cachedScore) as score "
-            "  , MIN(rsc.firstUpdate) as firstUpdate "
-            "  , MAX(rsc.lastUpdate) as lastUpdate "
-            "  , COALESCE(ri.title, rsc.targettedResource) as title "
-            "  , rl.usedActivity as activity "
-            "  , rl.initiatingAgent as agent "
+            "\n"
+            "SELECT \n"
+            "    rl.targettedResource as resource \n"
+            "  , SUM(rsc.cachedScore) as score \n"
+            "  , MIN(rsc.firstUpdate) as firstUpdate \n"
+            "  , MAX(rsc.lastUpdate)  as lastUpdate \n"
+            "  , rl.usedActivity      as activity \n"
+            "  , rl.initiatingAgent   as agent \n"
+            "  , COALESCE(ri.title, rl.targettedResource) as title \n"
 
-            "FROM "
-            "    ResourceLink rl "
-            "LEFT JOIN "
-            "    ResourceScoreCache rsc "
-            "    ON rl.targettedResource = rsc.targettedResource "
-            "LEFT JOIN "
-            "    ResourceInfo ri "
-            "    ON rl.targettedResource = ri.targettedResource "
+            "FROM \n"
+            "    ResourceLink rl \n"
+            "LEFT JOIN \n"
+            "    ResourceScoreCache rsc \n"
+            "    ON rl.targettedResource = rsc.targettedResource \n"
+            "    AND rl.usedActivity     = rsc.usedActivity \n"
+            "    AND rl.initiatingAgent  = rsc.initiatingAgent \n"
+            "LEFT JOIN \n"
+            "    ResourceInfo ri \n"
+            "    ON rl.targettedResource = ri.targettedResource \n"
 
-            "WHERE "
-            "    ($agentsFilter) AND ($activitiesFilter) "
+            "WHERE \n"
+            "    ($agentsFilter) AND ($activitiesFilter) \n"
 
-            "GROUP BY resource, title "
-            "ORDER BY $orderingColumn resource ASC";
+            "GROUP BY resource, title \n"
+            "ORDER BY $orderingColumn resource ASC\n";
 
         // ORDER BY column
         auto ordering = queryDefinition.ordering();
@@ -186,7 +189,8 @@ public:
 
         auto query = _query;
 
-        return query
+        return
+            query
                 .replace("$orderingColumn", orderingColumn)
                 .replace("$agentsFilter", agentsFilter.join(" OR "))
                 .replace("$activitiesFilter", activitiesFilter.join(" OR "))
@@ -198,26 +202,27 @@ public:
         // TODO: We need to correct the scores based on the time that passed
         //       since the cache was last updated
         static const QString _query =
-            "SELECT "
-            "    rsc.targettedResource as resource "
-            "  , SUM(rsc.cachedScore) as score "
-            "  , MIN(rsc.firstUpdate) as firstUpdate "
-            "  , MAX(rsc.lastUpdate) as lastUpdate "
-            "  , COALESCE(ri.title, rsc.targettedResource) as title "
-            "  , rsc.usedActivity as activity "
-            "  , rsc.initiatingAgent as agent "
+            "\n"
+            "SELECT \n"
+            "    rsc.targettedResource as resource \n"
+            "  , SUM(rsc.cachedScore)  as score \n"
+            "  , MIN(rsc.firstUpdate)  as firstUpdate \n"
+            "  , MAX(rsc.lastUpdate)   as lastUpdate \n"
+            "  , rsc.usedActivity      as activity \n"
+            "  , rsc.initiatingAgent   as agent \n"
+            "  , COALESCE(ri.title, rsc.targettedResource) as title \n"
 
-            "FROM "
-            "    ResourceScoreCache rsc "
-            "LEFT JOIN "
-            "    ResourceInfo ri "
-            "    ON rsc.targettedResource = ri.targettedResource "
+            "FROM \n"
+            "    ResourceScoreCache rsc \n"
+            "LEFT JOIN \n"
+            "    ResourceInfo ri \n"
+            "    ON rsc.targettedResource = ri.targettedResource \n"
 
-            "WHERE "
-            "    ($agentsFilter) AND ($activitiesFilter) "
+            "WHERE \n"
+            "    ($agentsFilter) AND ($activitiesFilter) \n"
 
-            "GROUP BY resource, title "
-            "ORDER BY $orderingColumn resource ASC";
+            "GROUP BY resource, title \n"
+            "ORDER BY $orderingColumn resource ASC\n";
 
         // ORDER BY column
         auto ordering = queryDefinition.ordering();
@@ -239,7 +244,8 @@ public:
 
         auto query = _query;
 
-        return query
+        return
+            query
                 .replace("$orderingColumn", orderingColumn)
                 .replace("$agentsFilter", agentsFilter.join(" OR "))
                 .replace("$activitiesFilter", activitiesFilter.join(" OR "))
@@ -288,19 +294,6 @@ ResultSet::Result ResultSet::at(int index) const
         d->query.value("title").toString(),
         d->query.value("score").toDouble()
     };
-}
-
-QStringList ResultSet::_results_() const
-{
-    QStringList result;
-
-    d->query.seek(-1);
-
-    while (d->query.next()) {
-        result << d->query.value(0).toString();
-    }
-
-    return result;
 }
 
 } // namespace Stats

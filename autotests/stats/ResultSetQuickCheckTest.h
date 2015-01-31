@@ -83,6 +83,7 @@ public:
 
     void pushToDatabase();
     void pullFromDatabase();
+
 };
 
 

@@ -150,22 +150,29 @@ namespace {
             rightLine += " " + rightString;
         }
 
-        if (equal) {
-            // So far, we are equal, but do we have the same number
-            // of elements - did we reach the end of both ranges?
-            if (leftIt != leftEnd) {
-                QTest::qFail("The left range is longer than the right one", file, line);
+        // So far, we are equal, but do we have the same number
+        // of elements - did we reach the end of both ranges?
+        if (leftIt != leftEnd) {
+            for (; leftIt != leftEnd; ++leftIt) {
+                leftLine += " " + toQString(*leftIt);
             }
+            equal = false;
 
-            if (rightIt != rightEnd) {
-                QTest::qFail("The right range is longer than the left one", file, line);
+        } else if (rightIt != rightEnd) {
+            for (; rightIt != rightEnd; ++rightIt) {
+                rightLine += " " + toQString(*rightIt);
             }
+            equal = false;
+        }
 
-        } else {
-
+        if (!equal) {
+            // FIXME: This really needs to return the last query :)
+            // qDebug() << "SQL query was this:" <<
+            //     database->lastQuery()
+            //     ;
             qDebug() << "Ranges differ:\n"
                      << "MEM: " << leftLine << '\n'
-                     << "LIB: " << rightLine;
+                     << "SQL: " << rightLine;
             QTest::qFail("Results do not match", file, line);
         }
     }
@@ -218,7 +225,6 @@ void ResultSetQuickCheckTest::initTestCase()
 
         pushToDatabase();
     }
-
 
     if (QCoreApplication::arguments().contains("--show-data")) {
         QString rscs;
@@ -368,9 +374,10 @@ void ResultSetQuickCheckTest::generateResourceLinks()
 
 void ResultSetQuickCheckTest::pushToDatabase()
 {
-    // Creating the database, and pushing some dummy data into it
-    auto database = Common::Database::instance(Common::Database::ResourcesDatabase,
-                                               Common::Database::ReadWrite);
+    auto database = Common::Database::instance(
+            Common::Database::ResourcesDatabase,
+            Common::Database::ReadWrite
+        );
 
     Common::ResourcesDatabaseSchema::initSchema(*database);
 
@@ -505,8 +512,10 @@ void ResultSetQuickCheckTest::pushToDatabase()
 
 void ResultSetQuickCheckTest::pullFromDatabase()
 {
-    auto database = Common::Database::instance(Common::Database::ResourcesDatabase,
-                                               Common::Database::ReadWrite);
+    auto database = Common::Database::instance(
+            Common::Database::ResourcesDatabase,
+            Common::Database::ReadWrite
+        );
 
     auto activityQuery = database->execQuery("SELECT * FROM Activity");
     for (const auto& activity: activityQuery) {

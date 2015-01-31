@@ -43,6 +43,10 @@ public:
 };
 
 namespace {
+#ifdef QT_DEBUG
+    QString lastExecutedQuery;
+#endif
+
     std::mutex databases_mutex;
 
     struct DatabaseInfo {
@@ -138,12 +142,19 @@ QSqlQuery Database::createQuery() const
     return QSqlQuery(d->database);
 }
 
+QString Database::lastQuery() const
+{
+    return lastExecutedQuery;
+}
+
 QSqlQuery Database::execQuery(const QString &query, bool ignoreErrors) const
 {
 #ifdef QT_NO_DEBUG
     return QSqlQuery(query, d->database);
 #else
     auto result = QSqlQuery(query, d->database);
+
+    lastExecutedQuery = query;
 
     if (!ignoreErrors && result.lastError().isValid()) {
         qWarning() << "SQL: "
