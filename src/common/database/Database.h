@@ -46,7 +46,7 @@ public:
     QSqlQuery execQuery(const QString &query, bool ignoreErrors = false) const;
     QSqlQuery createQuery() const;
 
-    QSqlDatabase &db() const;
+    QSqlDatabase &database() const;
 
     // For debugging purposes only
     QString lastQuery() const;
