@@ -48,6 +48,9 @@ public:
 
     QSqlDatabase &db() const;
 
+    // For debugging purposes only
+    QString lastQuery() const;
+
     ~Database();
     Database();
 

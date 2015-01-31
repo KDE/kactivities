@@ -93,8 +93,6 @@ void ResultSetTest::testUsedResources()
     {
         ResultSet result(UsedResources);
 
-        qDebug() << "Result:" << result._results_();
-
         qDebug() << "-----------------------------";
         for (const auto &item: result) {
             qDebug() << "Item: " << item.resource;

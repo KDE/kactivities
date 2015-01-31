@@ -41,9 +41,6 @@ public:
 
     Result at(int index) const;
 
-    // TODO: REMOVE!!!
-    QStringList _results_() const;
-
     // Iterators
 
     class const_iterator {
