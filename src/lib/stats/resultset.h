@@ -17,8 +17,8 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef KACTIVITIES_STATS_RESULT
-#define KACTIVITIES_STATS_RESULT
+#ifndef KACTIVITIES_STATS_RESULTSET
+#define KACTIVITIES_STATS_RESULTSET
 
 #include <query.h>
 
@@ -26,27 +26,49 @@ namespace KActivities {
 namespace Experimental {
 namespace Stats {
 
+/**
+ * Class that can query the KActivities usage tracking mechanism
+ * for resources.
+ */
 class KACTIVITIESSTATS_EXPORT ResultSet {
 public:
+    /**
+     * Structure containing data of one of the results
+     */
     struct Result {
-        QString resource;
-        QString title;
-        double score;
+        QString resource; ///< URL of the resource
+        QString title;    ///< Title of the resource, or URL if title is not known
+        double score;     ///< The score calculated based on the usage statistics
     };
 
+    /**
+     * ResultSet is a container. This notifies the generic algorithms
+     * from STLboost, and others of the contained type.
+     */
     typedef Result value_type;
 
+    /**
+     * Creates the ResultSet from the specified query
+     */
     ResultSet(Query query);
     ~ResultSet();
 
+    /**
+     * @returns a result at the specified index
+     * @param index of the result
+     * @note You should use iterators instead
+     */
     Result at(int index) const;
 
     // Iterators
 
+    /**
+     * An STL-style constant forward iterator for accessing the results in a ResultSet
+     * TODO: Consider making this to be more than just forward iterator.
+     *       Maybe even a random-access one.
+     */
     class const_iterator {
     public:
-        // TODO: Consider making this to be more than just forward iterator.
-        //       Maybe even a random-access one.
         typedef std::forward_iterator_tag iterator_category;
         typedef int difference_type;
 
@@ -73,7 +95,6 @@ public:
 
     private:
         const_iterator(const ResultSet *resultSet, int currentRow);
-        // const_iterator();
 
         friend class ResultSet;
 
@@ -81,13 +102,35 @@ public:
         Private* const d;
     };
 
+    /**
+     * @returns a constant iterator pointing to the start of the collection
+     * (to the first item)
+     * @note as usual in C++, the range of the collection is [begin, end)
+     */
     const_iterator begin() const;
+    /**
+     * @returns a constant iterator pointing to the end of the collection
+     * (after the last item)
+     * @note as usual in C++, the range of the collection is [begin, end)
+     */
     const_iterator end() const;
 
+    /**
+     * Alias for begin
+     */
     inline const_iterator cbegin() const { return begin(); }
+    /**
+     * Alias for end
+     */
     inline const_iterator cend() const   { return end(); }
 
+    /**
+     * Alias for begin
+     */
     inline const_iterator constBegin() const { return cbegin(); }
+    /**
+     * Alias for end
+     */
     inline const_iterator constEnd() const   { return cend(); }
 
 private:
@@ -99,5 +142,5 @@ private:
 } // namespace Experimental
 } // namespace KActivities
 
-#endif // KACTIVITIES_STATS_RESULT
+#endif // KACTIVITIES_STATS_RESULTSET
 
