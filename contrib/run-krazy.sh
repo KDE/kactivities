@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ ! -f "scripts/run-krazy.sh" ];
+if [ ! -f "contrib/run-krazy.sh" ];
 then
     echo "This script needs to be started from KAMD's root directory"
     exit
