@@ -25,6 +25,13 @@ qt5_add_dbus_adaptor (
    resourcelinkingadaptor
    )
 
+qt5_add_dbus_adaptor (
+   sqliteplugin_SRCS
+   ${CMAKE_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.ResourcesScoring.xml
+   StatsPlugin.h StatsPlugin
+   resourcescoringadaptor
+   )
+
 include_directories (
    ${CMAKE_SOURCE_DIR}/src
    ${CMAKE_BINARY_DIR}/src

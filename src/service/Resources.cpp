@@ -42,8 +42,8 @@
 #include "Debug.h"
 #include "Application.h"
 #include "Activities.h"
-#include "common.h"
 #include "resourcesadaptor.h"
+#include "common/dbus/common.h"
 
 
 Resources::Private::Private(Resources *parent)
@@ -258,7 +258,7 @@ Resources::Resources(QObject *parent)
 
     new ResourcesAdaptor(this);
     KDBusConnectionPool::threadConnection().registerObject(
-        ACTIVITY_MANAGER_OBJECT_PATH(Resources), this);
+        KAMD_DBUS_OBJECT_PATH(Resources), this);
 
     d->connect(KWindowSystem::self(), SIGNAL(windowRemoved(WId)),
             SLOT(windowClosed(WId)));

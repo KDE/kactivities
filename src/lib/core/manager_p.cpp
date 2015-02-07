@@ -27,49 +27,19 @@
 #include "debug_p.h"
 #include "mainthreadexecutor_p.h"
 
+#include "common/dbus/common.h"
+
 namespace KActivities {
 
 Manager *Manager::s_instance = Q_NULLPTR;
 
-#define ACTIVITY_MANAGER_DBUS_PATH \
-    QStringLiteral("org.kde.ActivityManager")
-#define ACTIVITY_MANAGER_DBUS_OBJECT(A) \
-    QLatin1String("/ActivityManager" A)
-
 Manager::Manager()
     : QObject()
-    , m_watcher(
-            ACTIVITY_MANAGER_DBUS_PATH,
-            QDBusConnection::sessionBus()
-            )
-    , m_activities(
-            new org::kde::ActivityManager::Activities(
-                ACTIVITY_MANAGER_DBUS_PATH,
-                ACTIVITY_MANAGER_DBUS_OBJECT("/Activities"),
-                QDBusConnection::sessionBus(),
-                this)
-            )
-    , m_resources(
-            new org::kde::ActivityManager::Resources(
-                ACTIVITY_MANAGER_DBUS_PATH,
-                ACTIVITY_MANAGER_DBUS_OBJECT("/Resources"),
-                QDBusConnection::sessionBus(),
-                this)
-            )
-    , m_resourcesLinking(
-            new org::kde::ActivityManager::ResourcesLinking(
-                ACTIVITY_MANAGER_DBUS_PATH,
-                ACTIVITY_MANAGER_DBUS_OBJECT("/Resources/Linking"),
-                QDBusConnection::sessionBus(),
-                this)
-            )
-    , m_features(
-            new org::kde::ActivityManager::Features(
-                ACTIVITY_MANAGER_DBUS_PATH,
-                ACTIVITY_MANAGER_DBUS_OBJECT("/Features"),
-                QDBusConnection::sessionBus(),
-                this)
-            )
+    , m_watcher(KAMD_DBUS_SERVICE, QDBusConnection::sessionBus())
+    , m_activities(new KAMD_DBUS_CLASS_INTERFACE(Activities, Activities, this))
+    , m_resources(new KAMD_DBUS_CLASS_INTERFACE(Resources, Resources, this))
+    , m_resourcesLinking(new KAMD_DBUS_CLASS_INTERFACE(Resources/Linking, ResourcesLinking, this))
+    , m_features(new KAMD_DBUS_CLASS_INTERFACE(Features, Features, this))
 {
     connect(&m_watcher, &QDBusServiceWatcher::serviceOwnerChanged,
             this, &Manager::serviceOwnerChanged);
@@ -113,7 +83,7 @@ Manager *Manager::self()
 
 bool Manager::isServiceRunning()
 {
-    return QDBusConnection::sessionBus().interface()->isServiceRegistered(ACTIVITY_MANAGER_DBUS_PATH);
+    return QDBusConnection::sessionBus().interface()->isServiceRegistered(KAMD_DBUS_SERVICE);
 }
 
 void Manager::serviceOwnerChanged(const QString &serviceName, const QString &oldOwner, const QString &newOwner)
@@ -122,7 +92,7 @@ void Manager::serviceOwnerChanged(const QString &serviceName, const QString &old
 
     // qDebug() << "Service: " << serviceName;
 
-    if (serviceName == ACTIVITY_MANAGER_DBUS_PATH) {
+    if (serviceName == KAMD_DBUS_SERVICE) {
         emit serviceStatusChanged(!newOwner.isEmpty());
     }
 }

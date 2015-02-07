@@ -41,6 +41,7 @@
 #include "ResourceLinking.h"
 #include "Utils.h"
 #include "../../Event.h"
+#include "resourcescoringadaptor.h"
 
 KAMD_EXPORT_PLUGIN(sqliteplugin, StatsPlugin, "kactivitymanagerd-plugin-sqlite.json")
 
@@ -56,9 +57,9 @@ StatsPlugin::StatsPlugin(QObject *parent, const QVariantList &args)
     Q_UNUSED(args)
     s_instance = this;
 
-    // new ScoringAdaptor(this);
-    // KDBusConnectionPool::threadConnection().registerObject(
-    //     QStringLiteral("/ActivityManager/Resources/Scoring"), this);
+    new ResourcesScoringAdaptor(this);
+    KDBusConnectionPool::threadConnection().registerObject(
+        QStringLiteral("/ActivityManager/Resources/Scoring"), this);
 
     setName(QStringLiteral("org.kde.ActivityManager.Resources.Scoring"));
 }

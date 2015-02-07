@@ -38,6 +38,10 @@
 // KActivities
 #include <kactivities/consumer.h>
 
+#include "resourceslinking_interface.h"
+#include "resourcesscoring_interface.h"
+#include "common/dbus/common.h"
+
 namespace KActivities {
 namespace Experimental {
 namespace Stats {
@@ -45,6 +49,15 @@ namespace Stats {
 // Main class
 
 class ResultWatcher::Private {
+public:
+    Private()
+        : linking(new KAMD_DBUS_CLASS_INTERFACE(Resources/Linking, ResourcesLinking, Q_NULLPTR))
+        , scoring(new KAMD_DBUS_CLASS_INTERFACE(Resources/Scoring, ResourcesScoring, Q_NULLPTR))
+    {
+    }
+
+    QScopedPointer<org::kde::ActivityManager::ResourcesLinking> linking;
+    QScopedPointer<org::kde::ActivityManager::ResourcesScoring> scoring;
 };
 
 ResultWatcher::ResultWatcher(Query query)

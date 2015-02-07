@@ -35,6 +35,8 @@
 #include <sys/types.h>
 #include <signal.h>
 
+#include "common/dbus/common.h"
+
 namespace Process {
 
 QProcess *Modifier::s_process = nullptr;
@@ -97,7 +99,7 @@ void Modifier::initTestCase()
             qDebug() << "Stopping...";
 
             const auto dbus = QDBusConnection::sessionBus().interface();
-            const auto kamd = QStringLiteral("org.kde.ActivityManager");
+            const auto kamd = KAMD_DBUS_SERVICE;
 
             if (!dbus->isServiceRegistered(kamd)) break;
 

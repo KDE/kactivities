@@ -4,6 +4,7 @@ project (KActivitiesTest)
 find_package (Qt5 REQUIRED NO_MODULE COMPONENTS Test Core DBus)
 
 include_directories (
+   ${CMAKE_SOURCE_DIR}/src/
    ${CMAKE_SOURCE_DIR}/src/lib/core/
    ${CMAKE_BINARY_DIR}/src/lib/core/
    ${CMAKE_SOURCE_DIR}/tests/

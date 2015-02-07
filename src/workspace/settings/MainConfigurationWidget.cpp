@@ -24,7 +24,6 @@
 #include <QQmlContext>
 #include <QQmlEngine>
 #include <QQmlComponent>
-#include <QDBusInterface>
 #include <QDBusPendingCall>
 
 #include <QQuickView>
@@ -42,6 +41,7 @@
 #include <utils/d_ptr_implementation.h>
 
 #include "kactivities-features.h"
+#include "common/dbus/common.h"
 
 K_PLUGIN_FACTORY(ActivitiesKCMFactory, registerPlugin<MainConfigurationWidget>();)
 
@@ -223,10 +223,7 @@ void MainConfigurationWidget::save()
 
 void MainConfigurationWidget::forget(int count, const QString &what)
 {
-    QDBusInterface rankingsservice(
-        "org.kde.ActivityManager",
-        "/ActivityManager/Resources/Scoring",
-        "org.kde.ActivityManager.Resources.Scoring");
+    KAMD_DECL_DBUS_INTERFACE(rankingsservice, Resources/Scoring, ResourcesScoring);
 
     rankingsservice.asyncCall(
         "deleteRecentStats", QString(), count, what);
