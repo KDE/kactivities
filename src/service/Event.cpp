@@ -22,7 +22,6 @@
 
 // Local
 #include "Debug.h"
-#include "common.h"
 
 
 Event::Event()

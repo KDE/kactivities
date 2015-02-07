@@ -43,8 +43,8 @@
 // Local
 #include "Debug.h"
 #include "activitiesadaptor.h"
-#include "common.h"
 #include "ksmserver/KSMServer.h"
+#include "common/dbus/common.h"
 
 // Private
 #define ACTIVITY_MANAGER_CONFIG_FILE_NAME QStringLiteral("kactivitymanagerdrc")
@@ -105,7 +105,7 @@ Activities::Activities(QObject *parent)
 
     new ActivitiesAdaptor(this);
     KDBusConnectionPool::threadConnection().registerObject(
-        ACTIVITY_MANAGER_OBJECT_PATH(Activities), this);
+        KAMD_DBUS_OBJECT_PATH(Activities), this);
 
     // Initializing config
 

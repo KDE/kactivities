@@ -22,6 +22,8 @@
 #include <QDBusConnection>
 #include <QDBusConnectionInterface>
 
+#include "common/dbus/common.h"
+
 Test::Test(QObject *parent)
     : QObject(parent)
 {
@@ -36,7 +38,7 @@ bool Test::inEmptySession()
     foreach (const QString & service, services) {
         bool kdeServiceAndNotKAMD =
             service.startsWith(QStringLiteral("org.kde")) &&
-            service != QStringLiteral("org.kde.ActivityManager");
+            service != KAMD_DBUS_SERVICE;
 
         if (kdeServiceAndNotKAMD) {
             return false;
@@ -49,6 +51,6 @@ bool Test::inEmptySession()
 bool Test::isActivityManagerRunning()
 {
     return QDBusConnection::sessionBus().interface()->isServiceRegistered(
-        QStringLiteral("org.kde.ActivityManager"));
+        KAMD_DBUS_SERVICE);
 }
 

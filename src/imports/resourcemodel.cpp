@@ -26,7 +26,6 @@
 #include <QIcon>
 #include <QModelIndex>
 #include <QCoreApplication>
-#include <QDBusInterface>
 #include <QSqlQuery>
 #include <QSqlError>
 #include <QUuid>
@@ -53,6 +52,7 @@
 #include "utils/range.h"
 #include "utils/continue_with.h"
 #include "utils/dbusfuture_p.h"
+#include "common/dbus/common.h"
 
 #define ACTIVITY_COLUMN 0
 #define AGENT_COLUMN    1
@@ -68,9 +68,7 @@ namespace Imports {
 class ResourceModel::LinkerService: public QDBusInterface {
 private:
     LinkerService()
-        : QDBusInterface("org.kde.ActivityManager",
-                         "/ActivityManager/Resources/Linking",
-                         "org.kde.ActivityManager.ResourcesLinking")
+        : KAMD_DBUS_INTERFACE(Resources/Linking, ResourcesLinking, Q_NULLPTR)
     {
     }
 

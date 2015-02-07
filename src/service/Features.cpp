@@ -27,8 +27,8 @@
 #include <utils/d_ptr_implementation.h>
 
 // Local
-#include "common.h"
 #include "featuresadaptor.h"
+#include "common/dbus/common.h"
 
 
 class Features::Private {
@@ -40,7 +40,7 @@ Features::Features(QObject *parent)
 {
     new FeaturesAdaptor(this);
     KDBusConnectionPool::threadConnection().registerObject(
-        ACTIVITY_MANAGER_OBJECT_PATH(Features), this);
+        KAMD_DBUS_OBJECT_PATH(Features), this);
 }
 
 Features::~Features()

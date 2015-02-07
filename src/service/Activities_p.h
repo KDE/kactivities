@@ -34,8 +34,6 @@
 
 class KSMServer;
 
-class QDBusInterface;
-
 class Activities::Private : public QObject {
     Q_OBJECT
 

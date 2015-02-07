@@ -18,6 +18,22 @@ set (
    version.cpp
    )
 
+qt5_add_dbus_interface (
+   KActivitiesStats_LIB_SRCS
+
+   ${CMAKE_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.ResourcesScoring.xml
+   resourcesscoring_interface
+   )
+
+qt5_add_dbus_interface (
+   KActivitiesStats_LIB_SRCS
+
+   ${CMAKE_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.ResourcesLinking.xml
+   resourceslinking_interface
+   )
+
+
+
 add_library (
    KF5ActivitiesStats SHARED
    ${KActivitiesStats_LIB_SRCS}
