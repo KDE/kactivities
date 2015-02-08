@@ -1,0 +1,174 @@
+# Lithuanian translations for l package.
+# Copyright (C) 2012 This_file_is_part_of_KDE
+# This file is distributed under the same license as the l package.
+#
+# Automatically generated, 2012.
+# Liudas Alisauskas <liudas@akmc.lt>, 2013, 2014.
+msgid ""
+msgstr ""
+"Project-Id-Version: l 10n\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2015-01-26 07:49+0000\n"
+"PO-Revision-Date: 2014-11-02 19:37+0200\n"
+"Last-Translator: \n"
+"Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
+"Language: lt\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n==1 ? 0 : n%10>=2 && (n%100<10 || n"
+"%100>=20) ? 1 : n%10==0 || (n%100>10 && n%100<20) ? 2 : 3);\n"
+"X-Generator: Lokalize 1.5\n"
+
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Liudas Ališauskas"
+
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "liudas@akmc.lt"
+
+#: imports/activitymodel.cpp:584
+msgctxt "Header title for activity data model"
+msgid "Activity"
+msgstr "Veikla"
+
+#: service/Activities.cpp:139
+msgid "Default"
+msgstr "Numatyta"
+
+#: service/plugins/globalshortcuts/GlobalShortcutsPlugin.cpp:84
+#: service/plugins/globalshortcuts/GlobalShortcutsPlugin.cpp:119
+#, kde-format
+msgctxt "@action"
+msgid "Switch to activity \"%1\""
+msgstr "Persijungti į veiklą „%1“"
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:111
+#: workspace/kio/KioActivities.cpp:304
+msgid "Activities"
+msgstr "Veiklos"
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:114
+msgid "Loading..."
+msgstr "Įkeliama..."
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:141
+msgid "The Activity Manager is not running"
+msgstr "Veiklų tvarkytuvė neveikia"
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:185
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:252
+msgid "Link to the current activity"
+msgstr "Prijungti prie dabartinės veiklos"
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:188
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:257
+msgid "Unlink from the current activity"
+msgstr "Atjungti nuo dabartinės veiklos"
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:191
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:261
+msgid "Link to:"
+msgstr "Prijungti prie:"
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:196
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:269
+msgid "Unlink from:"
+msgstr "Atjungti nuo:"
+
+#: workspace/kio/KioActivities.cpp:107 workspace/kio/KioActivities.cpp:229
+msgid "Activity"
+msgstr "Veikla"
+
+#: workspace/kio/KioActivities.cpp:228
+msgid "Current activity"
+msgstr "Dabartinė veikla"
+
+#: workspace/settings/MainConfigurationWidget.cpp:80
+msgid "Available Features"
+msgstr "Galimos funkcijos"
+
+#: workspace/settings/MainConfigurationWidget.cpp:82
+msgid "Plugins"
+msgstr "Priedai"
+
+#: workspace/settings/MainConfigurationWidget.cpp:87
+msgctxt "unlimited number of months"
+msgid "forever"
+msgstr "visam laikui"
+
+#: workspace/settings/MainConfigurationWidget.cpp:99
+msgid "Forget the last hour"
+msgstr "Pamiršti paskutinę valandą"
+
+#: workspace/settings/MainConfigurationWidget.cpp:102
+msgid "Forget the last two hours"
+msgstr "Pamiršti paskutines dvi valandas"
+
+#: workspace/settings/MainConfigurationWidget.cpp:105
+msgid "Forget a day"
+msgstr "Pamiršti dieną"
+
+#: workspace/settings/MainConfigurationWidget.cpp:108
+msgid "Forget everything"
+msgstr "Pamiršti viską"
+
+#: workspace/settings/MainConfigurationWidget.cpp:257
+msgctxt "unit of time. months to keep the history"
+msgid " month"
+msgid_plural " months"
+msgstr[0] " mėnesį"
+msgstr[1] " mėnesius"
+msgstr[2] " mėnesių"
+msgstr[3] " mėnesį"
+
+#: workspace/settings/MainConfigurationWidget.cpp:260
+msgctxt "for in 'keep history for 5 months'"
+msgid "for "
+msgstr " "
+
+#. i18n: ectx: property (text), widget (QCheckBox, checkEnableActivities)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:17
+msgid "Enable activities management"
+msgstr "Įjungti veiklų valdymą"
+
+#. i18n: ectx: attribute (title), widget (QWidget, tab)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:28
+msgid "Privacy"
+msgstr "Privatumas"
+
+#. i18n: ectx: property (text), widget (QLabel, labelRememberDocuments)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:34
+msgid "Remember opened documents:"
+msgstr "Prisiminti atvertus dokumentus:"
+
+#. i18n: ectx: property (text), widget (QRadioButton, radioRememberAllApplications)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:45
+msgid "For a&ll applications"
+msgstr "Visoms programos"
+
+#. i18n: ectx: property (text), widget (QRadioButton, radioDontRememberApplications)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:55
+msgid "&Do not remember"
+msgstr "&Neprisiminti"
+
+#. i18n: ectx: property (text), widget (QRadioButton, radioRememberSpecificApplications)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:62
+msgid "O&nly for specific applications"
+msgstr "Tik tam tikroms programoms"
+
+#. i18n: ectx: property (text), widget (QLabel, labelKeepHistory)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:90
+msgid "Keep history"
+msgstr "Išsaugoti istoriją"
+
+#. i18n: ectx: property (text), widget (QPushButton, buttonClearRecentHistory)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:113
+msgid "Clear recent history"
+msgstr "Išvalyti paskiausią istoriją"
+
+#. i18n: ectx: property (text), widget (QCheckBox, checkBlacklistAllNotOnList)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:155
+msgid "Blacklist all applications not on this list"
+msgstr "Įtraukti į juodą sąrašą visas šias programas"

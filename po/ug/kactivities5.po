@@ -1,0 +1,185 @@
+# Uyghur translation for kactivitymanagerd_fileitem_linking_plugin.
+# Copyright (C) YEAR This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+# Gheyret Kenji <gheyret@gmail.com>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: kactivitymanagerd_fileitem_linking_plugin\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2015-01-26 07:49+0000\n"
+"PO-Revision-Date: 2013-09-08 07:05+0900\n"
+"Last-Translator: Gheyret Kenji <gheyret@gmail.com>\n"
+"Language-Team: \n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.5\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "ئابدۇقادىر ئابلىز, غەيرەت كەنجى"
+
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "sahran.ug@gmail.com,  gheyret@gmail.com"
+
+#: imports/activitymodel.cpp:584
+#, fuzzy
+#| msgid "Activities..."
+msgctxt "Header title for activity data model"
+msgid "Activity"
+msgstr "پائالىيەتلەر…"
+
+#: service/Activities.cpp:139
+msgid "Default"
+msgstr ""
+
+#: service/plugins/globalshortcuts/GlobalShortcutsPlugin.cpp:84
+#: service/plugins/globalshortcuts/GlobalShortcutsPlugin.cpp:119
+#, kde-format
+msgctxt "@action"
+msgid "Switch to activity \"%1\""
+msgstr "\"%1\" پائالىيەتكە ئالماشتۇر"
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:111
+#: workspace/kio/KioActivities.cpp:304
+#, fuzzy
+#| msgid "Activities..."
+msgid "Activities"
+msgstr "پائالىيەتلەر…"
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:114
+msgid "Loading..."
+msgstr ""
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:141
+#, fuzzy
+#| msgid "Activity manager is not running properly."
+msgid "The Activity Manager is not running"
+msgstr "پائالىيەت باشقۇرغۇچ نورمال ئىجرا بولمىغان."
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:185
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:252
+msgid "Link to the current activity"
+msgstr "نۆۋەتتىكى پائالىيەتكە ئۇلا"
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:188
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:257
+msgid "Unlink from the current activity"
+msgstr "نۆۋەتتىكى پائالىيەتتىن ئۇلانمىنى ئۈز"
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:191
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:261
+msgid "Link to:"
+msgstr "ئۇلايدىغىنى:"
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:196
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:269
+msgid "Unlink from:"
+msgstr "ئۇلانمىنى ئۈزىدىغىنى:"
+
+#: workspace/kio/KioActivities.cpp:107 workspace/kio/KioActivities.cpp:229
+#, fuzzy
+#| msgid "Activities..."
+msgid "Activity"
+msgstr "پائالىيەتلەر…"
+
+#: workspace/kio/KioActivities.cpp:228
+#, fuzzy
+#| msgid "Link to the current activity"
+msgid "Current activity"
+msgstr "نۆۋەتتىكى پائالىيەتكە ئۇلا"
+
+#: workspace/settings/MainConfigurationWidget.cpp:80
+msgid "Available Features"
+msgstr "ئىشلەتكىلى بولىدىغان ئىقتىدارلار"
+
+#: workspace/settings/MainConfigurationWidget.cpp:82
+msgid "Plugins"
+msgstr "قىستۇرما"
+
+#: workspace/settings/MainConfigurationWidget.cpp:87
+msgctxt "unlimited number of months"
+msgid "forever"
+msgstr "مەڭگۈ"
+
+#: workspace/settings/MainConfigurationWidget.cpp:99
+msgid "Forget the last hour"
+msgstr "ئاخىرقى سائەتتە ئۇنتۇ"
+
+#: workspace/settings/MainConfigurationWidget.cpp:102
+msgid "Forget the last two hours"
+msgstr "ئاخىرقى ئىككى سائەتتە ئۇنتۇ"
+
+#: workspace/settings/MainConfigurationWidget.cpp:105
+msgid "Forget a day"
+msgstr "بىر كۈندە ئۇنتۇ"
+
+#: workspace/settings/MainConfigurationWidget.cpp:108
+msgid "Forget everything"
+msgstr "ھەممىنى ئۇنتۇ"
+
+#: workspace/settings/MainConfigurationWidget.cpp:257
+msgctxt "unit of time. months to keep the history"
+msgid " month"
+msgid_plural " months"
+msgstr[0] " ئاي"
+
+#: workspace/settings/MainConfigurationWidget.cpp:260
+msgctxt "for in 'keep history for 5 months'"
+msgid "for "
+msgstr "ئۈچۈن "
+
+#. i18n: ectx: property (text), widget (QCheckBox, checkEnableActivities)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:17
+msgid "Enable activities management"
+msgstr "پائالىيەت باشقۇرغۇچنى قوزغات"
+
+#. i18n: ectx: attribute (title), widget (QWidget, tab)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:28
+msgid "Privacy"
+msgstr "شەخسىيەت"
+
+#. i18n: ectx: property (text), widget (QLabel, labelRememberDocuments)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:34
+msgid "Remember opened documents:"
+msgstr "ئېچىلغان پۈتۈكلەرنى ئەستە تۇت:"
+
+#. i18n: ectx: property (text), widget (QRadioButton, radioRememberAllApplications)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:45
+#, fuzzy
+#| msgid "For all applications"
+msgid "For a&ll applications"
+msgstr "ھەممە ئەپلەر ئۈچۈن"
+
+#. i18n: ectx: property (text), widget (QRadioButton, radioDontRememberApplications)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:55
+#, fuzzy
+#| msgid "Do not remember"
+msgid "&Do not remember"
+msgstr "ئەستە تۇتما"
+
+#. i18n: ectx: property (text), widget (QRadioButton, radioRememberSpecificApplications)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:62
+#, fuzzy
+#| msgid "Only for specific applications"
+msgid "O&nly for specific applications"
+msgstr "ئالاھىدە ئەپلەر ئۈچۈنلا"
+
+#. i18n: ectx: property (text), widget (QLabel, labelKeepHistory)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:90
+msgid "Keep history"
+msgstr "ئىزلارنى ساقلاپ قال"
+
+#. i18n: ectx: property (text), widget (QPushButton, buttonClearRecentHistory)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:113
+msgid "Clear recent history"
+msgstr "يېقىنقى ئىزنى تازىلا"
+
+#. i18n: ectx: property (text), widget (QCheckBox, checkBlacklistAllNotOnList)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:155
+msgid "Blacklist all applications not on this list"
+msgstr "قارا تىزىمى بۇ تىزىملىكتە بولمىغان ھەممە ئەپلەر"
