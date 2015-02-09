@@ -30,7 +30,7 @@ const QString name = QStringLiteral("Resources");
 
 QString version()
 {
-    return "2015.01.18";
+    return "2015.02.09";
 }
 
 QStringList schema()
@@ -154,7 +154,10 @@ void initSchema(Database &database)
 
     // Transition to KF5:
     // We left the world of Nepomuk, and all the ontologies went
-    // across the sea to the Undying Lands
+    // across the sea to the Undying Lands.
+    // This needs to be done before executing the schema() queries
+    // so that we do not create new (empty) tables and block these
+    // queries from being executed.
     if (dbSchemaVersion < QStringLiteral("2014.04.14")) {
         database.execQuery(
             QStringLiteral("ALTER TABLE nuao_DesktopEvent RENAME TO ResourceEvent"),
@@ -164,13 +167,36 @@ void initSchema(Database &database)
             /* ignore error */ true);
     }
 
-    const QString insertSchemaInfoQuery
-        = QStringLiteral("INSERT OR IGNORE INTO schemaInfo VALUES ('%1', '%2')");
-
-    const QString updateSchemaInfoQuery
-        = QStringLiteral("UPDATE schemaInfo SET value = '%2' WHERE key = '%1'");
-
     database.execQueries(ResourcesDatabaseSchema::schema());
+
+    // We can not allow empty fields for activity and agent, they need to
+    // be at least magic values. These do not change the structure
+    // of the database, but the old data.
+    if (dbSchemaVersion < QStringLiteral("2015.02.09")) {
+        const QString updateActivity =
+            "SET usedActivity=':global' "
+            "WHERE usedActivity IS NULL OR usedActivity = ''";
+
+        const QString updateAgent =
+            "SET initiatingAgent=':global' "
+            "WHERE initiatingAgent IS NULL OR initiatingAgent = ''";
+
+        // When the activity field was empty, it meant the file was
+        // linked to all activities (aka :global)
+        database.execQuery("UPDATE ResourceLink " + updateActivity);
+
+        // When the agent field was empty, it meant the file was not
+        // linked to a specified agent (aka :global)
+        database.execQuery("UPDATE ResourceLink " + updateAgent);
+
+        // These were not supposed to be empty, but in the case they were,
+        // deal with them as well
+        database.execQuery("UPDATE ResourceEvent " + updateActivity);
+        database.execQuery("UPDATE ResourceEvent " + updateAgent);
+        database.execQuery("UPDATE ResourceScoreCache " + updateActivity);
+        database.execQuery("UPDATE ResourceScoreCache " + updateAgent);
+
+    }
 }
 
 } // namespace Common

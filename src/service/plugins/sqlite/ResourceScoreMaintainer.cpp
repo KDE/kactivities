@@ -129,6 +129,13 @@ void ResourceScoreMaintainer::processResource(const QString &resource,
 
     const auto activity = StatsPlugin::self()->currentActivity();
 
+    Q_ASSERT_X(!application.isEmpty(),
+               "ResourceScoreMaintainer::processResource",
+               "Agent shoud not be empty");
+    Q_ASSERT_X(!resource.isEmpty(),
+               "ResourceScoreMaintainer::processResource",
+               "Resource shoud not be empty");
+
     if (d->scheduledResources.contains(activity)
         && d->scheduledResources[activity].contains(application)
         && d->scheduledResources[activity][application].contains(resource)) {

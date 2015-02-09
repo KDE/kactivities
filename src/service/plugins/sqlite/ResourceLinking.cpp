@@ -68,6 +68,16 @@ void ResourceLinking::LinkResourceToActivity(QString initiatingAgent,
         return;
     }
 
+    Q_ASSERT_X(!initiatingAgent.isEmpty(),
+               "ResourceLinking::LinkResourceToActivity",
+               "Agent shoud not be empty");
+    Q_ASSERT_X(!usedActivity.isEmpty(),
+               "ResourceLinking::LinkResourceToActivity",
+               "Activity shoud not be empty");
+    Q_ASSERT_X(!targettedResource.isEmpty(),
+               "ResourceLinking::LinkResourceToActivity",
+               "Resource shoud not be empty");
+
     Utils::prepare(resourcesDatabase(), linkResourceToActivityQuery,
         QStringLiteral(
             "INSERT OR REPLACE INTO ResourceLink"
@@ -113,6 +123,16 @@ void ResourceLinking::UnlinkResourceFromActivity(QString initiatingAgent,
         return;
     }
 
+    Q_ASSERT_X(!initiatingAgent.isEmpty(),
+               "ResourceLinking::UnlinkResourceFromActivity",
+               "Agent shoud not be empty");
+    Q_ASSERT_X(!usedActivity.isEmpty(),
+               "ResourceLinking::UnlinkResourceFromActivity",
+               "Activity shoud not be empty");
+    Q_ASSERT_X(!targettedResource.isEmpty(),
+               "ResourceLinking::UnlinkResourceFromActivity",
+               "Resource shoud not be empty");
+
     Utils::prepare(resourcesDatabase(), unlinkResourceFromActivityQuery,
         QStringLiteral(
             "DELETE FROM ResourceLink "
@@ -156,6 +176,16 @@ bool ResourceLinking::IsResourceLinkedToActivity(QString initiatingAgent,
         return false;
     }
 
+    Q_ASSERT_X(!initiatingAgent.isEmpty(),
+               "ResourceLinking::IsResourceLinkedToActivity",
+               "Agent shoud not be empty");
+    Q_ASSERT_X(!usedActivity.isEmpty(),
+               "ResourceLinking::IsResourceLinkedToActivity",
+               "Activity shoud not be empty");
+    Q_ASSERT_X(!targettedResource.isEmpty(),
+               "ResourceLinking::IsResourceLinkedToActivity",
+               "Resource shoud not be empty");
+
     Utils::prepare(resourcesDatabase(), isResourceLinkedToActivityQuery,
         QStringLiteral(
             "SELECT * FROM ResourceLink "
@@ -178,8 +208,6 @@ bool ResourceLinking::validateArguments(QString &initiatingAgent,
                                         QString &targettedResource,
                                         QString &usedActivity)
 {
-    Q_UNUSED(initiatingAgent)
-
     // Validating targetted resource
     if (targettedResource.startsWith(QStringLiteral("file://"))) {
         targettedResource = QUrl(targettedResource).toLocalFile();
@@ -195,14 +223,19 @@ bool ResourceLinking::validateArguments(QString &initiatingAgent,
         targettedResource = file.canonicalFilePath();
     }
 
+    // Handling special values for the agent
+    if (initiatingAgent.isEmpty()) {
+        initiatingAgent = ":global";
+    }
+
     // Handling special values for activities
     if (usedActivity == ":current") {
         usedActivity =
             Plugin::callOn<QString, Qt::DirectConnection>(
                 StatsPlugin::self()->activitiesInterface(),
                 "CurrentActivity", "QString");
-    } else if (usedActivity == ":global") {
-        usedActivity = "";
+    } else if (usedActivity.isEmpty()) {
+        usedActivity = ":global";
     }
 
     // If the activity is not empty and the passed activity

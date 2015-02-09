@@ -11,6 +11,7 @@ set (
    terms.cpp
    resultset.cpp
    resultwatcher.cpp
+   activitiessync_p.cpp
 
    ${CMAKE_SOURCE_DIR}/src/common/database/Database.cpp
    ${CMAKE_SOURCE_DIR}/src/common/database/schema/ResourcesDatabaseSchema.cpp
