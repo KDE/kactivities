@@ -50,23 +50,107 @@ namespace Stats {
 
 class ResultWatcher::Private {
 public:
-    Private()
+    Private(ResultWatcher *parent, Query query)
         : linking(new KAMD_DBUS_CLASS_INTERFACE(Resources/Linking, ResourcesLinking, Q_NULLPTR))
         , scoring(new KAMD_DBUS_CLASS_INTERFACE(Resources/Scoring, ResourcesScoring, Q_NULLPTR))
+        , q(parent)
+        , query(query)
     {
+    }
+
+    void linkResourceToActivity(const QString &agent, const QString &resource,
+                                const QString &activity)
+    {
+        Q_UNUSED(activity)
+        Q_UNUSED(agent)
+        Q_UNUSED(resource)
+
+        // The used resources do not really care about the linked ones
+        if (query.selection() == Terms::UsedResources) return;
+    }
+
+    void unlinkResourceFromActivity(const QString &agent,
+                                    const QString &resource,
+                                    const QString &activity)
+    {
+        Q_UNUSED(activity)
+        Q_UNUSED(agent)
+        Q_UNUSED(resource)
+
+        // The used resources do not really care about the linked ones
+        if (query.selection() == Terms::UsedResources) return;
+    }
+
+    void updateResourceScore(const QString &activity, const QString &agent,
+                             const QString &resource, double score)
+    {
+        Q_UNUSED(activity)
+        Q_UNUSED(agent)
+        Q_UNUSED(resource)
+        Q_UNUSED(score)
+
+        // The linked resources do not really care about the stats
+        if (query.selection() == Terms::LinkedResources) return;
+
+        emit resultUpdated(resource, score);
+    }
+
+
+    void deleteEarlierStats(QString, int)
+    {
+        // The linked resources do not really care about the stats
+        if (query.selection() == Terms::LinkedResources) return;
+
+        emit q->resultsInvalidated();
+    }
+
+    void deleteRecentStats(QString, int, QString)
+    {
+        // The linked resources do not really care about the stats
+        if (query.selection() == Terms::LinkedResources) return;
+
+        emit q->resultsInvalidated();
     }
 
     QScopedPointer<org::kde::ActivityManager::ResourcesLinking> linking;
     QScopedPointer<org::kde::ActivityManager::ResourcesScoring> scoring;
+
+    ResultWatcher * const q;
+    Query query;
 };
 
 ResultWatcher::ResultWatcher(Query query)
-    : d(new Private())
+    : d(new Private(this, query))
 {
+    using namespace org::kde::ActivityManager;
+    using namespace std::placeholders;
+
+    // There is no need for private slots, when we have bind
+
+    // Connecting the linking service
+    QObject::connect(
+        d->linking.data(), &ResourcesLinking::ResourceLinkedToActivity,
+        this, std::bind(&Private::linkResourceToActivity, d, _1, _2, _3));
+    QObject::connect(
+        d->linking.data(), &ResourcesLinking::ResourceUnlinkedFromActivity,
+        this, std::bind(&Private::unlinkResourceFromActivity, d, _1, _2, _3));
+
+    // Connecting the scoring service
+    QObject::connect(
+        d->scoring.data(), &ResourcesScoring::ResourceScoreUpdated,
+        this, std::bind(&Private::updateResourceScore, d, _1, _2, _3, _4));
+    QObject::connect(
+        d->scoring.data(), &ResourcesScoring::RecentStatsDeleted,
+        this, std::bind(&Private::deleteRecentStats, d, _1, _2, _3));
+    QObject::connect(
+        d->scoring.data(), &ResourcesScoring::EarlierStatsDeleted,
+        this, std::bind(&Private::deleteEarlierStats, d, _1, _2));
+
 }
 
 ResultWatcher::~ResultWatcher()
 {
+    delete d;
 }
 
 

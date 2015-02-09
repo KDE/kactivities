@@ -226,7 +226,7 @@ void MainConfigurationWidget::forget(int count, const QString &what)
     KAMD_DECL_DBUS_INTERFACE(rankingsservice, Resources/Scoring, ResourcesScoring);
 
     rankingsservice.asyncCall(
-        "deleteRecentStats", QString(), count, what);
+        "DeleteRecentStats", QString(), count, what);
 }
 
 void MainConfigurationWidget::forgetLastHour()
