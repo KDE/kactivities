@@ -133,6 +133,16 @@ void StatsPlugin::openResourceEvent(const QString &usedActivity,
                                     const QDateTime &start,
                                     const QDateTime &end)
 {
+    Q_ASSERT_X(!initiatingAgent.isEmpty(),
+               "StatsPlugin::openResourceEvent",
+               "Agent shoud not be empty");
+    Q_ASSERT_X(!usedActivity.isEmpty(),
+               "StatsPlugin::openResourceEvent",
+               "Activity shoud not be empty");
+    Q_ASSERT_X(!targettedResource.isEmpty(),
+               "StatsPlugin::openResourceEvent",
+               "Resource shoud not be empty");
+
     Utils::prepare(resourcesDatabase(), openResourceEventQuery, QStringLiteral(
         "INSERT INTO ResourceEvent"
         "        (usedActivity,  initiatingAgent,  targettedResource,  start,  end) "
@@ -153,6 +163,16 @@ void StatsPlugin::closeResourceEvent(const QString &usedActivity,
                                      const QString &targettedResource,
                                      const QDateTime &end)
 {
+    Q_ASSERT_X(!initiatingAgent.isEmpty(),
+               "StatsPlugin::closeResourceEvent",
+               "Agent shoud not be empty");
+    Q_ASSERT_X(!usedActivity.isEmpty(),
+               "StatsPlugin::closeResourceEvent",
+               "Activity shoud not be empty");
+    Q_ASSERT_X(!targettedResource.isEmpty(),
+               "StatsPlugin::closeResourceEvent",
+               "Resource shoud not be empty");
+
     Utils::prepare(resourcesDatabase(), closeResourceEventQuery, QStringLiteral(
         "UPDATE ResourceEvent "
         "SET end = :end "

@@ -36,7 +36,7 @@
 #include <boost/optional.hpp>
 
 // KActivities
-#include <kactivities/consumer.h>
+#include "activitiessync_p.h"
 
 namespace KActivities {
 namespace Experimental {
@@ -52,8 +52,7 @@ public:
     QSqlQuery query;
     Query queryDefinition;
 
-    mutable std::unique_ptr<KActivities::Consumer> activities;
-    mutable std::mutex activities_mutex;
+    mutable ::Private::ConsumerPtr activities;
 
     void initQuery()
     {
@@ -76,26 +75,6 @@ public:
 
     }
 
-    QString getCurrentActivity() const
-    {
-        // We need to get the current activity synchonously,
-        // this means waiting for the service to be available.
-        // It should not introduce blockages since there usually
-        // is a global activity cache in applications that care
-        // about activities.
-
-        if (!activities) {
-            std::unique_lock<std::mutex> lock(activities_mutex);
-            activities.reset(new KActivities::Consumer());
-        }
-
-        while (activities->serviceStatus() == KActivities::Consumer::Unknown) {
-            QCoreApplication::instance()->processEvents();
-        }
-
-        return activities->currentActivity();
-    }
-
     QString agentClause(const QString &agent) const
     {
         if (agent == ":any") return "1";
@@ -113,7 +92,7 @@ public:
 
         return "activity = '" + (
                 activity == ":global"  ? "" :
-                activity == ":current" ? getCurrentActivity() :
+                activity == ":current" ? ::Private::getCurrentActivity(activities) :
                                          activity
             ) + "'";
     }

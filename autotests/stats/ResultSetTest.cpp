@@ -185,9 +185,9 @@ void ResultSetTest::initTestCase()
             " , ('activity2' , 'gvim'                 , '/path/mid3_act2_gvim'  , '0' , '8'   , '-1' , '1421433172')"
             " , ('activity2' , 'gvim'                 , '/path/mid4_act2_gvim'  , '0' , '8'   , '-1' , '1421432545')"
             " , ('activity2' , 'gvim'                 , '/path/mid5_act2_gvim'  , '0' , '79'  , '-1' , '1421439118')"
-            " , ('activity1' , ''                     , '/path/mid6_act1_glob'  , '0' , '20'  , '-1' , '1421439331')"
-            " , ('activity1' , ''                     , '/path/mid7_act1_glob'  , '0' , '8'   , '-1' , '0')"
-            " , ('activity1' , ''                     , '/path/mid8_act1_glob'  , '0' , '7'   , '-1' , '1421432617')"
+            " , ('activity1' , ':global'              , '/path/mid6_act1_glob'  , '0' , '20'  , '-1' , '1421439331')"
+            " , ('activity1' , ':global'              , '/path/mid7_act1_glob'  , '0' , '8'   , '-1' , '0')"
+            " , ('activity1' , ':global'              , '/path/mid8_act1_glob'  , '0' , '7'   , '-1' , '1421432617')"
 
             " , ('activity1' , 'gvim'                 , '/path/low3_act1_gvim'  , '0' , '6'   , '-1' , '1421434704')"
             " , ('activity1' , 'kate'                 , '/path/low2_act1_kate'  , '0' , '3'   , '-1' , '1421433266')"

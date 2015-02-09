@@ -41,6 +41,9 @@
 #include "resourceslinking_interface.h"
 #include "resourcesscoring_interface.h"
 #include "common/dbus/common.h"
+#include "activitiessync_p.h"
+
+#include <boost/algorithm/cxx11/any_of.hpp>
 
 namespace KActivities {
 namespace Experimental {
@@ -50,12 +53,22 @@ namespace Stats {
 
 class ResultWatcher::Private {
 public:
+    mutable ::Private::ConsumerPtr activities;
+
     Private(ResultWatcher *parent, Query query)
         : linking(new KAMD_DBUS_CLASS_INTERFACE(Resources/Linking, ResourcesLinking, Q_NULLPTR))
         , scoring(new KAMD_DBUS_CLASS_INTERFACE(Resources/Scoring, ResourcesScoring, Q_NULLPTR))
         , q(parent)
         , query(query)
     {
+    }
+
+    bool activityMatches(const QString &activity) const
+    {
+        return true;
+        // return boost::any_of(query.activities(), [&] (const QString &matcher) {
+        //     if (matcher == Terms::Activity::global())
+        // });
     }
 
     void linkResourceToActivity(const QString &agent, const QString &resource,
@@ -85,6 +98,14 @@ public:
                              const QString &resource, double score)
     {
         Q_UNUSED(activity)
+
+        Q_ASSERT_X(activity == "00000000-0000-0000-0000-000000000000" ||
+                   !QUuid(activity).isNull(),
+                   "ResultWatcher::updateResourceScore",
+                   "The activity should be always specified here, no magic values");
+
+        if (!activityMatches(activity)) return;
+
         Q_UNUSED(agent)
         Q_UNUSED(resource)
         Q_UNUSED(score)
