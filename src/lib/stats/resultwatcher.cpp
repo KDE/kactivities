@@ -92,7 +92,7 @@ public:
         // The linked resources do not really care about the stats
         if (query.selection() == Terms::LinkedResources) return;
 
-        emit resultUpdated(resource, score);
+        emit q->resourceScoreChanged(resource, score);
     }
 
 

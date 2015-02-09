@@ -48,7 +48,7 @@ Q_SIGNALS:
      * @param result new data for the resource defined by result.resource
      * @note only the resource and score
      */
-    void resultScoreChanged(const QString &resource, double score);
+    void resourceScoreChanged(const QString &resource, double score);
 
     /**
      * Emitted when the title of a resource has been changed.
