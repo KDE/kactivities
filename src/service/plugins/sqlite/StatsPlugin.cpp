@@ -124,7 +124,7 @@ void StatsPlugin::loadConfiguration()
     // Delete old events, as per configuration
     // TODO: Event cleanup should be also done from time to time,
     //       not only on startup
-    deleteEarlierStats(QString(), config().readEntry("keep-history-for", 0));
+    DeleteEarlierStats(QString(), config().readEntry("keep-history-for", 0));
 }
 
 void StatsPlugin::openResourceEvent(const QString &usedActivity,
@@ -335,7 +335,7 @@ void StatsPlugin::addEvents(const EventList &events)
     }
 }
 
-void StatsPlugin::deleteRecentStats(const QString &activity, int count,
+void StatsPlugin::DeleteRecentStats(const QString &activity, int count,
                                     const QString &what)
 {
     const auto usedActivity = activity.isEmpty() ? QVariant()
@@ -402,10 +402,10 @@ void StatsPlugin::deleteRecentStats(const QString &activity, int count,
             );
     }
 
-    emit recentStatsDeleted(activity, count, what);
+    emit RecentStatsDeleted(activity, count, what);
 }
 
-void StatsPlugin::deleteEarlierStats(const QString &activity, int months)
+void StatsPlugin::DeleteEarlierStats(const QString &activity, int months)
 {
     if (months == 0) {
         return;
@@ -440,7 +440,7 @@ void StatsPlugin::deleteEarlierStats(const QString &activity, int months)
             ":time", time.toTime_t()
         );
 
-    emit earlierStatsDeleted(activity, months);
+    emit EarlierStatsDeleted(activity, months);
 }
 
 #include "StatsPlugin.moc"

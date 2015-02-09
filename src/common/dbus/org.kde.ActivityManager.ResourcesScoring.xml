@@ -2,29 +2,29 @@
 <node>
   <interface name="org.kde.ActivityManager.ResourcesScoring">
 
-    <signal name="resourceScoreUpdated">
+    <signal name="ResourceScoreUpdated">
       <arg name="activity" type="s" direction="out"/>
       <arg name="client" type="s" direction="out"/>
       <arg name="resource" type="s" direction="out"/>
       <arg name="score" type="d" direction="out"/>
   </signal>
 
-    <signal name="recentStatsDeleted">
+    <signal name="RecentStatsDeleted">
       <arg name="activity" type="s" direction="out"/>
       <arg name="count" type="i" direction="out"/>
       <arg name="what" type="s" direction="out"/>
     </signal>
-    <signal name="earlierStatsDeleted">
+    <signal name="EarlierStatsDeleted">
       <arg name="activity" type="s" direction="out"/>
       <arg name="months" type="i" direction="out"/>
   </signal>
 
-    <method name="deleteRecentStats">
+    <method name="DeleteRecentStats">
       <arg name="activity" type="s" direction="in"/>
       <arg name="count" type="i" direction="in"/>
       <arg name="what" type="s" direction="in"/>
     </method>
-    <method name="deleteEarlierStats">
+    <method name="DeleteEarlierStats">
       <arg name="activity" type="s" direction="in"/>
       <arg name="months" type="i" direction="in"/>
     </method>
