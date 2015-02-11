@@ -15,6 +15,7 @@ set (
 
    ${CMAKE_SOURCE_DIR}/src/common/database/Database.cpp
    ${CMAKE_SOURCE_DIR}/src/common/database/schema/ResourcesDatabaseSchema.cpp
+   ${CMAKE_SOURCE_DIR}/src/utils/qsqlquery_iterator.cpp
 
    version.cpp
    )
