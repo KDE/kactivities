@@ -25,15 +25,13 @@
 
 #include <KActivities/Consumer>
 
-namespace Private {
+namespace ActivitiesSync {
 
     typedef std::shared_ptr<KActivities::Consumer> ConsumerPtr;
 
-    ConsumerPtr instance();
+    QString currentActivity(ConsumerPtr &activities);
 
-    QString getCurrentActivity(ConsumerPtr &activities);
-
-} // namespace Private
+} // namespace ActivitiesSync
 
 #endif // ACTIVITIES_SYNC_P_H
 

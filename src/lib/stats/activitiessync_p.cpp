@@ -21,7 +21,7 @@
 
 #include <QCoreApplication>
 
-namespace Private {
+namespace ActivitiesSync {
     typedef std::shared_ptr<KActivities::Consumer> ConsumerPtr;
 
     ConsumerPtr instance()
@@ -42,7 +42,7 @@ namespace Private {
 
     }
 
-    QString getCurrentActivity(ConsumerPtr &activities)
+    QString currentActivity(ConsumerPtr &activities)
     {
         // We need to get the current activity synchonously,
         // this means waiting for the service to be available.
@@ -61,5 +61,5 @@ namespace Private {
         return activities->currentActivity();
     }
 
-} // namespace Private
+} // namespace ActivitiesSync
 

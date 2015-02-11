@@ -52,7 +52,7 @@ public:
     QSqlQuery query;
     Query queryDefinition;
 
-    mutable ::Private::ConsumerPtr activities;
+    mutable ActivitiesSync::ConsumerPtr activities;
 
     void initQuery()
     {
@@ -92,7 +92,7 @@ public:
 
         return "activity = '" + (
                 activity == ":global"  ? "" :
-                activity == ":current" ? ::Private::getCurrentActivity(activities) :
+                activity == ":current" ? ActivitiesSync::currentActivity(activities) :
                                          activity
             ) + "'";
     }

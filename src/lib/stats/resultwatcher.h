@@ -42,13 +42,20 @@ public:
 
 Q_SIGNALS:
     /**
-     * Emitted when a result has been updated. This either means
+     * Emitted when a result has been added or updated. This either means
      * a new resource has appeared in the result set, or that
      * a previously existing one has some of the attributes changed.
      * @param result new data for the resource defined by result.resource
-     * @note only the resource and score
      */
-    void resourceScoreChanged(const QString &resource, double score);
+    void resultAdded(const QString &resource, double score);
+
+    /**
+     * Emitted when a result has been added or updated. This either means
+     * a new resource has appeared in the result set, or that
+     * a previously existing one has some of the attributes changed.
+     * @param result new data for the resource defined by result.resource
+     */
+    void resultRemoved(const QString &resource);
 
     /**
      * Emitted when the title of a resource has been changed.
@@ -83,13 +90,6 @@ private:
     class Private;
     friend class Private;
     Private* const d;
-
-    // Q_PRIVATE_SLOT(d, void updateResourceScore(QString, QString, QString, double))
-    // Q_PRIVATE_SLOT(d, void deleteEarlierStats(QString, int))
-    // Q_PRIVATE_SLOT(d, void deleteRecentStats(QString, int, QString))
-    //
-    // Q_PRIVATE_SLOT(d, void linkResourceToActivity(QString, QString, QString))
-    // Q_PRIVATE_SLOT(d, void unlinkResourceFromActivity(QString, QString, QString))
 
 };
 
