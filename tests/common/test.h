@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2013 Ivan Cukic <ivan.cukic(at)kde.org>
+ *   Copyright (C) 2013, 2014, 2015 Ivan Cukic <ivan.cukic(at)kde.org>
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License version 2,
@@ -136,6 +136,24 @@ Q_SIGNALS:
 };
 
 #define CHECK_CONDITION(A, B) check(A, B, #A " raised " #B)
+
+// Pretty print
+#include <iostream>
+
+#if defined(Q_NO_DEBUG) or (not defined(Q_OS_LINUX))
+    #define TEST_CHUNK(Name)
+#else
+    inline
+    void _test_chunk(const QString &message)
+    {
+        std::cerr
+            << '\n'
+            << message.toStdString() << "\n"
+            << std::string(message.length(), '-') << '\n'
+            ;
+    }
+    #define TEST_CHUNK(Name) _test_chunk(Name);
+#endif
 
 #endif /* TEST_H */
 
