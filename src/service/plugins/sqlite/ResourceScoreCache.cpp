@@ -206,9 +206,9 @@ void ResourceScoreCache::update()
             // We have an Accessed event - otherwise, this wouldn't be 0
             score += d->timeFactor(QDateTime::fromTime_t(end)); // like it is open for 1 minute
 
-        } else if (intervalLength >= 4) {
-            // Ignoring stuff that was open for less than 4 seconds
+        } else {
             score += d->timeFactor(QDateTime::fromTime_t(end)) * intervalLength / 60.0;
+
         }
     }
 
@@ -223,12 +223,12 @@ void ResourceScoreCache::update()
     );
 
     // Notifying the world
-
-    QMetaObject::invokeMethod(StatsPlugin::self(),
-                              "ResourceScoreUpdated",
-                              Qt::QueuedConnection,
-                              Q_ARG(QString, d->activity),
-                              Q_ARG(QString, d->application),
-                              Q_ARG(QString, d->resource),
-                              Q_ARG(double, score));
+    qDebug() << "Notifying the world of the new event" << d->resource;
+    emit QMetaObject::invokeMethod(StatsPlugin::self(),
+                                   "ResourceScoreUpdated",
+                                   Qt::QueuedConnection,
+                                   Q_ARG(QString, d->activity),
+                                   Q_ARG(QString, d->application),
+                                   Q_ARG(QString, d->resource),
+                                   Q_ARG(double, score));
 }

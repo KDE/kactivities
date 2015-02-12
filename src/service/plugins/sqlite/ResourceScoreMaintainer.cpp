@@ -61,7 +61,7 @@ void ResourceScoreMaintainer::Private::run()
 
     forever {
         // initial delay before processing the resources
-        sleep(5);
+        sleep(1);
 
         ResourceTree resources;
 

@@ -86,6 +86,22 @@ Q_SIGNALS:
      */
     void resultsInvalidated();
 
+public:
+    // TODO: Move these to libKActivities
+
+    void linkToActivity(const QUrl &resource,
+                        const Terms::Activity &activity
+                            = Terms::Activity(QStringList()),
+                        const Terms::Agent &agent
+                            = Terms::Agent(QStringList()));
+
+    void unlinkFromActivity(const QUrl &resource,
+                            const Terms::Activity &activity
+                                = Terms::Activity(QStringList()),
+                            const Terms::Agent &agent
+                                = Terms::Agent(QStringList()));
+
+
 private:
     class Private;
     friend class Private;

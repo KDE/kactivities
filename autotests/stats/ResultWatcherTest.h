@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2015 Ivan Cukic <ivan.cukic(at)kde.org>
+ *   Copyright (C) 2013 Ivan Cukic <ivan.cukic(at)kde.org>
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License version 2,
@@ -17,21 +17,31 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef DEBUG_AND_RETURN_H
-#define DEBUG_AND_RETURN_H
+#ifndef RESULTWATCHERTEST_H
+#define RESULTWATCHERTEST_H
 
-#ifdef QT_DEBUG
-#include <QDebug>
-#endif
+#include <common/test.h>
 
-template<typename T>
-T debug_and_return(const char * message, T && value) {
-    #ifdef QT_DEBUG
-    qDebug() << message << " " << value;
-    #endif
+#include <controller.h>
+#include <memory>
 
-    return std::forward<T>(value);
-}
+#include <QScopedPointer>
 
-#endif // DEBUG_AND_RETURN_H
+class ResultWatcherTest : public Test {
+    Q_OBJECT
+public:
+    ResultWatcherTest(QObject *parent = nullptr);
+
+private Q_SLOTS:
+    void initTestCase();
+
+    void testLinkedResources();
+    void testUsedResources();
+
+    void cleanupTestCase();
+
+};
+
+
+#endif /* RESULTWATCHERTEST_H */
 

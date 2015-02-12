@@ -49,6 +49,8 @@
 
 #include <boost/algorithm/cxx11/any_of.hpp>
 
+#include <utils/debug_and_return.h>
+
 namespace KActivities {
 namespace Experimental {
 namespace Stats {
@@ -75,21 +77,23 @@ public:
     // activity or not). The :global special value is not special here
     bool activityMatches(const QString &activity) const
     {
-        return any_of(query.activities(), [&] (const QString &matcher) {
+        return debug_and_return("activity matching",
+            any_of(query.activities(), [&] (const QString &matcher) {
             return (matcher == ANY_ACTIVITY_TAG)     ? true :
                    (matcher == CURRENT_ACTIVITY_TAG) ? activity == ActivitiesSync::currentActivity(activities) :
                                                        activity == matcher;
-        });
+        }));
     }
 
     // Same as above, but for agents
     bool agentMatches(const QString &agent) const
     {
-        return any_of(query.agents(), [&] (const QString &matcher) {
+        return debug_and_return("agent matching",
+            any_of(query.agents(), [&] (const QString &matcher) {
             return (matcher == ANY_AGENT_TAG)     ? true :
                    (matcher == CURRENT_AGENT_TAG) ? agent == QCoreApplication::applicationName() :
                                                     agent == matcher;
-        });
+        }));
     }
 
     bool typeMatches(const QString &resource) const
@@ -112,9 +116,10 @@ public:
             return QString();
         });
 
-        return any_of(query.types(), [&] (const QString &matcher) {
+        return debug_and_return("type matching",
+            any_of(query.types(), [&] (const QString &matcher) {
             return matcher == ANY_TYPE_TAG || matcher == type;
-        });
+        }));
     }
 
     bool eventMatches(const QString &agent, const QString &resource,
@@ -127,12 +132,9 @@ public:
                && typeMatches(resource);
     }
 
-    void linkResourceToActivity(const QString &agent, const QString &resource,
+    void onResourceLinkedToActivity(const QString &agent, const QString &resource,
                                 const QString &activity)
     {
-        Q_UNUSED(activity)
-        Q_UNUSED(agent)
-        Q_UNUSED(resource)
 
         // The used resources do not really care about the linked ones
         if (query.selection() == Terms::UsedResources) return;
@@ -142,13 +144,10 @@ public:
         emit q->resultAdded(resource, std::numeric_limits<double>::infinity());
     }
 
-    void unlinkResourceFromActivity(const QString &agent,
+    void onResourceUnlinkedFromActivity(const QString &agent,
                                     const QString &resource,
                                     const QString &activity)
     {
-        Q_UNUSED(activity)
-        Q_UNUSED(agent)
-        Q_UNUSED(resource)
 
         // The used resources do not really care about the linked ones
         if (query.selection() == Terms::UsedResources) return;
@@ -158,12 +157,12 @@ public:
         emit q->resultRemoved(resource);
     }
 
-    void updateResourceScore(const QString &activity, const QString &agent,
+    void onResourceScoreUpdated(const QString &activity, const QString &agent,
                              const QString &resource, double score)
     {
         Q_ASSERT_X(activity == "00000000-0000-0000-0000-000000000000" ||
                    !QUuid(activity).isNull(),
-                   "ResultWatcher::updateResourceScore",
+                   "ResultWatcher::onResourceScoreUpdated",
                    "The activity should be always specified here, no magic values");
 
         // The linked resources do not really care about the stats
@@ -175,7 +174,7 @@ public:
     }
 
 
-    void deleteEarlierStats(QString, int)
+    void onEarlierStatsDeleted(QString, int)
     {
         // The linked resources do not really care about the stats
         if (query.selection() == Terms::LinkedResources) return;
@@ -183,7 +182,7 @@ public:
         emit q->resultsInvalidated();
     }
 
-    void deleteRecentStats(QString, int, QString)
+    void onRecentStatsDeleted(QString, int, QString)
     {
         // The linked resources do not really care about the stats
         if (query.selection() == Terms::LinkedResources) return;
@@ -209,21 +208,21 @@ ResultWatcher::ResultWatcher(Query query)
     // Connecting the linking service
     QObject::connect(
         d->linking.data(), &ResourcesLinking::ResourceLinkedToActivity,
-        this, std::bind(&Private::linkResourceToActivity, d, _1, _2, _3));
+        this, std::bind(&Private::onResourceLinkedToActivity, d, _1, _2, _3));
     QObject::connect(
         d->linking.data(), &ResourcesLinking::ResourceUnlinkedFromActivity,
-        this, std::bind(&Private::unlinkResourceFromActivity, d, _1, _2, _3));
+        this, std::bind(&Private::onResourceUnlinkedFromActivity, d, _1, _2, _3));
 
     // Connecting the scoring service
     QObject::connect(
         d->scoring.data(), &ResourcesScoring::ResourceScoreUpdated,
-        this, std::bind(&Private::updateResourceScore, d, _1, _2, _3, _4));
+        this, std::bind(&Private::onResourceScoreUpdated, d, _1, _2, _3, _4));
     QObject::connect(
         d->scoring.data(), &ResourcesScoring::RecentStatsDeleted,
-        this, std::bind(&Private::deleteRecentStats, d, _1, _2, _3));
+        this, std::bind(&Private::onRecentStatsDeleted, d, _1, _2, _3));
     QObject::connect(
         d->scoring.data(), &ResourcesScoring::EarlierStatsDeleted,
-        this, std::bind(&Private::deleteEarlierStats, d, _1, _2));
+        this, std::bind(&Private::onEarlierStatsDeleted, d, _1, _2));
 
 }
 
@@ -232,6 +231,47 @@ ResultWatcher::~ResultWatcher()
     delete d;
 }
 
+void ResultWatcher::linkToActivity(const QUrl &resource,
+                                   const Terms::Activity &activity,
+                                   const Terms::Agent &agent)
+{
+    const auto activities =
+        (!activity.values.isEmpty())       ? activity.values :
+        (!d->query.activities().isEmpty()) ? d->query.activities() :
+                                             Terms::Activity::current().values;
+    const auto agents =
+        (!agent.values.isEmpty())      ? agent.values :
+        (!d->query.agents().isEmpty()) ? d->query.agents() :
+                                         Terms::Agent::current().values;
+
+    for (const auto &activity : activities) {
+        for (const auto &agent : agents) {
+            d->linking->LinkResourceToActivity(agent, resource.toString(),
+                                               activity);
+        }
+    }
+}
+
+void ResultWatcher::unlinkFromActivity(const QUrl &resource,
+                                       const Terms::Activity &activity,
+                                       const Terms::Agent &agent)
+{
+    const auto activities =
+        !activity.values.isEmpty()       ? activity.values :
+        !d->query.activities().isEmpty() ? d->query.activities() :
+                                           Terms::Activity::current().values;
+    const auto agents =
+        !agent.values.isEmpty()      ? agent.values :
+        !d->query.agents().isEmpty() ? d->query.agents() :
+                                       Terms::Agent::current().values;
+
+    for (const auto &activity : activities) {
+        for (const auto &agent : agents) {
+            d->linking->UnlinkResourceFromActivity(agent, resource.toString(),
+                                                   activity);
+        }
+    }
+}
 
 } // namespace Stats
 } // namespace Experimental
