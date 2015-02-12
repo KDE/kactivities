@@ -316,8 +316,6 @@ void StatsPlugin::addEvents(const EventList &events)
 
         detectResourceInfo(event.uri);
 
-        qDebug() << "Event for:" << event.uri;
-
         switch (event.type) {
             case Event::Accessed:
                 openResourceEvent(

@@ -77,23 +77,21 @@ public:
     // activity or not). The :global special value is not special here
     bool activityMatches(const QString &activity) const
     {
-        return debug_and_return("activity matching",
-            any_of(query.activities(), [&] (const QString &matcher) {
+        return any_of(query.activities(), [&] (const QString &matcher) {
             return (matcher == ANY_ACTIVITY_TAG)     ? true :
                    (matcher == CURRENT_ACTIVITY_TAG) ? activity == ActivitiesSync::currentActivity(activities) :
                                                        activity == matcher;
-        }));
+        });
     }
 
     // Same as above, but for agents
     bool agentMatches(const QString &agent) const
     {
-        return debug_and_return("agent matching",
-            any_of(query.agents(), [&] (const QString &matcher) {
+        return any_of(query.agents(), [&] (const QString &matcher) {
             return (matcher == ANY_AGENT_TAG)     ? true :
                    (matcher == CURRENT_AGENT_TAG) ? agent == QCoreApplication::applicationName() :
                                                     agent == matcher;
-        }));
+        });
     }
 
     bool typeMatches(const QString &resource) const
@@ -116,10 +114,9 @@ public:
             return QString();
         });
 
-        return debug_and_return("type matching",
-            any_of(query.types(), [&] (const QString &matcher) {
+        return any_of(query.types(), [&] (const QString &matcher) {
             return matcher == ANY_TYPE_TAG || matcher == type;
-        }));
+        });
     }
 
     bool eventMatches(const QString &agent, const QString &resource,
@@ -132,10 +129,10 @@ public:
                && typeMatches(resource);
     }
 
-    void onResourceLinkedToActivity(const QString &agent, const QString &resource,
-                                const QString &activity)
+    void onResourceLinkedToActivity(const QString &agent,
+                                    const QString &resource,
+                                    const QString &activity)
     {
-
         // The used resources do not really care about the linked ones
         if (query.selection() == Terms::UsedResources) return;
 
@@ -145,10 +142,9 @@ public:
     }
 
     void onResourceUnlinkedFromActivity(const QString &agent,
-                                    const QString &resource,
-                                    const QString &activity)
+                                        const QString &resource,
+                                        const QString &activity)
     {
-
         // The used resources do not really care about the linked ones
         if (query.selection() == Terms::UsedResources) return;
 
@@ -158,7 +154,7 @@ public:
     }
 
     void onResourceScoreUpdated(const QString &activity, const QString &agent,
-                             const QString &resource, double score)
+                                const QString &resource, double score)
     {
         Q_ASSERT_X(activity == "00000000-0000-0000-0000-000000000000" ||
                    !QUuid(activity).isNull(),
