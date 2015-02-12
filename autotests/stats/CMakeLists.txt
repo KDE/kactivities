@@ -17,6 +17,7 @@ set (
    main.cpp
    QueryTest.cpp
    ResultSetTest.cpp
+   ResultSetQuickCheckTest.cpp
    ${CMAKE_SOURCE_DIR}/src/utils/qsqlquery_iterator.cpp
    ${CMAKE_SOURCE_DIR}/tests/common/test.cpp
    ${CMAKE_SOURCE_DIR}/src/common/database/Database.cpp
