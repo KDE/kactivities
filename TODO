@@ -1,27 +1,83 @@
-src/imports/resourcemodel.cpp:106:  NOTE: What to do if the file does not exist?
+
+libKActivities
+==============
+src/lib/core/controller.cpp:41:
+ TODO: Make Q_ASSERT_EVENTUALLY_X or something similar
+
+src/lib/core/info.cpp:165:
+ TODO: This needs to be changed, test for the new linking feature
+
+src/lib/core/resourceinstance.cpp:145:
+ TODO: update the service info
+src/lib/core/resourceinstance.cpp:157:
+ TODO: update the service info
+
+
+libKActivitiesStats
+===================
+src/lib/stats/resultset.cpp:73:
+ TODO: Implement types
+ QStringList types() const;
+src/lib/stats/resultset.cpp:120:
+ TODO: We need to correct the scores based on the time that passed
+       since the cache was last updated, although, for this query,
+       scores are not that important.
+src/lib/stats/resultset.cpp:181:
+ TODO: We need to correct the scores based on the time that passed
+       since the cache was last updated
+src/lib/stats/resultset.cpp:236:
+ TODO: Get this to work
+
+src/lib/stats/resultwatcher.h:90:
+ TODO: Move these to libKActivities
+
+
+KActivityManagerD
+=================
+src/service/ksmserver/KSMServer.cpp:72:
+ TODO: in multi-head environment there are multiple kwin instances
+ running and they will export different dbus name on different
+ root window. We have no support for that currently.
+ In future, the session management for Wayland may also need to be
+ reimplemented in some way.
+
+src/service/plugins/sqlite/StatsPlugin.cpp:125:
+ TODO: Event cleanup should be also done from time to time,
+       not only on startup
+src/service/plugins/sqlite/StatsPlugin.cpp:352:
+ TODO: Add focus and modification
+
+src/service/Application.cpp:154:
+ TODO: Restart on crash
+       KCrash::setFlags(KCrash::AutoRestart);
+src/service/Application.cpp:193:
+ TODO: Show a notification for a plugin that failed to load
+
+
+QML imports
+===========
+src/imports/resourcemodel.cpp:104:
+ NOTE: What to do if the file does not exist?
        Ignoring that case since the daemon creates it on startup.
        Is it plausible that somebody will instantiate the ResourceModel
        before the daemon is started?
-src/imports/resourcemodel.cpp:136:  TODO: Database connection naming could be smarter (thread-id-based,
+src/imports/resourcemodel.cpp:134:
+ TODO: Database connection naming could be smarter (thread-id-based,
        reusing connections...?)
-src/imports/resourcemodel.cpp:338:  TODO: Will probably need some more special handling -
+src/imports/resourcemodel.cpp:336:
+ TODO: Will probably need some more special handling -
        for application:/ and a few more
-src/imports/resourcemodel.cpp:554:  TODO: This might be smarter possibly, but might collide
+src/imports/resourcemodel.cpp:552:
+ TODO: This might be smarter possibly, but might collide
        with the SQL model. Implement a custom model with internal
        cache instead of basing it on QSqlModel.
 
-src/service/plugins/sqlite/StatsPlugin.cpp:118:  TODO: Event cleanup should be also done from time to time,
-       not only on startup
-src/service/plugins/sqlite/StatsPlugin.cpp:238:  TODO: Add focus and modification
 
-src/service/Application.cpp:157:  TODO: Restart on crash
-       KCrash::setFlags(KCrash::AutoRestart);
-src/service/Application.cpp:196:  TODO: Show a notification for a plugin that failed to load
+Workspace plugins
+=================
 
-src/lib/core/controller.cpp:41:  TODO: Make Q_ASSERT_EVENTUALLY_X or something similar
-
-src/lib/core/info.cpp:165:  TODO: This needs to be changed, test for the new linking feature
-
-src/lib/core/resourceinstance.cpp:145:  TODO: update the service info
-src/lib/core/resourceinstance.cpp:157:  TODO: update the service info
+Other
+=====
+src/common/database/schema/ResourcesDatabaseSchema.cpp:109:
+ TODO: This will require some refactoring after we introduce more databases
 
