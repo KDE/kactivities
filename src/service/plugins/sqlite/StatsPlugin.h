@@ -96,6 +96,12 @@ private Q_SLOTS:
                             const QString &targettedResource,
                             const QDateTime &end);
 
+    void saveResourceTitle(const QString &uri, const QString &title,
+                           bool autoTitle = false);
+    void saveResourceMimetype(const QString &uri, const QString &mimetype,
+                              bool autoMimetype = false);
+    void insertResourceInfo(const QString &uri);
+    void detectResourceInfo(const QString &uri);
 
 private:
     inline bool acceptedEvent(const Event &event);

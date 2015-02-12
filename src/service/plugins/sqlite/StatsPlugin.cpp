@@ -41,6 +41,7 @@
 #include "ResourceLinking.h"
 #include "Utils.h"
 #include "../../Event.h"
+#include "resourcescoringadaptor.h"
 
 KAMD_EXPORT_PLUGIN(sqliteplugin, StatsPlugin, "kactivitymanagerd-plugin-sqlite.json")
 
@@ -56,9 +57,9 @@ StatsPlugin::StatsPlugin(QObject *parent, const QVariantList &args)
     Q_UNUSED(args)
     s_instance = this;
 
-    // new ResourcesScoringAdaptor(this);
-    // KDBusConnectionPool::threadConnection().registerObject(
-    //     QStringLiteral("/ActivityManager/Resources/Scoring"), this);
+    new ResourcesScoringAdaptor(this);
+    KDBusConnectionPool::threadConnection().registerObject(
+        QStringLiteral("/ActivityManager/Resources/Scoring"), this);
 
     setName(QStringLiteral("org.kde.ActivityManager.Resources.Scoring"));
 }
@@ -73,6 +74,10 @@ bool StatsPlugin::init(const QHash<QString, QObject *> &modules)
 
     connect(m_resources, SIGNAL(ProcessedResourceEvents(EventList)),
             this, SLOT(addEvents(EventList)));
+    connect(m_resources, SIGNAL(RegisteredResourceMimetype(QString, QString)),
+            this, SLOT(saveResourceMimetype(QString, QString)));
+    connect(m_resources, SIGNAL(RegisteredResourceTitle(QString, QString)),
+            this, SLOT(saveResourceTitle(QString, QString)));
 
     loadConfiguration();
 
@@ -186,6 +191,92 @@ void StatsPlugin::closeResourceEvent(const QString &usedActivity,
     );
 }
 
+void StatsPlugin::detectResourceInfo(const QString &_uri)
+{
+    QString file = _uri;
+
+    if (!file.startsWith('/')) {
+        QUrl uri(_uri);
+
+        if (!uri.isLocalFile()) return;
+
+        file = uri.toLocalFile();
+
+        if(!QFile::exists(file)) return;
+    }
+
+    KFileItem item(file);
+
+    saveResourceMimetype(file, item.mimetype(), true);
+    saveResourceTitle(file, item.text(), true);
+
+}
+
+void StatsPlugin::insertResourceInfo(const QString &uri)
+{
+    Utils::prepare(resourcesDatabase(), insertResourceInfoQuery, QStringLiteral(
+        "INSERT INTO ResourceInfo( "
+            "  targettedResource"
+            ", title"
+            ", autoTitle"
+            ", mimetype"
+            ", autoMimetype"
+        ") VALUES ("
+            "  :targettedResource"
+            ", '' "
+            ", 1 "
+            ", '' "
+            ", 1 "
+        ")"
+    ));
+
+    Utils::exec(*insertResourceInfoQuery,
+        ":targettedResource", uri
+    );
+}
+
+void StatsPlugin::saveResourceTitle(const QString &uri, const QString &title,
+                                    bool autoTitle)
+{
+    insertResourceInfo(uri);
+
+    Utils::prepare(resourcesDatabase(), saveResourceTitleQuery, QStringLiteral(
+        "UPDATE ResourceInfo SET "
+            "  title = :title"
+            ", autoTitle = :autoTitle "
+        "WHERE "
+            "targettedResource = :targettedResource "
+    ));
+
+    Utils::exec(*saveResourceTitleQuery,
+        ":targettedResource" , uri                     ,
+        ":title"             , title                   ,
+        ":autoTitle"         , (autoTitle ? "1" : "0")
+    );
+}
+
+void StatsPlugin::saveResourceMimetype(const QString &uri,
+                                       const QString &mimetype,
+                                       bool autoMimetype)
+{
+    insertResourceInfo(uri);
+
+    Utils::prepare(resourcesDatabase(), saveResourceMimetypeQuery, QStringLiteral(
+        "UPDATE ResourceInfo SET "
+            "  mimetype = :mimetype"
+            ", autoMimetype = :autoMimetype "
+        "WHERE "
+            "targettedResource = :targettedResource "
+    ));
+
+    Utils::exec(*saveResourceMimetypeQuery,
+        ":targettedResource" , uri                        ,
+        ":mimetype"          , mimetype                   ,
+        ":autoMimetype"      , (autoMimetype ? "1" : "0")
+    );
+}
+
+
 StatsPlugin *StatsPlugin::self()
 {
     return s_instance;
@@ -222,6 +313,8 @@ void StatsPlugin::addEvents(const EventList &events)
 
     for (const auto &event :
             events | filtered(&StatsPlugin::acceptedEvent, this)) {
+
+        detectResourceInfo(event.uri);
 
         switch (event.type) {
             case Event::Accessed:

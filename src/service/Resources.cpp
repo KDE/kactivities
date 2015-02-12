@@ -42,8 +42,8 @@
 #include "Debug.h"
 #include "Application.h"
 #include "Activities.h"
-#include "common/dbus/common.h"
 #include "resourcesadaptor.h"
+#include "common/dbus/common.h"
 
 
 Resources::Private::Private(Resources *parent)
@@ -62,7 +62,7 @@ void Resources::Private::run()
 {
     forever {
         // initial delay before processing the events
-        sleep(5);
+        sleep(1);
 
         EventList currentEvents;
 
@@ -96,8 +96,8 @@ void Resources::Private::insertEvent(const Event &newEvent)
     emit q->RegisteredResourceEvent(newEvent);
 }
 
-void Resources::Private::addEvent(const QString &application, WId wid, const QString &uri,
-                                  int type)
+void Resources::Private::addEvent(const QString &application, WId wid,
+                                  const QString &uri, int type)
 {
     Event newEvent(application, wid, uri, type);
     addEvent(newEvent);
@@ -129,20 +129,20 @@ void Resources::Private::addEvent(const Event &newEvent)
     // as well.
 
     if (newEvent.wid != 0) {
-        WindowData &data = windows[newEvent.wid];
-        const QString &kuri(newEvent.uri);
+        WindowData &window = windows[newEvent.wid];
+        const QString &uri = newEvent.uri;
 
-        data.application = newEvent.application;
+        window.application = newEvent.application;
 
         switch (newEvent.type) {
             case Event::Opened:
                 insertEvent(newEvent);
 
-                if (data.focussedResource.isEmpty()) {
+                if (window.focussedResource.isEmpty()) {
                     // This window haven't had anything focused,
                     // assuming the new document is focused
 
-                    data.focussedResource = newEvent.uri;
+                    window.focussedResource = newEvent.uri;
                     insertEvent(newEvent.deriveWithType(Event::FocussedIn));
                 }
 
@@ -150,26 +150,26 @@ void Resources::Private::addEvent(const Event &newEvent)
 
             case Event::FocussedIn:
 
-                if (!data.resources.contains(kuri)) {
+                if (!window.resources.contains(uri)) {
                     // This window did not contain this resource before,
                     // sending Opened event
 
                     insertEvent(newEvent.deriveWithType(Event::Opened));
                 }
 
-                data.focussedResource = newEvent.uri;
+                window.focussedResource = newEvent.uri;
                 insertEvent(newEvent);
 
                 break;
 
             case Event::Closed:
 
-                if (data.focussedResource == kuri) {
+                if (window.focussedResource == uri) {
                     // If we are closing a document that is in focus,
                     // release focus first
 
                     insertEvent(newEvent.deriveWithType(Event::FocussedOut));
-                    data.focussedResource.clear();
+                    window.focussedResource.clear();
                 }
 
                 insertEvent(newEvent);
@@ -178,8 +178,8 @@ void Resources::Private::addEvent(const Event &newEvent)
 
             case Event::FocussedOut:
 
-                if (data.focussedResource == kuri) {
-                    data.focussedResource.clear();
+                if (window.focussedResource == uri) {
+                    window.focussedResource.clear();
                 }
 
                 insertEvent(newEvent);
@@ -189,6 +189,14 @@ void Resources::Private::addEvent(const Event &newEvent)
             default:
                 insertEvent(newEvent);
                 break;
+        }
+
+    } else {
+        // If we haven't got a window, just pass the event on,
+        // but only if it is not a focus event
+        if (newEvent.type != Event::FocussedIn
+            && newEvent.type != Event::FocussedOut) {
+            insertEvent(newEvent);
         }
     }
 
@@ -279,10 +287,9 @@ void Resources::RegisterResourceEvent(QString application, uint _windowId,
         return;
     }
 
-    QString kuri(uri);
     WId windowId = (WId)_windowId;
 
-    d->addEvent(application, windowId, kuri, (Event::Type)event);
+    d->addEvent(application, windowId, uri, (Event::Type)event);
 }
 
 void Resources::RegisterResourceMimetype(const QString &uri, const QString &mimetype)
@@ -290,8 +297,6 @@ void Resources::RegisterResourceMimetype(const QString &uri, const QString &mime
     if (!mimetype.isEmpty()) {
         return;
     }
-
-    QString kuri(uri);
 
     emit RegisteredResourceMimetype(uri, mimetype);
 }
@@ -302,8 +307,6 @@ void Resources::RegisterResourceTitle(const QString &uri, const QString &title)
     if (title.length() < 3) {
         return;
     }
-
-    QString kuri(uri);
 
     emit RegisteredResourceTitle(uri, title);
 }
