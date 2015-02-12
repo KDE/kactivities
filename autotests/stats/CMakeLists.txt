@@ -16,6 +16,7 @@ set (
    KActivitiesStatsTest_SRCS
    main.cpp
    QueryTest.cpp
+   ResultSetTest.cpp
    ${CMAKE_SOURCE_DIR}/src/utils/qsqlquery_iterator.cpp
    ${CMAKE_SOURCE_DIR}/tests/common/test.cpp
    ${CMAKE_SOURCE_DIR}/src/common/database/Database.cpp
