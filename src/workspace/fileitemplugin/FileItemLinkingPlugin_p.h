@@ -23,7 +23,6 @@
 #include "FileItemLinkingPlugin.h"
 
 #include <QThread>
-#include <QUrl>
 
 #include <KFileItemListProperties>
 

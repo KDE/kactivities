@@ -61,7 +61,7 @@ void ResourceScoreMaintainer::Private::run()
 
     forever {
         // initial delay before processing the resources
-        sleep(5);
+        sleep(1);
 
         ResourceTree resources;
 
@@ -128,6 +128,13 @@ void ResourceScoreMaintainer::processResource(const QString &resource,
     // processing
 
     const auto activity = StatsPlugin::self()->currentActivity();
+
+    Q_ASSERT_X(!application.isEmpty(),
+               "ResourceScoreMaintainer::processResource",
+               "Agent shoud not be empty");
+    Q_ASSERT_X(!resource.isEmpty(),
+               "ResourceScoreMaintainer::processResource",
+               "Resource shoud not be empty");
 
     if (d->scheduledResources.contains(activity)
         && d->scheduledResources[activity].contains(application)

@@ -248,7 +248,9 @@ void ActivitiesProtocol::listDir(const QUrl &url)
         {
             KIO::UDSEntryList udslist;
 
-            auto database = Database::instance(Database::ResourcesDatabase);
+            auto database = Common::Database::instance(
+                Common::Database::ResourcesDatabase,
+                Common::Database::ReadOnly);
 
             if (!database) {
                 finished();
@@ -266,7 +268,7 @@ void ActivitiesProtocol::listDir(const QUrl &url)
                     "AND initiatingAgent = \"\" "
                 );
 
-            auto query = database->query(queryString.arg(activity));
+            auto query = database->execQuery(queryString.arg(activity));
 
             for (const auto& result: query) {
                 auto path = result[0].toString();

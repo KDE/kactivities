@@ -44,38 +44,22 @@
 #include "Debug.h"
 #include "Utils.h"
 
-class Database::Private {
+#include <common/database/Database.h>
+#include <common/database/schema/ResourcesDatabaseSchema.h>
+
+class ResourcesDatabaseMigrator::Private {
 public:
-    QSqlDatabase database;
+    Common::Database::Ptr database;
 
-    template <typename T>
-    inline QSqlQuery execQueries(const T &query)
-    {
-        auto result = QSqlQuery(query, database);
-
-        if (result.lastError().isValid()) {
-            qDebug() << result.lastError().text();
-        }
-
-        return result;
-    }
-
-    template <typename T1, typename T2, typename... Ts>
-    inline QSqlQuery execQueries(const T1 &query1, const T2 &query2,
-                          const Ts &... queries)
-    {
-        execQueries(query1);
-        return execQueries(query2, queries...);
-    }
 };
 
-Database *Database::self()
+Common::Database &resourcesDatabase()
 {
-    static Database instance;
-    return &instance;
+    static ResourcesDatabaseMigrator instance;
+    return *(instance.d->database);
 }
 
-void Database::migrateDatabase(const QString &newDatabaseFile) const
+void ResourcesDatabaseMigrator::migrateDatabase(const QString &newDatabaseFile) const
 {
     // Checking whether we need to transfer the KActivities/KDE4
     // sqlite database file to the new location.
@@ -89,13 +73,14 @@ void Database::migrateDatabase(const QString &newDatabaseFile) const
         return;
     }
 
-    QString oldDatabaseFile(migration.locateLocal("data", "activitymanager/resources/database"));
+    QString oldDatabaseFile(
+        migration.locateLocal("data", "activitymanager/resources/database"));
     if (!oldDatabaseFile.isEmpty()) {
         QFile(oldDatabaseFile).copy(newDatabaseFile);
     }
 }
 
-Database::Database()
+ResourcesDatabaseMigrator::ResourcesDatabaseMigrator()
     : d()
 {
     const QString databaseDir
@@ -113,106 +98,17 @@ Database::Database()
 
     migrateDatabase(newDatabaseFile);
 
-    d->database = QSqlDatabase::addDatabase(
-        QStringLiteral("QSQLITE"),
-        QStringLiteral("plugins_sqlite_db_resources"));
+    d->database = Common::Database::instance(
+            Common::Database::ResourcesDatabase,
+            Common::Database::ReadWrite);
 
-    d->database.setDatabaseName(newDatabaseFile);
+    Q_ASSERT_X(d->database, "SQLite plugin/Database constructor",
+                            "Database could not be opened");
 
-    d->database.open();
-
-    initDatabaseSchema();
+    Common::ResourcesDatabaseSchema::initSchema(*d->database);
 }
 
-Database::~Database()
+ResourcesDatabaseMigrator::~ResourcesDatabaseMigrator()
 {
 }
 
-QSqlDatabase &Database::database()
-{
-    return d->database;
-}
-
-void Database::initDatabaseSchema()
-{
-    const QString currentSchemaVersion = QStringLiteral("2014.05.05");
-
-    QString dbSchemaVersion;
-
-    auto query = d->execQueries(
-        QStringLiteral("SELECT value FROM SchemaInfo WHERE key = 'version'"));
-
-    if (query.next()) {
-        dbSchemaVersion = query.value(0).toString();
-    }
-
-    // Early bail-out if the schema is up-to-date
-    if (dbSchemaVersion == currentSchemaVersion) {
-        return;
-    }
-
-    // Transition to KF5:
-    // We left the world of Nepomuk, and all the ontologies went
-    // across the sea to the Undying Lands
-    if (dbSchemaVersion < QStringLiteral("2014.04.14")) {
-        d->execQueries(
-            QStringLiteral("ALTER TABLE nuao_DesktopEvent RENAME TO ResourceEvent"),
-            QStringLiteral("ALTER TABLE kext_ResourceScoreCache RENAME TO ResourceScoreCache")
-        );
-    }
-
-    const QString insertSchemaInfoQuery
-        = QStringLiteral("INSERT OR IGNORE INTO schemaInfo VALUES ('%1', '%2')");
-
-    const QString updateSchemaInfoQuery
-        = QStringLiteral("UPDATE schemaInfo SET value = '%2' WHERE key = '%1'");
-
-    d->execQueries(
-        QStringLiteral("CREATE TABLE IF NOT EXISTS SchemaInfo "
-                       "(key text PRIMARY KEY, value text)"),
-
-        insertSchemaInfoQuery.arg(QStringLiteral("version"),
-                                           currentSchemaVersion),
-
-        updateSchemaInfoQuery.arg(QStringLiteral("version"),
-                                           currentSchemaVersion),
-
-        // The ResourceEvent table saves the Opened/Closed event pairs for
-        // a resource. The Accessed event is mapped to those.
-        // Focussing events are not stored in order not to get a
-        // huge database file and to lessen writes to the disk.
-        QStringLiteral("CREATE TABLE IF NOT EXISTS ResourceEvent ("
-                       "usedActivity TEXT, "
-                       "initiatingAgent TEXT, "
-                       "targettedResource TEXT, "
-                       "start INTEGER, "
-                       "end INTEGER "
-                       ")"),
-
-        // The ResourceScoreCache table stores the calcualted scores
-        // for resources based on the recorded events.
-        QStringLiteral("CREATE TABLE IF NOT EXISTS ResourceScoreCache ("
-                       "usedActivity TEXT, "
-                       "initiatingAgent TEXT, "
-                       "targettedResource TEXT, "
-                       "scoreType INTEGER, "
-                       "cachedScore FLOAT, "
-                       "firstUpdate INTEGER, "
-                       "lastUpdate INTEGER, "
-                       "PRIMARY KEY(usedActivity, initiatingAgent, targettedResource)"
-                       ")"),
-
-        // Introduced in 2014.05.05
-        // The ResourceLink table stores the information, formerly kept by
-        // Nepomuk, of which resources are linked to which activities.
-        // The additional features compared to the old days are
-        // the ability to limit the link to specific applications, and
-        // to create global links.
-        QStringLiteral("CREATE TABLE IF NOT EXISTS ResourceLink ("
-                       "usedActivity TEXT, "
-                       "initiatingAgent TEXT, "
-                       "targettedResource TEXT, "
-                       "PRIMARY KEY(usedActivity, initiatingAgent, targettedResource)"
-                       ")")
-    );
-}

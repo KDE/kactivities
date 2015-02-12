@@ -21,12 +21,12 @@
 #define PLUGINS_SQLITE_DATABASE_UTILS_H
 
 #include <QSqlQuery>
-#include <QSqlDatabase>
+#include <common/database/schema/ResourcesDatabaseSchema.h>
 #include <memory>
 
 namespace Utils {
 
-    inline bool prepare(QSqlDatabase &database,
+    inline bool prepare(Common::Database &database,
                         QSqlQuery &query,
                         const QString &queryString)
     {
@@ -35,7 +35,7 @@ namespace Utils {
         return query.prepare(queryString);
     }
 
-    inline bool prepare(QSqlDatabase &database,
+    inline bool prepare(Common::Database &database,
                         std::unique_ptr<QSqlQuery> &query,
                         const QString &queryString)
     {
@@ -43,7 +43,7 @@ namespace Utils {
             return true;
         }
 
-        query.reset(new QSqlQuery(database));
+        query.reset(new QSqlQuery(database.createQuery()));
 
         return prepare(database, *query, queryString);
     }

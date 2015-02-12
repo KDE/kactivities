@@ -38,13 +38,13 @@
 class ResourceScoreCache::Queries {
 private:
     Queries()
-        : createResourceScoreCacheQuery(Database::self()->addQuery())
-        , getResourceScoreCacheQuery(Database::self()->addQuery())
-        , updateResourceScoreCacheQuery(Database::self()->addQuery())
-        , getScoreAdditionQuery(Database::self()->addQuery())
+        : createResourceScoreCacheQuery(resourcesDatabase().createQuery())
+        , getResourceScoreCacheQuery(resourcesDatabase().createQuery())
+        , updateResourceScoreCacheQuery(resourcesDatabase().createQuery())
+        , getScoreAdditionQuery(resourcesDatabase().createQuery())
     {
 
-        Utils::prepare(Database::self()->database(),
+        Utils::prepare(resourcesDatabase(),
             createResourceScoreCacheQuery, QStringLiteral(
             "INSERT INTO ResourceScoreCache "
             "VALUES (:usedActivity, :initiatingAgent, :targettedResource, "
@@ -52,7 +52,7 @@ private:
                     ":firstUpdate)"
         ));
 
-        Utils::prepare(Database::self()->database(),
+        Utils::prepare(resourcesDatabase(),
             getResourceScoreCacheQuery, QStringLiteral(
             "SELECT cachedScore, lastUpdate FROM ResourceScoreCache "
             "WHERE "
@@ -61,7 +61,7 @@ private:
                 ":targettedResource = targettedResource "
         ));
 
-        Utils::prepare(Database::self()->database(),
+        Utils::prepare(resourcesDatabase(),
             updateResourceScoreCacheQuery, QStringLiteral(
             "UPDATE ResourceScoreCache SET "
                 "cachedScore = :cachedScore, "
@@ -72,7 +72,7 @@ private:
                 ":targettedResource = targettedResource "
         ));
 
-        Utils::prepare(Database::self()->database(),
+        Utils::prepare(resourcesDatabase(),
             getScoreAdditionQuery, QStringLiteral(
             "SELECT start, end "
             "FROM ResourceEvent "
@@ -127,6 +127,17 @@ ResourceScoreCache::ResourceScoreCache(const QString &activity,
     d->activity = activity;
     d->application = application;
     d->resource = resource;
+
+    Q_ASSERT_X(!d->application.isEmpty(),
+               "ResourceScoreCache::constructor",
+               "Agent shoud not be empty");
+    Q_ASSERT_X(!d->activity.isEmpty(),
+               "ResourceScoreCache::constructor",
+               "Activity shoud not be empty");
+    Q_ASSERT_X(!d->resource.isEmpty(),
+               "ResourceScoreCache::constructor",
+               "Resource shoud not be empty");
+
 }
 
 ResourceScoreCache::~ResourceScoreCache()
@@ -195,9 +206,9 @@ void ResourceScoreCache::update()
             // We have an Accessed event - otherwise, this wouldn't be 0
             score += d->timeFactor(QDateTime::fromTime_t(end)); // like it is open for 1 minute
 
-        } else if (intervalLength >= 4) {
-            // Ignoring stuff that was open for less than 4 seconds
+        } else {
             score += d->timeFactor(QDateTime::fromTime_t(end)) * intervalLength / 60.0;
+
         }
     }
 
@@ -212,12 +223,11 @@ void ResourceScoreCache::update()
     );
 
     // Notifying the world
-
-    QMetaObject::invokeMethod(StatsPlugin::self(),
-                              "resourceScoreUpdated",
-                              Qt::QueuedConnection,
-                              Q_ARG(QString, d->activity),
-                              Q_ARG(QString, d->application),
-                              Q_ARG(QString, d->resource),
-                              Q_ARG(double, score));
+    emit QMetaObject::invokeMethod(StatsPlugin::self(),
+                                   "ResourceScoreUpdated",
+                                   Qt::QueuedConnection,
+                                   Q_ARG(QString, d->activity),
+                                   Q_ARG(QString, d->application),
+                                   Q_ARG(QString, d->resource),
+                                   Q_ARG(double, score));
 }

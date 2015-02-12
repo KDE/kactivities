@@ -40,7 +40,7 @@ class ResourceLinking;
  */
 class StatsPlugin : public Plugin {
     Q_OBJECT
-    Q_CLASSINFO("D-Bus Interface", "org.kde.ActivityManager.Resources.Scoring")
+    // Q_CLASSINFO("D-Bus Interface", "org.kde.ActivityManager.Resources.Scoring")
     // Q_PLUGIN_METADATA(IID "org.kde.ActivityManager.plugins.sqlite")
 
 public:
@@ -56,22 +56,29 @@ public:
     inline
     QObject *activitiesInterface() const { return m_activities; }
 
+//
+// D-BUS Interface methods
+//
 
 public Q_SLOTS:
-    void deleteRecentStats(const QString &activity, int count,
+    void DeleteRecentStats(const QString &activity, int count,
                            const QString &what);
 
-    void deleteEarlierStats(const QString &activity, int months);
+    void DeleteEarlierStats(const QString &activity, int months);
 
 
 Q_SIGNALS:
-    void resourceScoreUpdated(const QString &activity, const QString &client,
+    void ResourceScoreUpdated(const QString &activity, const QString &client,
                               const QString &resource, double score);
 
-    void recentStatsDeleted(const QString &activity, int count,
+    void RecentStatsDeleted(const QString &activity, int count,
                             const QString &what);
 
-    void earlierStatsDeleted(const QString &activity, int months);
+    void EarlierStatsDeleted(const QString &activity, int months);
+
+//
+// End D-BUS Interface methods
+//
 
 
 private Q_SLOTS:
@@ -107,6 +114,10 @@ private:
 
     std::unique_ptr<QSqlQuery> openResourceEventQuery;
     std::unique_ptr<QSqlQuery> closeResourceEventQuery;
+
+    std::unique_ptr<QSqlQuery> insertResourceInfoQuery;
+    std::unique_ptr<QSqlQuery> saveResourceTitleQuery;
+    std::unique_ptr<QSqlQuery> saveResourceMimetypeQuery;
 
     bool m_blockedByDefault : 1;
     bool m_blockAll : 1;

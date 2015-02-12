@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2012 Ivan Cukic <ivan.cukic(at)kde.org>
+ *   Copyright (C) 2011, 2012, 2013, 2014, 2015 Ivan Cukic <ivan.cukic(at)kde.org>
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License version 2,
@@ -17,12 +17,26 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#define ACTIVITY_MANAGER_SERVICE \
-    QStringLiteral("org.kde.ActivityManager")
+#ifndef RESOURCESDATABASESCHEMA_H
+#define RESOURCESDATABASESCHEMA_H
 
-// can't use string literal concatenation in QStringLiteral in MSVC
-#define ACTIVITY_MANAGER_OBJECT_TYPE(A) \
-    QLatin1String(ACTIVITY_MANAGER_SERVICE #A)
-#define ACTIVITY_MANAGER_OBJECT_PATH(A) \
-    QLatin1String("/ActivityManager/" #A)
+#include <QStringList>
+#include "../Database.h"
+
+namespace Common {
+namespace ResourcesDatabaseSchema {
+
+    QString version();
+
+    QStringList schema();
+
+    QString path();
+    void overridePath(const QString &path);
+
+    void initSchema(Database &database);
+
+} // namespace ResourcesDatabase
+} // namespace Common
+
+#endif // RESOURCESDATABASESCHEMA_H
 
