@@ -12,7 +12,7 @@ include_directories (
 
 set (kactivitymanagerd_fileitem_linking_plugin_SRCS
    FileItemLinkingPlugin.cpp
-   ${CMAKE_SOURCE_DIR}/src/utils/qsqlquery.cpp
+   ${CMAKE_SOURCE_DIR}/src/utils/qsqlquery_iterator.cpp
    )
 
 add_library (

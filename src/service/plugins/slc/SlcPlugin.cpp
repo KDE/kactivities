@@ -94,7 +94,7 @@ void SlcPlugin::registeredResourceEvent(const Event &event)
     }
 }
 
-void SlcPlugin::registeredResourceMimeType(const QString &uri, const QString &mimetype)
+void SlcPlugin::registeredResourceMimetype(const QString &uri, const QString &mimetype)
 {
     m_resources[uri].mimetype = mimetype;
 }
@@ -109,8 +109,8 @@ bool SlcPlugin::init(const QHash<QString, QObject *> &modules)
     connect(modules[QStringLiteral("resources")], SIGNAL(RegisteredResourceEvent(Event)),
             this, SLOT(registeredResourceEvent(Event)),
             Qt::QueuedConnection);
-    connect(modules[QStringLiteral("resources")], SIGNAL(RegisteredResourceMimeType(QString, QString)),
-            this, SLOT(registeredResourceMimeType(QString, QString)),
+    connect(modules[QStringLiteral("resources")], SIGNAL(RegisteredResourceMimetype(QString, QString)),
+            this, SLOT(registeredResourceMimetype(QString, QString)),
             Qt::QueuedConnection);
     connect(modules[QStringLiteral("resources")], SIGNAL(RegisteredResourceTitle(QString, QString)),
             this, SLOT(registeredResourceTitle(QString, QString)),

@@ -22,13 +22,11 @@
 #include "Application.h"
 
 // Qt
-#include <QDBusConnection>
 #include <QThread>
 #include <QDir>
 #include <QProcess>
 #include <QDBusServiceWatcher>
 #include <QDBusConnectionInterface>
-#include <QDBusInterface>
 #include <QDBusReply>
 
 // KDE
@@ -58,8 +56,7 @@
 #include "Features.h"
 #include "Plugin.h"
 #include "Debug.h"
-
-#define KAMD_DBUS_SERVICE_NAME QStringLiteral("org.kde.ActivityManager")
+#include "common/dbus/common.h"
 
 
 namespace {
@@ -148,7 +145,7 @@ Application::Application(int &argc, char **argv)
 void Application::init()
 {
     if (!KDBusConnectionPool::threadConnection().registerService(
-            KAMD_DBUS_SERVICE_NAME)) {
+            KAMD_DBUS_SERVICE)) {
         exit(EXIT_SUCCESS);
     }
 
@@ -285,7 +282,7 @@ namespace  {
     template <typename Return>
     Return callOnRunningService(const QString &method)
     {
-        static QDBusInterface remote(KAMD_DBUS_SERVICE_NAME, "/ActivityManager",
+        static QDBusInterface remote(KAMD_DBUS_SERVICE, "/ActivityManager",
                                      "org.kde.ActivityManager.Application");
         QDBusReply<Return> reply = remote.call(method);
 
@@ -300,7 +297,7 @@ namespace  {
     bool isServiceRunning()
     {
         return QDBusConnection::sessionBus().interface()->isServiceRegistered(
-                KAMD_DBUS_SERVICE_NAME);
+                KAMD_DBUS_SERVICE);
     }
 }
 
@@ -349,7 +346,7 @@ int main(int argc, char **argv)
 
         QObject::connect(&watcher, &QDBusServiceWatcher::serviceRegistered,
             [] (const QString &service) {
-                if (service != KAMD_DBUS_SERVICE_NAME) {
+                if (service != KAMD_DBUS_SERVICE) {
                     return;
                 }
 

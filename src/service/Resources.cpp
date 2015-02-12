@@ -42,7 +42,7 @@
 #include "Debug.h"
 #include "Application.h"
 #include "Activities.h"
-#include "common.h"
+#include "common/dbus/common.h"
 #include "resourcesadaptor.h"
 
 
@@ -258,7 +258,7 @@ Resources::Resources(QObject *parent)
 
     new ResourcesAdaptor(this);
     KDBusConnectionPool::threadConnection().registerObject(
-        ACTIVITY_MANAGER_OBJECT_PATH(Resources), this);
+        KAMD_DBUS_OBJECT_PATH(Resources), this);
 
     d->connect(KWindowSystem::self(), SIGNAL(windowRemoved(WId)),
             SLOT(windowClosed(WId)));
@@ -285,7 +285,7 @@ void Resources::RegisterResourceEvent(QString application, uint _windowId,
     d->addEvent(application, windowId, kuri, (Event::Type)event);
 }
 
-void Resources::RegisterResourceMimeType(const QString &uri, const QString &mimetype)
+void Resources::RegisterResourceMimetype(const QString &uri, const QString &mimetype)
 {
     if (!mimetype.isEmpty()) {
         return;
@@ -293,7 +293,7 @@ void Resources::RegisterResourceMimeType(const QString &uri, const QString &mime
 
     QString kuri(uri);
 
-    emit RegisteredResourceMimeType(uri, mimetype);
+    emit RegisteredResourceMimetype(uri, mimetype);
 }
 
 void Resources::RegisterResourceTitle(const QString &uri, const QString &title)

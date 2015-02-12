@@ -16,7 +16,7 @@ find_package (KF5 REQUIRED COMPONENTS KIO I18n)
 
 set (kio_activities_PART_SRCS
    KioActivities.cpp
-   ${CMAKE_SOURCE_DIR}/src/utils/qsqlquery.cpp
+   ${CMAKE_SOURCE_DIR}/src/utils/qsqlquery_iterator.cpp
    ${CMAKE_SOURCE_DIR}/src/common/database/Database.cpp
    )
 

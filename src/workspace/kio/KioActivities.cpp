@@ -38,7 +38,7 @@
 #include <kio/job.h>
 
 #include <utils/d_ptr_implementation.h>
-#include <utils/qsqlquery.h>
+#include <utils/qsqlquery_iterator.h>
 #include <common/database/Database.h>
 
 #include "lib/core/info.h"
@@ -340,7 +340,7 @@ void ActivitiesProtocol::mimetype(const QUrl& url)
     switch (d->pathType(url)) {
         case Private::RootItem:
         case Private::ActivityRootItem:
-            mimeType(QStringLiteral("inode/directory"));
+            mimetype(QStringLiteral("inode/directory"));
             finished();
             break;
 

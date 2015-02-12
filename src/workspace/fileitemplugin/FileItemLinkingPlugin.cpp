@@ -22,7 +22,7 @@
 
 #include <kfileitemlistproperties.h>
 #include <utils/d_ptr_implementation.h>
-#include <utils/qsqlquery.h>
+#include <utils/qsqlquery_iterator.h>
 
 #include <QMenu>
 #include <QCursor>
@@ -34,11 +34,12 @@
 #include <QSqlError>
 #include <QSqlDriver>
 #include <QStandardPaths>
-#include <QDBusInterface>
 #include <QDBusPendingCall>
 
 #include <KPluginFactory>
 #include <KLocalizedString>
+
+#include "common/dbus/common.h"
 
 K_PLUGIN_FACTORY_WITH_JSON(ActivityLinkingFileItemActionFactory,
                            "kactivitymanagerd_fileitem_linking_plugin.json",
@@ -77,9 +78,7 @@ void FileItemLinkingPlugin::Private::actionTriggered()
     bool link = action->property("link").toBool();
     QString activity = action->property("activity").toString();
 
-    QDBusInterface service("org.kde.ActivityManager",
-                           "/ActivityManager/Resources/Linking",
-                           "org.kde.ActivityManager.ResourcesLinking");
+    KAMD_DECL_DBUS_INTERFACE(service, Resources/Linking, ResourceLinking);
 
     foreach (const auto &item, items.urlList())
     {

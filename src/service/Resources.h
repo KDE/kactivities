@@ -61,7 +61,7 @@ public Q_SLOTS:
      * Note that this will be forgotten when the resource in question is closed.
      * @param uri URI of the resource
      */
-    void RegisterResourceMimeType(const QString &uri, const QString &mimetype);
+    void RegisterResourceMimetype(const QString &uri, const QString &mimetype);
 
     /**
      * Registers resource's title. If not manually specified, it will be a
@@ -75,7 +75,7 @@ public Q_SLOTS:
 Q_SIGNALS:
     void RegisteredResourceEvent(const Event &event);
     void ProcessedResourceEvents(const EventList &events);
-    void RegisteredResourceMimeType(const QString &uri, const QString &mimetype);
+    void RegisteredResourceMimetype(const QString &uri, const QString &mimetype);
     void RegisteredResourceTitle(const QString &uri, const QString &title);
 
 public:
