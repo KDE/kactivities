@@ -73,7 +73,7 @@ public:
      *        If not specified, QCoreApplication::applicationName is used
      * @param parent pointer to the parent object
      */
-    explicit ResourceInstance(quintptr wid, const QString &application = QString(), QObject *parent = Q_NULLPTR);
+    explicit ResourceInstance(quintptr wid, const QString &application, QObject *parent = Q_NULLPTR);
 
     /**
      * Creates a new resource instance and automatically
