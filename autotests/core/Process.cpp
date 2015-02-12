@@ -30,7 +30,7 @@
 
 #include <QDBusConnection>
 
-#include "../src/kactivities-features.h"
+#include "kactivities-features.h"
 
 #include <sys/types.h>
 #include <signal.h>
