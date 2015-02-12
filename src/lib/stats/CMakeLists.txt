@@ -10,6 +10,7 @@ set (
    query.cpp
    terms.cpp
    resultset.cpp
+   resultwatcher.cpp
    activitiessync_p.cpp
 
    ${CMAKE_SOURCE_DIR}/src/common/database/Database.cpp
