@@ -144,7 +144,10 @@ QSqlQuery Database::createQuery() const
 
 QString Database::lastQuery() const
 {
+#ifdef QT_DEBUG
     return lastExecutedQuery;
+#endif
+    return QString();
 }
 
 QSqlQuery Database::execQuery(const QString &query, bool ignoreErrors) const
