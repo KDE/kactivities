@@ -50,7 +50,7 @@ public:
     ResourceTree scheduledResources;
     QMutex scheduledResources_mutex;
 
-    void run();
+    void run() Q_DECL_OVERRIDE;
     void processActivity(const ActivityID &activity,
                          const Applications &applications);
 };
