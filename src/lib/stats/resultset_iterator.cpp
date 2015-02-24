@@ -23,9 +23,11 @@ namespace Stats {
 
 using namespace Terms;
 
+typedef ResultSet::const_iterator iterator;
+
 // Iterator
 
-class ResultSet::const_iterator::Private {
+class iterator::Private {
 public:
     Private(const ResultSet *resultSet, int currentRow = -1)
         : resultSet(resultSet)
@@ -37,6 +39,18 @@ public:
     const ResultSet *resultSet;
     int currentRow;
     boost::optional<Result> currentValue;
+
+    inline void moveTo(int row)
+    {
+        if (row == currentRow) return;
+        currentRow = row;
+        updateValue();
+    }
+
+    inline void moveBy(int row)
+    {
+        moveTo(currentRow + row);
+    }
 
     void updateValue()
     {
@@ -78,58 +92,64 @@ public:
             resultSet  == other.resultSet &&
                 currentRow == other.currentRow;
     }
+
+    bool isValid() const
+    {
+        return currentValue;
+    }
+
+    static bool sameSource(const Private &left, const Private &right)
+    {
+        return left.resultSet == right.resultSet &&
+               left.resultSet != Q_NULLPTR;
+    }
+
 };
 
-ResultSet::const_iterator::const_iterator(const ResultSet *resultSet, int currentRow)
+iterator::const_iterator(const ResultSet *resultSet, int currentRow)
     : d(new Private(resultSet, currentRow))
 {
 }
 
-ResultSet::const_iterator::const_iterator()
+iterator::const_iterator()
     : d(new Private(Q_NULLPTR, -1))
 {
 }
 
-ResultSet::const_iterator::const_iterator(const const_iterator &source)
+iterator::const_iterator(const const_iterator &source)
     : d(new Private(source.d->resultSet, source.d->currentRow))
 {
 }
 
-ResultSet::const_iterator &ResultSet::const_iterator::operator=(const const_iterator &source)
+bool iterator::isSourceValid() const
 {
-    const_iterator result(source);
-    swap(*source.d, *result.d);
+    return d->resultSet != Q_NULLPTR;
+}
+
+iterator &iterator::operator=(const const_iterator &source)
+{
+    const_iterator temp(source);
+    swap(*d, *temp.d);
     return *this;
 }
 
-bool ResultSet::const_iterator::operator==(const const_iterator &right) const
-{
-    return *d == *right.d;
-}
-
-bool ResultSet::const_iterator::operator!=(const const_iterator &right) const
-{
-    return !(*d == *right.d);
-}
-
-ResultSet::const_iterator::~const_iterator()
+iterator::~const_iterator()
 {
     delete d;
 }
 
-const ResultSet::Result& ResultSet::const_iterator::operator*() const
+iterator::reference iterator::operator*() const
 {
     return d->currentValue.get();
 }
 
-const ResultSet::Result* ResultSet::const_iterator::operator->() const
+iterator::pointer iterator::operator->() const
 {
     return &d->currentValue.get();
 }
 
-
 // prefix
-ResultSet::const_iterator& ResultSet::const_iterator::operator++()
+iterator& iterator::operator++()
 {
     d->currentRow++;
     d->updateValue();
@@ -138,19 +158,103 @@ ResultSet::const_iterator& ResultSet::const_iterator::operator++()
 }
 
 // postfix
-ResultSet::const_iterator ResultSet::const_iterator::operator++(int)
+iterator iterator::operator++(int)
 {
     return const_iterator(d->resultSet, d->currentRow + 1);
 }
 
-ResultSet::const_iterator ResultSet::begin() const
+// prefix
+iterator& iterator::operator--()
+{
+    d->currentRow--;
+    d->updateValue();
+
+    return *this;
+}
+
+// postfix
+iterator iterator::operator--(int)
+{
+    return const_iterator(d->resultSet, d->currentRow - 1);
+}
+
+iterator ResultSet::begin() const
 {
     return const_iterator(this, 0);
 }
 
-ResultSet::const_iterator ResultSet::end() const
+iterator ResultSet::end() const
 {
     return const_iterator(this, -1);
+}
+
+iterator iterator::operator+(iterator::difference_type n) const
+{
+    return const_iterator(d->resultSet, d->currentRow + n);
+}
+
+iterator &iterator::operator+=(iterator::difference_type n)
+{
+    d->moveBy(n);
+    return *this;
+}
+
+iterator iterator::operator-(iterator::difference_type n) const
+{
+    return const_iterator(d->resultSet, d->currentRow - n);
+}
+
+iterator &iterator::operator-=(iterator::difference_type n)
+{
+    d->moveBy(-n);
+    return *this;
+}
+
+iterator::reference iterator::operator[](iterator::difference_type n) const
+{
+    return *(*this + n);
+}
+
+// bool iterator::operator==(const const_iterator &right) const
+// {
+//     return *d == *right.d;
+// }
+//
+// bool iterator::operator!=(const const_iterator &right) const
+// {
+//     return !(*d == *right.d);
+// }
+
+bool operator==(const iterator &left, const iterator &right)
+{
+    return *left.d == *right.d;
+}
+
+bool operator!=(const iterator &left, const iterator &right)
+{
+    return !(*left.d == *right.d);
+}
+
+#define COMPARATOR_IMPL(OP)                                                    \
+    bool operator OP(const iterator &left, const iterator &right)              \
+    {                                                                          \
+        return iterator::Private::sameSource(*left.d, *right.d)                \
+                   ? left.d->currentRow OP right.d->currentRow                 \
+                   : false;                                                    \
+    }
+
+COMPARATOR_IMPL(<)
+COMPARATOR_IMPL(>)
+COMPARATOR_IMPL(<=)
+COMPARATOR_IMPL(>=)
+
+#undef COMPARATOR_IMPL
+
+iterator::difference_type operator-(const iterator &left, const iterator &right)
+{
+    return iterator::Private::sameSource(*left.d, *right.d)
+               ? left.d->currentRow - right.d->currentRow
+               : 0;
 }
 
 } // namespace Stats

@@ -69,7 +69,7 @@ public:
      */
     class const_iterator {
     public:
-        typedef std::forward_iterator_tag iterator_category;
+        typedef std::random_access_iterator_tag iterator_category;
         typedef int difference_type;
 
         typedef const Result value_type;
@@ -82,16 +82,39 @@ public:
 
         ~const_iterator();
 
-        bool operator==(const const_iterator &other) const;
-        bool operator!=(const const_iterator &other) const;
+        bool isSourceValid() const;
 
-        const Result& operator*() const;
-        const Result* operator->() const;
+        reference operator*() const;
+        pointer   operator->() const;
 
         // prefix
         const_iterator& operator++();
         // postfix
         const_iterator operator++(int);
+
+        // prefix
+        const_iterator& operator--();
+        // postfix
+        const_iterator operator--(int);
+
+        const_iterator operator+(difference_type n) const;
+        const_iterator& operator+=(difference_type n);
+
+        const_iterator operator-(difference_type n) const;
+        const_iterator& operator-=(difference_type n);
+
+        reference operator[](difference_type n) const;
+
+        friend bool operator==(const const_iterator &left, const const_iterator &right);
+        friend bool operator!=(const const_iterator &left, const const_iterator &right);
+
+        friend bool operator<(const const_iterator &left, const const_iterator &right);
+        friend bool operator>(const const_iterator &left, const const_iterator &right);
+
+        friend bool operator<=(const const_iterator &left, const const_iterator &right);
+        friend bool operator>=(const const_iterator &left, const const_iterator &right);
+
+        friend difference_type operator-(const const_iterator &left, const const_iterator &right);
 
     private:
         const_iterator(const ResultSet *resultSet, int currentRow);
@@ -135,8 +158,27 @@ public:
 
 private:
     class Private;
-    Private* const d;
+    Private *const d;
 };
+
+bool KACTIVITIESSTATS_EXPORT operator==(const ResultSet::const_iterator &left,
+                                        const ResultSet::const_iterator &right);
+bool KACTIVITIESSTATS_EXPORT operator!=(const ResultSet::const_iterator &left,
+                                        const ResultSet::const_iterator &right);
+
+bool KACTIVITIESSTATS_EXPORT operator<(const ResultSet::const_iterator &left,
+                                       const ResultSet::const_iterator &right);
+bool KACTIVITIESSTATS_EXPORT operator>(const ResultSet::const_iterator &left,
+                                       const ResultSet::const_iterator &right);
+
+bool KACTIVITIESSTATS_EXPORT operator<=(const ResultSet::const_iterator &left,
+                                        const ResultSet::const_iterator &right);
+bool KACTIVITIESSTATS_EXPORT operator>=(const ResultSet::const_iterator &left,
+                                        const ResultSet::const_iterator &right);
+
+ResultSet::const_iterator::difference_type KACTIVITIESSTATS_EXPORT
+operator-(const ResultSet::const_iterator &left,
+          const ResultSet::const_iterator &right);
 
 } // namespace Stats
 } // namespace Experimental
