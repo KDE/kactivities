@@ -7,8 +7,8 @@ include_directories (
    ${CMAKE_SOURCE_DIR}/src/
    ${CMAKE_SOURCE_DIR}/src/lib/core/
    ${CMAKE_BINARY_DIR}/src/lib/core/
-   ${CMAKE_SOURCE_DIR}/tests/
    ${CMAKE_BINARY_DIR}/src/
+   ${CMAKE_SOURCE_DIR}/autotests/
    )
 
 set (
@@ -17,7 +17,7 @@ set (
    Process.cpp
    OfflineTest.cpp
    CleanOnlineTest.cpp
-   ${CMAKE_SOURCE_DIR}/tests/common/test.cpp
+   ${CMAKE_SOURCE_DIR}/autotests/common/test.cpp
    )
 
 if (NOT WIN32)
