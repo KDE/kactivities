@@ -9,7 +9,7 @@ include_directories (
    ${CMAKE_SOURCE_DIR}/src/lib/stats/
    ${CMAKE_BINARY_DIR}/src/lib/stats/
    ${CMAKE_SOURCE_DIR}/src/
-   ${CMAKE_SOURCE_DIR}/tests/
+   ${CMAKE_SOURCE_DIR}/autotests/
    )
 
 set (
@@ -20,9 +20,9 @@ set (
    ResultSetQuickCheckTest.cpp
    ResultWatcherTest.cpp
    ${CMAKE_SOURCE_DIR}/src/utils/qsqlquery_iterator.cpp
-   ${CMAKE_SOURCE_DIR}/tests/common/test.cpp
    ${CMAKE_SOURCE_DIR}/src/common/database/Database.cpp
    ${CMAKE_SOURCE_DIR}/src/common/database/schema/ResourcesDatabaseSchema.cpp
+   ${CMAKE_SOURCE_DIR}/autotests/common/test.cpp
    )
 
 if (NOT WIN32)
