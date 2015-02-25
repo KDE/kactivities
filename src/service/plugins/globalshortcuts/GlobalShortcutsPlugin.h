@@ -33,7 +33,7 @@ public:
     GlobalShortcutsPlugin(QObject *parent = Q_NULLPTR, const QVariantList &args = QVariantList());
     virtual ~GlobalShortcutsPlugin();
 
-    virtual bool init(const QHash<QString, QObject *> &modules) Q_DECL_OVERRIDE;
+    bool init(const QHash<QString, QObject *> &modules) Q_DECL_OVERRIDE;
 
 private Q_SLOTS:
     void activityAdded(const QString &activity);
