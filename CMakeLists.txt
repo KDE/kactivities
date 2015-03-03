@@ -33,7 +33,6 @@ set(KF5_VERSION "5.8.0") # handled by release scripts
 set(KF5_DEP_VERSION "5.8.0") # handled by release scripts
 find_package (KF5DBusAddons ${KF5_DEP_VERSION} CONFIG REQUIRED)
 find_package (KF5I18n ${KF5_DEP_VERSION} CONFIG REQUIRED)
-find_package (KF5Package ${KF5_DEP_VERSION} CONFIG REQUIRED)
 
 # Basic includes
 include (CPack)
