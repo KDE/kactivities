@@ -1,0 +1,169 @@
+# Copyright (C) YEAR This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+#
+# A S Alam <aalam@users.sf.net>, 2012, 2014.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2015-02-13 07:59+0000\n"
+"PO-Revision-Date: 2014-11-06 17:43-0600\n"
+"Last-Translator: A S Alam <aalam@users.sf.net>\n"
+"Language-Team: Punjabi/Panjabi <punjabi-users@lists.sf.net>\n"
+"Language: pa\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Lokalize 1.5\n"
+
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "ਅਮਨਪਰੀਤ ਸਿੰਘ ਆਲਮ"
+
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "aalam@users.sf.net"
+
+#: imports/activitymodel.cpp:584
+msgctxt "Header title for activity data model"
+msgid "Activity"
+msgstr "ਸਰਗਰਮੀ"
+
+#: service/Activities.cpp:139
+msgid "Default"
+msgstr "ਡਿਫਾਲਟ"
+
+#: service/plugins/globalshortcuts/GlobalShortcutsPlugin.cpp:84
+#: service/plugins/globalshortcuts/GlobalShortcutsPlugin.cpp:119
+#, kde-format
+msgctxt "@action"
+msgid "Switch to activity \"%1\""
+msgstr "\"%1\" ਐਕਟਵਿਟੀ ਲਈ ਬਦਲੋ"
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:110
+#: workspace/kio/KioActivities.cpp:306
+msgid "Activities"
+msgstr "ਸਰਗਰਮੀ"
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:113
+msgid "Loading..."
+msgstr "...ਲੋਡ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ"
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:140
+msgid "The Activity Manager is not running"
+msgstr "ਸਰਗਰਮੀ ਮੈਨੇਜਰ ਨਹੀਂ ਚੱਲ ਰਿਹਾ ਹੈ"
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:184
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:251
+msgid "Link to the current activity"
+msgstr "ਮੌਜੂਦਾ ਸਰਗਰਮੀ ਲਈ ਲਿੰਕ"
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:187
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:256
+msgid "Unlink from the current activity"
+msgstr "ਮੌਜੂਦਾ ਸਰਗਰਮੀ ਤੋਂ ਅਣ-ਲਿੰਕ"
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:190
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:260
+msgid "Link to:"
+msgstr "ਨਾਲ ਲਿੰਕ:"
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:195
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:268
+msgid "Unlink from:"
+msgstr "ਅਣਲਿੰਕ ਕਰੋ:"
+
+#: workspace/kio/KioActivities.cpp:107 workspace/kio/KioActivities.cpp:229
+msgid "Activity"
+msgstr "ਸਰਗਰਮੀ"
+
+#: workspace/kio/KioActivities.cpp:228
+msgid "Current activity"
+msgstr "ਮੌਜੂਦਾ ਸਰਗਰਮੀ"
+
+#: workspace/settings/MainConfigurationWidget.cpp:80
+msgid "Available Features"
+msgstr "ਉਪਲੱਬਧ ਫੀਚਰ"
+
+#: workspace/settings/MainConfigurationWidget.cpp:82
+msgid "Plugins"
+msgstr "ਪਲੱਗਇਨ"
+
+#: workspace/settings/MainConfigurationWidget.cpp:87
+msgctxt "unlimited number of months"
+msgid "forever"
+msgstr "ਹਮੇਸ਼ਾ"
+
+#: workspace/settings/MainConfigurationWidget.cpp:99
+msgid "Forget the last hour"
+msgstr "ਪਿਛਲਾ ਘੰਟਾ ਭੁੱਲ ਜਾਉ"
+
+#: workspace/settings/MainConfigurationWidget.cpp:102
+msgid "Forget the last two hours"
+msgstr "ਪਿਛਲੇ ਦੋ ਘੰਟੇ ਭੁੱਲ ਜਾਉ"
+
+#: workspace/settings/MainConfigurationWidget.cpp:105
+msgid "Forget a day"
+msgstr "ਇੱਕ ਦਿਨ ਭੁੱਲ ਜਾਓ"
+
+#: workspace/settings/MainConfigurationWidget.cpp:108
+msgid "Forget everything"
+msgstr "ਹਰ ਚੀਜ਼ ਭੁੱਲ ਜਾਉ"
+
+#: workspace/settings/MainConfigurationWidget.cpp:254
+msgctxt "unit of time. months to keep the history"
+msgid " month"
+msgid_plural " months"
+msgstr[0] " ਮਹੀਨਾ"
+msgstr[1] " ਮਹੀਨੇ"
+
+#: workspace/settings/MainConfigurationWidget.cpp:257
+msgctxt "for in 'keep history for 5 months'"
+msgid "for "
+msgstr "ਲਈ "
+
+#. i18n: ectx: property (text), widget (QCheckBox, checkEnableActivities)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:17
+msgid "Enable activities management"
+msgstr "ਸਰਗਰਮੀ ਪਰਬੰਧ ਯੋਗ"
+
+#. i18n: ectx: attribute (title), widget (QWidget, tab)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:28
+msgid "Privacy"
+msgstr "ਪਰਾਈਵੇਸੀ"
+
+#. i18n: ectx: property (text), widget (QLabel, labelRememberDocuments)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:34
+msgid "Remember opened documents:"
+msgstr "ਖੁੱਲ੍ਹੇ ਡੌਕੂਮੈਂਟ ਯਾਦ ਰੱਖੋ"
+
+#. i18n: ectx: property (text), widget (QRadioButton, radioRememberAllApplications)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:45
+msgid "For a&ll applications"
+msgstr "ਸਭ ਐਪਲੀਕੇਸ਼ਨ ਲਈ(&l)"
+
+#. i18n: ectx: property (text), widget (QRadioButton, radioDontRememberApplications)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:55
+msgid "&Do not remember"
+msgstr "ਯਾਦ ਨਾ ਰੱਖੋ(&D)"
+
+#. i18n: ectx: property (text), widget (QRadioButton, radioRememberSpecificApplications)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:62
+msgid "O&nly for specific applications"
+msgstr "ਕੇਵਲ ਖਾਸ ਐਪਲੀਕੇਸ਼ਨ ਲਈ ਹੀ(&n)"
+
+#. i18n: ectx: property (text), widget (QLabel, labelKeepHistory)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:90
+msgid "Keep history"
+msgstr "ਅਤੀਤ ਰੱਖੋ"
+
+#. i18n: ectx: property (text), widget (QPushButton, buttonClearRecentHistory)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:113
+msgid "Clear recent history"
+msgstr "ਤਾਜ਼ਾ ਅਤੀਤ ਸਾਫ਼ ਕਰੋ"
+
+#. i18n: ectx: property (text), widget (QCheckBox, checkBlacklistAllNotOnList)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:155
+msgid "Blacklist all applications not on this list"
+msgstr "ਇਹ ਸੂਚੀ ਤੋਂ ਬਿਨਾਂ ਸਭ ਐਪਲੀਕੇਸ਼ਨ ਬਲੈਕ-ਲਿਸਟ"
