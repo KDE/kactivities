@@ -51,6 +51,10 @@ public:
      * Creates the ResultSet from the specified query
      */
     ResultSet(Query query);
+
+    ResultSet(ResultSet && source);
+    ResultSet(const ResultSet &source);
+    ResultSet &operator= (ResultSet source);
     ~ResultSet();
 
     /**
@@ -158,7 +162,7 @@ public:
 
 private:
     class Private;
-    Private *const d;
+    Private *d;
 };
 
 bool KACTIVITIESSTATS_EXPORT operator==(const ResultSet::const_iterator &left,
