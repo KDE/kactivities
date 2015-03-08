@@ -17,32 +17,36 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#include <QApplication>
-#include "window.h"
+#pragma once
 
-int main(int argc, char *argv[])
-{
-    QApplication app(argc, argv);
+#include <QMainWindow>
 
-    Window w;
-    w.show();
-
-    // ResultSet results(UsedResources | Agent{"gvim"});
-    //
-    // int count = 20;
-    // for (const auto& result: results) {
-    //     qDebug() << "Result:" << result.title << result.resource;
-    //     if (count -- == 0) break;
-    // }
-    //
-    // ResultModel model(UsedResources | Agent{"gvim"});
-    // model.setItemCountLimit(50);
-    //
-    // QListView view;
-    // view.setModel(&model);
-    //
-    // view.show();
-
-    return app.exec();
+namespace Ui {
+    class MainWindow;
 }
+
+namespace KActivities {
+    class Consumer;
+namespace Experimental {
+namespace Stats {
+    class ResultModel;
+}
+}
+}
+
+class Window: public QMainWindow {
+    Q_OBJECT
+
+public:
+    Window();
+    ~Window();
+
+private Q_SLOTS:
+    void updateResults();
+
+private:
+    Ui::MainWindow *ui;
+    KActivities::Experimental::Stats::ResultModel *model;
+    KActivities::Consumer *activities;
+};
 

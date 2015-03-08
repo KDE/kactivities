@@ -255,6 +255,23 @@ ResultSet::ResultSet(Query query)
     d->initQuery();
 }
 
+ResultSet::ResultSet(ResultSet &&source)
+    : d(nullptr)
+{
+    std::swap(d, source.d);
+}
+
+ResultSet::ResultSet(const ResultSet &source)
+    : d(new Private(*source.d))
+{
+}
+
+ResultSet &ResultSet::operator= (ResultSet source)
+{
+    std::swap(d, source.d);
+    return *this;
+}
+
 ResultSet::~ResultSet()
 {
     delete d;

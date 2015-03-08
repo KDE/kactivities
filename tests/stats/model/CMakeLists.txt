@@ -14,7 +14,13 @@ include_directories (
 
 set (
    KActivitiesStatsTestApp_SRCS
+   window.cpp
    main.cpp
+   )
+
+qt5_wrap_ui(
+   KActivitiesStatsTestApp_SRCS
+   window.ui
    )
 
 if (NOT WIN32)

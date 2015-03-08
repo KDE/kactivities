@@ -23,9 +23,19 @@
 // Qt
 #include <QDebug>
 
+// STL and Boost
+#include <functional>
+#include <boost/range/algorithm/find_if.hpp>
+#include <boost/range/algorithm/lower_bound.hpp>
+
 // Local
 #include "resultset.h"
 #include "resultwatcher.h"
+#include "consumer.h"
+
+#include <utils/member_matcher.h>
+#include <utils/slide.h>
+#include <common/specialvalues.h>
 
 #define CHUNK_SIZE 10
 #define DEFAULT_ITEM_COUNT_LIMIT 20
@@ -37,20 +47,41 @@ namespace Stats {
 class ResultModel::Private {
 public:
     Private(Query query, ResultModel *parent)
-        : results(query)
+        : query(query)
+        , results(query)
         , watcher(query)
         , itemCountLimit(DEFAULT_ITEM_COUNT_LIMIT)
         , q(parent)
     {
     }
 
-    ResultSet results;
-    ResultWatcher watcher;
+    struct FindResult {
+        FindResult(Private * const d, QList<ResultSet::Result>::iterator iterator)
+            : d(d)
+            , iterator(iterator)
+            , index(iterator == d->cache.end() ? -1 : iterator - d->cache.begin())
+        {
+        }
 
-    int itemCountLimit;
+        Private * const d;
+        QList<ResultSet::Result>::iterator iterator;
+        int index;
 
-    ResultSet::const_iterator resultIt;
-    QList<ResultSet::Result> cache;
+        operator bool() const
+        {
+            return iterator != d->cache.end();
+        }
+    };
+
+    FindResult findResource(const QString &resource)
+    {
+        using namespace kamd::utils::member_matcher;
+        using boost::find_if;
+
+        return FindResult(
+            this,
+            find_if(cache, member(&ResultSet::Result::resource) == resource));
+    }
 
     void fetchMore(bool emitChanges)
     {
@@ -80,6 +111,116 @@ public:
         }
     }
 
+    void onResultAdded(const QString &resource, double score)
+    {
+        using namespace kamd::utils::member_matcher;
+        using kamd::utils::slide_one;
+        using boost::lower_bound;
+
+        // This can also be called when the resource score
+        // has been updated, so we need to check whether
+        // we already have it in the cache
+        const auto result = findResource(resource);
+
+        // TODO: We should also sort by the resource, not only on score
+        const auto destination = lower_bound(
+            cache, score, member(&ResultSet::Result::score) > _);
+
+        const int destinationIndex = destination - cache.begin();
+
+        if (result) {
+            // We already have the resource in the cache
+            // So, it is the time for a reshuffle
+            const int currentIndex = result.index;
+
+            q->beginMoveRows(QModelIndex(), currentIndex, currentIndex,
+                             QModelIndex(), destinationIndex);
+
+            slide_one(result.iterator, destination);
+
+            q->endMoveRows();
+
+        } else {
+            // We do not have the resource in the cache
+
+            q->beginInsertRows(QModelIndex(), destinationIndex,
+                               destinationIndex + 1);
+
+            ResultSet::Result result;
+            result.resource = resource;
+            result.score = score;
+
+            // TODO: Add the resource title, if known
+            // result.title;
+
+            cache.insert(destinationIndex, result);
+
+            q->endInsertRows();
+        }
+    }
+
+    void onResultRemoved(const QString &resource)
+    {
+        const auto result = findResource(resource);
+
+        if (!result) return;
+
+        q->beginRemoveRows(QModelIndex(), result.index, result.index);
+
+        cache.removeAt(result.index);
+
+        q->endRemoveRows();
+    }
+
+    void onResourceTitleChanged(const QString &resource, const QString &title)
+    {
+        const auto result = findResource(resource);
+
+        if (!result) return;
+
+        result.iterator->title = title;
+
+        q->dataChanged(q->index(result.index), q->index(result.index));
+    }
+
+    void onResourceMimetypeChanged(const QString &resource, const QString &mimetype)
+    {
+        // TODO: This can add or remove items from the model
+    }
+
+    void reset()
+    {
+        q->beginResetModel();
+
+        results = ResultSet(query);
+        cache.clear();
+
+        init();
+
+        q->endResetModel();
+    }
+
+    void init()
+    {
+        fetchMore(false);
+    }
+
+    void onCurrentActivityChanged(const QString &activity)
+    {
+        reset();
+    }
+
+    Query query;
+    ResultSet results;
+    ResultWatcher watcher;
+
+    int itemCountLimit;
+
+    ResultSet::const_iterator resultIt;
+    QList<ResultSet::Result> cache;
+    KActivities::Consumer activities;
+
+
 private:
     ResultModel *const q;
 
@@ -88,7 +229,27 @@ private:
 ResultModel::ResultModel(Query query, QObject *parent)
     : d(new Private(query, this))
 {
-    // d->fetchMore(false);
+    using namespace std::placeholders;
+
+    connect(&d->watcher, &ResultWatcher::resultAdded,
+            this, std::bind(&Private::onResultAdded, d, _1, _2));
+    connect(&d->watcher, &ResultWatcher::resultRemoved,
+            this, std::bind(&Private::onResultRemoved, d, _1));
+
+    connect(&d->watcher, &ResultWatcher::resourceTitleChanged,
+            this, std::bind(&Private::onResourceTitleChanged, d, _1, _2));
+    connect(&d->watcher, &ResultWatcher::resourceMimetypeChanged,
+            this, std::bind(&Private::onResourceMimetypeChanged, d, _1, _2));
+
+    connect(&d->watcher, &ResultWatcher::resultsInvalidated,
+            this, std::bind(&Private::reset, d));
+
+    if (query.activities().contains(CURRENT_ACTIVITY_TAG)) {
+        connect(&d->activities, &KActivities::Consumer::currentActivityChanged,
+                this, std::bind(&Private::onCurrentActivityChanged, d, _1));
+    }
+
+    d->init();
 }
 
 ResultModel::~ResultModel()
