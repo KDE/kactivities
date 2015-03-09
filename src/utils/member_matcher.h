@@ -23,7 +23,7 @@
 namespace kamd {
 namespace utils {
 
-namespace detail {
+namespace detail { //_
     enum ComparisonOperation {
         Less,
         LessOrEqual,
@@ -80,39 +80,25 @@ namespace detail {
         {
         }
 
-        template <typename Value>
-        inline member_comparator<Member, Value> operator == (const Value &value) const
-        {
-            return member_comparator<Member, Value>(Equal, m_member, value);
-        }
+        #define IMPLEMENT_COMPARISON_OPERATOR(OPERATOR, NAME)                  \
+            template <typename Value>                                          \
+            inline member_comparator<Member, Value>                            \
+                    operator OPERATOR (const Value &value) const               \
+            {                                                                  \
+                return member_comparator<Member, Value>(NAME, m_member, value);\
+            }
 
-        template <typename Value>
-        inline member_comparator<Member, Value> operator <= (const Value &value) const
-        {
-            return member_comparator<Member, Value>(LessOrEqual, m_member, value);
-        }
+        IMPLEMENT_COMPARISON_OPERATOR(<  , Less)
+        IMPLEMENT_COMPARISON_OPERATOR(<= , LessOrEqual)
+        IMPLEMENT_COMPARISON_OPERATOR(== , Equal)
+        IMPLEMENT_COMPARISON_OPERATOR(>= , GreaterOrEqual)
+        IMPLEMENT_COMPARISON_OPERATOR(>  , Greater)
 
-        template <typename Value>
-        inline member_comparator<Member, Value> operator >= (const Value &value) const
-        {
-            return member_comparator<Member, Value>(GreaterOrEqual, m_member, value);
-        }
-
-        template <typename Value>
-        inline member_comparator<Member, Value> operator < (const Value &value) const
-        {
-            return member_comparator<Member, Value>(Less, m_member, value);
-        }
-
-        template <typename Value>
-        inline member_comparator<Member, Value> operator > (const Value &value) const
-        {
-            return member_comparator<Member, Value>(Greater, m_member, value);
-        }
+        #undef IMPLEMENT_COMPARISON_OPERATOR
 
         Member m_member;
     };
-} // namespace detail
+} //^ namespace detail
 
 namespace member_matcher {
     struct placeholder {} _;

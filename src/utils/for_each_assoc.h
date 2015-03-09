@@ -29,7 +29,7 @@
 namespace kamd {
 namespace utils {
 
-namespace details {
+namespace details { //_
 
 // Iterator Functions
 
@@ -68,7 +68,7 @@ Function _for_each_assoc_helper_container(const Container &c, Function f,
     return stl_for_each_assoc(c.cbegin(), c.cend(), f);
 }
 
-} // namespace details
+} //^ namespace details
 
 template <typename Container, typename Function>
 Function for_each_assoc(const Container &c, Function f)

@@ -47,7 +47,7 @@ public:
     {
     }
 
-    // Column comparator functor {{{
+    //_ Column comparator functor
     template <typename Comp1, typename Comp2>
     class CompositeComparator {
     public:
@@ -94,7 +94,7 @@ public:
         const ColumnType Type::* memberptr;
         const bool invert;
     };
-    // }}}
+    //^
 
     inline Comparator asc() const
     {
@@ -106,7 +106,7 @@ public:
         return Comparator(memberptr, true);
     }
 
-    // Column filtering functor {{{
+    //_ Column filtering functor
     enum ComparisonOperation {
         Less,
         LessOrEqual,
@@ -143,37 +143,22 @@ public:
         const ComparisonOperation comparison;
         const T value;
     };
-    // }}}
 
-    template <typename T>
-    inline Filterer<T> operator <(const T &value) const
-    {
-        return Filterer<T>(memberptr, Less, value);
+    #define IMPLEMENT_COMPARISON_OPERATOR(OPERATOR, NAME)                      \
+    template <typename T>                                                      \
+    inline Filterer<T> operator OPERATOR(const T &value) const                 \
+    {                                                                          \
+        return Filterer<T>(memberptr, NAME, value);                            \
     }
+    //^
 
-    template <typename T>
-    inline Filterer<T> operator <=(const T &value) const
-    {
-        return Filterer<T>(memberptr, LessOrEqual, value);
-    }
+    IMPLEMENT_COMPARISON_OPERATOR(<  , Less)
+    IMPLEMENT_COMPARISON_OPERATOR(<= , LessOrEqual)
+    IMPLEMENT_COMPARISON_OPERATOR(== , Equal)
+    IMPLEMENT_COMPARISON_OPERATOR(>= , GreaterOrEqual)
+    IMPLEMENT_COMPARISON_OPERATOR(>  , Greater)
 
-    template <typename T>
-    inline Filterer<T> operator ==(const T &value) const
-    {
-        return Filterer<T>(memberptr, Equal, value);
-    }
-
-    template <typename T>
-    inline Filterer<T> operator >=(const T &value) const
-    {
-        return Filterer<T>(memberptr, GreaterOrEqual, value);
-    }
-
-    template <typename T>
-    inline Filterer<T> operator >(const T &value) const
-    {
-        return Filterer<T>(memberptr, Greater, value);
-    }
+    #undef IMPLEMENT_COMPARISON_OPERATOR
 
     // Column stuff
 

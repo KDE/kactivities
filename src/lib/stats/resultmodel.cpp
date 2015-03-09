@@ -55,6 +55,8 @@ public:
     {
     }
 
+    //_ findResource(...) -> (index, iterator)
+
     struct FindResult {
         FindResult(Private * const d, QList<ResultSet::Result>::iterator iterator)
             : d(d)
@@ -73,7 +75,7 @@ public:
         }
     };
 
-    FindResult findResource(const QString &resource)
+    inline FindResult findResource(const QString &resource)
     {
         using namespace kamd::utils::member_matcher;
         using boost::find_if;
@@ -82,6 +84,8 @@ public:
             this,
             find_if(cache, member(&ResultSet::Result::resource) == resource));
     }
+
+    //^
 
     void fetchMore(bool emitChanges)
     {

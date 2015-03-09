@@ -19,7 +19,8 @@
 #include "dbusfuture_p.h"
 
 namespace DBusFuture {
-namespace detail {
+
+namespace detail { //_
 
 template <>
 void DBusCallFutureInterface<void>::callFinished()
@@ -46,10 +47,9 @@ QFuture<void> ValueFutureInterface<void>::start()
     return future;
 }
 
-} // namespace detail
+} //^ namespace detail
 
-QFuture<void>
-fromVoid()
+QFuture<void> fromVoid()
 {
     using namespace detail;
 

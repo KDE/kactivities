@@ -7,3 +7,6 @@ map <f8> <esc>:SlimuxShellRun make && ./autotests/stats/KActivitiesStatsTest Res
 let g:ctrlpswitcher_project_sources = expand('<sfile>:p:h')."/src"
 let g:ctrlpswitcher_mode = 1
 
+set foldmethod=marker
+set foldmarker=//_,//^
+

@@ -180,7 +180,7 @@ namespace {
 #define ASSERT_RANGE_EQUAL(L, R) assert_range_equal(L, R, __FILE__, __LINE__)
 }
 
-// {{{ Data init
+//_ Data init
 void ResultSetQuickCheckTest::initTestCase()
 {
     qsrand(time(NULL));
@@ -581,7 +581,7 @@ QString ResultSetQuickCheckTest::randItem(const QStringList &choices) const
 {
     return choices[qrand() % choices.size()];
 }
-// Data init }}}
+//^ Data init
 
 void ResultSetQuickCheckTest::testUsedResourcesForAgents()
 {

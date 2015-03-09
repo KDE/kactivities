@@ -20,6 +20,9 @@
 #ifndef UTILS_LAZY_VAL_H
 #define UTILS_LAZY_VAL_H
 
+namespace kamd {
+namespace utils {
+
 template <typename F>
 class lazy_val {
 public:
@@ -44,16 +47,6 @@ public:
 
         return value;
     }
-
-    // decltype(_f()) operator() () const
-    // {
-    //     if (!valueRetrieved) {
-    //         valueRetrieved = true;
-    //         value = _f();
-    //     }
-    //
-    //     return value;
-    // }
 };
 
 template <typename F>
@@ -61,6 +54,9 @@ inline lazy_val<F> make_lazy_val(F && f)
 {
     return lazy_val<F>(std::forward<F>(f));
 }
+
+} // namespace utils
+} // namespace kamd
 
 #endif // UTILS_LAZY_VAL_H
 
