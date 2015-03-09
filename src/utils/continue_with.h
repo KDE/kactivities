@@ -16,7 +16,7 @@
 namespace kamd {
 namespace utils {
 
-    namespace detail {
+namespace detail { //_
 
     template <typename _ReturnType>
     inline void pass_value(const QFuture<_ReturnType> &future,
@@ -38,22 +38,21 @@ namespace utils {
         }
     }
 
-    } // namespace detail
+} //^ namespace detail
 
-
-    template <typename _ReturnType>
-    inline void continue_with(const QFuture<_ReturnType> &future,
-                              QJSValue handler)
-    {
-        if (!handler.isCallable()) {
-            qWarning() << "Passed handler is not callable: " << handler.toString();
-        }
-        auto watcher = new QFutureWatcher<_ReturnType>();
-        QObject::connect(watcher, &QFutureWatcherBase::finished, [=]() mutable {
-            detail::pass_value(future, handler);
-        });
-        watcher->setFuture(future);
+template <typename _ReturnType>
+inline void continue_with(const QFuture<_ReturnType> &future,
+                          QJSValue handler)
+{
+    if (!handler.isCallable()) {
+        qWarning() << "Passed handler is not callable: " << handler.toString();
     }
+    auto watcher = new QFutureWatcher<_ReturnType>();
+    QObject::connect(watcher, &QFutureWatcherBase::finished, [=]() mutable {
+        detail::pass_value(future, handler);
+    });
+    watcher->setFuture(future);
+}
 
 } // namespace utils
 } // namespace kamd

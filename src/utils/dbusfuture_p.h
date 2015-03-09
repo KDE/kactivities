@@ -31,7 +31,7 @@
 
 namespace DBusFuture {
 
-namespace detail {
+namespace detail { //_
 
 template <typename _Result>
 class DBusCallFutureInterface : public QObject,
@@ -120,22 +120,13 @@ public:
     QFuture<void> start();
     // {
     //     auto future = this->future();
-
     //     this->reportFinished();
-
     //     deleteLater();
-
     //     return future;
     // }
 };
 
-// template <>
-// ValueFutureInterface<void>::ValueFutureInterface();
-//
-// template <>
-// QFuture<void> ValueFutureInterface<void>::start();
-
-}
+} //^ namespace detail
 
 template <typename _Result>
 QFuture<_Result>

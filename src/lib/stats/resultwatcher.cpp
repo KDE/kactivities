@@ -98,7 +98,7 @@ public:
     {
         // We don't necessarily need to retrieve the type from
         // the database. If we do, get it only once
-        auto type = make_lazy_val([&] () -> QString {
+        auto type = kamd::utils::make_lazy_val([&] () -> QString {
             using Common::Database;
 
             auto query

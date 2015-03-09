@@ -24,6 +24,9 @@
 #include <QDebug>
 #endif
 
+namespace kamd {
+namespace utils {
+
 template<typename T>
 T debug_and_return(const char * message, T && value) {
     #ifdef QT_DEBUG
@@ -32,6 +35,9 @@ T debug_and_return(const char * message, T && value) {
 
     return std::forward<T>(value);
 }
+
+} // namespace utils
+} // namespace kamd
 
 #endif // DEBUG_AND_RETURN_H
 
