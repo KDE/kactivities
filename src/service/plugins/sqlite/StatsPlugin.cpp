@@ -143,6 +143,8 @@ void StatsPlugin::openResourceEvent(const QString &usedActivity,
                "StatsPlugin::openResourceEvent",
                "Resource shoud not be empty");
 
+    detectResourceInfo(targettedResource);
+
     Utils::prepare(resourcesDatabase(), openResourceEventQuery, QStringLiteral(
         "INSERT INTO ResourceEvent"
         "        (usedActivity,  initiatingAgent,  targettedResource,  start,  end) "
@@ -207,13 +209,27 @@ void StatsPlugin::detectResourceInfo(const QString &_uri)
 
     KFileItem item(file);
 
-    saveResourceMimetype(file, item.mimetype(), true);
-    saveResourceTitle(file, item.text(), true);
-
+    if (insertResourceInfo(file)) {
+        saveResourceMimetype(file, item.mimetype(), true);
+        saveResourceTitle(file, item.text(), true);
+    }
 }
 
-void StatsPlugin::insertResourceInfo(const QString &uri)
+bool StatsPlugin::insertResourceInfo(const QString &uri)
 {
+
+    Utils::prepare(resourcesDatabase(), getResourceInfoQuery, QStringLiteral(
+        "SELECT targettedResource FROM ResourceInfo WHERE "
+            "  targettedResource = :targettedResource "
+    ));
+
+    getResourceInfoQuery->bindValue(":targettedResource", uri);
+    Utils::exec(*getResourceInfoQuery);
+
+    if (getResourceInfoQuery->next()) {
+        return false;
+    }
+
     Utils::prepare(resourcesDatabase(), insertResourceInfoQuery, QStringLiteral(
         "INSERT INTO ResourceInfo( "
             "  targettedResource"
@@ -233,12 +249,16 @@ void StatsPlugin::insertResourceInfo(const QString &uri)
     Utils::exec(*insertResourceInfoQuery,
         ":targettedResource", uri
     );
+
+    return true;
 }
 
 void StatsPlugin::saveResourceTitle(const QString &uri, const QString &title,
                                     bool autoTitle)
 {
     insertResourceInfo(uri);
+
+    DATABASE_TRANSACTION(resourcesDatabase());
 
     Utils::prepare(resourcesDatabase(), saveResourceTitleQuery, QStringLiteral(
         "UPDATE ResourceInfo SET "
@@ -260,6 +280,8 @@ void StatsPlugin::saveResourceMimetype(const QString &uri,
                                        bool autoMimetype)
 {
     insertResourceInfo(uri);
+
+    DATABASE_TRANSACTION(resourcesDatabase());
 
     Utils::prepare(resourcesDatabase(), saveResourceMimetypeQuery, QStringLiteral(
         "UPDATE ResourceInfo SET "
@@ -311,10 +333,10 @@ void StatsPlugin::addEvents(const EventList &events)
         return;
     }
 
+    DATABASE_TRANSACTION(resourcesDatabase());
+
     for (const auto &event :
             events | filtered(&StatsPlugin::acceptedEvent, this)) {
-
-        detectResourceInfo(event.uri);
 
         switch (event.type) {
             case Event::Accessed:
@@ -363,6 +385,8 @@ void StatsPlugin::DeleteRecentStats(const QString &activity, int count,
 
     // If we need to delete everything,
     // no need to bother with the count and the date
+
+    DATABASE_TRANSACTION(resourcesDatabase());
 
     if (what == QStringLiteral("everything")) {
         // Instantiating these every time is not a big overhead
@@ -432,6 +456,8 @@ void StatsPlugin::DeleteEarlierStats(const QString &activity, int months)
     }
 
     // Deleting a specified length of time
+
+    DATABASE_TRANSACTION(resourcesDatabase());
 
     const auto time = QDateTime::currentDateTime().addMonths(-months);
     const auto usedActivity = activity.isEmpty() ? QVariant()

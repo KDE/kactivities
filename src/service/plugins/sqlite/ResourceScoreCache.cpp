@@ -149,6 +149,8 @@ void ResourceScoreCache::update()
     QDateTime lastUpdate;
     qreal score;
 
+    DATABASE_TRANSACTION(resourcesDatabase());
+
     // This can fail if we have the cache already made
     Utils::exec(Queries::self().createResourceScoreCacheQuery,
         ":usedActivity", d->activity,

@@ -46,13 +46,25 @@ public:
     QSqlQuery execQuery(const QString &query, bool ignoreErrors = false) const;
     QSqlQuery createQuery() const;
 
-    QSqlDatabase &database() const;
-
     // For debugging purposes only
     QString lastQuery() const;
 
     ~Database();
     Database();
+
+    friend class Locker;
+    class Locker {
+    public:
+        Locker(Database &database);
+        ~Locker();
+
+    private:
+        QSqlDatabase &m_database;
+    };
+
+    #define DATABASE_TRANSACTION(A) \
+        qDebug() << "Location:" << __FILE__ << __LINE__; \
+        Common::Database::Locker lock(A)
 
 private:
     D_PTR;

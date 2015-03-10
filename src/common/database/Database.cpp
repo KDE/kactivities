@@ -42,6 +42,21 @@ public:
     QSqlDatabase database;
 };
 
+Database::Locker::Locker(Database &database)
+    : m_database(database.d->database)
+{
+    qDebug() << "DATABASE: Transaction";
+    m_database.transaction();
+}
+
+Database::Locker::~Locker()
+{
+    qDebug() << "DATABASE: Commit...";
+    m_database.commit();
+    qDebug() << "DATABASE: Commit done";
+}
+
+
 namespace {
 #ifdef QT_DEBUG
     QString lastExecutedQuery;
