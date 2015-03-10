@@ -49,7 +49,7 @@ public:
 
     static StatsPlugin *self();
 
-    virtual bool init(const QHash<QString, QObject *> &modules) Q_DECL_OVERRIDE;
+    bool init(const QHash<QString, QObject *> &modules) Q_DECL_OVERRIDE;
 
     QString currentActivity() const;
 

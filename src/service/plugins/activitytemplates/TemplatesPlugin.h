@@ -33,9 +33,9 @@ public:
                     const QVariantList &args = QVariantList());
     virtual ~TemplatesPlugin();
 
-    virtual bool init(const QHash<QString, QObject *> &modules) Q_DECL_OVERRIDE;
+    bool init(const QHash<QString, QObject *> &modules) Q_DECL_OVERRIDE;
 
-    virtual QDBusVariant value(const QStringList &property) const Q_DECL_OVERRIDE;
+    QDBusVariant value(const QStringList &property) const Q_DECL_OVERRIDE;
 
     virtual void setValue(const QStringList &property,
                           const QDBusVariant &value) Q_DECL_OVERRIDE;

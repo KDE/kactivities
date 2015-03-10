@@ -35,9 +35,9 @@ public:
     ~MainConfigurationWidget();
 
 public Q_SLOTS:
-    virtual void defaults() Q_DECL_OVERRIDE;
-    virtual void load() Q_DECL_OVERRIDE;
-    virtual void save() Q_DECL_OVERRIDE;
+    void defaults() Q_DECL_OVERRIDE;
+    void load() Q_DECL_OVERRIDE;
+    void save() Q_DECL_OVERRIDE;
 
 private Q_SLOTS:
     void forget(int count, const QString &what);

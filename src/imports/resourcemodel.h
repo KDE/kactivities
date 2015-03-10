@@ -153,7 +153,7 @@ public Q_SLOTS:
     QString resourceAt(int row) const;
 
 protected:
-    virtual bool lessThan(const QModelIndex &left, const QModelIndex &right) const Q_DECL_OVERRIDE;
+    bool lessThan(const QModelIndex &left, const QModelIndex &right) const Q_DECL_OVERRIDE;
 
 
 Q_SIGNALS:

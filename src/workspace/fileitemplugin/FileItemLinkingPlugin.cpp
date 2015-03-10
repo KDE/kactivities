@@ -78,7 +78,7 @@ void FileItemLinkingPlugin::Private::actionTriggered()
     bool link = action->property("link").toBool();
     QString activity = action->property("activity").toString();
 
-    KAMD_DECL_DBUS_INTERFACE(service, Resources/Linking, ResourceLinking);
+    KAMD_DECL_DBUS_INTERFACE(service, Resources/Linking, ResourcesLinking);
 
     foreach (const auto &item, items.urlList())
     {
@@ -214,8 +214,8 @@ void FileItemLinkingPluginActionLoader::run()
                 "SELECT usedActivity, COUNT(targettedResource) "
                 "FROM ResourceLink "
                 "WHERE targettedResource IN (%1) "
-                    "AND initiatingAgent = \"\" "
-                    "AND usedActivity != \"\" "
+                    "AND initiatingAgent = \":global\" "
+                    "AND usedActivity != \":global\" "
                 "GROUP BY usedActivity");
 
             QStringList escapedFiles;

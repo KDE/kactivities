@@ -265,7 +265,7 @@ void ActivitiesProtocol::listDir(const QUrl &url)
                 "SELECT targettedResource "
                 "FROM ResourceLink "
                 "WHERE usedActivity = '%1' "
-                    "AND initiatingAgent = \"\" "
+                    "AND initiatingAgent = \":global\" "
                 );
 
             auto query = database->execQuery(queryString.arg(activity));

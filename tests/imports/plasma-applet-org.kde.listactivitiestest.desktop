@@ -1,6 +1,7 @@
 [Desktop Entry]
 Name=List activities test
 Name[ar]=اختبار سرد الأنشطة
+Name[ast]=Prueba de la llista d'actividaes
 Name[ca]=Prova de la llista d'activitats
 Name[ca@valencia]=Prova de llista d'activitats
 Name[cs]=Test seznamu aktivit
@@ -40,6 +41,7 @@ Name[x-test]=xxList activities testxx
 Name[zh_CN]=显示活动测试项
 Name[zh_TW]=列出活動測試
 Comment=Strange, but not a Clock
+Comment[ast]=Estrañu, pero nun ye un reló
 Comment[ca]=És estrany, però no és cap rellotge
 Comment[ca@valencia]=És estrany, però no és cap rellotge
 Comment[da]=Mærkelig, men ikke et ur
