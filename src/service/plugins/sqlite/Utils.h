@@ -52,12 +52,12 @@ namespace Utils {
     {
         bool success = query.exec();
 
-#ifdef QSQL_QUERIES_DEBUG_ENABLE
+        #ifdef QSQL_QUERIES_DEBUG_ENABLE
         if (!success) {
             qDebug() << query.lastQuery();
             qDebug() << query.lastError();
         }
-#endif
+        #endif
 
         return success;
     }

@@ -100,7 +100,7 @@ private Q_SLOTS:
                            bool autoTitle = false);
     void saveResourceMimetype(const QString &uri, const QString &mimetype,
                               bool autoMimetype = false);
-    void insertResourceInfo(const QString &uri);
+    bool insertResourceInfo(const QString &uri);
     void detectResourceInfo(const QString &uri);
 
 private:
@@ -122,6 +122,7 @@ private:
     std::unique_ptr<QSqlQuery> closeResourceEventQuery;
 
     std::unique_ptr<QSqlQuery> insertResourceInfoQuery;
+    std::unique_ptr<QSqlQuery> getResourceInfoQuery;
     std::unique_ptr<QSqlQuery> saveResourceTitleQuery;
     std::unique_ptr<QSqlQuery> saveResourceMimetypeQuery;
 

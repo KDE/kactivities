@@ -89,6 +89,8 @@ void ResourceLinking::LinkResourceToActivity(QString initiatingAgent,
             ")"
         ));
 
+    DATABASE_TRANSACTION(resourcesDatabase());
+
     Utils::exec(*linkResourceToActivityQuery,
         ":usedActivity"      , usedActivity,
         ":initiatingAgent"   , initiatingAgent,
@@ -141,6 +143,8 @@ void ResourceLinking::UnlinkResourceFromActivity(QString initiatingAgent,
             "initiatingAgent   = COALESCE(:initiatingAgent  , '') AND "
             "targettedResource = COALESCE(:targettedResource, '') "
         ));
+
+    DATABASE_TRANSACTION(resourcesDatabase());
 
     Utils::exec(*unlinkResourceFromActivityQuery,
         ":usedActivity"      , usedActivity,
