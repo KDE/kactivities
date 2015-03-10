@@ -48,6 +48,13 @@ set (
    ${CMAKE_MODULE_PATH}
    )
 
+add_definitions (-DTRANSLATION_DOMAIN=\"kactivities5\")
+if (IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/po")
+    ki18n_install (po)
+endif ()
+
+# libKActivities
+
 ecm_setup_version (
    ${KF5_VERSION}
    VARIABLE_PREFIX KACTIVITIES
@@ -55,15 +62,6 @@ ecm_setup_version (
    PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/KF5ActivitiesConfigVersion.cmake"
    SOVERSION 5
    )
-
-add_definitions (-DTRANSLATION_DOMAIN=\"kactivities5\")
-if (IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/po")
-    ki18n_install (po)
-endif ()
-
-add_subdirectory (src)
-add_subdirectory (autotests)
-add_subdirectory (tests)
 
 set (CMAKECONFIG_INSTALL_DIR "${KDE_INSTALL_CMAKEPACKAGEDIR}/KF5Activities")
 
@@ -73,9 +71,6 @@ install (
    FILE KF5ActivitiesLibraryTargets.cmake
    NAMESPACE KF5::
    )
-
-# create a Config.cmake and a ConfigVersion.cmake file and install them
-set (CMAKECONFIG_INSTALL_DIR "${KDE_INSTALL_CMAKEPACKAGEDIR}/KF5Activities")
 
 ecm_configure_package_config_file (
    "${CMAKE_CURRENT_SOURCE_DIR}/KF5ActivitiesConfig.cmake.in"
@@ -95,6 +90,48 @@ install (
    FILES ${CMAKE_CURRENT_BINARY_DIR}/kactivities_version.h
    DESTINATION ${KDE_INSTALL_INCLUDEDIR_KF5} COMPONENT Devel
    )
+
+# libKActivitiesStats
+
+ecm_setup_version (
+   ${KF5_VERSION}
+   VARIABLE_PREFIX KACTIVITIESEXPERIMENTALSTATS
+   VERSION_HEADER "${CMAKE_CURRENT_BINARY_DIR}/kactivitiesexperimentalstats_version.h"
+   PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/KF5ActivitiesExperimentalStatsConfigVersion.cmake"
+   SOVERSION 1
+   )
+
+set (CMAKECONFIG_INSTALL_DIR "${KDE_INSTALL_CMAKEPACKAGEDIR}/KF5ActivitiesExperimentalStats")
+
+install (
+   EXPORT KF5ActivitiesExperimentalStatsLibraryTargets
+   DESTINATION "${CMAKECONFIG_INSTALL_DIR}"
+   FILE KF5ActivitiesExperimentalStatsLibraryTargets.cmake
+   NAMESPACE KF5::
+   )
+
+ecm_configure_package_config_file (
+   "${CMAKE_CURRENT_SOURCE_DIR}/KF5ActivitiesExperimentalStatsConfig.cmake.in"
+   "${CMAKE_CURRENT_BINARY_DIR}/KF5ActivitiesExperimentalStatsConfig.cmake"
+   INSTALL_DESTINATION  ${CMAKECONFIG_INSTALL_DIR}
+   PATH_VARS  KF5_INCLUDE_INSTALL_DIR CMAKE_INSTALL_PREFIX
+   )
+
+install (
+   FILES "${CMAKE_CURRENT_BINARY_DIR}/KF5ActivitiesExperimentalStatsConfig.cmake"
+         "${CMAKE_CURRENT_BINARY_DIR}/KF5ActivitiesExperimentalStatsConfigVersion.cmake"
+   DESTINATION "${CMAKECONFIG_INSTALL_DIR}"
+   COMPONENT Devel
+   )
+
+install (
+   FILES ${CMAKE_CURRENT_BINARY_DIR}/kactivitiesexperimentalstats_version.h
+   DESTINATION ${KDE_INSTALL_INCLUDEDIR_KF5} COMPONENT Devel
+   )
+
+add_subdirectory (src)
+add_subdirectory (autotests)
+add_subdirectory (tests)
 
 # Write out the features
 feature_summary (WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)

@@ -29,7 +29,7 @@
 #include <QString>
 #include <QStringList>
 
-#include <kactivitiesstats_export.h>
+#include "kactivitiesstats_export.h"
 
 namespace KActivities {
 namespace Experimental {

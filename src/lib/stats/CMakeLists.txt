@@ -38,28 +38,26 @@ qt5_add_dbus_interface (
 
 
 add_library (
-   KF5ActivitiesStats SHARED
+   KF5ActivitiesExperimentalStats SHARED
    ${KActivitiesStats_LIB_SRCS}
    )
-add_library(KF5::ActivitiesStats ALIAS KF5ActivitiesStats)
+add_library(KF5::ActivitiesExperimentalStats ALIAS KF5ActivitiesExperimentalStats)
 
 include_directories (
    ${CMAKE_SOURCE_DIR}/src
    ${KDBusAddons_INCLUDE_DIR}
    )
 
-# This is an experimental library, keeping the SOVERSION at 0
-# to reflect that
 set_target_properties (
-   KF5ActivitiesStats
+   KF5ActivitiesExperimentalStats
    PROPERTIES
    VERSION "0.0.1"
-   SOVERSION "0"
-   EXPORT_NAME ActivitiesStats
+   SOVERSION "1"
+   EXPORT_NAME ActivitiesExperimentalStats
    )
 
 target_link_libraries (
-   KF5ActivitiesStats
+   KF5ActivitiesExperimentalStats
    PUBLIC
       Qt5::Core
    PRIVATE
@@ -70,12 +68,12 @@ target_link_libraries (
    )
 
 target_include_directories (
-   KF5ActivitiesStats
+   KF5ActivitiesExperimentalStats
    INTERFACE "$<INSTALL_INTERFACE:${KDE_INSTALL_INCLUDEDIR_KF5}/KActivitiesStats>"
    )
 
 # install
-generate_export_header (KF5ActivitiesStats BASE_NAME KActivitiesStats)
+generate_export_header (KF5ActivitiesExperimentalStats BASE_NAME KActivitiesStats)
 
 ecm_generate_headers (
    KActivitiesStats_CamelCase_HEADERS
@@ -86,42 +84,51 @@ ecm_generate_headers (
    ResultWatcher
    ResultModel
    Version
-   PREFIX KActivitiesStats
+   PREFIX KActivitiesExperimentalStats
    REQUIRED_HEADERS KActivitiesStats_HEADERS
 )
 install (
    FILES ${KActivitiesStats_CamelCase_HEADERS}
-   DESTINATION ${KDE_INSTALL_INCLUDEDIR_KF5}/KActivities/KActivities/Stats
+   DESTINATION ${KDE_INSTALL_INCLUDEDIR_KF5}/KActivitiesStats/KActivities/Experimental/Stats
    COMPONENT Devel
    )
 
 install (
    FILES ${KActivitiesStats_HEADERS}
-   DESTINATION ${KDE_INSTALL_INCLUDEDIR_KF5}/KActivities/kactivitiesstats
+   DESTINATION ${KDE_INSTALL_INCLUDEDIR_KF5}/KActivitiesStats/kactivitiesstats
    COMPONENT Devel
    )
 
 install (
-   TARGETS KF5ActivitiesStats
-   EXPORT KF5ActivitiesStatsLibraryTargets
+   FILES ${KActivitiesStats_HEADERS} ${CMAKE_CURRENT_BINARY_DIR}/kactivitiesstats_export.h
+   DESTINATION ${KDE_INSTALL_INCLUDEDIR_KF5}/KActivitiesStats/kactivitiesexperimentalstats
+   COMPONENT Devel
+   )
+
+install (
+   TARGETS KF5ActivitiesExperimentalStats
+   EXPORT KF5ActivitiesExperimentalStatsLibraryTargets
    ${KF5_INSTALL_TARGETS_DEFAULT_ARGS}
    )
 
 
 if (NOT WIN32)
-   configure_file (${CMAKE_CURRENT_SOURCE_DIR}/libKActivitiesStats.pc.cmake ${CMAKE_CURRENT_BINARY_DIR}/libKActivitiesStats.pc)
+   configure_file (
+      ${CMAKE_CURRENT_SOURCE_DIR}/libKActivitiesExperimentalStats.pc.cmake
+      ${CMAKE_CURRENT_BINARY_DIR}/libKActivitiesExperimentalStats.pc
+      )
    install (
-      FILES ${CMAKE_CURRENT_BINARY_DIR}/libKActivitiesStats.pc
+      FILES ${CMAKE_CURRENT_BINARY_DIR}/libKActivitiesExperimentalStats.pc
       DESTINATION ${KDE_INSTALL_LIBDIR}/pkgconfig
       )
 endif ()
 
 include (ECMGeneratePriFile)
 ecm_generate_pri_file (
-   BASE_NAME KActivitiesStats
-   LIB_NAME KF5ActivitiesStats
+   BASE_NAME KActivitiesExperimentalStats
+   LIB_NAME KF5ActivitiesExperimentalStats
    DEPS "KDBusAddons"
-   FILENAME_VAR PRI_FILENAME INCLUDE_INSTALL_DIR ${KF5_INCLUDE_INSTALL_DIR}/KActivitiesStats
+   FILENAME_VAR PRI_FILENAME INCLUDE_INSTALL_DIR ${KF5_INCLUDE_INSTALL_DIR}/KActivitiesExperimentalStats
    )
 install (
    FILES ${PRI_FILENAME}

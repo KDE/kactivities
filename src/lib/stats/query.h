@@ -29,7 +29,7 @@
 #include <QString>
 #include <QStringList>
 
-#include <kactivitiesstats_export.h>
+#include "kactivitiesstats_export.h"
 
 #include "terms.h"
 

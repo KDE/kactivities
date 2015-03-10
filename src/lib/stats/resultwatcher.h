@@ -22,8 +22,8 @@
 
 #include <QObject>
 
-#include <query.h>
-#include <resultset.h>
+#include "query.h"
+#include "resultset.h"
 
 namespace KActivities {
 namespace Experimental {

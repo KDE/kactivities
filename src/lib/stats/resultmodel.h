@@ -25,7 +25,7 @@
 #include <QAbstractListModel>
 
 // Local
-#include <query.h>
+#include "query.h"
 
 class QModelIndex;
 class QDBusPendingCallWatcher;
