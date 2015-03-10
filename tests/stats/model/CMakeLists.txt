@@ -36,7 +36,7 @@ if (NOT WIN32)
       Qt5::Gui
       Qt5::Widgets
       KF5::Activities
-      KF5::ActivitiesStats
+      KF5::ActivitiesExperimentalStats
       )
 
 endif ()

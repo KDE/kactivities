@@ -20,7 +20,7 @@
 #ifndef KACTIVITIES_STATS_RESULTSET
 #define KACTIVITIES_STATS_RESULTSET
 
-#include <query.h>
+#include "query.h"
 
 namespace KActivities {
 namespace Experimental {

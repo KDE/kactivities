@@ -39,7 +39,7 @@ if (NOT WIN32)
       Qt5::DBus
       Qt5::Sql
       KF5::Activities
-      KF5::ActivitiesStats
+      KF5::ActivitiesExperimentalStats
       )
 
 endif ()
