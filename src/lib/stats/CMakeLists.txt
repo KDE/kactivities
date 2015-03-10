@@ -81,6 +81,10 @@ ecm_generate_headers (
    KActivitiesStats_CamelCase_HEADERS
    HEADER_NAMES
    Query
+   Terms
+   ResultSet
+   ResultWatcher
+   ResultModel
    Version
    PREFIX KActivitiesStats
    REQUIRED_HEADERS KActivitiesStats_HEADERS
