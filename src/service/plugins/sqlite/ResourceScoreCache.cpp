@@ -48,13 +48,14 @@ private:
             createResourceScoreCacheQuery, QStringLiteral(
             "INSERT INTO ResourceScoreCache "
             "VALUES (:usedActivity, :initiatingAgent, :targettedResource, "
-                    "0, 0, -1, " // type, score, lastUpdate
+                    "0, 0, " // type, score
+                    ":firstUpdate, " // lastUpdate
                     ":firstUpdate)"
         ));
 
         Utils::prepare(resourcesDatabase(),
             getResourceScoreCacheQuery, QStringLiteral(
-            "SELECT cachedScore, lastUpdate FROM ResourceScoreCache "
+            "SELECT cachedScore, lastUpdate, firstUpdate FROM ResourceScoreCache "
             "WHERE "
                 ":usedActivity      = usedActivity AND "
                 ":initiatingAgent   = initiatingAgent AND "
@@ -80,7 +81,9 @@ private:
                 ":usedActivity      = usedActivity AND "
                 ":initiatingAgent   = initiatingAgent AND "
                 ":targettedResource = targettedResource AND "
-                "start > :start"
+                "start > :start "
+            "ORDER BY "
+                "start ASC"
         ));
     }
 
@@ -113,8 +116,7 @@ public:
         return std::exp(-days / 32.0);
     }
 
-    inline qreal timeFactor(QDateTime fromTime,
-                     QDateTime toTime = QDateTime::currentDateTime()) const
+    inline qreal timeFactor(QDateTime fromTime, QDateTime toTime) const
     {
         return timeFactor(fromTime.daysTo(toTime));
     }
@@ -147,81 +149,99 @@ ResourceScoreCache::~ResourceScoreCache()
 void ResourceScoreCache::update()
 {
     QDateTime lastUpdate;
+    QDateTime firstUpdate;
+    QDateTime currentTime = QDateTime::currentDateTime();
     qreal score;
 
     DATABASE_TRANSACTION(resourcesDatabase());
 
+    qDebug() << "Creating the cache for: " << d->resource;
+
     // This can fail if we have the cache already made
-    Utils::exec(Queries::self().createResourceScoreCacheQuery,
+    auto isCacheNew = Utils::exec(
+        Utils::IgnoreError, Queries::self().createResourceScoreCacheQuery,
         ":usedActivity", d->activity,
         ":initiatingAgent", d->application,
         ":targettedResource", d->resource,
-        ":firstUpdate", QDateTime::currentDateTime().toTime_t()
+        ":firstUpdate", currentTime.toTime_t()
     );
 
     // Getting the old score
-    Utils::exec(Queries::self().getResourceScoreCacheQuery,
+    Utils::exec(
+        Utils::FailOnError, Queries::self().getResourceScoreCacheQuery,
         ":usedActivity", d->activity,
         ":initiatingAgent", d->application,
         ":targettedResource", d->resource
     );
 
     // Only and always one result
-
     for (const auto &result: Queries::self().getResourceScoreCacheQuery) {
-        const auto time = result[1].toLongLong();
 
-        if (time < 0) {
+        lastUpdate.setTime_t(result["lastUpdate"].toUInt());
+        firstUpdate.setTime_t(result["firstUpdate"].toUInt());
+
+        qDebug() << "Already in database? " << (!isCacheNew);
+        qDebug() << "      First update : " << firstUpdate;
+        qDebug() << "       Last update : " << lastUpdate;
+
+        if (isCacheNew) {
             // If we haven't had the cache before, set the score to 0
-            lastUpdate = QDateTime();
+            firstUpdate = currentTime;
             score = 0;
 
         } else {
             // Adjusting the score depending on the time that passed since the
             // last update
-            lastUpdate.setTime_t(time);
-
-            score = result[0].toReal();
-            score *= d->timeFactor(lastUpdate);
+            score = result["cachedScore"].toReal();
+            score *= d->timeFactor(lastUpdate, currentTime);
         }
     }
 
     // Calculating the updated score
     // We are processing all events since the last cache update
 
-    Utils::exec(Queries::self().getScoreAdditionQuery,
+    qDebug() << "After the adjustment";
+    qDebug() << "     Current score : " << score;
+    qDebug() << "      First update : " << firstUpdate;
+    qDebug() << "       Last update : " << lastUpdate;
+
+    Utils::exec(Utils::FailOnError, Queries::self().getScoreAdditionQuery,
         ":usedActivity", d->activity,
         ":initiatingAgent", d->application,
         ":targettedResource", d->resource,
         ":start", lastUpdate.toTime_t()
     );
 
-    qlonglong start = 0;
+    uint lastEventStart = currentTime.toTime_t();
 
     for (const auto &result: Queries::self().getScoreAdditionQuery) {
-        start = result[0].toLongLong();
+        lastEventStart = result["start"].toUInt();
 
-        const auto end = result[1].toLongLong();
-        const auto intervalLength = end - start;
+        const auto end = result["end"].toUInt();
+        const auto intervalLength = end - lastEventStart;
+
+        qDebug() << "Interval length is " << intervalLength;
 
         if (intervalLength == 0) {
             // We have an Accessed event - otherwise, this wouldn't be 0
-            score += d->timeFactor(QDateTime::fromTime_t(end)); // like it is open for 1 minute
+            score += d->timeFactor(QDateTime::fromTime_t(end), currentTime); // like it is open for 1 minute
 
         } else {
-            score += d->timeFactor(QDateTime::fromTime_t(end)) * intervalLength / 60.0;
+            score += d->timeFactor(QDateTime::fromTime_t(end), currentTime) * intervalLength / 60.0;
 
         }
     }
 
+    qDebug() << "         New score : " << score;
+
     // Updating the score
 
-    Utils::exec(Queries::self().updateResourceScoreCacheQuery,
+    Utils::exec(Utils::FailOnError, Queries::self().updateResourceScoreCacheQuery,
         ":usedActivity", d->activity,
         ":initiatingAgent", d->application,
         ":targettedResource", d->resource,
         ":cachedScore", score,
-        ":lastUpdate", start
+        ":lastUpdate", lastEventStart
     );
 
     // Notifying the world
@@ -231,5 +251,8 @@ void ResourceScoreCache::update()
                                    Q_ARG(QString, d->activity),
                                    Q_ARG(QString, d->application),
                                    Q_ARG(QString, d->resource),
-                                   Q_ARG(double, score));
+                                   Q_ARG(double, score),
+                                   Q_ARG(uint, lastEventStart),
+                                   Q_ARG(uint, firstUpdate.toTime_t())
+                                   );
 }

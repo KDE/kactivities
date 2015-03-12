@@ -22,6 +22,7 @@
 
 // Qt
 #include <QDebug>
+#include <QDateTime>
 
 // STL and Boost
 #include <functional>
@@ -29,6 +30,8 @@
 #include <boost/range/algorithm/lower_bound.hpp>
 
 // Local
+#include <common/database/Database.h>
+#include <utils/qsqlquery_iterator.h>
 #include "resultset.h"
 #include "resultwatcher.h"
 #include "consumer.h"
@@ -53,6 +56,8 @@ public:
         , itemCountLimit(DEFAULT_ITEM_COUNT_LIMIT)
         , q(parent)
     {
+        using Common::Database;
+        database = Database::instance(Database::ResourcesDatabase, Database::ReadOnly);
     }
 
     //_ findResource(...) -> (index, iterator)
@@ -107,28 +112,42 @@ public:
             ++insertedCount;
         }
 
-        if (emitChanges) {
-            q->beginInsertRows(QModelIndex(),
-                               previousSize,
+        if (emitChanges && insertedCount) {
+            q->beginInsertRows(QModelIndex(), previousSize,
                                cache.size() + 1);
             q->endInsertRows();
         }
     }
 
-    void onResultAdded(const QString &resource, double score)
+    void onResultAdded(const QString &resource, double score, uint lastUpdate,
+                       uint firstUpdate)
     {
         using namespace kamd::utils::member_matcher;
+        using namespace Terms;
         using kamd::utils::slide_one;
         using boost::lower_bound;
+
+        qDebug() << "result added:" << resource
+                 << "score:" << score
+                 << "last:" << lastUpdate
+                 << "first:" << firstUpdate;
 
         // This can also be called when the resource score
         // has been updated, so we need to check whether
         // we already have it in the cache
         const auto result = findResource(resource);
 
-        // TODO: We should also sort by the resource, not only on score
-        const auto destination = lower_bound(
-            cache, score, member(&ResultSet::Result::score) > _);
+        // TODO: We should also sort by the resource, not only on a single field
+        const auto destination =
+            query.ordering() == HighScoredFirst ?
+                lower_bound(cache, score, member(&ResultSet::Result::score) > _) :
+            query.ordering() == RecentlyUsedFirst ?
+                lower_bound(cache, lastUpdate, member(&ResultSet::Result::lastUpdate) > _) :
+            query.ordering() == RecentlyCreatedFirst ?
+                lower_bound(cache, firstUpdate, member(&ResultSet::Result::firstUpdate) > _) :
+            // otherwise
+                lower_bound(cache, resource, member(&ResultSet::Result::resource) > _)
+            ;
 
         const int destinationIndex = destination - cache.begin();
 
@@ -137,25 +156,42 @@ public:
             // So, it is the time for a reshuffle
             const int currentIndex = result.index;
 
-            q->beginMoveRows(QModelIndex(), currentIndex, currentIndex,
-                             QModelIndex(), destinationIndex);
+            result.iterator->setScore(score);
+            result.iterator->setLastUpdate(lastUpdate);
+            result.iterator->setFirstUpdate(firstUpdate);
+
+            q->dataChanged(q->index(currentIndex), q->index(currentIndex));
+
+            bool moving
+                = q->beginMoveRows(QModelIndex(), currentIndex, currentIndex,
+                                   QModelIndex(), destinationIndex);
 
             slide_one(result.iterator, destination);
 
-            q->endMoveRows();
+            if (moving) {
+                q->endMoveRows();
+            }
 
         } else {
             // We do not have the resource in the cache
 
             q->beginInsertRows(QModelIndex(), destinationIndex,
-                               destinationIndex + 1);
+                               destinationIndex);
+
+            qDebug() << "inserting" << resource
+                     << "score:" << score
+                     << "last:" << lastUpdate
+                     << "first:" << firstUpdate;
 
             ResultSet::Result result;
-            result.resource = resource;
-            result.score = score;
-
-            // TODO: Add the resource title, if known
-            // result.title;
+            result.setResource(resource);
+            // TODO: Add the resource title and mimetype, if known
+            // result.setTitle(" ");
+            // result.setMimetype(" ");
+            fillInTheBlanks(result);
+            result.setScore(score);
+            result.setLastUpdate(lastUpdate);
+            result.setFirstUpdate(firstUpdate);
 
             cache.insert(destinationIndex, result);
 
@@ -182,7 +218,7 @@ public:
 
         if (!result) return;
 
-        result.iterator->title = title;
+        result.iterator->setTitle(title);
 
         q->dataChanged(q->index(result.index), q->index(result.index));
     }
@@ -190,6 +226,14 @@ public:
     void onResourceMimetypeChanged(const QString &resource, const QString &mimetype)
     {
         // TODO: This can add or remove items from the model
+
+        const auto result = findResource(resource);
+
+        if (!result) return;
+
+        result.iterator->setMimetype(mimetype);
+
+        q->dataChanged(q->index(result.index), q->index(result.index));
     }
 
     void reset()
@@ -223,7 +267,27 @@ public:
     ResultSet::const_iterator resultIt;
     QList<ResultSet::Result> cache;
     KActivities::Consumer activities;
+    Common::Database::Ptr database;
 
+    void fillInTheBlanks(ResultSet::Result &result)
+    {
+        if (result.title().isEmpty() || result.mimetype().isEmpty()) {
+            auto query = database->execQuery(
+                    "SELECT "
+                        "title, mimetype "
+                    "FROM "
+                        "ResourceInfo "
+                    "WHERE "
+                        "targettedResource = '" + result.resource() + "'"
+                );
+
+            // Only one item at most
+            for (const auto &item: query) {
+                result.setTitle(query.value("title").toString());
+                result.setMimetype(query.value("mimetype").toString());
+            }
+        }
+    }
 
 private:
     ResultModel *const q;
@@ -236,7 +300,7 @@ ResultModel::ResultModel(Query query, QObject *parent)
     using namespace std::placeholders;
 
     connect(&d->watcher, &ResultWatcher::resultAdded,
-            this, std::bind(&Private::onResultAdded, d, _1, _2));
+            this, std::bind(&Private::onResultAdded, d, _1, _2, _3, _4));
     connect(&d->watcher, &ResultWatcher::resultRemoved,
             this, std::bind(&Private::onResultRemoved, d, _1));
 
@@ -269,10 +333,12 @@ QVariant ResultModel::data(const QModelIndex &item, int role) const
 
     const auto &result = d->cache[row];
 
-    return role == Qt::DisplayRole ? (result.title + " " + result.resource)
-         : role == ResourceRole    ? result.resource
-         : role == TitleRole       ? result.title
-         : role == ScoreRole       ? result.score
+    return role == Qt::DisplayRole ? (result.title() + " " + result.resource())
+         : role == ResourceRole    ? result.resource()
+         : role == TitleRole       ? result.title()
+         : role == ScoreRole       ? result.score()
+         : role == FirstUpdateRole ? result.firstUpdate()
+         : role == LastUpdateRole  ? result.lastUpdate()
          : QVariant()
          ;
 }

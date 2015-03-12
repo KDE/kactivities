@@ -96,24 +96,24 @@ namespace {
     QString toQString(const KAStats::ResultSet::Result &item)
     {
         return
-            item.resource
-            + ':' + item.title
-            + '(' + QString::number(item.score) + ')';
+            item.resource()
+            + ':' + item.title()
+            + '(' + QString::number(item.score()) + ')';
     }
 
     bool operator==(const ResourceScoreCache::Item &left,
                     const KAStats::ResultSet::Result &right)
     {
-        return left.targettedResource == right.resource
-               && resourceTitle(left.targettedResource) == right.title
-               && qFuzzyCompare(left.cachedScore, right.score);
+        return left.targettedResource == right.resource()
+               && resourceTitle(left.targettedResource) == right.title()
+               && qFuzzyCompare(left.cachedScore, right.score());
     }
 
     bool operator==(const ResourceLink::Item &left,
                     const KAStats::ResultSet::Result &right)
     {
-        return left.targettedResource == right.resource
-               && resourceTitle(left.targettedResource) == right.title;
+        return left.targettedResource == right.resource()
+               && resourceTitle(left.targettedResource) == right.title();
                // && qFuzzyCompare(left.cachedScore, right.score);
     }
 

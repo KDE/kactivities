@@ -24,6 +24,9 @@
 #include <QListView>
 #include <QDebug>
 #include <QCoreApplication>
+#include <QItemDelegate>
+#include <QPainter>
+#include <QDateTime>
 
 #include <resultset.h>
 #include <resultmodel.h>
@@ -36,12 +39,85 @@ namespace KAStats = KActivities::Experimental::Stats;
 using namespace KAStats;
 using namespace KAStats::Terms;
 
+class Delegate: public QItemDelegate {
+public:
+    void paint(QPainter *painter, const QStyleOptionViewItem &option,
+               const QModelIndex &index) const Q_DECL_OVERRIDE
+    {
+        painter->save();
+
+        const QString title = index.data(ResultModel::TitleRole).toString();
+
+        QRect titleRect = painter->fontMetrics().boundingRect(title);
+        int lineHeight = titleRect.height();
+
+        // Header background
+        titleRect.moveTop(option.rect.top());
+        titleRect.setWidth(option.rect.width());
+
+        painter->fillRect(titleRect.x(), titleRect.y(),
+                          titleRect.width(), titleRect.height() + 16,
+                          QColor(32, 32, 32));
+
+        // Painting the title
+        painter->setPen(QColor(255,255,255));
+        int top = 2 * lineHeight;
+
+        titleRect.moveTop(titleRect.top() + 8);
+        titleRect.setLeft(8);
+        titleRect.setWidth(titleRect.width() - 8);
+        painter->drawText(titleRect, index.data(ResultModel::TitleRole).toString());
+
+        // Painting the score
+        painter->drawText(titleRect,
+                          "Score: " + QString::number(index.data(ResultModel::ScoreRole).toDouble()),
+                          QTextOption(Qt::AlignRight));
+
+        // Painting the moification and creation times
+        titleRect.moveTop(titleRect.bottom() + 16);
+
+        painter->fillRect(titleRect.x() - 4, titleRect.y() - 8,
+                          titleRect.width() + 8, titleRect.height() + 8 + lineHeight,
+                          QColor(64, 64, 64));
+
+        titleRect.moveTop(titleRect.top() - 4);
+
+        painter->drawText(titleRect,
+                          index.data(ResultModel::ResourceRole).toString()
+                          );
+
+        auto firstUpdate = QDateTime::fromTime_t(index.data(ResultModel::FirstUpdateRole).toUInt());
+        auto lastUpdate = QDateTime::fromTime_t(index.data(ResultModel::LastUpdateRole).toUInt());
+
+        titleRect.moveTop(titleRect.top() + lineHeight);
+
+        painter->drawText(titleRect,
+                          "Modified: " + lastUpdate.toString()
+                          );
+        painter->drawText(titleRect,
+                          "Created: " + firstUpdate.toString(),
+                          QTextOption(Qt::AlignRight));
+
+        painter->restore();
+
+    }
+
+    QSize sizeHint(const QStyleOptionViewItem &option,
+                   const QModelIndex &index) const Q_DECL_OVERRIDE
+    {
+        return QSize(0, 100);
+    }
+};
+
 Window::Window()
     : ui(new Ui::MainWindow())
     , model(Q_NULLPTR)
     , activities(new KActivities::Consumer())
 {
     ui->setupUi(this);
+    ui->viewResults->setItemDelegate(new Delegate());
+    // ui->viewResults->setUniformItemSizes(true);
+    // ui->viewResults->setGridSize(QSize(200, 100));
 
     while (activities->serviceStatus() == KActivities::Consumer::Unknown) {
         QCoreApplication::processEvents();
@@ -51,8 +127,8 @@ Window::Window()
             this, SLOT(updateResults()));
 
     for (const auto &activity :
-         (QStringList() << ":all"
-                        << ":current"
+         (QStringList() << ":current"
+                        << ":any"
                         << ":global") + activities->activities()) {
         ui->comboActivity->addItem(activity);
     }
@@ -120,7 +196,7 @@ void Window::updateResults()
     ui->textLog->setText(
         accumulate(ResultSet(query), QString(),
             [] (const QString &acc, const ResultSet::Result &result) {
-                return acc + result.title + " (" + result.resource + ")\n";
+                return acc + result.title() + " (" + result.resource() + ")\n";
             })
         );
 

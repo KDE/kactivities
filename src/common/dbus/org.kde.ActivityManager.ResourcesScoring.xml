@@ -7,6 +7,8 @@
       <arg name="client" type="s" direction="out"/>
       <arg name="resource" type="s" direction="out"/>
       <arg name="score" type="d" direction="out"/>
+      <arg name="lastUpdate" type="u" direction="out"/>
+      <arg name="firstUpdate" type="u" direction="out"/>
   </signal>
 
     <signal name="RecentStatsDeleted">

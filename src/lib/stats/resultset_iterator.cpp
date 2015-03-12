@@ -58,11 +58,7 @@ public:
             currentValue = boost::optional<Result>();
 
         } else {
-            Result result;
-            result.resource = resultSet->d->query.value("resource").toString();
-            result.title    = resultSet->d->query.value("title").toString();
-            result.score    = resultSet->d->query.value("score").toDouble();
-            currentValue    = boost::make_optional(result);
+            currentValue = boost::make_optional(std::move(resultSet->d->currentResult()));
 
         }
     }

@@ -151,7 +151,7 @@ void StatsPlugin::openResourceEvent(const QString &usedActivity,
         "VALUES (:usedActivity, :initiatingAgent, :targettedResource, :start, :end)"
     ));
 
-    Utils::exec(*openResourceEventQuery,
+    Utils::exec(Utils::FailOnError, *openResourceEventQuery,
         ":usedActivity"      , usedActivity      ,
         ":initiatingAgent"   , initiatingAgent   ,
         ":targettedResource" , targettedResource ,
@@ -185,7 +185,7 @@ void StatsPlugin::closeResourceEvent(const QString &usedActivity,
             "end IS NULL"
     ));
 
-    Utils::exec(*closeResourceEventQuery,
+    Utils::exec(Utils::FailOnError, *closeResourceEventQuery,
         ":usedActivity"      , usedActivity      ,
         ":initiatingAgent"   , initiatingAgent   ,
         ":targettedResource" , targettedResource ,
@@ -224,7 +224,7 @@ bool StatsPlugin::insertResourceInfo(const QString &uri)
     ));
 
     getResourceInfoQuery->bindValue(":targettedResource", uri);
-    Utils::exec(*getResourceInfoQuery);
+    Utils::exec(Utils::FailOnError, *getResourceInfoQuery);
 
     if (getResourceInfoQuery->next()) {
         return false;
@@ -246,7 +246,7 @@ bool StatsPlugin::insertResourceInfo(const QString &uri)
         ")"
     ));
 
-    Utils::exec(*insertResourceInfoQuery,
+    Utils::exec(Utils::FailOnError, *insertResourceInfoQuery,
         ":targettedResource", uri
     );
 
@@ -268,7 +268,7 @@ void StatsPlugin::saveResourceTitle(const QString &uri, const QString &title,
             "targettedResource = :targettedResource "
     ));
 
-    Utils::exec(*saveResourceTitleQuery,
+    Utils::exec(Utils::FailOnError, *saveResourceTitleQuery,
         ":targettedResource" , uri                     ,
         ":title"             , title                   ,
         ":autoTitle"         , (autoTitle ? "1" : "0")
@@ -291,7 +291,7 @@ void StatsPlugin::saveResourceMimetype(const QString &uri,
             "targettedResource = :targettedResource "
     ));
 
-    Utils::exec(*saveResourceMimetypeQuery,
+    Utils::exec(Utils::FailOnError, *saveResourceMimetypeQuery,
         ":targettedResource" , uri                        ,
         ":mimetype"          , mimetype                   ,
         ":autoMimetype"      , (autoMimetype ? "1" : "0")
@@ -392,19 +392,19 @@ void StatsPlugin::DeleteRecentStats(const QString &activity, int count,
         // Instantiating these every time is not a big overhead
         // since this method is rarely executed.
 
-        auto removeEvents = resourcesDatabase().createQuery();
-        removeEvents.prepare(
+        auto removeEventsQuery = resourcesDatabase().createQuery();
+        removeEventsQuery.prepare(
                 "DELETE FROM ResourceEvent "
                 "WHERE usedActivity = COALESCE(:usedActivity, usedActivity)"
             );
 
-        auto removeScoreCaches = resourcesDatabase().createQuery();
-        removeScoreCaches.prepare(
+        auto removeScoreCachesQuery = resourcesDatabase().createQuery();
+        removeScoreCachesQuery.prepare(
                 "DELETE FROM ResourceScoreCache "
                 "WHERE usedActivity = COALESCE(:usedActivity, usedActivity)");
 
-        Utils::exec(removeEvents, ":usedActivity", usedActivity);
-        Utils::exec(removeScoreCaches, ":usedActivity", usedActivity);
+        Utils::exec(Utils::FailOnError, removeEventsQuery, ":usedActivity", usedActivity);
+        Utils::exec(Utils::FailOnError, removeScoreCachesQuery, ":usedActivity", usedActivity);
 
     } else {
 
@@ -422,25 +422,25 @@ void StatsPlugin::DeleteRecentStats(const QString &activity, int count,
         // if something was accessed before, and the user did not
         // remove the history, it is not really a secret.
 
-        auto removeEvents = resourcesDatabase().createQuery();
-        removeEvents.prepare(
+        auto removeEventsQuery = resourcesDatabase().createQuery();
+        removeEventsQuery.prepare(
                 "DELETE FROM ResourceEvent "
                 "WHERE usedActivity = COALESCE(:usedActivity, usedActivity) "
                 "AND end > :since"
             );
 
-        auto removeScoreCaches = resourcesDatabase().createQuery();
-        removeScoreCaches.prepare(
+        auto removeScoreCachesQuery = resourcesDatabase().createQuery();
+        removeScoreCachesQuery.prepare(
                 "DELETE FROM ResourceScoreCache "
                 "WHERE usedActivity = COALESCE(:usedActivity, usedActivity) "
                 "AND firstUpdate > :since");
 
-        Utils::exec(removeEvents,
+        Utils::exec(Utils::FailOnError, removeEventsQuery,
                 ":usedActivity", usedActivity,
                 ":since", since.toTime_t()
             );
 
-        Utils::exec(removeScoreCaches,
+        Utils::exec(Utils::FailOnError, removeScoreCachesQuery,
                 ":usedActivity", usedActivity,
                 ":since", since.toTime_t()
             );
@@ -463,25 +463,25 @@ void StatsPlugin::DeleteEarlierStats(const QString &activity, int months)
     const auto usedActivity = activity.isEmpty() ? QVariant()
                                                  : QVariant(activity);
 
-    auto removeEvents = resourcesDatabase().createQuery();
-    removeEvents.prepare(
+    auto removeEventsQuery = resourcesDatabase().createQuery();
+    removeEventsQuery.prepare(
             "DELETE FROM ResourceEvent "
             "WHERE usedActivity = COALESCE(:usedActivity, usedActivity) "
             "AND start < :time"
         );
 
-    auto removeScoreCaches = resourcesDatabase().createQuery();
-    removeScoreCaches.prepare(
+    auto removeScoreCachesQuery = resourcesDatabase().createQuery();
+    removeScoreCachesQuery.prepare(
             "DELETE FROM ResourceScoreCache "
             "WHERE usedActivity = COALESCE(:usedActivity, usedActivity) "
             "AND lastUpdate < :time");
 
-    Utils::exec(removeEvents,
+    Utils::exec(Utils::FailOnError, removeEventsQuery,
             ":usedActivity", usedActivity,
             ":time", time.toTime_t()
         );
 
-    Utils::exec(removeScoreCaches,
+    Utils::exec(Utils::FailOnError, removeScoreCachesQuery,
             ":usedActivity", usedActivity,
             ":time", time.toTime_t()
         );

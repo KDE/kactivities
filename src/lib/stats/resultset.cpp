@@ -44,7 +44,105 @@ namespace Stats {
 
 using namespace Terms;
 
-// Main class
+class ResultSet::Result::Private {
+public:
+    QString resource;
+    QString title;
+    QString mimetype;
+    double  score;
+    uint    lastUpdate;
+    uint    firstUpdate;
+
+};
+
+ResultSet::Result::Result()
+    : d(new Private())
+{
+}
+
+ResultSet::Result::Result(Result &&result)
+    : d(result.d)
+{
+    result.d = Q_NULLPTR;
+}
+
+ResultSet::Result::Result(const Result &result)
+    : d(new Private(*result.d))
+{
+}
+
+ResultSet::Result &ResultSet::Result::operator=(Result result)
+{
+    std::swap(d, result.d);
+
+    return *this;
+}
+
+ResultSet::Result::~Result()
+{
+    delete d;
+}
+
+QString ResultSet::Result::resource() const
+{
+    return d->resource;
+}
+
+QString ResultSet::Result::title() const
+{
+    return d->title;
+}
+
+QString ResultSet::Result::mimetype() const
+{
+    return d->mimetype;
+}
+
+double ResultSet::Result::score() const
+{
+    return d->score;
+}
+
+uint ResultSet::Result::lastUpdate() const
+{
+    return d->lastUpdate;
+}
+
+uint ResultSet::Result::firstUpdate() const
+{
+    return d->firstUpdate;
+}
+
+void ResultSet::Result::setResource(const QString &resource)
+{
+    d->resource = resource;
+}
+
+void ResultSet::Result::setTitle(const QString &title)
+{
+    d->title = title;
+}
+
+void ResultSet::Result::setMimetype(const QString &mimetype)
+{
+    d->mimetype = mimetype;
+}
+
+void ResultSet::Result::setScore(double score)
+{
+    d->score = score;
+}
+
+void ResultSet::Result::setLastUpdate(uint lastUpdate)
+{
+    d->lastUpdate = lastUpdate;
+}
+
+void ResultSet::Result::setFirstUpdate(uint firstUpdate)
+{
+    d->firstUpdate = firstUpdate;
+}
+
 
 class ResultSet::Private {
 public:
@@ -240,6 +338,17 @@ public:
         return query;
     }
 
+    Result currentResult() const
+    {
+        Result result;
+        result.setResource(query.value("resource").toString());
+        result.setTitle(query.value("title").toString());
+        result.setMimetype(query.value("mimetype").toString());
+        result.setScore(query.value("score").toDouble());
+        result.setLastUpdate(query.value("lastUpdate").toInt());
+        result.setFirstUpdate(query.value("firstUpdate").toInt());
+        return result;
+    }
 };
 
 ResultSet::ResultSet(Query query)
@@ -285,11 +394,7 @@ ResultSet::Result ResultSet::at(int index) const
 
     d->query.seek(index);
 
-    return Result {
-        d->query.value("resource").toString(),
-        d->query.value("title").toString(),
-        d->query.value("score").toDouble()
-    };
+    return d->currentResult();
 }
 
 } // namespace Stats
