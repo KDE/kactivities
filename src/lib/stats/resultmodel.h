@@ -52,7 +52,9 @@ public:
     enum Roles {
         ResourceRole    = Qt::UserRole,
         TitleRole       = Qt::UserRole + 1,
-        ScoreRole       = Qt::UserRole + 2
+        ScoreRole       = Qt::UserRole + 2,
+        FirstUpdateRole = Qt::UserRole + 3,
+        LastUpdateRole  = Qt::UserRole + 4
     };
 
     int rowCount(const QModelIndex &parent) const Q_DECL_OVERRIDE;

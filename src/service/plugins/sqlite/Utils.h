@@ -48,27 +48,33 @@ namespace Utils {
         return prepare(database, *query, queryString);
     }
 
-    inline bool exec(QSqlQuery &query)
+    enum ErrorHandling {
+        IgnoreError,
+        FailOnError
+    };
+
+    inline bool exec(ErrorHandling eh, QSqlQuery &query)
     {
         bool success = query.exec();
 
-        #ifdef QSQL_QUERIES_DEBUG_ENABLE
-        if (!success) {
-            qDebug() << query.lastQuery();
-            qDebug() << query.lastError();
+        if (eh == FailOnError) {
+            if (!success) {
+                qDebug() << query.lastQuery();
+                qDebug() << query.lastError();
+            }
+            Q_ASSERT_X(success, "Uils::exec", "Query failed");
         }
-        #endif
 
         return success;
     }
 
     template <typename T1, typename T2, typename... Ts>
-    inline bool exec(QSqlQuery &query,
+    inline bool exec(ErrorHandling eh, QSqlQuery &query,
                      const T1 &variable, const T2 &value, Ts... ts)
     {
         query.bindValue(variable, value);
 
-        return exec(query, ts...);
+        return exec(eh, query, ts...);
     }
 
 } // namespace Utils

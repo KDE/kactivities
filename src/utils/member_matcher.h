@@ -50,24 +50,24 @@ namespace detail { //_
         inline bool operator()(const T &item) const
         {
             return
-                m_comparator == Less           ? item.*m_member <  m_value :
-                m_comparator == LessOrEqual    ? item.*m_member <= m_value :
-                m_comparator == Equal          ? item.*m_member == m_value :
-                m_comparator == GreaterOrEqual ? item.*m_member >= m_value :
-                m_comparator == Greater        ? item.*m_member >  m_value :
-                                                                   false;
+                m_comparator == Less           ? (item.*m_member)() <  m_value :
+                m_comparator == LessOrEqual    ? (item.*m_member)() <= m_value :
+                m_comparator == Equal          ? (item.*m_member)() == m_value :
+                m_comparator == GreaterOrEqual ? (item.*m_member)() >= m_value :
+                m_comparator == Greater        ? (item.*m_member)() >  m_value :
+                                                                     false;
         }
 
         template <typename T, typename V>
         inline bool operator()(const T &item, const V &value) const
         {
             return
-                m_comparator == Less           ? item.*m_member <  value :
-                m_comparator == LessOrEqual    ? item.*m_member <= value :
-                m_comparator == Equal          ? item.*m_member == value :
-                m_comparator == GreaterOrEqual ? item.*m_member >= value :
-                m_comparator == Greater        ? item.*m_member >  value :
-                                                                   false;
+                m_comparator == Less           ? (item.*m_member)() <  value :
+                m_comparator == LessOrEqual    ? (item.*m_member)() <= value :
+                m_comparator == Equal          ? (item.*m_member)() == value :
+                m_comparator == GreaterOrEqual ? (item.*m_member)() >= value :
+                m_comparator == Greater        ? (item.*m_member)() >  value :
+                                                                     false;
         }
 
 

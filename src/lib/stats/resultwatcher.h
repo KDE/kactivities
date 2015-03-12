@@ -47,7 +47,8 @@ Q_SIGNALS:
      * a previously existing one has some of the attributes changed.
      * @param result new data for the resource defined by result.resource
      */
-    void resultAdded(const QString &resource, double score);
+    void resultAdded(const QString &resource, double score, uint lastUpdate,
+                     uint firstUpdate);
 
     /**
      * Emitted when a result has been added or updated. This either means

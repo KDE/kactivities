@@ -138,7 +138,8 @@ public:
 
         if (!eventMatches(agent, resource, activity)) return;
 
-        emit q->resultAdded(resource, std::numeric_limits<double>::infinity());
+        // TODO: See whether it makes sense to have lastUpdate/firstUpdate here as well
+        emit q->resultAdded(resource, std::numeric_limits<double>::infinity(), 0, 0);
     }
 
     void onResourceUnlinkedFromActivity(const QString &agent,
@@ -154,7 +155,8 @@ public:
     }
 
     void onResourceScoreUpdated(const QString &activity, const QString &agent,
-                                const QString &resource, double score)
+                                const QString &resource, double score,
+                                uint lastUpdate, uint firstUpdate)
     {
         Q_ASSERT_X(activity == "00000000-0000-0000-0000-000000000000" ||
                    !QUuid(activity).isNull(),
@@ -166,7 +168,7 @@ public:
 
         if (!eventMatches(agent, resource, activity)) return;
 
-        emit q->resultAdded(resource, score);
+        emit q->resultAdded(resource, score, lastUpdate, firstUpdate);
     }
 
 
@@ -212,7 +214,7 @@ ResultWatcher::ResultWatcher(Query query)
     // Connecting the scoring service
     QObject::connect(
         d->scoring.data(), &ResourcesScoring::ResourceScoreUpdated,
-        this, std::bind(&Private::onResourceScoreUpdated, d, _1, _2, _3, _4));
+        this, std::bind(&Private::onResourceScoreUpdated, d, _1, _2, _3, _4, _5, _6));
     QObject::connect(
         d->scoring.data(), &ResourcesScoring::RecentStatsDeleted,
         this, std::bind(&Private::onRecentStatsDeleted, d, _1, _2, _3));

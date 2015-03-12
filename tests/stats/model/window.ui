@@ -148,7 +148,7 @@
               <bool>true</bool>
              </property>
              <property name="currentText">
-              <string>:any</string>
+              <string>:current</string>
              </property>
             </widget>
            </item>

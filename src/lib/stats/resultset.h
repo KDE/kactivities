@@ -35,10 +35,32 @@ public:
     /**
      * Structure containing data of one of the results
      */
-    struct Result {
-        QString resource; ///< URL of the resource
-        QString title;    ///< Title of the resource, or URL if title is not known
-        double score;     ///< The score calculated based on the usage statistics
+    class Result {
+    public:
+        Result();
+        ~Result();
+
+        Result(Result &&result);
+        Result(const Result &result);
+        Result &operator=(Result result);
+
+        QString resource() const; ///< URL of the resource
+        QString title() const;    ///< Title of the resource, or URL if title is not known
+        QString mimetype() const; ///< Mimetype of the resource, or URL if title is not known
+        double score() const;     ///< The score calculated based on the usage statistics
+        uint lastUpdate() const;  ///< Timestamp of the last update
+        uint firstUpdate() const; ///< Timestamp of the first update
+
+        void setResource(const QString &resource);
+        void setTitle(const QString &title);
+        void setMimetype(const QString &mimetype);
+        void setScore(double score);
+        void setLastUpdate(uint lastUpdate);
+        void setFirstUpdate(uint firstUpdate);
+
+    private:
+        class Private;
+        Private * d;
     };
 
     /**
