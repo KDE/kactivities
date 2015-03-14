@@ -185,10 +185,11 @@ public:
 
             ResultSet::Result result;
             result.setResource(resource);
-            // TODO: Add the resource title and mimetype, if known
-            // result.setTitle(" ");
-            // result.setMimetype(" ");
-            fillInTheBlanks(result);
+
+            result.setTitle(" ");
+            result.setMimetype(" ");
+            fillTitleAndMimetype(result);
+
             result.setScore(score);
             result.setLastUpdate(lastUpdate);
             result.setFirstUpdate(firstUpdate);
@@ -269,23 +270,21 @@ public:
     KActivities::Consumer activities;
     Common::Database::Ptr database;
 
-    void fillInTheBlanks(ResultSet::Result &result)
+    void fillTitleAndMimetype(ResultSet::Result &result)
     {
-        if (result.title().isEmpty() || result.mimetype().isEmpty()) {
-            auto query = database->execQuery(
-                    "SELECT "
-                        "title, mimetype "
-                    "FROM "
-                        "ResourceInfo "
-                    "WHERE "
-                        "targettedResource = '" + result.resource() + "'"
+        auto query = database->execQuery(
+                "SELECT "
+                "title, mimetype "
+                "FROM "
+                "ResourceInfo "
+                "WHERE "
+                "targettedResource = '" + result.resource() + "'"
                 );
 
-            // Only one item at most
-            for (const auto &item: query) {
-                result.setTitle(query.value("title").toString());
-                result.setMimetype(query.value("mimetype").toString());
-            }
+        // Only one item at most
+        for (const auto &item: query) {
+            result.setTitle(query.value("title").toString());
+            result.setMimetype(query.value("mimetype").toString());
         }
     }
 
