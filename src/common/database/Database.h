@@ -46,6 +46,10 @@ public:
     QSqlQuery execQuery(const QString &query, bool ignoreErrors = false) const;
     QSqlQuery createQuery() const;
 
+    void setPragma(const QString &pragma);
+    QVariant pragma(const QString &pragma) const;
+    QVariant value(const QString &query) const;
+
     // For debugging purposes only
     QString lastQuery() const;
 
