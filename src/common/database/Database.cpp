@@ -135,9 +135,40 @@ Database::Ptr Database::instance(Source source, OpenMode openMode)
             qFatal("Opening the database in RW mode should always succeed");
         }
         ptr.reset();
+
     } else {
         databases[info] = ptr;
+
+        // TODO: This is not really a safe way to compare versions
+        auto sqliteVersion = ptr->value("select sqlite_version();").toString();
+        if (sqliteVersion < "3.7.0") {
+            qFatal("The SQLite version needs to be at least 3.7.0");
+        }
+
+        if (info.openMode == ReadOnly) {
+            // From now on, only SELECT queries will work
+            ptr->setPragma("query_only = 1");
+
+            // These should not make any difference
+            ptr->setPragma("synchronous = 0");
+
+        } else {
+            // Using the write-ahead log and sync = NORMAL for faster writes
+            ptr->setPragma("synchronous = 1");
+        }
+
+        // Maybe we should use the write-ahead log
+        // ptr->setPragma("journal_mode = WAL");
+
+        qDebug() << "Database connection: " << databaseConnectionName
+            << "\n    read only:    " << ptr->pragma("query_only")
+            << "\n    journal mode: " << ptr->pragma("journal_mode")
+            << "\n    sync:         " << ptr->pragma("synchronous")
+            ;
+
+
     }
+
 
     return std::move(ptr);
 }
@@ -193,6 +224,22 @@ QSqlQuery Database::execQueries(const QStringList &queries) const
     }
 
     return result;
+}
+
+void Database::setPragma(const QString &pragma)
+{
+    execQuery(QStringLiteral("PRAGMA ") + pragma);
+}
+
+QVariant Database::pragma(const QString &pragma) const
+{
+    return value("PRAGMA " + pragma);
+}
+
+QVariant Database::value(const QString &query) const
+{
+    auto result = execQuery(query);
+    return result.next() ? result.value(0) : QVariant();
 }
 
 } // namespace Common
