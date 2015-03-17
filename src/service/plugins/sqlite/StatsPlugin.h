@@ -106,6 +106,7 @@ private Q_SLOTS:
 
 private:
     inline bool acceptedEvent(const Event &event);
+    inline Event validateEvent(Event event);
 
     enum WhatToRemember {
         AllApplications = 0,

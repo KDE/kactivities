@@ -211,7 +211,9 @@ void StatsPlugin::detectResourceInfo(const QString &_uri)
 
     if (insertResourceInfo(file)) {
         saveResourceMimetype(file, item.mimetype(), true);
-        saveResourceTitle(file, item.text(), true);
+
+        const auto text = item.text();
+        saveResourceTitle(file, text.isEmpty() ? _uri : text, true);
     }
 }
 
@@ -313,6 +315,7 @@ QString StatsPlugin::currentActivity() const
 bool StatsPlugin::acceptedEvent(const Event &event)
 {
     return !(
+        event.uri.isEmpty() ||
         event.uri.startsWith(QStringLiteral("about")) ||
 
         // if blocked by default, the list contains allowed applications
@@ -325,6 +328,21 @@ bool StatsPlugin::acceptedEvent(const Event &event)
     );
 }
 
+Event StatsPlugin::validateEvent(Event event)
+{
+    if (event.uri.startsWith(QStringLiteral("file://"))) {
+        event.uri = QUrl(event.uri).toLocalFile();
+    }
+
+    if (event.uri.startsWith(QStringLiteral("/"))) {
+        QFileInfo file(event.uri);
+
+        event.uri = file.exists() ? file.canonicalFilePath() : QString();
+    }
+
+    return event;
+}
+
 void StatsPlugin::addEvents(const EventList &events)
 {
     using namespace kamd::utils;
@@ -335,8 +353,11 @@ void StatsPlugin::addEvents(const EventList &events)
 
     DATABASE_TRANSACTION(resourcesDatabase());
 
-    for (const auto &event :
-            events | filtered(&StatsPlugin::acceptedEvent, this)) {
+    for (auto event : events | transformed(&StatsPlugin::validateEvent, this)
+                             | filtered(&StatsPlugin::acceptedEvent, this)
+            ) {
+
+        validateEvent(event);
 
         switch (event.type) {
             case Event::Accessed:
