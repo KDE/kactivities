@@ -24,12 +24,41 @@ namespace KActivities {
 namespace Experimental {
 namespace Stats {
 
+namespace details {
+    inline void validateTypes(QStringList &types)
+    {
+        // Nothing at the moment
+    }
+
+    inline void validateAgents(QStringList &agents)
+    {
+        // Nothing at the moment
+    }
+
+    inline void validateActivities(QStringList &activities)
+    {
+        // Nothing at the moment
+    }
+
+    inline void validateUrlFilters(QStringList &urlFilters)
+    {
+        auto i = urlFilters.begin();
+        const auto end = urlFilters.end();
+
+        for (; i != end ; ++i) {
+            i->replace("'", "");
+        }
+    }
+
+} // namespace details
+
 class Query::Private {
 public:
     Terms::Select   selection;
     QStringList     types;
     QStringList     agents;
     QStringList     activities;
+    QStringList     urlFilters;
     Terms::Order    ordering;
 };
 
@@ -68,7 +97,8 @@ bool Query::operator== (const Query &right) const
            types()      == right.types() &&
            agents()     == right.agents() &&
            activities() == right.activities() &&
-           selection()  == right.selection();
+           selection()  == right.selection() &&
+           urlFilters() == right.urlFilters();
 }
 
 bool Query::operator!= (const Query &right) const
@@ -76,23 +106,29 @@ bool Query::operator!= (const Query &right) const
     return !(*this == right);
 }
 
+#define IMPLEMENT_QUERY_LIST_FIELD(WHAT, What, Default)                        \
+    void Query::add##WHAT(const QStringList &What)                             \
+    {                                                                          \
+        d->What << What;                                                       \
+        details::validate##WHAT(d->What);                                      \
+    }                                                                          \
+                                                                               \
+    QStringList Query::What() const                                            \
+    {                                                                          \
+        return d->What.size() ? d->What : Default;                             \
+    }                                                                          \
+                                                                               \
+    void Query::clear##WHAT()                                                  \
+    {                                                                          \
+        d->What.clear();                                                       \
+    }
 
+IMPLEMENT_QUERY_LIST_FIELD(Types,      types,      QStringList(":any"))
+IMPLEMENT_QUERY_LIST_FIELD(Agents,     agents,     QStringList(":current"))
+IMPLEMENT_QUERY_LIST_FIELD(Activities, activities, QStringList(":current"))
+IMPLEMENT_QUERY_LIST_FIELD(UrlFilters, urlFilters, QStringList())
 
-
-void Query::addTypes(const QStringList &types)
-{
-    d->types << types;
-}
-
-void Query::addAgents(const QStringList &agents)
-{
-    d->agents << agents;
-}
-
-void Query::addActivities(const QStringList &activities)
-{
-    d->activities << activities;
-}
+#undef IMPLEMENT_QUERY_LIST_FIELD
 
 void Query::setOrdering(Terms::Order ordering)
 {
@@ -104,22 +140,6 @@ void Query::setSelection(Terms::Select selection)
     d->selection = selection;
 }
 
-
-QStringList Query::types() const
-{
-    return d->types.size() ? d->types : QStringList(":any");
-}
-
-QStringList Query::agents() const
-{
-    return d->agents.size() ? d->agents : QStringList(":current");
-}
-
-QStringList Query::activities() const
-{
-    return d->activities.size() ? d->activities : QStringList(":current");
-}
-
 Terms::Order Query::ordering() const
 {
     return d->ordering;
@@ -128,22 +148,6 @@ Terms::Order Query::ordering() const
 Terms::Select Query::selection() const
 {
     return d->selection;
-}
-
-
-void Query::clearTypes()
-{
-    d->types.clear();
-}
-
-void Query::clearAgents()
-{
-    d->agents.clear();
-}
-
-void Query::clearActivities()
-{
-    d->activities.clear();
 }
 
 } // namespace Stats
@@ -162,6 +166,7 @@ QDebug operator<<(QDebug dbg, const KAStats::Query &query)
         << ", " << Type(query.types())
         << ", " << Agent(query.agents())
         << ", " << Activity(query.activities())
+        << ", " << Url(query.urlFilters())
         << ", " << query.ordering()
         << " }";
     return dbg;
