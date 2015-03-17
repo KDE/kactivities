@@ -195,6 +195,11 @@ public:
             ) + "'";
     }
 
+    QString urlFilterClause(const QString &urlFilter) const
+    {
+        return "resource LIKE '" + urlFilter + "'";
+    }
+
     /**
      * Transforms the input list's elements with the f member method,
      * and returns the resulting list
@@ -241,7 +246,9 @@ public:
             "    ON rl.targettedResource = ri.targettedResource \n"
 
             "WHERE \n"
-            "    ($agentsFilter) AND ($activitiesFilter) \n"
+            "    ($agentsFilter) \n"
+            "    AND ($activitiesFilter) \n"
+            "    AND ($urlFilter)\n"
 
             "GROUP BY resource, title \n"
             "ORDER BY $orderingColumn resource ASC\n";
@@ -264,6 +271,10 @@ public:
         QStringList activitiesFilter = transformedList(
                 queryDefinition.activities(), &Private::activityClause);
 
+        // WHERE clause for filtering on resource URLs
+        QStringList urlFilter = transformedList(
+                queryDefinition.urlFilters(), &Private::urlFilterClause);
+
         auto query = _query;
 
         return
@@ -271,6 +282,7 @@ public:
                 .replace("$orderingColumn", orderingColumn)
                 .replace("$agentsFilter", agentsFilter.join(" OR "))
                 .replace("$activitiesFilter", activitiesFilter.join(" OR "))
+                .replace("$urlFilter", urlFilter.join(" OR "))
             ;
     }
 
@@ -296,7 +308,9 @@ public:
             "    ON rsc.targettedResource = ri.targettedResource \n"
 
             "WHERE \n"
-            "    ($agentsFilter) AND ($activitiesFilter) \n"
+            "    ($agentsFilter) \n"
+            "    AND ($activitiesFilter) \n"
+            "    AND ($urlFilter)\n"
 
             "GROUP BY resource, title \n"
             "ORDER BY $orderingColumn resource ASC\n";
@@ -319,14 +333,19 @@ public:
         QStringList activitiesFilter = transformedList(
                 queryDefinition.activities(), &Private::activityClause);
 
+        // WHERE clause for filtering on resource URLs
+        QStringList urlFilter = transformedList(
+                queryDefinition.urlFilters(), &Private::urlFilterClause);
+
         auto query = _query;
 
-        return
+        return kamd::utils::debug_and_return("Query: ",
             query
                 .replace("$orderingColumn", orderingColumn)
                 .replace("$agentsFilter", agentsFilter.join(" OR "))
                 .replace("$activitiesFilter", activitiesFilter.join(" OR "))
-            ;
+                .replace("$urlFilter", urlFilter.join(" OR "))
+            );
     }
 
     QString allResourcesQuery() const

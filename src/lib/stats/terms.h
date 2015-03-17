@@ -144,6 +144,44 @@ namespace Terms {
 
         const QStringList values;
     };
+
+    /**
+     * Url filtering.
+     */
+    struct KACTIVITIESSTATS_EXPORT Url {
+        /**
+         * Show only resources that start with the specified prefix
+         */
+        static Url startsWith(const QString &prefix);
+
+        /**
+         * Show resources that contain the specified infix
+         */
+        static Url contains(const QString &infix);
+
+        /**
+         * Show local files
+         */
+        static Url localFile();
+
+        /**
+         * Show local files, smb, fish, ftp and stfp
+         */
+        static Url file();
+
+        #ifdef Q_COMPILER_INITIALIZER_LISTS
+        inline Url(std::initializer_list<QString> urlPatterns)
+            : values(urlPatterns)
+        {
+        }
+        #endif
+
+        Url(QStringList urlPatterns);
+        Url(QString urlPattern);
+
+        const QStringList values;
+
+    };
 } // namespace Terms
 
 } // namespace Stats
@@ -151,19 +189,22 @@ namespace Terms {
 } // namespace KActivities
 
 KACTIVITIESSTATS_EXPORT
-QDebug operator<<(QDebug dbg, const KActivities::Experimental::Stats::Terms::Order    &order);
+QDebug operator<<(QDebug dbg, const KActivities::Experimental::Stats::Terms::Order &order);
 
 KACTIVITIESSTATS_EXPORT
-QDebug operator<<(QDebug dbg, const KActivities::Experimental::Stats::Terms::Select   &select);
+QDebug operator<<(QDebug dbg, const KActivities::Experimental::Stats::Terms::Select &select);
 
 KACTIVITIESSTATS_EXPORT
-QDebug operator<<(QDebug dbg, const KActivities::Experimental::Stats::Terms::Type     &type);
+QDebug operator<<(QDebug dbg, const KActivities::Experimental::Stats::Terms::Type &type);
 
 KACTIVITIESSTATS_EXPORT
-QDebug operator<<(QDebug dbg, const KActivities::Experimental::Stats::Terms::Agent    &agent);
+QDebug operator<<(QDebug dbg, const KActivities::Experimental::Stats::Terms::Agent &agent);
 
 KACTIVITIESSTATS_EXPORT
 QDebug operator<<(QDebug dbg, const KActivities::Experimental::Stats::Terms::Activity &activity);
+
+KACTIVITIESSTATS_EXPORT
+QDebug operator<<(QDebug dbg, const KActivities::Experimental::Stats::Terms::Url &url);
 
 #endif // KACTIVITIES_STATS_TERMS_H
 

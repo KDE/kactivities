@@ -59,21 +59,25 @@ public:
     QStringList types() const;
     QStringList agents() const;
     QStringList activities() const;
+    QStringList urlFilters() const;
     Terms::Order ordering() const;
 
     void setSelection(Terms::Select selection);
     void addTypes(const QStringList &types);
     void addAgents(const QStringList &agents);
     void addActivities(const QStringList &activities);
+    void addUrlFilters(const QStringList &urlFilters);
     void setOrdering(Terms::Order ordering);
 
     void clearTypes();
     void clearAgents();
     void clearActivities();
+    void clearUrlFilters();
 
     void removeTypes(const QStringList &types);
     void removeAgents(const QStringList &agents);
     void removeActivities(const QStringList &activities);
+    void removeUrlFilters(const QStringList &urlFilters);
 
 private:
     inline void addTerm(const Terms::Type &term)
@@ -89,6 +93,11 @@ private:
     inline void addTerm(const Terms::Activity &term)
     {
         addActivities(term.values);
+    }
+
+    inline void addTerm(const Terms::Url &term)
+    {
+        addUrlFilters(term.values);
     }
 
     inline void addTerm(Terms::Order ordering)
