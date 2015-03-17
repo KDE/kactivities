@@ -139,12 +139,6 @@ Database::Ptr Database::instance(Source source, OpenMode openMode)
     } else {
         databases[info] = ptr;
 
-        // TODO: This is not really a safe way to compare versions
-        auto sqliteVersion = ptr->value("select sqlite_version();").toString();
-        if (sqliteVersion < "3.7.0") {
-            qFatal("The SQLite version needs to be at least 3.7.0");
-        }
-
         if (info.openMode == ReadOnly) {
             // From now on, only SELECT queries will work
             ptr->setPragma("query_only = 1");
@@ -158,12 +152,23 @@ Database::Ptr Database::instance(Source source, OpenMode openMode)
         }
 
         // Maybe we should use the write-ahead log
-        // ptr->setPragma("journal_mode = WAL");
+        auto walResult = ptr->pragma("journal_mode = WAL");
+
+        if (walResult != "wal") {
+            qFatal("Database can not be opened in WAL mode. Check your version "
+                   "of SQLite (required >3.7.0). And whether your filesystem "
+                   "supports shared memory");
+        }
+
+        // We don't have a big database, lets flush the WAL when
+        // it reaches 400k, not 4M as is default
+        ptr->setPragma("wal_autocheckpoint = 100");
 
         qDebug() << "Database connection: " << databaseConnectionName
-            << "\n    read only:    " << ptr->pragma("query_only")
-            << "\n    journal mode: " << ptr->pragma("journal_mode")
-            << "\n    sync:         " << ptr->pragma("synchronous")
+            << "\n    query_only:         " << ptr->pragma("query_only")
+            << "\n    journal_mode:       " << ptr->pragma("journal_mode")
+            << "\n    wal_autocheckpoint: " << ptr->pragma("wal_autocheckpoint")
+            << "\n    synchronous:        " << ptr->pragma("synchronous")
             ;
 
 
