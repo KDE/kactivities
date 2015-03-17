@@ -197,6 +197,8 @@ public:
 
     QString urlFilterClause(const QString &urlFilter) const
     {
+        if (urlFilter == "%") return "1";
+
         return "resource LIKE '" + urlFilter + "'";
     }
 
