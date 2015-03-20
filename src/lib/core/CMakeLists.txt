@@ -7,7 +7,7 @@
 set (
    KActivities_LIB_SRCS
 
-   ${CMAKE_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.Activities.cpp
+   ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.Activities.cpp
 
    consumer.cpp
    controller.cpp
@@ -19,42 +19,42 @@ set (
    activitiescache_p.cpp
    debug_p.cpp
 
-   ${CMAKE_SOURCE_DIR}/src/utils/dbusfuture_p.cpp
+   ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/src/utils/dbusfuture_p.cpp
 
    version.cpp
    )
 
 set_source_files_properties (
-   ${CMAKE_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.Activities.xml
+   ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.Activities.xml
    PROPERTIES
-   INCLUDE ${CMAKE_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.Activities.h
+   INCLUDE ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.Activities.h
    )
 
 qt5_add_dbus_interface (
    KActivities_LIB_SRCS
 
-   ${CMAKE_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.Activities.xml
+   ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.Activities.xml
    activities_interface
    )
 
 qt5_add_dbus_interface (
    KActivities_LIB_SRCS
 
-   ${CMAKE_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.Resources.xml
+   ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.Resources.xml
    resources_interface
    )
 
 qt5_add_dbus_interface (
    KActivities_LIB_SRCS
 
-   ${CMAKE_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.Features.xml
+   ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.Features.xml
    features_interface
    )
 
 qt5_add_dbus_interface (
    KActivities_LIB_SRCS
 
-   ${CMAKE_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.ResourcesLinking.xml
+   ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.ResourcesLinking.xml
    resources_linking_interface
    )
 
@@ -65,7 +65,7 @@ add_library (
 add_library (KF5::Activities ALIAS KF5Activities)
 
 include_directories (
-   ${CMAKE_SOURCE_DIR}/src
+   ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/src
    ${KDBusAddons_INCLUDE_DIR}
    )
 

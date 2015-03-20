@@ -3,7 +3,7 @@
 project (activitymanager-globalshortcuts)
 
 include_directories (
-   ${CMAKE_SOURCE_DIR}/src
+   ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/src
    ${CMAKE_BINARY_DIR}/src
    ${CMAKE_CURRENT_SOURCE_DIR}
    ${CMAKE_CURRENT_SOURCE_DIR}/../..
