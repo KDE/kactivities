@@ -94,12 +94,6 @@ install (
    )
 
 install (
-   FILES ${KActivitiesStats_HEADERS}
-   DESTINATION ${KDE_INSTALL_INCLUDEDIR_KF5}/KActivitiesStats/kactivitiesstats
-   COMPONENT Devel
-   )
-
-install (
    FILES ${KActivitiesStats_HEADERS} ${CMAKE_CURRENT_BINARY_DIR}/kactivitiesstats_export.h
    DESTINATION ${KDE_INSTALL_INCLUDEDIR_KF5}/KActivitiesStats/kactivitiesexperimentalstats
    COMPONENT Devel
