@@ -34,7 +34,7 @@
 #include <utils/qsqlquery_iterator.h>
 #include "resultset.h"
 #include "resultwatcher.h"
-#include "consumer.h"
+#include "kactivities/consumer.h"
 
 #include <utils/member_matcher.h>
 #include <utils/slide.h>
