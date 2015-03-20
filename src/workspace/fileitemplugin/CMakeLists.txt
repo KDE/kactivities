@@ -4,7 +4,7 @@ find_package (KF5 REQUIRED COMPONENTS KIO)
 find_package (Qt5 REQUIRED NO_MODULE COMPONENTS Sql)
 
 include_directories (
-   ${CMAKE_SOURCE_DIR}/src
+   ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/src
    ${CMAKE_BINARY_DIR}/src
    ${CMAKE_CURRENT_SOURCE_DIR}
    ${CMAKE_CURRENT_BINARY_DIR}
@@ -12,7 +12,7 @@ include_directories (
 
 set (kactivitymanagerd_fileitem_linking_plugin_SRCS
    FileItemLinkingPlugin.cpp
-   ${CMAKE_SOURCE_DIR}/src/utils/qsqlquery_iterator.cpp
+   ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/src/utils/qsqlquery_iterator.cpp
    )
 
 add_library (

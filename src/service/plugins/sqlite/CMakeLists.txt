@@ -10,30 +10,30 @@ set (
    ResourceScoreMaintainer.cpp
    ResourceLinking.cpp
 
-   ${CMAKE_SOURCE_DIR}/src/common/database/Database.cpp
-   ${CMAKE_SOURCE_DIR}/src/common/database/schema/ResourcesDatabaseSchema.cpp
+   ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/src/common/database/Database.cpp
+   ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/src/common/database/schema/ResourcesDatabaseSchema.cpp
 
-   ${CMAKE_SOURCE_DIR}/src/utils/qsqlquery_iterator.cpp
+   ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/src/utils/qsqlquery_iterator.cpp
 
    ${plugin_implementation_SRCS}
    )
 
 qt5_add_dbus_adaptor (
    sqliteplugin_SRCS
-   ${CMAKE_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.ResourcesLinking.xml
+   ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.ResourcesLinking.xml
    ResourceLinking.h ResourceLinking
    resourcelinkingadaptor
    )
 
 qt5_add_dbus_adaptor (
    sqliteplugin_SRCS
-   ${CMAKE_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.ResourcesScoring.xml
+   ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.ResourcesScoring.xml
    StatsPlugin.h StatsPlugin
    resourcescoringadaptor
    )
 
 include_directories (
-   ${CMAKE_SOURCE_DIR}/src
+   ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/src
    ${CMAKE_BINARY_DIR}/src
    ${CMAKE_CURRENT_SOURCE_DIR}
    ${CMAKE_CURRENT_SOURCE_DIR}/../..

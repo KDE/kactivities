@@ -4,11 +4,12 @@ project (KActivitiesTest)
 find_package (Qt5 REQUIRED NO_MODULE COMPONENTS Test Core DBus)
 
 include_directories (
-   ${CMAKE_SOURCE_DIR}/src/
-   ${CMAKE_SOURCE_DIR}/src/lib/core/
+   ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/src/
+   ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/src/lib/core/
+   ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/tests/
+   ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/autotests/
    ${CMAKE_BINARY_DIR}/src/lib/core/
    ${CMAKE_BINARY_DIR}/src/
-   ${CMAKE_SOURCE_DIR}/autotests/
    )
 
 set (
@@ -17,7 +18,7 @@ set (
    Process.cpp
    OfflineTest.cpp
    CleanOnlineTest.cpp
-   ${CMAKE_SOURCE_DIR}/autotests/common/test.cpp
+   ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/autotests/common/test.cpp
    )
 
 if (NOT WIN32)

@@ -32,7 +32,7 @@ add_subdirectory (plugins)
 
 set (kactivitymanager_SRCS
    Application.cpp
-   ${CMAKE_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.Activities.cpp
+   ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.Activities.cpp
 
    Activities.cpp
    Resources.cpp

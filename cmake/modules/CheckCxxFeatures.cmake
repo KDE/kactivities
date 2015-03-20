@@ -1,7 +1,7 @@
 # Macro that tests and returns whether a C++ feature is present in the
 # current compiler
 
-set(CXX_CHECK_FEATURE_MODULE_DIR "${CMAKE_SOURCE_DIR}/cmake/modules")
+set(CXX_CHECK_FEATURE_MODULE_DIR "${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/cmake/modules")
 set(CXX_FEATURES_SUPPORTED "")
 set(CXX_FEATURES_UNSUPPORTED "")
 

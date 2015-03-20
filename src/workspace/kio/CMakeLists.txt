@@ -3,7 +3,7 @@
 project (kioslave-activities)
 
 include_directories (
-   ${CMAKE_SOURCE_DIR}/src
+   ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/src
    ${CMAKE_BINARY_DIR}/src
    ${CMAKE_CURRENT_SOURCE_DIR}
    ${CMAKE_CURRENT_BINARY_DIR}
@@ -16,9 +16,9 @@ find_package (KF5 REQUIRED COMPONENTS KIO I18n)
 
 set (kio_activities_PART_SRCS
    KioActivities.cpp
-   ${CMAKE_SOURCE_DIR}/src/utils/qsqlquery_iterator.cpp
-   ${CMAKE_SOURCE_DIR}/src/common/database/Database.cpp
-   ${CMAKE_SOURCE_DIR}/src/common/database/schema/ResourcesDatabaseSchema.cpp
+   ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/src/utils/qsqlquery_iterator.cpp
+   ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/src/common/database/Database.cpp
+   ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/src/common/database/schema/ResourcesDatabaseSchema.cpp
    )
 
 add_library (
