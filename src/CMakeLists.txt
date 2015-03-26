@@ -1,9 +1,5 @@
 # vim:set softtabstop=3 shiftwidth=3 tabstop=3 expandtab:
 
-option (KACTIVITIES_LIBRARY_ONLY "If true, compiles only the KActivities library, without the service and other modules." OFF)
-option (KACTIVITIES_INSTALL_EXPERIMENTAL_HEADERS "If true, it will install the headers of experimental libraries." ON)
-option (KACTIVITIES_ENABLE_EXCEPTIONS "If you have Boost 1.53, you need to build KActivities with exceptions enabled. This is UNTESTED and EXPERIMENTAL!" OFF)
-
 # Boosting us a bit
 
 if (NOT KACTIVITIES_LIBRARY_ONLY)

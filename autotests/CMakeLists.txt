@@ -4,5 +4,8 @@ string (REPLACE "-fno-exceptions" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 add_definitions (-fexceptions)
 
 add_subdirectory (core)
-add_subdirectory (stats)
+
+if (KACTIVITIES_INSTALL_EXPERIMENTAL_LIBRARIES)
+   add_subdirectory (stats)
+endif ()
 

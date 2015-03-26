@@ -4,6 +4,22 @@ cmake_minimum_required (VERSION 2.8.11)
 
 project (KActivities)
 
+option (KACTIVITIES_LIBRARY_ONLY "If true, compiles only the KActivities library, without the service and other modules." OFF)
+option (KACTIVITIES_ENABLE_EXCEPTIONS "If you have Boost 1.53, you need to build KActivities with exceptions enabled. This is UNTESTED and EXPERIMENTAL!" OFF)
+
+option (KACTIVITIES_INSTALL_EXPERIMENTAL_LIBRARIES "If true, it will build and install the experimental libraries." OFF)
+option (KACTIVITIES_INSTALL_EXPERIMENTAL_HEADERS "If true, it will install the headers of experimental libraries." OFF)
+
+if (NOT KACTIVITIES_INSTALL_EXPERIMENTAL_LIBRARIES)
+   set (KACTIVITIES_INSTALL_EXPERIMENTAL_HEADERS FALSE)
+else()
+   message (WARNING "**********************************************************\n"
+                    "WARNING: The experimental libraries should not be used in"
+                    "stable software releases. API and ABI can be changed"
+                    "without notice. Do *NOT* make packages with this enabled!\n"
+                    "**********************************************************")
+endif()
+
 set (REQUIRED_QT_VERSION 5.2.0)
 
 # We don't build in-source
@@ -95,41 +111,43 @@ install (
 
 # libKActivitiesStats
 
-ecm_setup_version (
-   ${KF5_VERSION}
-   VARIABLE_PREFIX KACTIVITIESEXPERIMENTALSTATS
-   VERSION_HEADER "${CMAKE_CURRENT_BINARY_DIR}/kactivitiesexperimentalstats_version.h"
-   PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/KF5ActivitiesExperimentalStatsConfigVersion.cmake"
-   SOVERSION 1
-   )
+if (KACTIVITIES_INSTALL_EXPERIMENTAL_HEADERS)
+   ecm_setup_version (
+      ${KF5_VERSION}
+      VARIABLE_PREFIX KACTIVITIESEXPERIMENTALSTATS
+      VERSION_HEADER "${CMAKE_CURRENT_BINARY_DIR}/kactivitiesexperimentalstats_version.h"
+      PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/KF5ActivitiesExperimentalStatsConfigVersion.cmake"
+      SOVERSION 1
+      )
 
-set (CMAKECONFIG_INSTALL_DIR "${KDE_INSTALL_CMAKEPACKAGEDIR}/KF5ActivitiesExperimentalStats")
+   set (CMAKECONFIG_INSTALL_DIR "${KDE_INSTALL_CMAKEPACKAGEDIR}/KF5ActivitiesExperimentalStats")
 
-install (
-   EXPORT KF5ActivitiesExperimentalStatsLibraryTargets
-   DESTINATION "${CMAKECONFIG_INSTALL_DIR}"
-   FILE KF5ActivitiesExperimentalStatsLibraryTargets.cmake
-   NAMESPACE KF5::
-   )
+   install (
+      EXPORT KF5ActivitiesExperimentalStatsLibraryTargets
+      DESTINATION "${CMAKECONFIG_INSTALL_DIR}"
+      FILE KF5ActivitiesExperimentalStatsLibraryTargets.cmake
+      NAMESPACE KF5::
+      )
 
-ecm_configure_package_config_file (
-   "${CMAKE_CURRENT_SOURCE_DIR}/KF5ActivitiesExperimentalStatsConfig.cmake.in"
-   "${CMAKE_CURRENT_BINARY_DIR}/KF5ActivitiesExperimentalStatsConfig.cmake"
-   INSTALL_DESTINATION  ${CMAKECONFIG_INSTALL_DIR}
-   PATH_VARS  KF5_INCLUDE_INSTALL_DIR CMAKE_INSTALL_PREFIX
-   )
+   ecm_configure_package_config_file (
+      "${CMAKE_CURRENT_SOURCE_DIR}/KF5ActivitiesExperimentalStatsConfig.cmake.in"
+      "${CMAKE_CURRENT_BINARY_DIR}/KF5ActivitiesExperimentalStatsConfig.cmake"
+      INSTALL_DESTINATION  ${CMAKECONFIG_INSTALL_DIR}
+      PATH_VARS  KF5_INCLUDE_INSTALL_DIR CMAKE_INSTALL_PREFIX
+      )
 
-install (
-   FILES "${CMAKE_CURRENT_BINARY_DIR}/KF5ActivitiesExperimentalStatsConfig.cmake"
-         "${CMAKE_CURRENT_BINARY_DIR}/KF5ActivitiesExperimentalStatsConfigVersion.cmake"
-   DESTINATION "${CMAKECONFIG_INSTALL_DIR}"
-   COMPONENT Devel
-   )
+   install (
+      FILES "${CMAKE_CURRENT_BINARY_DIR}/KF5ActivitiesExperimentalStatsConfig.cmake"
+            "${CMAKE_CURRENT_BINARY_DIR}/KF5ActivitiesExperimentalStatsConfigVersion.cmake"
+      DESTINATION "${CMAKECONFIG_INSTALL_DIR}"
+      COMPONENT Devel
+      )
 
-install (
-   FILES ${CMAKE_CURRENT_BINARY_DIR}/kactivitiesexperimentalstats_version.h
-   DESTINATION ${KDE_INSTALL_INCLUDEDIR_KF5} COMPONENT Devel
-   )
+   install (
+      FILES ${CMAKE_CURRENT_BINARY_DIR}/kactivitiesexperimentalstats_version.h
+      DESTINATION ${KDE_INSTALL_INCLUDEDIR_KF5} COMPONENT Devel
+      )
+endif()
 
 add_subdirectory (src)
 add_subdirectory (autotests)

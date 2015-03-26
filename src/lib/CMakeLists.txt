@@ -1,5 +1,8 @@
 # vim:set softtabstop=3 shiftwidth=3 tabstop=3 expandtab:
 
 add_subdirectory (core)
-add_subdirectory (stats)
+
+if (KACTIVITIES_INSTALL_EXPERIMENTAL_LIBRARIES)
+   add_subdirectory (stats)
+endif()
 
