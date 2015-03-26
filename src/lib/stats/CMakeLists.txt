@@ -14,9 +14,9 @@ set (
    resultmodel.cpp
    activitiessync_p.cpp
 
-   ${CMAKE_SOURCE_DIR}/src/common/database/Database.cpp
-   ${CMAKE_SOURCE_DIR}/src/common/database/schema/ResourcesDatabaseSchema.cpp
-   ${CMAKE_SOURCE_DIR}/src/utils/qsqlquery_iterator.cpp
+   ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/src/common/database/Database.cpp
+   ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/src/common/database/schema/ResourcesDatabaseSchema.cpp
+   ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/src/utils/qsqlquery_iterator.cpp
 
    version.cpp
    )
@@ -24,14 +24,14 @@ set (
 qt5_add_dbus_interface (
    KActivitiesStats_LIB_SRCS
 
-   ${CMAKE_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.ResourcesScoring.xml
+   ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.ResourcesScoring.xml
    resourcesscoring_interface
    )
 
 qt5_add_dbus_interface (
    KActivitiesStats_LIB_SRCS
 
-   ${CMAKE_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.ResourcesLinking.xml
+   ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.ResourcesLinking.xml
    resourceslinking_interface
    )
 
@@ -44,7 +44,7 @@ add_library (
 add_library(KF5::ActivitiesExperimentalStats ALIAS KF5ActivitiesExperimentalStats)
 
 include_directories (
-   ${CMAKE_SOURCE_DIR}/src
+   ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/src
    ${KDBusAddons_INCLUDE_DIR}
    )
 
