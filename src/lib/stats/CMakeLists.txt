@@ -87,17 +87,6 @@ ecm_generate_headers (
    PREFIX KActivitiesExperimentalStats
    REQUIRED_HEADERS KActivitiesStats_HEADERS
 )
-install (
-   FILES ${KActivitiesStats_CamelCase_HEADERS}
-   DESTINATION ${KDE_INSTALL_INCLUDEDIR_KF5}/KActivitiesStats/KActivities/Experimental/Stats
-   COMPONENT Devel
-   )
-
-install (
-   FILES ${KActivitiesStats_HEADERS} ${CMAKE_CURRENT_BINARY_DIR}/kactivitiesstats_export.h
-   DESTINATION ${KDE_INSTALL_INCLUDEDIR_KF5}/KActivitiesStats/kactivitiesexperimentalstats
-   COMPONENT Devel
-   )
 
 install (
    TARGETS KF5ActivitiesExperimentalStats
@@ -105,28 +94,41 @@ install (
    ${KF5_INSTALL_TARGETS_DEFAULT_ARGS}
    )
 
+if (KACTIVITIES_INSTALL_EXPERIMENTAL_HEADERS)
+   install (
+      FILES ${KActivitiesStats_CamelCase_HEADERS}
+      DESTINATION ${KDE_INSTALL_INCLUDEDIR_KF5}/KActivitiesStats/KActivities/Experimental/Stats
+      COMPONENT Devel
+      )
 
-if (NOT WIN32)
-   configure_file (
-      ${CMAKE_CURRENT_SOURCE_DIR}/libKActivitiesExperimentalStats.pc.cmake
-      ${CMAKE_CURRENT_BINARY_DIR}/libKActivitiesExperimentalStats.pc
+   install (
+      FILES ${KActivitiesStats_HEADERS} ${CMAKE_CURRENT_BINARY_DIR}/kactivitiesstats_export.h
+      DESTINATION ${KDE_INSTALL_INCLUDEDIR_KF5}/KActivitiesStats/kactivitiesexperimentalstats
+      COMPONENT Devel
+      )
+
+   if (NOT WIN32)
+      configure_file (
+         ${CMAKE_CURRENT_SOURCE_DIR}/libKActivitiesExperimentalStats.pc.cmake
+         ${CMAKE_CURRENT_BINARY_DIR}/libKActivitiesExperimentalStats.pc
+         )
+      install (
+         FILES ${CMAKE_CURRENT_BINARY_DIR}/libKActivitiesExperimentalStats.pc
+         DESTINATION ${KDE_INSTALL_LIBDIR}/pkgconfig
+         )
+   endif ()
+
+   include (ECMGeneratePriFile)
+   ecm_generate_pri_file (
+      BASE_NAME KActivitiesExperimentalStats
+      LIB_NAME KF5ActivitiesExperimentalStats
+      DEPS "KDBusAddons"
+      FILENAME_VAR PRI_FILENAME INCLUDE_INSTALL_DIR ${KF5_INCLUDE_INSTALL_DIR}/KActivitiesExperimentalStats
       )
    install (
-      FILES ${CMAKE_CURRENT_BINARY_DIR}/libKActivitiesExperimentalStats.pc
-      DESTINATION ${KDE_INSTALL_LIBDIR}/pkgconfig
+      FILES ${PRI_FILENAME}
+      DESTINATION ${ECM_MKSPECS_INSTALL_DIR}
       )
 endif ()
-
-include (ECMGeneratePriFile)
-ecm_generate_pri_file (
-   BASE_NAME KActivitiesExperimentalStats
-   LIB_NAME KF5ActivitiesExperimentalStats
-   DEPS "KDBusAddons"
-   FILENAME_VAR PRI_FILENAME INCLUDE_INSTALL_DIR ${KF5_INCLUDE_INSTALL_DIR}/KActivitiesExperimentalStats
-   )
-install (
-   FILES ${PRI_FILENAME}
-   DESTINATION ${ECM_MKSPECS_INSTALL_DIR}
-   )
 
 
