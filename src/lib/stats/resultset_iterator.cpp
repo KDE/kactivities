@@ -57,7 +57,7 @@ public:
         using namespace boost;
 
         if (!resultSet || !resultSet->d->query.seek(currentRow)) {
-            currentValue = boost::none;
+            currentValue = none;
 
         } else {
             currentValue = make_optional(std::move(resultSet->d->currentResult()));
@@ -75,7 +75,6 @@ public:
 
     bool operator==(const Private &other) const
     {
-        using namespace boost;
         bool thisValid  = currentValue.is_initialized();
         bool otherValid = other.currentValue.is_initialized();
 
