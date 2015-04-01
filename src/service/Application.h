@@ -21,7 +21,7 @@
 #define APPLICATION_H
 
 // Qt
-#include <QApplication>
+#include <QCoreApplication>
 
 // Utils
 #include <utils/d_ptr.h>
@@ -34,7 +34,7 @@ class Features;
 /**
  * Main application object
  */
-class Application : public QApplication {
+class Application : public QCoreApplication {
     Q_OBJECT
 
 public:

@@ -68,7 +68,7 @@ add_executable (kactivitymanagerd ${kactivitymanager_SRCS})
 target_link_libraries (kactivitymanagerd
    Qt5::Core
    Qt5::DBus
-   Qt5::Widgets
+   Qt5::Gui
    KF5::DBusAddons
    KF5::CoreAddons
    KF5::ConfigCore

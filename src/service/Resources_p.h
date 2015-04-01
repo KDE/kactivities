@@ -26,7 +26,7 @@
 // Qt
 #include <QString>
 #include <QList>
-#include <QWidgetList> // for WId
+#include <QWindow> // for WId
 
 // Local
 #include "resourcesadaptor.h"
