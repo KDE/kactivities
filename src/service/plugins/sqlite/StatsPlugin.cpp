@@ -64,8 +64,10 @@ StatsPlugin::StatsPlugin(QObject *parent, const QVariantList &args)
     setName(QStringLiteral("org.kde.ActivityManager.Resources.Scoring"));
 }
 
-bool StatsPlugin::init(const QHash<QString, QObject *> &modules)
+bool StatsPlugin::init(QHash<QString, QObject *> &modules)
 {
+    Plugin::init(modules);
+
     m_activities = modules[QStringLiteral("activities")];
     m_resources = modules[QStringLiteral("resources")];
 
@@ -308,7 +310,7 @@ StatsPlugin *StatsPlugin::self()
 
 QString StatsPlugin::currentActivity() const
 {
-    return Plugin::callOn<QString, Qt::DirectConnection>(
+    return Plugin::callOnRet<QString, Qt::DirectConnection>(
         m_activities, "CurrentActivity", "QString");
 }
 

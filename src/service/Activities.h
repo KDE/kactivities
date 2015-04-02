@@ -55,18 +55,6 @@ public:
     };
 
     /**
-     * The event type
-     */
-    enum EventType {
-        Accessed = 1,
-        Opened = 2,
-        Modified = 3,
-        Closed = 4,
-        FocussedIn = 5,
-        FocussedOut = 6
-    };
-
-    /**
      * Creates new Activities object
      */
     Activities(QObject *parent = Q_NULLPTR);

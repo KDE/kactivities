@@ -235,7 +235,7 @@ bool ResourceLinking::validateArguments(QString &initiatingAgent,
     // Handling special values for activities
     if (usedActivity == ":current") {
         usedActivity =
-            Plugin::callOn<QString, Qt::DirectConnection>(
+            Plugin::callOnRet<QString, Qt::DirectConnection>(
                 StatsPlugin::self()->activitiesInterface(),
                 "CurrentActivity", "QString");
     } else if (usedActivity.isEmpty()) {
@@ -245,7 +245,7 @@ bool ResourceLinking::validateArguments(QString &initiatingAgent,
     // If the activity is not empty and the passed activity
     // does not exist, cancel the request
     if (!usedActivity.isEmpty()
-        && !Plugin::callOn<QStringList, Qt::DirectConnection>(
+        && !Plugin::callOnRet<QStringList, Qt::DirectConnection>(
                 StatsPlugin::self()->activitiesInterface(),
                 "ListActivities", "QStringList").contains(usedActivity)) {
         return false;

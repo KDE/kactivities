@@ -104,8 +104,10 @@ void SlcPlugin::registeredResourceTitle(const QString &uri, const QString &title
     m_resources[uri].title = title;
 }
 
-bool SlcPlugin::init(const QHash<QString, QObject *> &modules)
+bool SlcPlugin::init(QHash<QString, QObject *> &modules)
 {
+    Plugin::init(modules);
+
     connect(modules[QStringLiteral("resources")], SIGNAL(RegisteredResourceEvent(Event)),
             this, SLOT(registeredResourceEvent(Event)),
             Qt::QueuedConnection);

@@ -41,7 +41,7 @@ public:
     virtual ~Module();
 
     static QObject *get(const QString &name);
-    static const QHash<QString, QObject *> get();
+    static QHash<QString, QObject *> &get();
 
     virtual bool isFeatureOperational(const QStringList &feature) const;
     virtual bool isFeatureEnabled(const QStringList &feature) const;
@@ -50,9 +50,6 @@ public:
 
     virtual QDBusVariant value(const QStringList &property) const;
     virtual void setValue(const QStringList &property, const QDBusVariant &value);
-
-protected:
-    static void registerModule(const QString &name, QObject *module);
 
 private:
     D_PTR;

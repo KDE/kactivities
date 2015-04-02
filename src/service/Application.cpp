@@ -180,8 +180,10 @@ bool Application::Private::loadPlugin(KService::Ptr offer)
             offer->createInstance<QObject>(Q_NULLPTR, {}, &error)
         );
 
+    auto &modules = Module::get();
+
     if (pluginInstance) {
-        pluginInstance->init(Module::get());
+        pluginInstance->init(modules);
 
         pluginIds << offer->storageId();
 

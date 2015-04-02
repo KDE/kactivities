@@ -16,38 +16,33 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef PLUGINS_GLOBAL_SHORTCUTS_PLUGIN_H
-#define PLUGINS_GLOBAL_SHORTCUTS_PLUGIN_H
+#ifndef PLUGINS_EVENT_SPY_PLUGIN_H
+#define PLUGINS_EVENT_SPY_PLUGIN_H
 
+#include <memory>
 #include <Plugin.h>
 
-class QSignalMapper;
-class KActionCollection;
-class QAction;
+#include <QStringList>
 
-class GlobalShortcutsPlugin : public Plugin {
+class KDirWatch;
+
+class EventSpyPlugin : public Plugin {
     Q_OBJECT
-    // Q_PLUGIN_METADATA(IID "org.kde.ActivityManager.plugins.globalshortcutsplugin")
 
 public:
-    GlobalShortcutsPlugin(QObject *parent = Q_NULLPTR, const QVariantList &args = QVariantList());
-    virtual ~GlobalShortcutsPlugin();
+    EventSpyPlugin(QObject *parent = Q_NULLPTR, const QVariantList &args = QVariantList());
+    virtual ~EventSpyPlugin();
 
     bool init(QHash<QString, QObject *> &modules) Q_DECL_OVERRIDE;
 
 private Q_SLOTS:
-    void activityAdded(const QString &activity);
-    void activityRemoved(const QString &activity = QString());
-    void activityChanged(const QString &activity);
+    void directoryUpdated(const QString &dir);
+    void addDocument(const QString &document);
 
 private:
-    inline QString activityName(const QString &activity) const;
-    inline QString activityForAction(QAction *action) const;
-
-    QObject *m_activitiesService;
-    QSignalMapper *m_signalMapper;
-    QStringList m_activitiesList;
-    KActionCollection *m_actionCollection;
+    QObject *m_resources;
+    std::unique_ptr<KDirWatch> m_dirWatcher;
+    QStringList m_cachedDocuments;
 };
 
-#endif // PLUGINS_GLOBAL_SHORTCUTS_PLUGIN_H
+#endif // PLUGINS_EVENT_SPY_PLUGIN_H

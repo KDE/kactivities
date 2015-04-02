@@ -70,11 +70,21 @@ void Plugin::setName(const QString &name)
     Q_ASSERT_X(d->name.isEmpty(), "Plugin::setName", "The name can not be set twice");
     Q_ASSERT_X(!name.isEmpty(), "Plugin::setName", "The name can not be empty");
 
+    qDebug() << "Setting the name: " << name;
     d->name = name;
-    registerModule(name, this);
 }
 
 QString Plugin::name() const
 {
     return d->name;
 }
+
+bool Plugin::init(QHash<QString, QObject *> &modules)
+{
+    if (!name().isEmpty()) {
+        modules[name()] = this;
+    }
+
+    return true;
+}
+

@@ -37,8 +37,10 @@ TemplatesPlugin::~TemplatesPlugin()
 {
 }
 
-bool TemplatesPlugin::init(const QHash<QString, QObject *> &modules)
+bool TemplatesPlugin::init(QHash<QString, QObject *> &modules)
 {
+    Plugin::init(modules);
+
     m_activities = modules[QStringLiteral("activities")];
 
     return true;
@@ -61,7 +63,7 @@ QStringList TemplatesPlugin::templateFor(const QString &activity) const
 
 QStringList TemplatesPlugin::activities() const
 {
-    return Plugin::callOn<QStringList, Qt::DirectConnection>(
+    return Plugin::callOnRet<QStringList, Qt::DirectConnection>(
         m_activities, "ListActivities", "QStringList");
 }
 

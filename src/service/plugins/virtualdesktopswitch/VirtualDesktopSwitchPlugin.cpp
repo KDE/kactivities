@@ -39,11 +39,14 @@ VirtualDesktopSwitchPlugin::~VirtualDesktopSwitchPlugin()
 {
 }
 
-bool VirtualDesktopSwitchPlugin::init(const QHash<QString, QObject *> &modules)
+bool VirtualDesktopSwitchPlugin::init(QHash<QString, QObject *> &modules)
 {
+    Plugin::init(modules);
+
     m_activitiesService = modules["activities"];
 
-    m_currentActivity = Plugin::callOn<QString, Qt::DirectConnection>(m_activitiesService, "CurrentActivity", "QString");
+    m_currentActivity = Plugin::callOnRet<QString, Qt::DirectConnection>(
+        m_activitiesService, "CurrentActivity", "QString");
 
     connect(m_activitiesService, SIGNAL(CurrentActivityChanged(QString)),
             this, SLOT(currentActivityChanged(QString)));

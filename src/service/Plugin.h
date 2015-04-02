@@ -54,7 +54,7 @@ public:
      * @returns the plugin needs to return whether it has
      *      successfully been initialized
      */
-    virtual bool init(const QHash<QString, QObject *> &modules) = 0;
+    virtual bool init(QHash<QString, QObject *> &modules) = 0;
 
     /**
      * Returns the config group for the plugin.
@@ -93,6 +93,58 @@ public:
             args...);
 
         return result;
+    }
+
+    /**
+     * Convenience meta-method to provide prettier invocation of QMetaObject::invokeMethod
+     */
+    template <typename ReturnType, Qt::ConnectionType connection>
+    inline static ReturnType callOnRet(QObject *object, const char *method,
+                                       const char *returnTypeName)
+    {
+        ReturnType result;
+
+        QMetaObject::invokeMethod(
+            object, method, connection,
+            QReturnArgument<ReturnType>(returnTypeName, result));
+
+        return result;
+    }
+
+    template
+        <typename ReturnType, Qt::ConnectionType connection, typename... Args>
+    inline static ReturnType callOnRetWithArgs(QObject *object,
+                                               const char *method,
+                                               const char *returnTypeName,
+                                                Args... args)
+    {
+        ReturnType result;
+
+        QMetaObject::invokeMethod(
+            object, method, connection,
+            QReturnArgument<ReturnType>(returnTypeName, result),
+            args...);
+
+        return result;
+    }
+
+    /**
+     * Convenience meta-method to provide prettier invocation of QMetaObject::invokeMethod
+     */
+    template <Qt::ConnectionType connection>
+    inline static void callOn(QObject *object, const char *method,
+                                    const char *returnTypeName)
+    {
+        QMetaObject::invokeMethod(object, method, connection);
+    }
+
+    template <Qt::ConnectionType connection, typename... Args>
+    inline static void callOnWithArgs(QObject *object, const char *method,
+                                            Args... args)
+    {
+        QMetaObject::invokeMethod(
+            object, method, connection,
+            args...);
     }
 
 protected:

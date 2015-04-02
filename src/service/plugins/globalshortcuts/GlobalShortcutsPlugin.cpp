@@ -46,11 +46,13 @@ GlobalShortcutsPlugin::~GlobalShortcutsPlugin()
     m_actionCollection->clear();
 }
 
-bool GlobalShortcutsPlugin::init(const QHash<QString, QObject *> &modules)
+bool GlobalShortcutsPlugin::init(QHash<QString, QObject *> &modules)
 {
+    Plugin::init(modules);
+
     m_activitiesService = modules["activities"];
 
-    m_activitiesList = Plugin::callOn<QStringList, Qt::DirectConnection>(
+    m_activitiesList = Plugin::callOnRet<QStringList, Qt::DirectConnection>(
             m_activitiesService, "ListActivities", "QStringList");
 
     for (const auto &activity: m_activitiesList) {

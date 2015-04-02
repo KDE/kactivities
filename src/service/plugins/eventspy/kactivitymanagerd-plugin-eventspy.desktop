@@ -1,0 +1,18 @@
+[Desktop Entry]
+Name=Event Spy
+Comment=Collects events from applications that support recent documents specification
+Type=Service
+Icon=preferences-system
+
+X-KDE-ServiceTypes=ActivityManager/Plugin
+X-KDE-Library=kactivitymanagerd_plugin_eventspy
+X-KDE-PluginInfo-Author=Ivan Čukić
+X-KDE-PluginInfo-Email=ivan.cukic(at)kde.org
+X-KDE-PluginInfo-Name=org.kde.ActivityManager.EventSpy
+X-KDE-PluginInfo-Version=1.0
+X-KDE-PluginInfo-Website=http://plasma.kde.org/
+X-KDE-PluginInfo-Category=
+X-KDE-PluginInfo-Depends=
+X-KDE-PluginInfo-License=GPL
+X-KDE-PluginInfo-EnabledByDefault=true
+

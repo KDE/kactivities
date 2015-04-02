@@ -43,13 +43,8 @@ Module::Module(const QString &name, QObject *parent)
     : QObject(parent)
     , d()
 {
-    registerModule(name, this);
-}
-
-void Module::registerModule(const QString &name, QObject *module)
-{
     if (!name.isEmpty()) {
-        Private::s_modules[name] = module;
+        Private::s_modules[name] = this;
     }
 }
 
@@ -70,7 +65,7 @@ QObject *Module::get(const QString &name)
     return Q_NULLPTR;
 }
 
-const QHash<QString, QObject *> Module::get()
+QHash<QString, QObject *> &Module::get()
 {
     return Private::s_modules;
 }

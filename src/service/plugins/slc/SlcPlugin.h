@@ -29,7 +29,7 @@ public:
     explicit SlcPlugin(QObject *parent = Q_NULLPTR, const QVariantList &args = QVariantList());
     ~SlcPlugin();
 
-    bool init(const QHash<QString, QObject *> &modules) Q_DECL_OVERRIDE;
+    bool init(QHash<QString, QObject *> &modules) Q_DECL_OVERRIDE;
 
 private Q_SLOTS:
     void registeredResourceEvent(const Event &event);
