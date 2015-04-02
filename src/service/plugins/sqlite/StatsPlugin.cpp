@@ -42,6 +42,7 @@
 #include "Utils.h"
 #include "../../Event.h"
 #include "resourcescoringadaptor.h"
+#include "common/specialvalues.h"
 
 KAMD_EXPORT_PLUGIN(sqliteplugin, StatsPlugin, "kactivitymanagerd-plugin-sqlite.json")
 
@@ -510,6 +511,65 @@ void StatsPlugin::DeleteEarlierStats(const QString &activity, int months)
         );
 
     emit EarlierStatsDeleted(activity, months);
+}
+
+void StatsPlugin::DeleteStatsForResource(const QString &activity,
+                                         const QString &client,
+                                         const QString &resource)
+{
+    Q_ASSERT_X(!client.isEmpty(),
+               "StatsPlugin::DeleteStatsForResource",
+               "Agent shoud not be empty");
+    Q_ASSERT_X(!activity.isEmpty(),
+               "StatsPlugin::DeleteStatsForResource",
+               "Activity shoud not be empty");
+    Q_ASSERT_X(!resource.isEmpty(),
+               "StatsPlugin::DeleteStatsForResource",
+               "Resource shoud not be empty");
+    Q_ASSERT_X(client != CURRENT_AGENT_TAG,
+               "StatsPlugin::DeleteStatsForResource",
+               "We can not handle CURRENT_AGENT_TAG here");
+
+    DATABASE_TRANSACTION(resourcesDatabase());
+
+    // TODO: Check against sql injection
+
+    const auto activityFilter =
+            activity == ANY_ACTIVITY_TAG ? " 1 " :
+                QStringLiteral(" usedActivity = '%1' ").arg(
+                    activity == CURRENT_ACTIVITY_TAG ?
+                            currentActivity() : activity
+                );
+
+    const auto clientFilter =
+            client == ANY_AGENT_TAG ? " 1 " :
+                QStringLiteral(" initiatingAgent = '%1' ").arg(client);
+
+    auto removeEventsQuery = resourcesDatabase().createQuery();
+    removeEventsQuery.prepare(
+            "DELETE FROM ResourceEvent "
+            "WHERE "
+                + activityFilter + " AND "
+                + clientFilter + " AND "
+                + "targettedResource GLOB :targettedResource"
+        );
+
+    auto removeScoreCachesQuery = resourcesDatabase().createQuery();
+    removeScoreCachesQuery.prepare(
+            "DELETE FROM ResourceScoreCache "
+            "WHERE "
+                + activityFilter + " AND "
+                + clientFilter + " AND "
+                + "targettedResource GLOB :targettedResource"
+        );
+
+    Utils::exec(Utils::FailOnError, removeEventsQuery,
+                ":targettedResource", resource);
+
+    Utils::exec(Utils::FailOnError, removeScoreCachesQuery,
+                ":targettedResource", resource);
+
+    emit DeletedStatsForResource(activity, client, resource);
 }
 
 #include "StatsPlugin.moc"
