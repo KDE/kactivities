@@ -20,6 +20,12 @@
 #ifndef CLEANING_H
 #define CLEANING_H
 
+#include <QString>
+
+namespace KActivities {
+namespace Experimental {
+namespace Stats {
+
 /**
  * Forget the resource(s) for the specified activity and agent
  */
@@ -30,7 +36,7 @@ enum TimeUnit {
     Hours,
     Days,
     Months
-}
+};
 
 /**
  * Forget recent stats for the specified activity and time
@@ -41,6 +47,10 @@ void forgetRecentStats(const QString &activity, int count, TimeUnit what);
  * Forget events that are older than the specified number of months
  */
 void forgetEarlierStats(const QString &activity, int months);
+
+} // namespace Stats
+} // namespace Experimental
+} // namespace KActivities
 
 #endif // CLEANING_H
 

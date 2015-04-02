@@ -23,6 +23,7 @@
 // Qt
 #include <QDebug>
 #include <QDateTime>
+#include <QCoreApplication>
 
 // STL and Boost
 #include <functional>
@@ -34,6 +35,7 @@
 #include <utils/qsqlquery_iterator.h>
 #include "resultset.h"
 #include "resultwatcher.h"
+#include "cleaning.h"
 #include "kactivities/consumer.h"
 
 #include <utils/member_matcher.h>
@@ -387,7 +389,7 @@ void ResultModel::forgetResource(const QString &resource)
                     activity,
                     agent == CURRENT_AGENT_TAG ?
                         QCoreApplication::applicationName() : agent,
-                    resources);
+                    resource);
         }
     }
 }

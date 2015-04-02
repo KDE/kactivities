@@ -17,33 +17,50 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#include "cleaning.h"
 
 #include <QString>
-#include "resourcesscoring_interface.h"
+
+#include "cleaning.h"
+#include "common/dbus/common.h"
+#include <resourcesscoring_interface.h>
+
+namespace KActivities {
+namespace Experimental {
+namespace Stats {
 
 void forgetResource(const QString &activity, const QString &agent,
                     const QString &resource)
 {
-    org::kde::ActivityManager::ResourcesScoring scoring;
+    OrgKdeActivityManagerResourcesScoringInterface scoring(
+        KAMD_DBUS_SERVICE, KAMD_DBUS_OBJECT_PATH(Resources),
+        QDBusConnection::sessionBus());
 
     scoring.DeleteStatsForResource(activity, agent, resource);
 }
 
 void forgetRecentStats(const QString &activity, int count, TimeUnit what)
 {
-    org::kde::ActivityManager::ResourcesScoring scoring;
+    OrgKdeActivityManagerResourcesScoringInterface scoring(
+        KAMD_DBUS_SERVICE, KAMD_DBUS_OBJECT_PATH(Resources),
+        QDBusConnection::sessionBus());
 
     scoring.DeleteRecentStats(activity, count,
             what == Hours  ? "h" :
             what == Days   ? "d" :
-            what == Months ? "m");
+                             "m"
+        );
 }
 
 void forgetEarlierStats(const QString &activity, int months)
 {
-    org::kde::ActivityManager::ResourcesScoring scoring;
+    OrgKdeActivityManagerResourcesScoringInterface scoring(
+        KAMD_DBUS_SERVICE, KAMD_DBUS_OBJECT_PATH(Resources),
+        QDBusConnection::sessionBus());
 
     scoring.DeleteEarlierStats(activity, months);
 }
+
+} // namespace Stats
+} // namespace Experimental
+} // namespace KActivities
 
