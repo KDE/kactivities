@@ -49,8 +49,10 @@ public:
     {
         Q_ASSERT_X(!application.isEmpty(), "ResourceInstance::event",
                    "The application id must not be empty");
-        Q_ASSERT_X(!uri.isEmpty(), "ResourceInstance::event",
-                   "The resource URI must not be empty");
+
+        if (uri.isEmpty()) {
+            return;
+        }
 
         Manager::resources()->RegisterResourceEvent(application, wid, uri.toString(), uint(event));
     }
