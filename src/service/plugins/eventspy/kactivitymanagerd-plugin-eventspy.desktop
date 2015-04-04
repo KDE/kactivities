@@ -1,6 +1,27 @@
 [Desktop Entry]
 Name=Event Spy
+Name[ca]=Espia l'esdeveniment
+Name[de]=Ereignisüberwachung
+Name[gl]=Espía de eventos
+Name[nl]=Gebeurtenisspion
+Name[pl]=Szpieg wydarzeń
+Name[pt_BR]=Espião de eventos
+Name[ru]=Монитор событий
+Name[sl]=Nadzor dogodkov
+Name[sv]=Händelseövervakare
+Name[uk]=Журнал подій
+Name[x-test]=xxEvent Spyxx
 Comment=Collects events from applications that support recent documents specification
+Comment[ca]=Recull els esdeveniments de les aplicacions que admeten l'especificació dels documents recents
+Comment[gl]=Recolle eventos dos programas compatíbeis coa especificación de documentos recentes.
+Comment[nl]=Verzamelt gebeurtenissen uit toepassingen die recente documentspecificaties ondersteunen
+Comment[pl]=Gromadzi wydarzenia z aplikacji, które spełniają wymogi ostatnich dokumentów 
+Comment[pt_BR]=Identifica eventos a partir de aplicativos que tem suporte a especificação de documentos recentes
+Comment[ru]=Собирает от поддерживаемых приложений события о последних открытых документах
+Comment[sl]=Zbira dogodke iz programov, ki podpirajo določitev nedavnih dokumentov
+Comment[sv]=Samlar in händelser från program som stöder senare dokumentspecifikationer
+Comment[uk]=Збирає записи подій від програм, у яких реалізовано специфікацію нещодавніх документів
+Comment[x-test]=xxCollects events from applications that support recent documents specificationxx
 Type=Service
 Icon=preferences-system
 
