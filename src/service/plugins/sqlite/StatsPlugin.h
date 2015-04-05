@@ -74,8 +74,8 @@ Q_SIGNALS:
     void ResourceScoreUpdated(const QString &activity, const QString &client,
                               const QString &resource, double score,
                               uint lastUpdate, uint firstUpdate);
-    void DeletedStatsForResource(const QString &activity, const QString &client,
-                                 const QString &resource);
+    void ResourceScoreDeleted(const QString &activity, const QString &client,
+                              const QString &resource);
 
     void RecentStatsDeleted(const QString &activity, int count,
                             const QString &what);
