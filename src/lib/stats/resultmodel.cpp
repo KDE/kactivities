@@ -287,8 +287,8 @@ public:
 
         // Only one item at most
         for (const auto &item: query) {
-            result.setTitle(query.value("title").toString());
-            result.setMimetype(query.value("mimetype").toString());
+            result.setTitle(item["title"].toString());
+            result.setMimetype(item["mimetype"].toString());
         }
     }
 
@@ -394,6 +394,26 @@ void ResultModel::forgetResource(const QString &resource)
                     resource);
         }
     }
+}
+
+void ResultModel::forgetResource(int row)
+{
+    if (row >= d->cache.size()) return;
+
+    foreach (const QString &activity, d->query.activities()) {
+        foreach (const QString &agent, d->query.agents()) {
+            Stats::forgetResource(
+                    activity,
+                    agent == CURRENT_AGENT_TAG ?
+                        QCoreApplication::applicationName() : agent,
+                    d->cache[row].resource());
+        }
+    }
+}
+
+void ResultModel::forgetAllResources()
+{
+    Stats::forgetResources(d->query);
 }
 
 

@@ -567,12 +567,8 @@ void StatsPlugin::DeleteStatsForResource(const QString &activity,
     Utils::exec(Utils::FailOnError, removeEventsQuery,
                 ":targettedResource", resource);
 
-    qDebug() << "MEEEEE: " << removeEventsQuery.executedQuery() << resource;
-
     Utils::exec(Utils::FailOnError, removeScoreCachesQuery,
                 ":targettedResource", resource);
-
-    qDebug() << "MEEEEE: " << removeScoreCachesQuery.executedQuery() << resource;
 
     emit ResourceScoreDeleted(activity, client, resource);
 }
