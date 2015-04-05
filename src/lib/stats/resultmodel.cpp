@@ -245,12 +245,14 @@ public:
     {
         q->beginResetModel();
 
-        results = ResultSet(query);
         cache.clear();
+        results = ResultSet(query);
+        resultIt = results.begin();
 
         init();
 
         q->endResetModel();
+
     }
 
     void init()

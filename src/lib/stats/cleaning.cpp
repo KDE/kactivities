@@ -20,6 +20,7 @@
 
 #include <QString>
 #include <QDBusReply>
+#include <QDebug>
 
 #include "cleaning.h"
 #include "common/dbus/common.h"
