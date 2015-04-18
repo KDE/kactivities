@@ -1,6 +1,7 @@
 [Desktop Entry]
 Name=Event Spy
 Name[ca]=Espia l'esdeveniment
+Name[cs]=Špeh událostí
 Name[de]=Ereignisüberwachung
 Name[en_GB]=Event Spy
 Name[es]=Espía de eventos
@@ -19,6 +20,7 @@ Name[uk]=Журнал подій
 Name[x-test]=xxEvent Spyxx
 Comment=Collects events from applications that support recent documents specification
 Comment[ca]=Recull els esdeveniments de les aplicacions que admeten l'especificació dels documents recents
+Comment[cs]=Sbírá z aplikací události jenž podporují určení nedávných dokumentů
 Comment[en_GB]=Collects events from applications that support recent documents specification
 Comment[es]=Recopila eventos de aplicaciones que incorporan la especificación de documentos recientes
 Comment[fi]=Kerää tapahtumia sovelluksilta, jotka tukevat viimeaikaisten tiedostojen määrittelyä
