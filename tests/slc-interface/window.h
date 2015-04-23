@@ -20,18 +20,10 @@
 #pragma once
 
 #include <QMainWindow>
+#include "slc_interface.h"
 
 namespace Ui {
     class MainWindow;
-}
-
-namespace KActivities {
-    class Consumer;
-namespace Experimental {
-namespace Stats {
-    class ResultModel;
-}
-}
 }
 
 class Window: public QMainWindow {
@@ -42,11 +34,10 @@ public:
     ~Window();
 
 private Q_SLOTS:
-    void updateResults();
+    void focusChanged(const QString &uri, const QString &mimetype, const QString &title);
 
 private:
     Ui::MainWindow *ui;
-    KActivities::Experimental::Stats::ResultModel *model;
-    KActivities::Consumer *activities;
+    org::kde::ActivityManager::SLC *slc;
 };
 

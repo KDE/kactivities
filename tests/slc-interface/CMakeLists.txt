@@ -16,6 +16,13 @@ set (
    main.cpp
    )
 
+qt5_add_dbus_interface (
+   KActivitiesSLCTestApp_SRCS
+
+   ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/src/service/plugins/slc/org.kde.ActivityManager.SLC.xml
+   slc_interface
+   )
+
 qt5_wrap_ui(
    KActivitiesSLCTestApp_SRCS
    window.ui
@@ -33,6 +40,7 @@ if (NOT WIN32)
       Qt5::Core
       Qt5::Gui
       Qt5::Widgets
+      Qt5::DBus
       KF5::Activities
       )
 
