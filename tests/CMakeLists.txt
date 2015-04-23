@@ -4,4 +4,6 @@ if (KACTIVITIES_INSTALL_EXPERIMENTAL_LIBRARIES)
    add_subdirectory(stats/model)
 endif ()
 
+add_subdirectory(slc-interface)
+
 
