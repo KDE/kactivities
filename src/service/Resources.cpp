@@ -268,10 +268,10 @@ Resources::Resources(QObject *parent)
     KDBusConnectionPool::threadConnection().registerObject(
         KAMD_DBUS_OBJECT_PATH(Resources), this);
 
-    d->connect(KWindowSystem::self(), SIGNAL(windowRemoved(WId)),
-            SLOT(windowClosed(WId)));
-    d->connect(KWindowSystem::self(), SIGNAL(activeWindowChanged(WId)),
-            SLOT(activeWindowChanged(WId)));
+    connect(KWindowSystem::self(), &KWindowSystem::windowRemoved,
+            d.operator->(),        &Resources::Private::windowClosed);
+    connect(KWindowSystem::self(), &KWindowSystem::activeWindowChanged,
+            d.operator->(),        &Resources::Private::activeWindowChanged);
 }
 
 Resources::~Resources()

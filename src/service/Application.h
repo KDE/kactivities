@@ -21,7 +21,7 @@
 #define APPLICATION_H
 
 // Qt
-#include <QCoreApplication>
+#include <QApplication>
 
 // Utils
 #include <utils/d_ptr.h>
@@ -33,8 +33,10 @@ class Features;
 
 /**
  * Main application object
+ * This can *not* be a QCoreApplication because
+ * we need KWindowSystem events.
  */
-class Application : public QCoreApplication {
+class Application : public QApplication {
     Q_OBJECT
 
 public:
