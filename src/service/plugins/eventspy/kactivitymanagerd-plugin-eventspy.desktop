@@ -25,6 +25,7 @@ Name[sr@latin]=Špijun događaja
 Name[sv]=Händelseövervakare
 Name[uk]=Журнал подій
 Name[x-test]=xxEvent Spyxx
+Name[zh_CN]=事件间谍
 Comment=Collects events from applications that support recent documents specification
 Comment[ca]=Recull els esdeveniments de les aplicacions que admeten l'especificació dels documents recents
 Comment[cs]=Sbírá z aplikací události jenž podporují určení nedávných dokumentů
@@ -50,6 +51,7 @@ Comment[sr@latin]=Sakuplja događaje iz programa koji podržavaju specifikaciju 
 Comment[sv]=Samlar in händelser från program som stöder senare dokumentspecifikationer
 Comment[uk]=Збирає записи подій від програм, у яких реалізовано специфікацію нещодавніх документів
 Comment[x-test]=xxCollects events from applications that support recent documents specificationxx
+Comment[zh_CN]=从支持最近文档标准的应用程序收集事件
 Type=Service
 Icon=preferences-system
 
