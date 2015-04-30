@@ -24,6 +24,7 @@
 #include "activitymodel.h"
 #include "activityinfo.h"
 #include "resourcemodel.h"
+#include "resourceinstance.h"
 
 #include <QDebug>
 
@@ -39,5 +40,6 @@ void ActivitiesExtensionPlugin::registerTypes(const char *uri)
     qmlRegisterType<KActivities::Imports::ActivityModel>(uri, 0, 1, "ActivityModel");
     qmlRegisterType<KActivities::Imports::ActivityInfo>(uri, 0, 1, "ActivityInfo");
     qmlRegisterType<KActivities::Imports::ResourceModel>(uri, 0, 1, "ResourceModel");
+    qmlRegisterType<KActivities::Imports::ResourceInstance>(uri, 0, 1, "ResourceInstance");
 }
 

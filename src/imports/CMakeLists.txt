@@ -4,7 +4,7 @@ project (kactivities-imports)
 find_package (ECM 0.0.8 REQUIRED NO_MODULE)
 set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH})
 
-find_package (Qt5 REQUIRED NO_MODULE COMPONENTS Sql Gui Widgets Qml Sql)
+find_package (Qt5 REQUIRED NO_MODULE COMPONENTS Sql Gui Widgets Qml Quick Sql)
 find_package (KF5DBusAddons ${KF5_DEP_VERSION} CONFIG REQUIRED)
 find_package (KF5I18n       ${KF5_DEP_VERSION} CONFIG REQUIRED)
 find_package (KF5Config     ${KF5_DEP_VERSION} CONFIG REQUIRED)
@@ -17,6 +17,7 @@ set (
    activitymodel.cpp
    activityinfo.cpp
    resourcemodel.cpp
+   resourceinstance.cpp
 
    ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/src/utils/dbusfuture_p.cpp
    )
@@ -29,6 +30,7 @@ target_link_libraries (
    Qt5::DBus
    Qt5::Gui
    Qt5::Qml
+   Qt5::Quick
    Qt5::Sql
    KF5::I18n
    KF5::DBusAddons
