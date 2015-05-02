@@ -372,8 +372,6 @@ void StatsPlugin::addEvents(const EventList &events)
 
     for (auto event : eventsToProcess) {
 
-        validateEvent(event);
-
         switch (event.type) {
             case Event::Accessed:
                 openResourceEvent(
