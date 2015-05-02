@@ -121,7 +121,6 @@ private:
 
     QObject *m_activities;
     QObject *m_resources;
-    QFileSystemWatcher *m_configWatcher;
 
     boost::container::flat_set<QString> m_apps;
 

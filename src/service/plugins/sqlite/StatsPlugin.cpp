@@ -53,7 +53,6 @@ StatsPlugin::StatsPlugin(QObject *parent, const QVariantList &args)
     : Plugin(parent)
     , m_activities(Q_NULLPTR)
     , m_resources(Q_NULLPTR)
-    , m_configWatcher(Q_NULLPTR)
     , m_resourceLinking(new ResourceLinking(this))
 {
     Q_UNUSED(args)
@@ -83,6 +82,9 @@ bool StatsPlugin::init(QHash<QString, QObject *> &modules)
     connect(m_resources, SIGNAL(RegisteredResourceTitle(QString, QString)),
             this, SLOT(saveResourceTitle(QString, QString)));
 
+    connect(modules[QStringLiteral("config")], SIGNAL(pluginConfigChanged()),
+            this, SLOT(loadConfiguration()));
+
     loadConfiguration();
 
     return true;
@@ -95,20 +97,6 @@ void StatsPlugin::loadConfiguration()
     const QString configFile
         = QStandardPaths::writableLocation(QStandardPaths::ConfigLocation)
           + QStringLiteral("kactivitymanagerd-pluginsrc");
-
-    if (m_configWatcher) {
-        // When saving a config file, KConfig deletes the old,
-        // and creates the new one, so the watcher stops watching
-        m_configWatcher->addPath(configFile);
-
-    } else {
-        m_configWatcher = new QFileSystemWatcher(QStringList{configFile}, this);
-
-        connect(m_configWatcher, SIGNAL(fileChanged(QString)),
-                this, SLOT(loadConfiguration()));
-        connect(m_activities, SIGNAL(CurrentActivityChanged(QString)),
-                this, SLOT(loadConfiguration()));
-    }
 
     m_blockedByDefault = config().readEntry("blocked-by-default", false);
     m_blockAll = false;
