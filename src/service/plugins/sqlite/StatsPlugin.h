@@ -123,6 +123,7 @@ private:
     QObject *m_resources;
 
     boost::container::flat_set<QString> m_apps;
+    QList<QRegExp> m_urlFilters;
 
     std::unique_ptr<QSqlQuery> openResourceEventQuery;
     std::unique_ptr<QSqlQuery> closeResourceEventQuery;

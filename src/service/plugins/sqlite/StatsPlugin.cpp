@@ -117,6 +117,20 @@ void StatsPlugin::loadConfiguration()
     // TODO: Event cleanup should be also done from time to time,
     //       not only on startup
     DeleteEarlierStats(QString(), config().readEntry("keep-history-for", 0));
+
+    // Loading URL filters
+    m_urlFilters.clear();
+
+    auto filters = config().readEntry("url-filters",
+            QStringList() << "about:*" // Ignore about: stuff
+                          << "*/.*"    // Ignore hidden files
+                          << "/"       // Ignore root
+                          << "/tmp/*"  // Ignore everything in /tmp
+            );
+
+    for (const auto& filter: filters) {
+        m_urlFilters << QRegExp(filter, Qt::CaseInsensitive, QRegExp::WildcardUnix);
+    }
 }
 
 void StatsPlugin::openResourceEvent(const QString &usedActivity,
@@ -306,9 +320,14 @@ QString StatsPlugin::currentActivity() const
 
 bool StatsPlugin::acceptedEvent(const Event &event)
 {
+    using std::bind;
+    using std::any_of;
+    using namespace std::placeholders;
+
     return !(
         event.uri.isEmpty() ||
-        event.uri.startsWith(QStringLiteral("about")) ||
+        any_of(m_urlFilters.cbegin(), m_urlFilters.cend(),
+               bind(&QRegExp::exactMatch, _1, event.uri)) ||
 
         // if blocked by default, the list contains allowed applications
         //     ignore event if the list doesn't contain the application
@@ -343,11 +362,15 @@ void StatsPlugin::addEvents(const EventList &events)
         return;
     }
 
+    const auto &eventsToProcess =
+        events | transformed(&StatsPlugin::validateEvent, this)
+               | filtered(&StatsPlugin::acceptedEvent, this);
+
+    if (eventsToProcess.begin() == eventsToProcess.end()) return;
+
     DATABASE_TRANSACTION(resourcesDatabase());
 
-    for (auto event : events | transformed(&StatsPlugin::validateEvent, this)
-                             | filtered(&StatsPlugin::acceptedEvent, this)
-            ) {
+    for (auto event : eventsToProcess) {
 
         validateEvent(event);
 
