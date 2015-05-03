@@ -23,11 +23,15 @@
 
 #include <QCoreApplication>
 #include <QDBusConnection>
+#include <QFutureWatcher>
+#include <QFutureWatcherBase>
 
 #include "debug_p.h"
 #include "mainthreadexecutor_p.h"
 
 #include "common/dbus/common.h"
+#include "utils/dbusfuture_p.h"
+#include "version.h"
 
 namespace KActivities {
 
@@ -43,6 +47,10 @@ Manager::Manager()
 {
     connect(&m_watcher, &QDBusServiceWatcher::serviceOwnerChanged,
             this, &Manager::serviceOwnerChanged);
+
+    if (isServiceRunning()) {
+        serviceOwnerChanged(KAMD_DBUS_SERVICE, QString(), KAMD_DBUS_SERVICE);
+    }
 }
 
 Manager *Manager::self()
@@ -90,10 +98,53 @@ void Manager::serviceOwnerChanged(const QString &serviceName, const QString &old
 {
     Q_UNUSED(oldOwner)
 
-    // qDebug() << "Service: " << serviceName;
-
     if (serviceName == KAMD_DBUS_SERVICE) {
         emit serviceStatusChanged(!newOwner.isEmpty());
+
+        if (!newOwner.isEmpty()) {
+            QDBusInterface service(KAMD_DBUS_SERVICE,
+                    "/ActivityManager",
+                    "org.kde.ActivityManager.Application",
+                    QDBusConnection::sessionBus(),
+                    Q_NULLPTR);
+
+            DBusFuture::continueWith(
+                DBusFuture::asyncCall<QString>(&service, "serviceVersion"),
+                [] (const QString &serviceVersion) {
+                    // Test whether the service is older than the library.
+                    // If it is, we need to end this
+
+                    auto split = serviceVersion.split('.');
+                    QList<int> version;
+
+                    const int requiredVersion[] = {
+                            KACTIVITIES_VERSION_MAJOR,
+                            KACTIVITIES_VERSION_MINOR,
+                            KACTIVITIES_VERSION_RELEASE
+                        };
+
+                    std::transform(
+                            split.cbegin(), split.cend(),
+                            std::back_inserter(version), [] (const QString &component) {
+                                return component.toInt();
+                            });
+
+                    // if required version is greater than the current version
+                    if (std::lexicographical_compare(
+                            version.cbegin(), version.cend(),
+                            std::begin(requiredVersion), std::end(requiredVersion)
+                        )) {
+                        QString libraryVersion = QString::number(requiredVersion[0]) + '.'
+                                               + QString::number(requiredVersion[1]) + '.'
+                                               + QString::number(requiredVersion[2]);
+
+                        qDebug() << "KActivities service version: " << serviceVersion;
+                        qDebug() << "KActivities library version: " << libraryVersion;
+                        qFatal("KActivities: FATAL ERROR: The service is older than the library");
+
+                    }
+                });
+        }
     }
 }
 
