@@ -45,15 +45,12 @@ public:
 Database::Locker::Locker(Database &database)
     : m_database(database.d->database)
 {
-    qDebug() << "DATABASE: Transaction";
     m_database.transaction();
 }
 
 Database::Locker::~Locker()
 {
-    qDebug() << "DATABASE: Commit...";
     m_database.commit();
-    qDebug() << "DATABASE: Commit done";
 }
 
 
@@ -97,13 +94,11 @@ Database::Ptr Database::instance(Source source, OpenMode openMode)
         auto ptr = search->second.lock();
 
         if (ptr) {
-            qDebug() << "Matched an existing database";
             return std::move(ptr);
         }
     }
 
     // Creating a new database instance
-    // qDebug() << "We do not have an instance for this thread / mode";
     auto ptr = std::make_shared<Database>();
 
     auto databaseConnectionName =
@@ -126,13 +121,13 @@ Database::Ptr Database::instance(Source source, OpenMode openMode)
     ptr->d->database.setDatabaseName(ResourcesDatabaseSchema::path());
 
     if (!ptr->d->database.open()) {
-        qDebug() << "Database is not open: "
+        qDebug() << "KActivities: Database is not open: "
                  << ptr->d->database.connectionName()
                  << ptr->d->database.databaseName()
                  << ptr->d->database.lastError();
 
         if (info.openMode == ReadWrite) {
-            qFatal("Opening the database in RW mode should always succeed");
+            qFatal("KActivities: Opening the database in RW mode should always succeed");
         }
         ptr.reset();
 
@@ -155,8 +150,8 @@ Database::Ptr Database::instance(Source source, OpenMode openMode)
         auto walResult = ptr->pragma("journal_mode = WAL");
 
         if (walResult != "wal") {
-            qFatal("Database can not be opened in WAL mode. Check your version "
-                   "of SQLite (required >3.7.0). And whether your filesystem "
+            qFatal("KActivities: Database can not be opened in WAL mode. Check the "
+                   "SQLite version (required >3.7.0). And whether your filesystem "
                    "supports shared memory");
         }
 
@@ -164,7 +159,7 @@ Database::Ptr Database::instance(Source source, OpenMode openMode)
         // it reaches 400k, not 4M as is default
         ptr->setPragma("wal_autocheckpoint = 100");
 
-        qDebug() << "Database connection: " << databaseConnectionName
+        qDebug() << "KActivities: Database connection: " << databaseConnectionName
             << "\n    query_only:         " << ptr->pragma("query_only")
             << "\n    journal_mode:       " << ptr->pragma("journal_mode")
             << "\n    wal_autocheckpoint: " << ptr->pragma("wal_autocheckpoint")
@@ -173,7 +168,6 @@ Database::Ptr Database::instance(Source source, OpenMode openMode)
 
 
     }
-
 
     return std::move(ptr);
 }
