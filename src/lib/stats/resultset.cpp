@@ -400,12 +400,12 @@ ResultSet::ResultSet(Query query)
 
     d->database = Database::instance(Database::ResourcesDatabase, Database::ReadOnly);
 
-    if (!d->database) {
-        qDebug() << "KActivities ERROR: There is no database. This probably means "
-                    "that you do not have the Activity Manager running, or that "
-                    "something else is broken on your system. Recent documents and "
-                    "alike will not work!";
-        Q_ASSERT_X(d->database, "ResultSet constructor", "Database is NULL");
+    if (!(d->database)) {
+        qWarning() << "KActivities ERROR: There is no database. This probably means "
+                      "that you do not have the Activity Manager running, or that "
+                      "something else is broken on your system. Recent documents and "
+                      "alike will not work!";
+        Q_ASSERT_X((bool)d->database, "ResultSet constructor", "Database is NULL");
     }
 
     d->queryDefinition = query;
