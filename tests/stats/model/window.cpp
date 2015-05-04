@@ -201,7 +201,9 @@ void Window::updateResults()
         );
 
     model = new ResultModel(query);
-    model->setItemCountLimit(100);
+
+    qDebug() << "Limit" << ui->spinLimitCount->value();
+    model->setItemCountLimit(ui->spinLimitCount->value());
     ui->viewResults->setModel(model);
 }
 

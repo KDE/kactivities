@@ -59,7 +59,7 @@
                <string>&amp;Linked resources</string>
               </property>
               <property name="checked">
-               <bool>true</bool>
+               <bool>false</bool>
               </property>
              </widget>
             </item>
@@ -67,6 +67,9 @@
              <widget class="QRadioButton" name="radioSelectUsedResources">
               <property name="text">
                <string>&amp;Used resources</string>
+              </property>
+              <property name="checked">
+               <bool>true</bool>
               </property>
              </widget>
             </item>
@@ -92,7 +95,7 @@
                <string>Hi&amp;gh score</string>
               </property>
               <property name="checked">
-               <bool>true</bool>
+               <bool>false</bool>
               </property>
              </widget>
             </item>
@@ -100,6 +103,9 @@
              <widget class="QRadioButton" name="radioOrderRecentlyUsedFirst">
               <property name="text">
                <string>Recentl&amp;y used resources</string>
+              </property>
+              <property name="checked">
+               <bool>true</bool>
               </property>
              </widget>
             </item>
@@ -177,6 +183,20 @@
             <widget class="QLineEdit" name="textMimetype">
              <property name="text">
               <string>:any</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="0">
+            <widget class="QLabel" name="labelLimitCount">
+             <property name="text">
+              <string>Count</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="1">
+            <widget class="QSpinBox" name="spinLimitCount">
+             <property name="value">
+              <number>10</number>
              </property>
             </widget>
            </item>
