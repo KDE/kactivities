@@ -45,6 +45,8 @@
 #define CHUNK_SIZE 10
 #define DEFAULT_ITEM_COUNT_LIMIT 5
 
+#define QDBG qDebug() << "KActivitiesStats(" << (void*)this << ")"
+
 namespace KActivities {
 namespace Experimental {
 namespace Stats {
@@ -129,10 +131,10 @@ public:
         using kamd::utils::slide_one;
         using boost::lower_bound;
 
-        qDebug() << "result added:" << resource
-                 << "score:" << score
-                 << "last:" << lastUpdate
-                 << "first:" << firstUpdate;
+        QDBG << "result added:" << resource
+             << "score:" << score
+             << "last:" << lastUpdate
+             << "first:" << firstUpdate;
 
         // This can also be called when the resource score
         // has been updated, so we need to check whether
@@ -180,10 +182,10 @@ public:
             q->beginInsertRows(QModelIndex(), destinationIndex,
                                destinationIndex);
 
-            qDebug() << "inserting" << resource
-                     << "score:" << score
-                     << "last:" << lastUpdate
-                     << "first:" << firstUpdate;
+            QDBG << "inserting" << resource
+                 << "score:" << score
+                 << "last:" << lastUpdate
+                 << "first:" << firstUpdate;
 
             ResultSet::Result result;
             result.setResource(resource);
@@ -210,7 +212,7 @@ public:
 
         if (!result) return;
 
-        qDebug() << "removing row " << result.index << " of " << cache.size();
+        QDBG << "removing row " << result.index << " of " << cache.size();
 
         q->beginRemoveRows(QModelIndex(), result.index, result.index);
 
@@ -246,6 +248,8 @@ public:
     void reset()
     {
         q->beginResetModel();
+
+        QDBG << "Model reset";
 
         cache.clear();
         results = ResultSet(query);
