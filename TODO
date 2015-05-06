@@ -7,29 +7,42 @@ src/lib/core/controller.cpp:41:
 src/lib/core/info.cpp:165:
  TODO: This needs to be changed, test for the new linking feature
 
-src/lib/core/resourceinstance.cpp:145:
+src/lib/core/resourceinstance.cpp:147:
  TODO: update the service info
-src/lib/core/resourceinstance.cpp:157:
+src/lib/core/resourceinstance.cpp:159:
  TODO: update the service info
 
 
 libKActivitiesStats
 ===================
-src/lib/stats/resultset.cpp:73:
+src/lib/stats/resultset.cpp:171:
  TODO: Implement types
  QStringList types() const;
-src/lib/stats/resultset.cpp:120:
+src/lib/stats/resultset.cpp:232:
  TODO: We need to correct the scores based on the time that passed
        since the cache was last updated, although, for this query,
        scores are not that important.
-src/lib/stats/resultset.cpp:181:
+src/lib/stats/resultset.cpp:307:
  TODO: We need to correct the scores based on the time that passed
        since the cache was last updated
-src/lib/stats/resultset.cpp:236:
+src/lib/stats/resultset.cpp:376:
  TODO: Get this to work
 
-src/lib/stats/resultwatcher.h:90:
+src/lib/stats/resultwatcher.h:91:
  TODO: Move these to libKActivities
+
+src/lib/stats/resultmodel.cpp:144:
+ TODO: We should also sort by the resource, not only on a single field
+src/lib/stats/resultmodel.cpp:237:
+ TODO: This can add or remove items from the model
+src/lib/stats/resultmodel.cpp:253:
+ TODO: Make this a little bit smarter
+       - there is a possibility that the new list of
+       items will not differ significantly to the old one
+       in which case it does not need to be a full model reset
+
+src/lib/stats/resultwatcher.cpp:170:
+ TODO: See whether it makes sense to have lastUpdate/firstUpdate here as well
 
 
 KActivityManagerD
@@ -41,16 +54,18 @@ src/service/ksmserver/KSMServer.cpp:72:
  In future, the session management for Wayland may also need to be
  reimplemented in some way.
 
-src/service/plugins/sqlite/StatsPlugin.cpp:125:
+src/service/plugins/sqlite/StatsPlugin.cpp:117:
  TODO: Event cleanup should be also done from time to time,
        not only on startup
-src/service/plugins/sqlite/StatsPlugin.cpp:352:
+src/service/plugins/sqlite/StatsPlugin.cpp:408:
  TODO: Add focus and modification
+src/service/plugins/sqlite/StatsPlugin.cpp:545:
+ TODO: Check against sql injection
 
-src/service/Application.cpp:154:
+src/service/Application.cpp:155:
  TODO: Restart on crash
        KCrash::setFlags(KCrash::AutoRestart);
-src/service/Application.cpp:193:
+src/service/Application.cpp:197:
  TODO: Show a notification for a plugin that failed to load
 
 

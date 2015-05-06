@@ -250,6 +250,10 @@ public:
         q->beginResetModel();
 
         QDBG << "Model reset";
+        // TODO: Make this a little bit smarter
+        //       - there is a possibility that the new list of
+        //       items will not differ significantly to the old one
+        //       in which case it does not need to be a full model reset
 
         cache.clear();
         results = ResultSet(query);
