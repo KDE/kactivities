@@ -42,8 +42,8 @@
 #include <utils/slide.h>
 #include <common/specialvalues.h>
 
-#define CHUNK_SIZE 10
-#define DEFAULT_ITEM_COUNT_LIMIT 5
+#define MAX_CHUNK_LOAD_SIZE 50
+#define DEFAULT_ITEM_COUNT_LIMIT 10
 
 #define QDBG qDebug() << "KActivitiesStats(" << (void*)this << ")"
 
@@ -55,9 +55,9 @@ class ResultModel::Private {
 public:
     Private(Query query, ResultModel *parent)
         : query(query)
-        , results(query)
         , watcher(query)
         , itemCountLimit(DEFAULT_ITEM_COUNT_LIMIT)
+        , hasMore(true)
         , q(parent)
     {
         using Common::Database;
@@ -98,23 +98,29 @@ public:
 
     void fetchMore(bool emitChanges)
     {
-        if (!resultIt.isSourceValid()) {
-            // We haven't loaded anything yet
-            resultIt = results.begin();
-            Q_ASSERT(resultIt.isSourceValid());
+        if (!hasMore) return;
 
-        };
-
-        int chunkSize = CHUNK_SIZE;
-        int insertedCount = 0;
         const int previousSize = cache.size();
 
-        while ((chunkSize --> 0) && (cache.size() < itemCountLimit) &&
-                resultIt != results.end()) {
-            cache.append(*resultIt);
-            ++resultIt;
+        // We want to load itemCountLimit - previousSize new items,
+        // but not more than chunkSize. We are skipping
+        // the first previousSize elements from the result set
+
+        int wantToInsertCount = qMin(MAX_CHUNK_LOAD_SIZE,
+                                     itemCountLimit - previousSize);
+        int insertedCount = 0;
+
+        ResultSet results(query);
+        auto it = results.begin();
+        it += previousSize;
+
+        while ((wantToInsertCount --> 0) && (it != results.end())) {
+            cache.append(*it);
             ++insertedCount;
+            ++it;
         }
+
+        hasMore = (it != results.end());
 
         if (emitChanges && insertedCount) {
             q->beginInsertRows(QModelIndex(), previousSize,
@@ -256,8 +262,6 @@ public:
         //       in which case it does not need to be a full model reset
 
         cache.clear();
-        results = ResultSet(query);
-        resultIt = results.begin();
 
         init();
 
@@ -285,12 +289,11 @@ public:
     }
 
     Query query;
-    ResultSet results;
     ResultWatcher watcher;
 
     int itemCountLimit;
+    bool hasMore;
 
-    ResultSet::const_iterator resultIt;
     QList<ResultSet::Result> cache;
     KActivities::Consumer activities;
     Common::Database::Ptr database;
@@ -388,9 +391,7 @@ bool ResultModel::canFetchMore(const QModelIndex &parent) const
 {
     return parent.isValid()                     ? false
          : d->cache.size() >= d->itemCountLimit ? false
-         : !d->resultIt.isSourceValid()         ? true
-         : d->resultIt != d->results.end()
-         ;
+         : d->hasMore;
 }
 
 void ResultModel::setItemCountLimit(int count)

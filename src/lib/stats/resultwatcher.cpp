@@ -79,7 +79,7 @@ public:
         m_resultInvalidationTimer.setSingleShot(true);
         m_resultInvalidationTimer.setInterval(200);
         connect(&m_resultInvalidationTimer, &QTimer::timeout,
-                q, &ResultWatcher::resultsInvalidated);
+                q, emit &ResultWatcher::resultsInvalidated);
     }
 
     // Processing the list of activities as specified by the query.
@@ -241,6 +241,7 @@ public:
     QTimer m_resultInvalidationTimer;
     void scheduleResultsInvalidation()
     {
+        QDBG << "Scheduling invalidation";
         m_resultInvalidationTimer.start();
     }
 
