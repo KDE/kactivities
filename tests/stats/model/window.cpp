@@ -20,7 +20,7 @@
 #include "window.h"
 
 #include "ui_window.h"
-#include "modeltest.cpp"
+#include "modeltest.h"
 
 #include <QListView>
 #include <QDebug>
@@ -155,9 +155,6 @@ Window::Window()
 
 Window::~Window()
 {
-    delete ui;
-    delete model;
-    delete activities;
 }
 
 void Window::updateRowCount()
@@ -172,7 +169,6 @@ void Window::updateResults()
     qDebug() << "Updating the results";
 
     ui->viewResults->setModel(Q_NULLPTR);
-    delete model;
 
     auto query =
         // What should we get
@@ -215,10 +211,10 @@ void Window::updateResults()
             })
         );
 
-    model = new ResultModel(query);
+    modelTest.reset();
+    model.reset(new ResultModel(query));
+    modelTest.reset(new ModelTest(model.get()));
 
-    new ModelTest(model);
-
-    ui->viewResults->setModel(model);
+    ui->viewResults->setModel(model.get());
 }
 

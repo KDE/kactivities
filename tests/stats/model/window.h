@@ -20,7 +20,9 @@
 #pragma once
 
 #include <QMainWindow>
+#include <memory>
 
+class ModelTest;
 namespace Ui {
     class MainWindow;
 }
@@ -46,8 +48,9 @@ private Q_SLOTS:
     void updateRowCount();
 
 private:
-    Ui::MainWindow *ui;
-    KActivities::Experimental::Stats::ResultModel *model;
-    KActivities::Consumer *activities;
+    std::unique_ptr<Ui::MainWindow> ui;
+    std::unique_ptr<KActivities::Experimental::Stats::ResultModel> model;
+    std::unique_ptr<ModelTest> modelTest;
+    std::unique_ptr<KActivities::Consumer> activities;
 };
 
