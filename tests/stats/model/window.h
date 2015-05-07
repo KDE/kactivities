@@ -43,6 +43,7 @@ public:
 
 private Q_SLOTS:
     void updateResults();
+    void updateRowCount();
 
 private:
     Ui::MainWindow *ui;

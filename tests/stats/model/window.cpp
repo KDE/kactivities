@@ -125,6 +125,8 @@ Window::Window()
 
     connect(ui->buttonUpdate, SIGNAL(clicked()),
             this, SLOT(updateResults()));
+    connect(ui->buttonReloadRowCount, SIGNAL(clicked()),
+            this, SLOT(updateRowCount()));
 
     for (const auto &activity :
          (QStringList() << ":current"
@@ -155,6 +157,13 @@ Window::~Window()
     delete ui;
     delete model;
     delete activities;
+}
+
+void Window::updateRowCount()
+{
+    ui->labelRowCount->setText(QString::number(
+            ui->viewResults->model()->rowCount()
+        ));
 }
 
 void Window::updateResults()
@@ -188,7 +197,12 @@ void Window::updateResults()
         Type(ui->textMimetype->text().split(',')) |
 
         // Which activities?
-        Activity(ui->comboActivity->currentText());
+        Activity(ui->comboActivity->currentText()) |
+
+        // And how many items
+        Limit(ui->spinLimitCount->value())
+
+        ;
 
     // Log results
     using boost::accumulate;
@@ -202,8 +216,6 @@ void Window::updateResults()
 
     model = new ResultModel(query);
 
-    qDebug() << "Limit" << ui->spinLimitCount->value();
-    model->setItemCountLimit(ui->spinLimitCount->value());
     ui->viewResults->setModel(model);
 }
 

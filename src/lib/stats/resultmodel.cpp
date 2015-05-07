@@ -43,7 +43,6 @@
 #include <common/specialvalues.h>
 
 #define MAX_CHUNK_LOAD_SIZE 50
-#define DEFAULT_ITEM_COUNT_LIMIT 10
 
 #define QDBG qDebug() << "KActivitiesStats(" << (void*)this << ")"
 
@@ -56,7 +55,6 @@ public:
     Private(Query query, ResultModel *parent)
         : query(query)
         , watcher(query)
-        , itemCountLimit(DEFAULT_ITEM_COUNT_LIMIT)
         , hasMore(true)
         , q(parent)
     {
@@ -98,6 +96,8 @@ public:
 
     void fetchMore(bool emitChanges)
     {
+        using namespace Terms;
+
         if (!hasMore) return;
 
         const int previousSize = cache.size();
@@ -107,12 +107,13 @@ public:
         // the first previousSize elements from the result set
 
         int wantToInsertCount = qMin(MAX_CHUNK_LOAD_SIZE,
-                                     itemCountLimit - previousSize);
+                                     query.limit() - previousSize);
         int insertedCount = 0;
 
-        ResultSet results(query);
+        // In order to see whether there are more results, we need to pass
+        // the count increased by one
+        ResultSet results(query | Offset(previousSize) | Limit(wantToInsertCount + 1));
         auto it = results.begin();
-        it += previousSize;
 
         while ((wantToInsertCount --> 0) && (it != results.end())) {
             cache.append(*it);
@@ -271,10 +272,11 @@ public:
 
     void trim()
     {
-        if (itemCountLimit >= cache.size()) return;
+        const int limit = query.limit();
+        if (limit >= cache.size()) return;
 
-        q->beginRemoveRows(QModelIndex(), itemCountLimit, cache.size() - 1);
-        cache.erase(cache.begin() + itemCountLimit, cache.end());
+        q->beginRemoveRows(QModelIndex(), limit, cache.size() - 1);
+        cache.erase(cache.begin() + limit, cache.end());
         q->endRemoveRows();
     }
 
@@ -291,7 +293,6 @@ public:
     Query query;
     ResultWatcher watcher;
 
-    int itemCountLimit;
     bool hasMore;
 
     QList<ResultSet::Result> cache;
@@ -389,33 +390,33 @@ void ResultModel::fetchMore(const QModelIndex &parent)
 
 bool ResultModel::canFetchMore(const QModelIndex &parent) const
 {
-    return parent.isValid()                     ? false
-         : d->cache.size() >= d->itemCountLimit ? false
+    return parent.isValid()                    ? false
+         : d->cache.size() >= d->query.limit() ? false
          : d->hasMore;
 }
 
-void ResultModel::setItemCountLimit(int count)
-{
-    d->itemCountLimit = count;
-
-    const int oldSize = d->cache.size();
-
-    if (oldSize > count) {
-        // We need to remove all items from the tail if the new
-        // size is less than the current number of loaded items
-        d->trim();
-
-    } else if (oldSize < count) {
-        // If the requested size is bigger, we are resetting the
-        // model
-        d->reset();
-    }
-}
-
-int ResultModel::itemCountLimit() const
-{
-    return d->itemCountLimit;
-}
+// void ResultModel::setItemCountLimit(int count)
+// {
+//     d->itemCountLimit = count;
+//
+//     const int oldSize = d->cache.size();
+//
+//     if (oldSize > count) {
+//         // We need to remove all items from the tail if the new
+//         // size is less than the current number of loaded items
+//         d->trim();
+//
+//     } else if (oldSize < count) {
+//         // If the requested size is bigger, we are resetting the
+//         // model
+//         d->reset();
+//     }
+// }
+//
+// int ResultModel::itemCountLimit() const
+// {
+//     return d->itemCountLimit;
+// }
 
 void ResultModel::forgetResource(const QString &resource)
 {
