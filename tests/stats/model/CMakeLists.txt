@@ -1,7 +1,7 @@
 # vim:set softtabstop=3 shiftwidth=3 tabstop=3 expandtab:
 project (KActivitiesStatsTestApp)
 
-find_package (Qt5 REQUIRED NO_MODULE COMPONENTS Core Gui Widgets)
+find_package (Qt5 REQUIRED NO_MODULE COMPONENTS Core Gui Widgets Test)
 
 include_directories (
    ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/src/lib/core/
@@ -16,6 +16,7 @@ set (
    KActivitiesStatsTestApp_SRCS
    window.cpp
    main.cpp
+   modeltest.cpp
    )
 
 qt5_wrap_ui(
@@ -35,6 +36,7 @@ if (NOT WIN32)
       Qt5::Core
       Qt5::Gui
       Qt5::Widgets
+      Qt5::Test
       KF5::Activities
       KF5::ActivitiesExperimentalStats
       )

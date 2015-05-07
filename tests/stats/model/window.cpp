@@ -20,6 +20,7 @@
 #include "window.h"
 
 #include "ui_window.h"
+#include "modeltest.cpp"
 
 #include <QListView>
 #include <QDebug>
@@ -215,6 +216,8 @@ void Window::updateResults()
         );
 
     model = new ResultModel(query);
+
+    new ModelTest(model);
 
     ui->viewResults->setModel(model);
 }
