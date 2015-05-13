@@ -27,6 +27,7 @@ Name[sv]=Händelseövervakare
 Name[uk]=Журнал подій
 Name[x-test]=xxEvent Spyxx
 Name[zh_CN]=事件间谍
+Name[zh_TW]=事件監控器
 Comment=Collects events from applications that support recent documents specification
 Comment[ca]=Recull els esdeveniments de les aplicacions que admeten l'especificació dels documents recents
 Comment[cs]=Sbírá z aplikací události jenž podporují určení nedávných dokumentů
@@ -54,6 +55,7 @@ Comment[sv]=Samlar in händelser från program som stöder senare dokumentspecif
 Comment[uk]=Збирає записи подій від програм, у яких реалізовано специфікацію нещодавніх документів
 Comment[x-test]=xxCollects events from applications that support recent documents specificationxx
 Comment[zh_CN]=从支持最近文档标准的应用程序收集事件
+Comment[zh_TW]=收集支援「最近開啟文件」的應用程式的事件
 Type=Service
 Icon=preferences-system
 
