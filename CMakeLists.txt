@@ -33,7 +33,11 @@ endif ()
 set (KACTIVITIES_CURRENT_ROOT_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
 # Extra CMake stuff
-find_package (ECM 5.10.0 REQUIRED NO_MODULE)
+include(FeatureSummary)
+find_package(ECM 5.10.0  NO_MODULE)
+set_package_properties(ECM PROPERTIES TYPE REQUIRED DESCRIPTION "Extra CMake Modules." URL "https://projects.kde.org/projects/kdesupport/extra-cmake-modules")
+feature_summary(WHAT REQUIRED_PACKAGES_NOT_FOUND FATAL_ON_MISSING_REQUIRED_PACKAGES)
+
 set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH} ${ECM_KDE_MODULE_DIR})
 
 include (KDEInstallDirs)
@@ -54,7 +58,7 @@ find_package (KF5I18n ${KF5_DEP_VERSION} CONFIG REQUIRED)
 
 # Basic includes
 include (CPack)
-include (FeatureSummary)
+
 include (ECMPackageConfigHelpers)
 include (ECMSetupVersion)
 
