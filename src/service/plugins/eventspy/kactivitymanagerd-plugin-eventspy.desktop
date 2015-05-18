@@ -32,6 +32,7 @@ Comment=Collects events from applications that support recent documents specific
 Comment[ca]=Recull els esdeveniments de les aplicacions que admeten l'especificació dels documents recents
 Comment[cs]=Sbírá z aplikací události jenž podporují určení nedávných dokumentů
 Comment[da]=Indsamler hændelser fra programmer som understøtter specifikationen for nylige dokumenter
+Comment[de]=Sammelt Ereignisse von Anwendungen, die die Spezifikation zuletzt geöffnete Dokumente unterstützen
 Comment[en_GB]=Collects events from applications that support recent documents specification
 Comment[es]=Recopila eventos de aplicaciones que incorporan la especificación de documentos recientes
 Comment[fi]=Kerää tapahtumia sovelluksilta, jotka tukevat viimeaikaisten tiedostojen määrittelyä
