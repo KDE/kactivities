@@ -48,11 +48,12 @@
 #include <boost/range/adaptor/filtered.hpp>
 
 // Local
-#include "utils/continue_with.h"
 #include "utils/range.h"
-#include "utils/continue_with.h"
 #include "utils/dbusfuture_p.h"
 #include "common/dbus/common.h"
+
+#define ENABLE_QJSVALUE_CONTINUATION
+#include "utils/continue_with.h"
 
 #define ACTIVITY_COLUMN 0
 #define AGENT_COLUMN    1

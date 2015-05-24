@@ -45,6 +45,7 @@
 
 // Local
 #include "utils/remove_if.h"
+#define ENABLE_QJSVALUE_CONTINUATION
 #include "utils/continue_with.h"
 #include "utils_p.h"
 

@@ -31,6 +31,7 @@
 
 #include "common/dbus/common.h"
 #include "utils/dbusfuture_p.h"
+#include "utils/continue_with.h"
 #include "version.h"
 
 namespace KActivities {
@@ -108,13 +109,17 @@ void Manager::serviceOwnerChanged(const QString &serviceName, const QString &old
                     QDBusConnection::sessionBus(),
                     Q_NULLPTR);
 
-            DBusFuture::continueWith(
+            kamd::utils::continue_with(
                 DBusFuture::asyncCall<QString>(&service, "serviceVersion"),
-                [] (const QString &serviceVersion) {
+                [] (const boost::optional<QString> &serviceVersion) {
                     // Test whether the service is older than the library.
                     // If it is, we need to end this
 
-                    auto split = serviceVersion.split('.');
+                    if (!serviceVersion.is_initialized()) {
+                        qFatal("KActivities: FATAL ERROR: Failed to contact the activity manager daemon");
+                    }
+
+                    auto split = serviceVersion->split('.');
                     QList<int> version;
 
                     const int requiredVersion[] = {
@@ -138,7 +143,7 @@ void Manager::serviceOwnerChanged(const QString &serviceName, const QString &old
                                                + QString::number(requiredVersion[1]) + '.'
                                                + QString::number(requiredVersion[2]);
 
-                        qDebug() << "KActivities service version: " << serviceVersion;
+                        qDebug() << "KActivities service version: " << serviceVersion.get();
                         qDebug() << "KActivities library version: " << libraryVersion;
                         qFatal("KActivities: FATAL ERROR: The service is older than the library");
 
