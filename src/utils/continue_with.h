@@ -59,11 +59,9 @@ namespace detail { //_
     inline void pass_value(const QFuture<_ReturnType> &future,
                            _Continuation &&continuation)
     {
-        if (future.isCanceled()) {
-            continuation(boost::none);
-        } else {
-            continuation(boost::make_optional(future.result()));
-        }
+        continuation(future.resultCount() > 0
+                         ? boost::make_optional(future.result())
+                         : boost::none);
     }
 
     template <typename _Continuation>

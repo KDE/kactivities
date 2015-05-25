@@ -45,6 +45,7 @@ Manager::Manager()
     , m_resources(new KAMD_DBUS_CLASS_INTERFACE(Resources, Resources, this))
     , m_resourcesLinking(new KAMD_DBUS_CLASS_INTERFACE(Resources/Linking, ResourcesLinking, this))
     , m_features(new KAMD_DBUS_CLASS_INTERFACE(Features, Features, this))
+    , m_serviceRunning(false)
 {
     connect(&m_watcher, &QDBusServiceWatcher::serviceOwnerChanged,
             this, &Manager::serviceOwnerChanged);
@@ -92,7 +93,9 @@ Manager *Manager::self()
 
 bool Manager::isServiceRunning()
 {
-    return QDBusConnection::sessionBus().interface()->isServiceRegistered(KAMD_DBUS_SERVICE);
+    return
+        (s_instance ? s_instance->m_serviceRunning : true)
+        && QDBusConnection::sessionBus().interface()->isServiceRegistered(KAMD_DBUS_SERVICE);
 }
 
 void Manager::serviceOwnerChanged(const QString &serviceName, const QString &oldOwner, const QString &newOwner)
@@ -100,9 +103,10 @@ void Manager::serviceOwnerChanged(const QString &serviceName, const QString &old
     Q_UNUSED(oldOwner)
 
     if (serviceName == KAMD_DBUS_SERVICE) {
-        emit serviceStatusChanged(!newOwner.isEmpty());
+        m_serviceRunning = !newOwner.isEmpty();
+        emit serviceStatusChanged(m_serviceRunning);
 
-        if (!newOwner.isEmpty()) {
+        if (m_serviceRunning) {
             QDBusInterface service(KAMD_DBUS_SERVICE,
                     "/ActivityManager",
                     "org.kde.ActivityManager.Application",
@@ -111,12 +115,14 @@ void Manager::serviceOwnerChanged(const QString &serviceName, const QString &old
 
             kamd::utils::continue_with(
                 DBusFuture::asyncCall<QString>(&service, "serviceVersion"),
-                [] (const boost::optional<QString> &serviceVersion) {
+                [this] (const boost::optional<QString> &serviceVersion) {
                     // Test whether the service is older than the library.
                     // If it is, we need to end this
 
                     if (!serviceVersion.is_initialized()) {
-                        qFatal("KActivities: FATAL ERROR: Failed to contact the activity manager daemon");
+                        qWarning() << "KActivities: FATAL ERROR: Failed to contact the activity manager daemon";
+                        m_serviceRunning = false;
+                        return;
                     }
 
                     auto split = serviceVersion->split('.');

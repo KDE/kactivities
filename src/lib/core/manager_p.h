@@ -64,6 +64,7 @@ private:
     Service::Resources *const m_resources;
     Service::ResourcesLinking *const m_resourcesLinking;
     Service::Features *const m_features;
+    bool m_serviceRunning;
 
     friend class ManagerInstantiator;
 };
