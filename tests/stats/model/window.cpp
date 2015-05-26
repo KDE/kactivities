@@ -29,6 +29,10 @@
 #include <QPainter>
 #include <QDateTime>
 
+#include <QQmlContext>
+#include <QQmlComponent>
+#include <QQuickItem>
+
 #include <resultset.h>
 #include <resultmodel.h>
 #include <consumer.h>
@@ -136,21 +140,6 @@ Window::Window()
         ui->comboActivity->addItem(activity);
     }
 
-    // ResultSet results(UsedResources | Agent{"gvim"});
-    //
-    // int count = 20;
-    // for (const auto& result: results) {
-    //     qDebug() << "Result:" << result.title << result.resource;
-    //     if (count -- == 0) break;
-    // }
-    //
-    // ResultModel model(UsedResources | Agent{"gvim"});
-    // model.setItemCountLimit(50);
-    //
-    // QListView view;
-    // view.setModel(&model);
-    //
-    // view.show();
 }
 
 Window::~Window()
@@ -211,10 +200,20 @@ void Window::updateResults()
             })
         );
 
-    modelTest.reset();
     model.reset(new ResultModel(query));
-    modelTest.reset(new ModelTest(model.get()));
+
+    modelTest.reset();
+    modelTest.reset(new ModelTest(new ResultModel(query)));
 
     ui->viewResults->setModel(model.get());
+
+    // QML
+
+    auto context = ui->viewResultsQML->rootContext();
+    ui->viewResultsQML->setResizeMode(QQuickWidget::SizeRootObjectToView);
+
+    context->setContextProperty("kamdmodel", model.get());
+
+    ui->viewResultsQML->setSource(QUrl("qrc:/main.qml"));
 }
 

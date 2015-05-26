@@ -27,22 +27,6 @@ int main(int argc, char *argv[])
     Window w;
     w.show();
 
-    // ResultSet results(UsedResources | Agent{"gvim"});
-    //
-    // int count = 20;
-    // for (const auto& result: results) {
-    //     qDebug() << "Result:" << result.title << result.resource;
-    //     if (count -- == 0) break;
-    // }
-    //
-    // ResultModel model(UsedResources | Agent{"gvim"});
-    // model.setItemCountLimit(50);
-    //
-    // QListView view;
-    // view.setModel(&model);
-    //
-    // view.show();
-
     return app.exec();
 }
 
