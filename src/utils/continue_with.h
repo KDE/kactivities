@@ -41,7 +41,7 @@ namespace detail { //_
 
     inline void pass_value(const QFuture<void> &future, QJSValue continuation)
     {
-        Q_UNUSED(future)
+        Q_UNUSED(future);
         auto result = continuation.call({});
         if (result.isError()) {
             qWarning() << "Handler returned this error: " << result.toString();
@@ -52,7 +52,7 @@ namespace detail { //_
     template <typename _Continuation>
     inline void test_continuation(_Continuation &&continuation)
     {
-        Q_UNUSED(continuation)
+        Q_UNUSED(continuation);
     }
 
     template <typename _ReturnType, typename _Continuation>

@@ -30,7 +30,7 @@ namespace Utils {
                         QSqlQuery &query,
                         const QString &queryString)
     {
-        Q_UNUSED(database)
+        Q_UNUSED(database);
 
         return query.prepare(queryString);
     }

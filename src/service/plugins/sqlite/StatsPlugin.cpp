@@ -55,7 +55,7 @@ StatsPlugin::StatsPlugin(QObject *parent, const QVariantList &args)
     , m_resources(Q_NULLPTR)
     , m_resourceLinking(new ResourceLinking(this))
 {
-    Q_UNUSED(args)
+    Q_UNUSED(args);
     s_instance = this;
 
     new ResourcesScoringAdaptor(this);

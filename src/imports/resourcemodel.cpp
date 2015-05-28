@@ -319,7 +319,7 @@ void ResourceModel::reloadData()
 
 void ResourceModel::onCurrentActivityChanged(const QString &activity)
 {
-    Q_UNUSED(activity)
+    Q_UNUSED(activity);
 
     if (m_shownActivities.contains(":current")) {
         reloadData();
@@ -518,7 +518,7 @@ void ResourceModel::onResourceLinkedToActivity(const QString &initiatingAgent,
                                                const QString &targettedResource,
                                                const QString &usedActivity)
 {
-    Q_UNUSED(targettedResource)
+    Q_UNUSED(targettedResource);
 
     if (!loadDatabase()) return;
 

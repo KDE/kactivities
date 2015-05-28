@@ -519,6 +519,7 @@ public:
 
     void onCurrentActivityChanged(const QString &activity)
     {
+        Q_UNUSED(activity);
         reload();
     }
 
@@ -528,7 +529,8 @@ private:
 };
 
 ResultModel::ResultModel(Query query, QObject *parent)
-    : d(new Private(query, this))
+    : QAbstractListModel(parent)
+    , d(new Private(query, this))
 {
     using namespace std::placeholders;
 
@@ -590,6 +592,9 @@ QVariant ResultModel::data(const QModelIndex &item, int role) const
 QVariant ResultModel::headerData(int section, Qt::Orientation orientation,
                                  int role) const
 {
+    Q_UNUSED(section);
+    Q_UNUSED(orientation);
+    Q_UNUSED(role);
     return QVariant();
 }
 

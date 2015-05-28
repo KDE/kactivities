@@ -34,7 +34,7 @@ EventSpyPlugin::EventSpyPlugin(QObject *parent, const QVariantList &args)
     , m_dirWatcher(new KDirWatch())
     , m_cachedDocuments(KRecentDocument::recentDocuments())
 {
-    Q_UNUSED(args)
+    Q_UNUSED(args);
 
     m_dirWatcher->addDir(KRecentDocument::recentDocumentDirectory());
 
@@ -44,6 +44,7 @@ EventSpyPlugin::EventSpyPlugin(QObject *parent, const QVariantList &args)
 
 void EventSpyPlugin::directoryUpdated(const QString &dir)
 {
+    Q_UNUSED(dir);
     const auto newDocuments = KRecentDocument::recentDocuments();
 
     // Processing the new arrivals

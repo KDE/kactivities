@@ -66,7 +66,6 @@ public:
 
         // Painting the title
         painter->setPen(QColor(255,255,255));
-        int top = 2 * lineHeight;
 
         titleRect.moveTop(titleRect.top() + 8);
         titleRect.setLeft(8);
@@ -110,6 +109,8 @@ public:
     QSize sizeHint(const QStyleOptionViewItem &option,
                    const QModelIndex &index) const Q_DECL_OVERRIDE
     {
+        Q_UNUSED(option);
+        Q_UNUSED(index);
         return QSize(0, 100);
     }
 };

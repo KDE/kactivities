@@ -100,7 +100,7 @@ bool Manager::isServiceRunning()
 
 void Manager::serviceOwnerChanged(const QString &serviceName, const QString &oldOwner, const QString &newOwner)
 {
-    Q_UNUSED(oldOwner)
+    Q_UNUSED(oldOwner);
 
     if (serviceName == KAMD_DBUS_SERVICE) {
         m_serviceRunning = !newOwner.isEmpty();

@@ -28,7 +28,7 @@ KAMD_EXPORT_PLUGIN(templatesplugin, TemplatesPlugin, "kactivitymanagerd-plugin-a
 TemplatesPlugin::TemplatesPlugin(QObject *parent, const QVariantList &args)
     : Plugin(parent)
 {
-    Q_UNUSED(args)
+    Q_UNUSED(args);
 
     setName(QStringLiteral("org.kde.ActivityManager.ActivityTemplates"));
 }

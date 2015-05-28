@@ -45,6 +45,8 @@ Window::~Window()
 void Window::focusChanged(const QString &uri, const QString &mimetype,
                           const QString &title)
 {
+    Q_UNUSED(mimetype);
+    Q_UNUSED(title);
     ui->textCurrentResource->setText(uri);
 
 }

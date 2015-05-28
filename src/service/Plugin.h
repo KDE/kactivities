@@ -135,6 +135,7 @@ public:
     inline static void callOn(QObject *object, const char *method,
                                     const char *returnTypeName)
     {
+        Q_UNUSED(returnTypeName);
         QMetaObject::invokeMethod(object, method, connection);
     }
 

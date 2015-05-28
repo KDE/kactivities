@@ -38,7 +38,7 @@ GlobalShortcutsPlugin::GlobalShortcutsPlugin(QObject *parent, const QVariantList
     , m_signalMapper(new QSignalMapper(this))
     , m_actionCollection(new KActionCollection(this))
 {
-    Q_UNUSED(args)
+    Q_UNUSED(args);
 }
 
 GlobalShortcutsPlugin::~GlobalShortcutsPlugin()

@@ -79,7 +79,7 @@ QDebug operator<<(QDebug dbg, const Event &e)
 #ifndef QT_NO_DEBUG_OUTPUT
     dbg << "Event(" << e.application << e.wid << e.typeName() << e.uri << ":" << e.timestamp << ")";
 #else
-    Q_UNUSED(e)
+    Q_UNUSED(e);
 #endif
     return dbg.space();
 }

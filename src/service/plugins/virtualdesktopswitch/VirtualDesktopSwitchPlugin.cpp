@@ -30,7 +30,7 @@ VirtualDesktopSwitchPlugin::VirtualDesktopSwitchPlugin(QObject *parent, const QV
     : Plugin(parent)
     , m_activitiesService(Q_NULLPTR)
 {
-    Q_UNUSED(args)
+    Q_UNUSED(args);
 
     setName("org.kde.ActivityManager.VirtualDesktopSwitch");
 }

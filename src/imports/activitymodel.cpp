@@ -355,7 +355,7 @@ void ActivityModel::onActivityRemoved(const QString &id)
 
 void ActivityModel::onCurrentActivityChanged(const QString &id)
 {
-    Q_UNUSED(id)
+    Q_UNUSED(id);
 
     for (const auto &activity: m_shownActivities) {
         Private::emitActivityUpdated(this, m_shownActivities, activity->id(),
@@ -458,7 +458,7 @@ void ActivityModel::hideActivity(const QString &id)
 
 void ActivityModel::onActivityNameChanged(const QString &name)
 {
-    Q_UNUSED(name)
+    Q_UNUSED(name);
 
     Private::emitActivityUpdated(this, m_shownActivities, sender(),
                                  Qt::DisplayRole);
@@ -466,7 +466,7 @@ void ActivityModel::onActivityNameChanged(const QString &name)
 
 void ActivityModel::onActivityIconChanged(const QString &icon)
 {
-    Q_UNUSED(icon)
+    Q_UNUSED(icon);
 
     Private::emitActivityUpdated(this, m_shownActivities, sender(),
                                  Qt::DecorationRole);
@@ -579,7 +579,7 @@ QVariant ActivityModel::data(const QModelIndex &index, int role) const
 QVariant ActivityModel::headerData(int section, Qt::Orientation orientation,
                                    int role) const
 {
-    Q_UNUSED(orientation)
+    Q_UNUSED(orientation);
 
     if (section == 0 && role == Qt::DisplayRole) {
         return i18nc("Header title for activity data model", "Activity");

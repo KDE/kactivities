@@ -313,25 +313,25 @@ void Resources::RegisterResourceTitle(const QString &uri, const QString &title)
 
 bool Resources::isFeatureOperational(const QStringList &feature) const
 {
-    Q_UNUSED(feature)
+    Q_UNUSED(feature);
     return false;
 }
 
 bool Resources::isFeatureEnabled(const QStringList &feature) const
 {
-    Q_UNUSED(feature)
+    Q_UNUSED(feature);
     return false;
 }
 
 void Resources::setFeatureEnabled(const QStringList &feature, bool value)
 {
-    Q_UNUSED(feature)
-    Q_UNUSED(value)
+    Q_UNUSED(feature);
+    Q_UNUSED(value);
 }
 
 QStringList Resources::listFeatures(const QStringList &feature) const
 {
-    Q_UNUSED(feature)
+    Q_UNUSED(feature);
     static QStringList features;
 
     return features;

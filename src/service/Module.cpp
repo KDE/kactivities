@@ -72,25 +72,25 @@ QHash<QString, QObject *> &Module::get()
 
 bool Module::isFeatureEnabled(const QStringList &feature) const
 {
-    Q_UNUSED(feature)
+    Q_UNUSED(feature);
     return false;
 }
 
 bool Module::isFeatureOperational(const QStringList &feature) const
 {
-    Q_UNUSED(feature)
+    Q_UNUSED(feature);
     return false;
 }
 
 void Module::setFeatureEnabled(const QStringList &feature, bool value)
 {
-    Q_UNUSED(feature)
-    Q_UNUSED(value)
+    Q_UNUSED(feature);
+    Q_UNUSED(value);
 }
 
 QStringList Module::listFeatures(const QStringList &feature) const
 {
-    Q_UNUSED(feature)
+    Q_UNUSED(feature);
     return QStringList();
 }
 

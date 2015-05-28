@@ -187,9 +187,9 @@ void BlacklistedApplicationsModel::toggleApplicationBlocked(int index)
 
 QVariant BlacklistedApplicationsModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
-    Q_UNUSED(section)
-    Q_UNUSED(orientation)
-    Q_UNUSED(role)
+    Q_UNUSED(section);
+    Q_UNUSED(orientation);
+    Q_UNUSED(role);
     return QVariant();
 }
 
@@ -223,7 +223,7 @@ QVariant BlacklistedApplicationsModel::data(const QModelIndex &modelIndex, int r
 
 int BlacklistedApplicationsModel::rowCount(const QModelIndex &parent) const
 {
-    Q_UNUSED(parent)
+    Q_UNUSED(parent);
     return d->applications.size();
 }
 

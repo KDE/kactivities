@@ -62,7 +62,7 @@ MainConfigurationWidget::MainConfigurationWidget(QWidget *parent, QVariantList a
     : KCModule(parent, args)
     , d()
 {
-    Q_UNUSED(args)
+    Q_UNUSED(args);
 
     d->setupUi(this);
 
