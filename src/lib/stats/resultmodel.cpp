@@ -24,6 +24,7 @@
 #include <QDebug>
 #include <QDateTime>
 #include <QCoreApplication>
+#include <QFile>
 
 // STL and Boost
 #include <functional>
@@ -286,6 +287,14 @@ public:
             // but if the newItems list was shorter than needed, we still
             // need to trim the rest.
             trim(from + newItems.size());
+
+            // Check whether we got an item representing a non-existent file,
+            // if so, schedule its removal from the database
+            for (const auto &item: newItems) {
+                if (item.resource().startsWith('/') && !QFile(item.resource()).exists()) {
+                    d->q->forgetResource(item.resource());
+                }
+            }
         }
 
         inline void trim()
