@@ -529,7 +529,12 @@ public:
     void onCurrentActivityChanged(const QString &activity)
     {
         Q_UNUSED(activity);
-        reload();
+        // If the current activity has changed, and
+        // the query lists items for the ':current' one,
+        // reset the model (not a simple refresh this time)
+        if (query.activities().contains(CURRENT_ACTIVITY_TAG)) {
+            fetch(FetchReset);
+        }
     }
 
 private:
