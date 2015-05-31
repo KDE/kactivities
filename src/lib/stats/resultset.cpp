@@ -174,7 +174,6 @@ public:
         if (agent == ":any") return "1";
 
         return "agent = '" + (
-                agent == ":global"  ? "" :
                 agent == ":current" ? QCoreApplication::instance()->applicationName() :
                                       agent
             ) + "'";
@@ -185,7 +184,6 @@ public:
         if (activity == ":any") return "1";
 
         return "activity = '" + (
-                activity == ":global"  ? "" :
                 activity == ":current" ? ActivitiesSync::currentActivity(activities) :
                                          activity
             ) + "'";
