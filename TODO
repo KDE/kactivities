@@ -26,7 +26,7 @@ src/lib/stats/resultset.cpp:392:
  TODO: Get this to work
 
 src/lib/stats/resultwatcher.h:91:
- TODO: Move these to libKActivities
+ TODO: BLOCKER Move these to libKActivities
 
 src/lib/stats/resultmodel.cpp:407:
  TODO: We should also sort by the resource, not only on a single field
