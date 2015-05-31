@@ -20,6 +20,7 @@
 
 // Qt
 #include <QObject>
+#include <QTimer>
 
 // Boost and STL
 #include <memory>
@@ -109,6 +110,8 @@ private Q_SLOTS:
     bool insertResourceInfo(const QString &uri);
     void detectResourceInfo(const QString &uri);
 
+    void deleteOldEvents();
+
 private:
     inline bool acceptedEvent(const Event &event);
     inline Event validateEvent(Event event);
@@ -132,6 +135,8 @@ private:
     std::unique_ptr<QSqlQuery> getResourceInfoQuery;
     std::unique_ptr<QSqlQuery> saveResourceTitleQuery;
     std::unique_ptr<QSqlQuery> saveResourceMimetypeQuery;
+
+    QTimer m_deleteOldEventsTimer;
 
     bool m_blockedByDefault : 1;
     bool m_blockAll : 1;

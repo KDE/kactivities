@@ -113,10 +113,13 @@ void StatsPlugin::loadConfiguration()
         m_apps.insert(apps.cbegin(), apps.cend());
     }
 
-    // Delete old events, as per configuration
-    // TODO: Event cleanup should be also done from time to time,
-    //       not only on startup
-    DeleteEarlierStats(QString(), config().readEntry("keep-history-for", 0));
+    // Delete old events, as per configuration.
+    // For people who do not restart their computers, we should do this from
+    // time to time. Doing this twice a day should be more than enough.
+    deleteOldEvents();
+    m_deleteOldEventsTimer.setInterval(12 * 60 * 60 * 1000);
+    connect(&m_deleteOldEventsTimer, &QTimer::timeout,
+            this, &StatsPlugin::deleteOldEvents);
 
     // Loading URL filters
     m_urlFilters.clear();
@@ -131,6 +134,11 @@ void StatsPlugin::loadConfiguration()
     for (const auto& filter: filters) {
         m_urlFilters << QRegExp(filter, Qt::CaseInsensitive, QRegExp::WildcardUnix);
     }
+}
+
+void StatsPlugin::deleteOldEvents()
+{
+    DeleteEarlierStats(QString(), config().readEntry("keep-history-for", 0));
 }
 
 void StatsPlugin::openResourceEvent(const QString &usedActivity,

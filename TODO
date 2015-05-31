@@ -46,10 +46,7 @@ src/service/ksmserver/KSMServer.cpp:72:
  In future, the session management for Wayland may also need to be
  reimplemented in some way.
 
-src/service/plugins/sqlite/StatsPlugin.cpp:117:
- TODO: Event cleanup should be also done from time to time,
-       not only on startup
-src/service/plugins/sqlite/StatsPlugin.cpp:408:
+src/service/plugins/sqlite/StatsPlugin.cpp:414:
  TODO: Add focus and modification
 
 src/service/Application.cpp:155:
