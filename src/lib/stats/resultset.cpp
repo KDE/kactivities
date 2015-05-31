@@ -167,10 +167,6 @@ public:
               : QString());
 
         Q_ASSERT_X(query.isActive(), "ResultSet initQuery", "Query is not valid");
-
-        // TODO: Implement types
-        // QStringList types() const;
-
     }
 
     QString agentClause(const QString &agent) const

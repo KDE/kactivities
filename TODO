@@ -15,33 +15,25 @@ src/lib/core/resourceinstance.cpp:159:
 
 libKActivitiesStats
 ===================
-src/lib/stats/resultset.cpp:171:
- TODO: Implement types
- QStringList types() const;
-src/lib/stats/resultset.cpp:232:
+src/lib/stats/resultset.cpp:245:
  TODO: We need to correct the scores based on the time that passed
        since the cache was last updated, although, for this query,
        scores are not that important.
-src/lib/stats/resultset.cpp:307:
+src/lib/stats/resultset.cpp:321:
  TODO: We need to correct the scores based on the time that passed
        since the cache was last updated
-src/lib/stats/resultset.cpp:376:
+src/lib/stats/resultset.cpp:392:
  TODO: Get this to work
 
 src/lib/stats/resultwatcher.h:91:
  TODO: Move these to libKActivities
 
-src/lib/stats/resultmodel.cpp:144:
+src/lib/stats/resultmodel.cpp:407:
  TODO: We should also sort by the resource, not only on a single field
-src/lib/stats/resultmodel.cpp:237:
+src/lib/stats/resultmodel.cpp:493:
  TODO: This can add or remove items from the model
-src/lib/stats/resultmodel.cpp:253:
- TODO: Make this a little bit smarter
-       - there is a possibility that the new list of
-       items will not differ significantly to the old one
-       in which case it does not need to be a full model reset
 
-src/lib/stats/resultwatcher.cpp:170:
+src/lib/stats/resultwatcher.cpp:174:
  TODO: See whether it makes sense to have lastUpdate/firstUpdate here as well
 
 
@@ -59,8 +51,6 @@ src/service/plugins/sqlite/StatsPlugin.cpp:117:
        not only on startup
 src/service/plugins/sqlite/StatsPlugin.cpp:408:
  TODO: Add focus and modification
-src/service/plugins/sqlite/StatsPlugin.cpp:545:
- TODO: Check against sql injection
 
 src/service/Application.cpp:155:
  TODO: Restart on crash
@@ -71,18 +61,18 @@ src/service/Application.cpp:197:
 
 QML imports
 ===========
-src/imports/resourcemodel.cpp:104:
+src/imports/resourcemodel.cpp:105:
  NOTE: What to do if the file does not exist?
        Ignoring that case since the daemon creates it on startup.
        Is it plausible that somebody will instantiate the ResourceModel
        before the daemon is started?
-src/imports/resourcemodel.cpp:134:
+src/imports/resourcemodel.cpp:135:
  TODO: Database connection naming could be smarter (thread-id-based,
        reusing connections...?)
-src/imports/resourcemodel.cpp:336:
+src/imports/resourcemodel.cpp:337:
  TODO: Will probably need some more special handling -
        for application:/ and a few more
-src/imports/resourcemodel.cpp:552:
+src/imports/resourcemodel.cpp:553:
  TODO: This might be smarter possibly, but might collide
        with the SQL model. Implement a custom model with internal
        cache instead of basing it on QSqlModel.

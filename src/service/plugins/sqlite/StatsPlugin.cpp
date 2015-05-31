@@ -542,7 +542,8 @@ void StatsPlugin::DeleteStatsForResource(const QString &activity,
 
     DATABASE_TRANSACTION(resourcesDatabase());
 
-    // TODO: Check against sql injection
+    // Check against sql injection
+    if (activity.contains('\'') || client.contains('\'')) return;
 
     const auto activityFilter =
             activity == ANY_ACTIVITY_TAG ? " 1 " :
