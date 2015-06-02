@@ -47,7 +47,7 @@ std::shared_ptr<ActivitiesCache> ActivitiesCache::self()
             });
     }
 
-    return std::move(result);
+    return result;
 }
 
 ActivitiesCache::ActivitiesCache()
