@@ -4,6 +4,9 @@ project (KCMActivities)
 find_package (Qt5 REQUIRED NO_MODULE COMPONENTS Core Quick Sql Qml DBus)
 find_package (KF5KCMUtils ${KF5_DEP_VERSION} CONFIG REQUIRED)
 find_package (KF5Declarative ${KF5_DEP_VERSION} CONFIG REQUIRED)
+find_package (KF5XmlGui ${KF5_DEP_VERSION} CONFIG REQUIRED)
+find_package (KF5GlobalAccel ${KF5_DEP_VERSION} CONFIG REQUIRED)
+find_package (KF5Activities ${KF5_DEP_VERSION} CONFIG REQUIRED)
 
 set (KAMD_KCM_SRCS
    kcm_activities.cpp
@@ -28,6 +31,9 @@ target_link_libraries (kcm_activities
    KF5::I18n
    KF5::Service
    KF5::Declarative
+   KF5::XmlGui
+   KF5::GlobalAccel
+   KF5::Activities
    )
 
 install (

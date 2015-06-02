@@ -12,18 +12,59 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QCheckBox" name="checkEnableActivities">
-     <property name="text">
-      <string>Enable activities management</string>
-     </property>
-    </widget>
-   </item>
-   <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
       <number>0</number>
      </property>
-     <widget class="QWidget" name="tab">
+     <widget class="QWidget" name="tabGeneral">
+      <attribute name="title">
+       <string>Switching</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_4">
+       <item>
+        <widget class="QGroupBox" name="groupBox_2">
+         <property name="title">
+          <string>General</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_7">
+          <item>
+           <widget class="QCheckBox" name="checkRememberVirtualDesktop">
+            <property name="text">
+             <string>Remember the current virtual desktop for each activity (needs restart)</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBox">
+         <property name="title">
+          <string>Shortcuts</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_6">
+          <item>
+           <widget class="KShortcutsEditor" name="scActivities"/>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <spacer name="verticalSpacer">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tabPrivacy">
       <attribute name="title">
        <string>Privacy</string>
       </attribute>
@@ -178,24 +219,15 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>KShortcutsEditor</class>
+   <extends>QWidget</extends>
+   <header>kshortcutseditor.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections>
-  <connection>
-   <sender>checkEnableActivities</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>tabWidget</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>44</x>
-     <y>8</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>193</x>
-     <y>45</y>
-    </hint>
-   </hints>
-  </connection>
   <connection>
    <sender>radioDontRememberApplications</sender>
    <signal>toggled(bool)</signal>
@@ -203,12 +235,12 @@
    <slot>setHidden(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>223</x>
-     <y>130</y>
+     <x>220</x>
+     <y>118</y>
     </hint>
     <hint type="destinationlabel">
-     <x>395</x>
-     <y>145</y>
+     <x>742</x>
+     <y>147</y>
     </hint>
    </hints>
   </connection>

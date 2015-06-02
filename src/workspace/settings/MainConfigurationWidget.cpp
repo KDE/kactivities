@@ -28,12 +28,14 @@
 
 #include <QQuickView>
 
-#include <KLocalizedString>
 #include <KAboutData>
-#include <KPluginSelector>
-#include <KPluginInfo>
+#include <KActionCollection>
+#include <KConfigGroup>
+#include <KGlobalAccel>
+#include <KLocalizedString>
 #include <KService>
 #include <KServiceTypeTrader>
+#include <KSharedConfig>
 
 #include "ui_MainConfigurationWidgetBase.h"
 #include "BlacklistedApplicationsModel.h"
@@ -47,16 +49,54 @@ K_PLUGIN_FACTORY(ActivitiesKCMFactory, registerPlugin<MainConfigurationWidget>()
 
 class MainConfigurationWidget::Private : public Ui::MainConfigurationWidgetBase {
 public:
-    Ui::MainConfigurationWidgetBase ui;
-
     KSharedConfig::Ptr mainConfig;
     KSharedConfig::Ptr pluginConfig;
-    KPluginSelector *pluginSelector;
     BlacklistedApplicationsModel *blacklistedApplicationsModel;
 
     QObject *viewBlacklistedApplicationsRoot;
     QQuickView *viewBlacklistedApplications;
+    KActionCollection *mainActionCollection;
+    KActionCollection *activitiesActionCollection;
+    KActivities::Consumer activities;
+
+    void createAction(const QString &actionName, const QString &actionText,
+                      const QList<QKeySequence> &sequence)
+    {
+        auto action = mainActionCollection->addAction(actionName);
+        action->setProperty("isConfigurationAction", true);
+        action->setText(actionText);
+        KGlobalAccel::self()->setShortcut(action, sequence);
+    }
+
+    Private()
+        : viewBlacklistedApplicationsRoot(Q_NULLPTR)
+        , viewBlacklistedApplications(Q_NULLPTR)
+        , mainActionCollection(Q_NULLPTR)
+        , activitiesActionCollection(Q_NULLPTR)
+    {
+    }
 };
+
+void MainConfigurationWidget::activitiesStateChanged(KActivities::Consumer::ServiceStatus status)
+{
+    if (status == KActivities::Consumer::Running && !d->activitiesActionCollection) {
+        d->activitiesActionCollection = new KActionCollection(this, QStringLiteral("ActivityManager"));
+        d->activitiesActionCollection->setComponentDisplayName(i18n("Activities"));
+        d->activitiesActionCollection->setConfigGlobal(true);
+
+        auto activities = d->activities.activities(KActivities::Info::Running);
+
+        for (const auto &activity: activities) {
+            KActivities::Info info(activity);
+            auto action = d->activitiesActionCollection->addAction("switch-to-activity-" + activity);
+            action->setProperty("isConfigurationAction", true);
+            action->setText(i18nc("@action", "Switch to activity \"%1\"", info.name()));
+            KGlobalAccel::self()->setShortcut(action, {});
+        }
+
+        d->scActivities->addCollection(d->activitiesActionCollection);
+    }
+}
 
 MainConfigurationWidget::MainConfigurationWidget(QWidget *parent, QVariantList args)
     : KCModule(parent, args)
@@ -66,27 +106,32 @@ MainConfigurationWidget::MainConfigurationWidget(QWidget *parent, QVariantList a
 
     d->setupUi(this);
 
-    // Plugin selector initialization
-
-    const auto offers = KServiceTypeTrader::self()->query("ActivityManager/Plugin");
-    const auto plugins = KPluginInfo::fromServices(offers);
-
     d->mainConfig = KSharedConfig::openConfig("kactivitymanagerdrc");
     d->pluginConfig = KSharedConfig::openConfig("kactivitymanagerd-pluginsrc");
 
-    // Loading the plugin selector
-    d->pluginSelector = new KPluginSelector(this);
-    d->pluginSelector->addPlugins(plugins, KPluginSelector::ReadConfigFile,
-                                  i18n("Available Features"), QString(),
-                                  d->mainConfig);
-    d->tabWidget->addTab(d->pluginSelector, i18n("Plugins"));
+    // Shortcut config. The shortcut belongs to the component "plasmashell"!
+    d->mainActionCollection = new KActionCollection(this, QStringLiteral("plasmashell"));
+    d->mainActionCollection->setComponentDisplayName(i18n("Activity switching"));
+    d->mainActionCollection->setConfigGlobal(true);
+
+    d->createAction("next activity", i18nc("@action", "Walk through activities"),
+                    { Qt::META + Qt::Key_Tab });
+    d->createAction("previous activity", i18nc("@action", "Walk through activities (Reverse)"),
+                    { Qt::META + Qt::SHIFT + Qt::Key_Tab } );
+
+    d->scActivities->setActionTypes(KShortcutsEditor::GlobalAction);
+    d->scActivities->addCollection(d->mainActionCollection);
+
+    // Now, the shortcuts for the activities.
+    connect(&d->activities, &KActivities::Consumer::serviceStatusChanged,
+            this, &MainConfigurationWidget::activitiesStateChanged);
+    activitiesStateChanged(d->activities.serviceStatus());
 
     // Keep history initialization
 
     d->spinKeepHistory->setRange(0, INT_MAX);
     d->spinKeepHistory->setSpecialValueText(i18nc("unlimited number of months", "forever"));
 
-    // We don't have KSpingBox anymore, lets keep it alive :)
     connect(d->spinKeepHistory, SIGNAL(valueChanged(int)),
             this, SLOT(spinKeepHistoryValueChanged(int)));
     spinKeepHistoryValueChanged(0);
@@ -95,24 +140,16 @@ MainConfigurationWidget::MainConfigurationWidget(QWidget *parent, QVariantList a
 
     auto menu = new QMenu(this);
 
-    connect(
-        menu->addAction(i18n("Forget the last hour")), SIGNAL(triggered()),
-        this, SLOT(forgetLastHour()));
-    connect(
-        menu->addAction(i18n("Forget the last two hours")), SIGNAL(triggered()),
-        this, SLOT(forgetTwoHours()));
-    connect(
-        menu->addAction(i18n("Forget a day")), SIGNAL(triggered()),
-        this, SLOT(forgetDay()));
-    connect(
-        menu->addAction(i18n("Forget everything")), SIGNAL(triggered()),
-        this, SLOT(forgetAll()));
+    connect(menu->addAction(i18n("Forget the last hour")), &QAction::triggered,
+            this, &MainConfigurationWidget::forgetLastHour);
+    connect(menu->addAction(i18n("Forget the last two hours")), &QAction::triggered,
+            this, &MainConfigurationWidget::forgetTwoHours);
+    connect(menu->addAction(i18n("Forget a day")), &QAction::triggered,
+            this, &MainConfigurationWidget::forgetDay);
+    connect(menu->addAction(i18n("Forget everything")), &QAction::triggered,
+            this, &MainConfigurationWidget::forgetAll);
 
     d->buttonClearRecentHistory->setMenu(menu);
-
-    // Activities must run! :)
-
-    d->checkEnableActivities->setVisible(false);
 
     // Blacklist applications
 
@@ -143,7 +180,6 @@ MainConfigurationWidget::MainConfigurationWidget(QWidget *parent, QVariantList a
     connect(d->radioRememberAllApplications, SIGNAL(toggled(bool)), this, SLOT(changed()));
     connect(d->radioDontRememberApplications, SIGNAL(toggled(bool)), this, SLOT(changed()));
     connect(d->spinKeepHistory, SIGNAL(valueChanged(int)), this, SLOT(changed()));
-    connect(d->pluginSelector, SIGNAL(changed(bool)), this, SLOT(changed()));
     connect(d->blacklistedApplicationsModel, SIGNAL(changed()), this, SLOT(changed()));
 
     connect(d->radioRememberSpecificApplications, SIGNAL(toggled(bool)),
@@ -154,6 +190,10 @@ MainConfigurationWidget::MainConfigurationWidget(QWidget *parent, QVariantList a
 
     connect(d->radioRememberSpecificApplications, SIGNAL(toggled(bool)),
             d->checkBlacklistAllNotOnList, SLOT(setEnabled(bool)));
+    connect(d->scActivities, &KShortcutsEditor::keyChange,
+            this, [this] { changed(); });
+    connect(d->checkRememberVirtualDesktop, SIGNAL(toggled(bool)),
+            this, SLOT(changed()));
 
     defaults();
 
@@ -166,18 +206,29 @@ MainConfigurationWidget::~MainConfigurationWidget()
 {
 }
 
+void MainConfigurationWidget::shortcutChanged(const QKeySequence &sequence)
+{
+    QString actionName = sender() ? sender()->property("shortcutAction").toString() : QString();
+
+    if (actionName.isEmpty()) return;
+
+    auto action = d->mainActionCollection->action(actionName);
+
+    KGlobalAccel::self()->setShortcut(action, { sequence }, KGlobalAccel::NoAutoloading);
+    d->mainActionCollection->writeSettings();
+
+    changed();
+}
+
 void MainConfigurationWidget::defaults()
 {
-    d->checkEnableActivities->setChecked(true);
     d->radioRememberAllApplications->click();
     d->spinKeepHistory->setValue(0);
-    d->pluginSelector->defaults();
     d->blacklistedApplicationsModel->defaults();
 }
 
 void MainConfigurationWidget::load()
 {
-    d->pluginSelector->load();
     d->blacklistedApplicationsModel->load();
 
     const auto statisticsConfig = d->pluginConfig->group(
@@ -193,11 +244,16 @@ void MainConfigurationWidget::load()
     d->spinKeepHistory->setValue(statisticsConfig.readEntry("keep-history-for", 0));
     d->checkBlacklistAllNotOnList->setChecked(
         statisticsConfig.readEntry("blocked-by-default", false));
+
+    auto pluginListConfig = d->mainConfig->group("Plugins");
+    d->checkRememberVirtualDesktop->setChecked(
+        pluginListConfig.readEntry("org.kde.ActivityManager.VirtualDesktopSwitchEnabled", false));
+
+    // Loading shortcuts
 }
 
 void MainConfigurationWidget::save()
 {
-    d->pluginSelector->save();
     d->blacklistedApplicationsModel->save();
 
     auto statisticsConfig = d->pluginConfig->group(
@@ -216,6 +272,8 @@ void MainConfigurationWidget::save()
 
     pluginListConfig.writeEntry("org.kde.ActivityManager.ResourceScoringEnabled",
                                 whatToRemember != NoApplications);
+    pluginListConfig.writeEntry("org.kde.ActivityManager.VirtualDesktopSwitchEnabled",
+                                d->checkRememberVirtualDesktop->isChecked());
 
     statisticsConfig.sync();
     pluginListConfig.sync();

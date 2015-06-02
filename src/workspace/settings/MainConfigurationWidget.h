@@ -22,8 +22,12 @@
 
 #include <KCModule>
 #include <KPluginFactory>
+#include <KActivities/Consumer>
+#include <KActivities/Info>
 
 #include <utils/d_ptr.h>
+
+class QKeySequence;
 
 /**
  * MainConfigurationWidget
@@ -47,6 +51,9 @@ private Q_SLOTS:
     void forgetAll();
 
     void spinKeepHistoryValueChanged(int value);
+    void shortcutChanged(const QKeySequence &sequence);
+
+    void activitiesStateChanged(KActivities::Consumer::ServiceStatus status);
 
 private:
     enum WhatToRemember {
