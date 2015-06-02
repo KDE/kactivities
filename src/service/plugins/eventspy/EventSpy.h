@@ -1,5 +1,4 @@
 /*
- *   Copyright (C) 2012 Makis Marimpis <makhsm@gmail.com>
  *   Copyright (C) 2012, 2013, 2014 Ivan Cukic <ivan.cukic(at)kde.org>
  *
  *   This program is free software; you can redistribute it and/or
@@ -42,7 +41,7 @@ private Q_SLOTS:
 private:
     QObject *m_resources;
     std::unique_ptr<KDirWatch> m_dirWatcher;
-    QStringList m_cachedDocuments;
+    QDateTime m_lastUpdate;
 };
 
 #endif // PLUGINS_EVENT_SPY_PLUGIN_H

@@ -1,6 +1,5 @@
 /*
  *   Copyright (C) 2012, 2013, 2014 Ivan Cukic <ivan.cukic(at)kde.org>
- *   Copyright (C) 2012 Makis Marimpis <makhsm@gmail.com>
  *
  *   This program is free software; you can redistribute it and/or
  *   modify it under the terms of the GNU General Public License as
@@ -20,6 +19,7 @@
 
 #include <QStringList>
 #include <QString>
+#include <QFileInfo>
 
 #include <KIOCore/KRecentDocument>
 #include <KCoreAddons/KDirWatch>
@@ -32,7 +32,7 @@ EventSpyPlugin::EventSpyPlugin(QObject *parent, const QVariantList &args)
     : Plugin(parent)
     , m_resources(Q_NULLPTR)
     , m_dirWatcher(new KDirWatch())
-    , m_cachedDocuments(KRecentDocument::recentDocuments())
+    , m_lastUpdate(QDateTime::currentDateTime())
 {
     Q_UNUSED(args);
 
@@ -49,13 +49,13 @@ void EventSpyPlugin::directoryUpdated(const QString &dir)
 
     // Processing the new arrivals
     for (const auto& document: newDocuments) {
-        if (m_cachedDocuments.contains(document)) continue;
-
-        addDocument(document);
+        QFileInfo fileInfo(document);
+        if (fileInfo.lastModified() > m_lastUpdate) {
+            addDocument(document);
+        }
     }
 
-    // Processing the lost ones
-    m_cachedDocuments = newDocuments;
+    m_lastUpdate = QDateTime::currentDateTime();
 }
 
 void EventSpyPlugin::addDocument(const QString &document)
