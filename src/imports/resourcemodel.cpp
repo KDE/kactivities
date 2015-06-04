@@ -88,7 +88,7 @@ public:
             s_instance = result;
         }
 
-        return std::move(result);
+        return result;
     }
 
 };
