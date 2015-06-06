@@ -1,0 +1,208 @@
+# translation of kactivitymanagerd.po to Khmer
+# Copyright (C) YEAR This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Khoem Sokhem <khoemsokhem@khmeros.info>, 2012.
+msgid ""
+msgstr ""
+"Project-Id-Version: kactivitymanagerd\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2015-06-03 08:37+0000\n"
+"PO-Revision-Date: 2012-06-07 16:10+0700\n"
+"Last-Translator: Khoem Sokhem <khoemsokhem@khmeros.info>\n"
+"Language-Team: Khmer <support@khmeros.info>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.4\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "ខឹម សុខែម,ម៉ន ម៉េត, សេង សុត្ថា"
+
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "khoemsokhem@khmeros.info,mornmet@khmeros.info,sutha@khmeros.info​​"
+
+#: imports/activitymodel.cpp:585
+#, fuzzy
+#| msgid "Unlock Activity"
+msgctxt "Header title for activity data model"
+msgid "Activity"
+msgstr "ដោះសោ​សកម្មភាព"
+
+#: service/Activities.cpp:139
+msgid "Default"
+msgstr ""
+
+#: service/plugins/globalshortcuts/GlobalShortcutsPlugin.cpp:86
+#: service/plugins/globalshortcuts/GlobalShortcutsPlugin.cpp:121
+#: workspace/settings/MainConfigurationWidget.cpp:93
+#, kde-format
+msgctxt "@action"
+msgid "Switch to activity \"%1\""
+msgstr ""
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:110
+#: workspace/kio/KioActivities.cpp:306
+#: workspace/settings/MainConfigurationWidget.cpp:84
+#, fuzzy
+#| msgid "Unlock Activity"
+msgid "Activities"
+msgstr "ដោះសោ​សកម្មភាព"
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:113
+msgid "Loading..."
+msgstr ""
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:140
+#, fuzzy
+#| msgid "Activity manager is not running properly."
+msgid "The Activity Manager is not running"
+msgstr "កម្មវិធី​គ្រប់គ្រង​សកម្មភាព​មិនកំពុង​ដំណើរការ​ត្រឹមត្រូវ​ទេ ។"
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:184
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:251
+#, fuzzy
+#| msgid "Unprotect Activity"
+msgid "Link to the current activity"
+msgstr "សកម្មភាព​ដែល​មិន​បានការពារ"
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:187
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:256
+#, fuzzy
+#| msgid "Unprotect Activity"
+msgid "Unlink from the current activity"
+msgstr "សកម្មភាព​ដែល​មិន​បានការពារ"
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:190
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:260
+msgid "Link to:"
+msgstr ""
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:195
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:268
+msgid "Unlink from:"
+msgstr ""
+
+#: workspace/kio/KioActivities.cpp:107 workspace/kio/KioActivities.cpp:229
+#, fuzzy
+#| msgid "Unlock Activity"
+msgid "Activity"
+msgstr "ដោះសោ​សកម្មភាព"
+
+#: workspace/kio/KioActivities.cpp:228
+#, fuzzy
+#| msgid "Unprotect Activity"
+msgid "Current activity"
+msgstr "សកម្មភាព​ដែល​មិន​បានការពារ"
+
+#: workspace/settings/MainConfigurationWidget.cpp:114
+#, fuzzy
+#| msgid "Activity Password"
+msgid "Activity switching"
+msgstr "ពាក្យ​សម្ងាត់​​សកម្មភាព"
+
+#: workspace/settings/MainConfigurationWidget.cpp:117
+msgctxt "@action"
+msgid "Walk through activities"
+msgstr ""
+
+#: workspace/settings/MainConfigurationWidget.cpp:119
+msgctxt "@action"
+msgid "Walk through activities (Reverse)"
+msgstr ""
+
+#: workspace/settings/MainConfigurationWidget.cpp:133
+msgctxt "unlimited number of months"
+msgid "forever"
+msgstr ""
+
+#: workspace/settings/MainConfigurationWidget.cpp:143
+msgid "Forget the last hour"
+msgstr ""
+
+#: workspace/settings/MainConfigurationWidget.cpp:145
+msgid "Forget the last two hours"
+msgstr ""
+
+#: workspace/settings/MainConfigurationWidget.cpp:147
+msgid "Forget a day"
+msgstr ""
+
+#: workspace/settings/MainConfigurationWidget.cpp:149
+msgid "Forget everything"
+msgstr ""
+
+#: workspace/settings/MainConfigurationWidget.cpp:312
+msgctxt "unit of time. months to keep the history"
+msgid " month"
+msgid_plural " months"
+msgstr[0] ""
+
+#: workspace/settings/MainConfigurationWidget.cpp:315
+msgctxt "for in 'keep history for 5 months'"
+msgid "for "
+msgstr ""
+
+#. i18n: ectx: attribute (title), widget (QWidget, tabGeneral)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:21
+msgid "Switching"
+msgstr ""
+
+#. i18n: ectx: property (title), widget (QGroupBox, groupBox_2)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:27
+msgid "General"
+msgstr ""
+
+#. i18n: ectx: property (text), widget (QCheckBox, checkRememberVirtualDesktop)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:33
+msgid "Remember the current virtual desktop for each activity (needs restart)"
+msgstr ""
+
+#. i18n: ectx: property (title), widget (QGroupBox, groupBox)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:43
+msgid "Shortcuts"
+msgstr ""
+
+#. i18n: ectx: attribute (title), widget (QWidget, tabPrivacy)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:69
+msgid "Privacy"
+msgstr ""
+
+#. i18n: ectx: property (text), widget (QLabel, labelRememberDocuments)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:75
+msgid "Remember opened documents:"
+msgstr ""
+
+#. i18n: ectx: property (text), widget (QRadioButton, radioRememberAllApplications)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:86
+msgid "For a&ll applications"
+msgstr ""
+
+#. i18n: ectx: property (text), widget (QRadioButton, radioDontRememberApplications)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:96
+msgid "&Do not remember"
+msgstr ""
+
+#. i18n: ectx: property (text), widget (QRadioButton, radioRememberSpecificApplications)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:103
+msgid "O&nly for specific applications"
+msgstr ""
+
+#. i18n: ectx: property (text), widget (QLabel, labelKeepHistory)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:131
+msgid "Keep history"
+msgstr ""
+
+#. i18n: ectx: property (text), widget (QPushButton, buttonClearRecentHistory)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:154
+msgid "Clear recent history"
+msgstr ""
+
+#. i18n: ectx: property (text), widget (QCheckBox, checkBlacklistAllNotOnList)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:196
+msgid "Blacklist all applications not on this list"
+msgstr ""
