@@ -94,14 +94,14 @@ QStringList Module::listFeatures(const QStringList &feature) const
     return QStringList();
 }
 
-QDBusVariant Module::value(const QStringList &property) const
+QDBusVariant Module::featureValue(const QStringList &property) const
 {
     Q_UNUSED(property);
 
     return QDBusVariant();
 }
 
-void Module::setValue(const QStringList &property, const QDBusVariant &value)
+void Module::setFeatureValue(const QStringList &property, const QDBusVariant &value)
 {
     Q_UNUSED(property);
     Q_UNUSED(value);

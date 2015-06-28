@@ -67,7 +67,7 @@ QStringList TemplatesPlugin::activities() const
         m_activities, "ListActivities", "QStringList");
 }
 
-QDBusVariant TemplatesPlugin::value(const QStringList &property) const
+QDBusVariant TemplatesPlugin::featureValue(const QStringList &property) const
 {
     static const auto emptyResult = QStringList();
 
@@ -90,7 +90,7 @@ QDBusVariant TemplatesPlugin::value(const QStringList &property) const
 
 }
 
-void TemplatesPlugin::setValue(const QStringList &property,
+void TemplatesPlugin::setFeatureValue(const QStringList &property,
         const QDBusVariant &value)
 {
     Q_UNUSED(property);

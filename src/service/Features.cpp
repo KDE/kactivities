@@ -64,7 +64,8 @@ static RetType passToModule(const QString &key, RetType defaultResult, Function 
         return defaultResult;
     }
 
-    return f(static_cast<Module *>(module), params.mid(1));
+    return f(static_cast<Module *>(module),
+            params.mid(1));
 }
 
 #define FEATURES_PASS_TO_MODULE(RetType, DefaultResult, What)                  \
@@ -92,13 +93,13 @@ QStringList Features::ListFeatures(const QString &key) const
 QDBusVariant Features::GetValue(const QString &key) const
 {
     return FEATURES_PASS_TO_MODULE(QDBusVariant, QDBusVariant(),
-                                   return module->value(params););
+                                   return module->featureValue(params););
 }
 
 void Features::SetValue(const QString &key, const QDBusVariant &value)
 {
     FEATURES_PASS_TO_MODULE(bool, true,
-                            module->setValue(params, value);
+                            module->setFeatureValue(params, value);
                             return true;
                             );
 }

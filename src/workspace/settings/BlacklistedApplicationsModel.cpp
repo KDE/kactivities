@@ -34,6 +34,8 @@
 
 #include <utils/d_ptr_implementation.h>
 
+#include "definitions.h"
+
 class BlacklistedApplicationsModel::Private {
 public:
     struct ApplicationData {
@@ -75,7 +77,7 @@ void BlacklistedApplicationsModel::load()
 {
     // Loading plugin configuration
 
-    const auto config = d->pluginConfig->group("Plugin-org.kde.ActivityManager.ResourceScoring");
+    const auto config = d->pluginConfig->group(SQLITE_PLUGIN_CONFIG_KEY);
 
     const auto defaultBlockedValue = config.readEntry("blocked-by-default", false);
     auto blockedApplications = QSet<QString>::fromList(config.readEntry("blocked-applications", QStringList()));
@@ -149,7 +151,7 @@ void BlacklistedApplicationsModel::load()
 
 void BlacklistedApplicationsModel::save()
 {
-    auto config = d->pluginConfig->group("Plugin-org.kde.ActivityManager.ResourceScoring");
+    auto config = d->pluginConfig->group(SQLITE_PLUGIN_CONFIG_KEY);
     QStringList blockedApplications;
     QStringList allowedApplications;
 

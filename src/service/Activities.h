@@ -213,12 +213,6 @@ Q_SIGNALS:
      */
     void ActivityStateChanged(const QString &activity, int state);
 
-public:
-    bool isFeatureOperational(const QStringList &feature) const Q_DECL_OVERRIDE;
-    bool isFeatureEnabled(const QStringList &feature) const Q_DECL_OVERRIDE;
-    void setFeatureEnabled(const QStringList &feature, bool value) Q_DECL_OVERRIDE;
-    QStringList listFeatures(const QStringList &feature) const Q_DECL_OVERRIDE;
-
 private:
     D_PTR;
 };

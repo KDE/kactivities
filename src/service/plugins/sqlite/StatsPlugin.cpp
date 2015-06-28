@@ -25,6 +25,7 @@
 #include <QFileSystemWatcher>
 #include <QSqlQuery>
 #include <QDebug>
+#include <QStringList>
 
 // KDE
 #include <kconfig.h>
@@ -92,21 +93,22 @@ bool StatsPlugin::init(QHash<QString, QObject *> &modules)
 
 void StatsPlugin::loadConfiguration()
 {
-    config().config()->reparseConfiguration();
+    auto conf = config();
+    conf.config()->reparseConfiguration();
 
     const QString configFile
         = QStandardPaths::writableLocation(QStandardPaths::ConfigLocation)
           + QStringLiteral("kactivitymanagerd-pluginsrc");
 
-    m_blockedByDefault = config().readEntry("blocked-by-default", false);
+    m_blockedByDefault = conf.readEntry("blocked-by-default", false);
     m_blockAll = false;
-    m_whatToRemember = (WhatToRemember)config().readEntry("what-to-remember",
+    m_whatToRemember = (WhatToRemember)conf.readEntry("what-to-remember",
                                                           (int)AllApplications);
 
     m_apps.clear();
 
     if (m_whatToRemember == SpecificApplications) {
-        auto apps = config().readEntry(
+        auto apps = conf.readEntry(
             m_blockedByDefault ? "allowed-applications" : "blocked-applications",
             QStringList());
 
@@ -124,7 +126,7 @@ void StatsPlugin::loadConfiguration()
     // Loading URL filters
     m_urlFilters.clear();
 
-    auto filters = config().readEntry("url-filters",
+    auto filters = conf.readEntry("url-filters",
             QStringList() << "about:*" // Ignore about: stuff
                           << "*/.*"    // Ignore hidden files
                           << "/"       // Ignore root
@@ -134,6 +136,9 @@ void StatsPlugin::loadConfiguration()
     for (const auto& filter: filters) {
         m_urlFilters << QRegExp(filter, Qt::CaseInsensitive, QRegExp::WildcardUnix);
     }
+
+    // Loading the private activities
+    m_otrActivities = conf.readEntry("off-the-record-activities", QStringList());
 }
 
 void StatsPlugin::deleteOldEvents()
@@ -218,7 +223,7 @@ void StatsPlugin::detectResourceInfo(const QString &_uri)
 
         file = uri.toLocalFile();
 
-        if(!QFile::exists(file)) return;
+        if (!QFile::exists(file)) return;
     }
 
     KFileItem item(file);
@@ -320,12 +325,6 @@ StatsPlugin *StatsPlugin::self()
     return s_instance;
 }
 
-QString StatsPlugin::currentActivity() const
-{
-    return Plugin::callOnRet<QString, Qt::DirectConnection>(
-        m_activities, "CurrentActivity", "QString");
-}
-
 bool StatsPlugin::acceptedEvent(const Event &event)
 {
     using std::bind;
@@ -333,7 +332,13 @@ bool StatsPlugin::acceptedEvent(const Event &event)
     using namespace std::placeholders;
 
     return !(
+        // If the URI is empty, we do not want to process it
         event.uri.isEmpty() ||
+
+        // Skip if the current activity is OTR
+        m_otrActivities.contains(currentActivity()) ||
+
+        // Exclude URIs that match the ignored patterns
         any_of(m_urlFilters.cbegin(), m_urlFilters.cend(),
                bind(&QRegExp::exactMatch, _1, event.uri)) ||
 
@@ -361,6 +366,20 @@ Event StatsPlugin::validateEvent(Event event)
 
     return event;
 }
+
+QStringList StatsPlugin::listActivities() const
+{
+    return Plugin::callOnRet<QStringList, Qt::DirectConnection>(
+                m_activities, "ListActivities", "QStringList");
+}
+
+QString StatsPlugin::currentActivity() const
+{
+    return Plugin::callOnRet<QString, Qt::DirectConnection>(
+                m_activities, "CurrentActivity", "QString");
+}
+
+
 
 void StatsPlugin::addEvents(const EventList &events)
 {
@@ -589,6 +608,116 @@ void StatsPlugin::DeleteStatsForResource(const QString &activity,
                 ":targettedResource", resource);
 
     emit ResourceScoreDeleted(activity, client, resource);
+}
+
+bool StatsPlugin::isFeatureOperational(const QStringList &feature) const
+{
+    if (feature[0] == "isOTR") {
+        if (feature.size() != 2) return true;
+
+        const auto activity = feature[1];
+
+        return activity == "activity"
+            || activity == "current"
+            || listActivities().contains(activity);
+
+        return true;
+    }
+
+    return false;
+}
+
+// bool StatsPlugin::isFeatureEnabled(const QStringList &feature) const
+// {
+//     if (feature[0] == "isOTR") {
+//         if (feature.size() != 2) return false;
+//
+//         auto activity = feature[1];
+//
+//         if (activity == "activity" || activity == "current") {
+//             activity = currentActivity();
+//         }
+//
+//         return m_otrActivities.contains(activity);
+//     }
+//
+//     return false;
+// }
+//
+// void StatsPlugin::setFeatureEnabled(const QStringList &feature, bool value)
+// {
+//     if (feature[0] == "isOTR") {
+//         if (feature.size() != 2) return;
+//
+//         auto activity = feature[1];
+//
+//         if (activity == "activity" || activity == "current") {
+//             activity = currentActivity();
+//         }
+//
+//         if (!m_otrActivities.contains(activity)) {
+//             m_otrActivities << activity;
+//             config().writeEntry("off-the-record-activities", m_otrActivities);
+//             config().sync();
+//         }
+//     }
+// }
+
+QDBusVariant StatsPlugin::featureValue(const QStringList &feature) const
+{
+    if (feature[0] == "isOTR") {
+        if (feature.size() != 2) return QDBusVariant(false);
+
+        auto activity = feature[1];
+
+        if (activity == "activity" || activity == "current") {
+            activity = currentActivity();
+        }
+
+        return QDBusVariant(m_otrActivities.contains(activity));
+    }
+
+    return QDBusVariant(false);
+
+}
+
+void StatsPlugin::setFeatureValue(const QStringList &feature, const QDBusVariant &value)
+{
+    if (feature[0] == "isOTR") {
+        if (feature.size() != 2) return;
+
+        auto activity = feature[1];
+
+        if (activity == "activity" || activity == "current") {
+            activity = currentActivity();
+        }
+
+        bool isOTR = value.variant().toBool();
+
+        if (isOTR && !m_otrActivities.contains(activity)) {
+            m_otrActivities << activity;
+
+        } else if (!isOTR && m_otrActivities.contains(activity)) {
+            m_otrActivities.removeAll(activity);
+
+        }
+
+        config().writeEntry("off-the-record-activities", m_otrActivities);
+        config().sync();
+    }
+}
+
+
+QStringList StatsPlugin::listFeatures(const QStringList &feature) const
+{
+    if (feature.isEmpty() || feature[0].isEmpty()) {
+        return { "isOTR/" };
+
+    } else if (feature[0] == "isOTR") {
+        return listActivities();
+    }
+
+    return QStringList();
 }
 
 #include "StatsPlugin.moc"

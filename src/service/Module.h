@@ -48,8 +48,8 @@ public:
     virtual void setFeatureEnabled(const QStringList &feature, bool value);
     virtual QStringList listFeatures(const QStringList &feature) const;
 
-    virtual QDBusVariant value(const QStringList &property) const;
-    virtual void setValue(const QStringList &property, const QDBusVariant &value);
+    virtual QDBusVariant featureValue(const QStringList &property) const;
+    virtual void setFeatureValue(const QStringList &property, const QDBusVariant &value);
 
 private:
     D_PTR;

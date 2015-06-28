@@ -39,6 +39,7 @@
 
 #include "ui_MainConfigurationWidgetBase.h"
 #include "BlacklistedApplicationsModel.h"
+#include "definitions.h"
 
 #include <utils/d_ptr_implementation.h>
 
@@ -231,8 +232,7 @@ void MainConfigurationWidget::load()
 {
     d->blacklistedApplicationsModel->load();
 
-    const auto statisticsConfig = d->pluginConfig->group(
-        "Plugin-org.kde.ActivityManager.ResourceScoring");
+    const auto statisticsConfig = d->pluginConfig->group(SQLITE_PLUGIN_CONFIG_KEY);
 
     const auto whatToRemember = (WhatToRemember)statisticsConfig.readEntry(
         "what-to-remember", (int)AllApplications);
@@ -256,8 +256,7 @@ void MainConfigurationWidget::save()
 {
     d->blacklistedApplicationsModel->save();
 
-    auto statisticsConfig = d->pluginConfig->group(
-        "Plugin-org.kde.ActivityManager.ResourceScoring");
+    auto statisticsConfig = d->pluginConfig->group(SQLITE_PLUGIN_CONFIG_KEY);
 
     const auto whatToRemember =
         d->radioRememberSpecificApplications->isChecked() ? SpecificApplications :

@@ -53,9 +53,16 @@ public:
     bool init(QHash<QString, QObject *> &modules) Q_DECL_OVERRIDE;
 
     QString currentActivity() const;
+    QStringList listActivities() const;
 
     inline
     QObject *activitiesInterface() const { return m_activities; }
+
+    bool isFeatureOperational(const QStringList &feature) const Q_DECL_OVERRIDE;
+    QStringList listFeatures(const QStringList &feature) const Q_DECL_OVERRIDE;
+
+    QDBusVariant featureValue(const QStringList &property) const Q_DECL_OVERRIDE;
+    void setFeatureValue(const QStringList &property, const QDBusVariant &value) Q_DECL_OVERRIDE;
 
 //
 // D-BUS Interface methods
@@ -116,6 +123,7 @@ private:
     inline bool acceptedEvent(const Event &event);
     inline Event validateEvent(Event event);
 
+
     enum WhatToRemember {
         AllApplications = 0,
         SpecificApplications = 1,
@@ -127,6 +135,7 @@ private:
 
     boost::container::flat_set<QString> m_apps;
     QList<QRegExp> m_urlFilters;
+    QStringList m_otrActivities;
 
     std::unique_ptr<QSqlQuery> openResourceEventQuery;
     std::unique_ptr<QSqlQuery> closeResourceEventQuery;

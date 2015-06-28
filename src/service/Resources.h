@@ -78,12 +78,6 @@ Q_SIGNALS:
     void RegisteredResourceMimetype(const QString &uri, const QString &mimetype);
     void RegisteredResourceTitle(const QString &uri, const QString &title);
 
-public:
-    bool isFeatureOperational(const QStringList &feature) const Q_DECL_OVERRIDE;
-    bool isFeatureEnabled(const QStringList &feature) const Q_DECL_OVERRIDE;
-    void setFeatureEnabled(const QStringList &feature, bool value) Q_DECL_OVERRIDE;
-    QStringList listFeatures(const QStringList &feature) const Q_DECL_OVERRIDE;
-
 private:
     D_PTR;
 };

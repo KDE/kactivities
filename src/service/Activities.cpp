@@ -506,30 +506,3 @@ int Activities::ActivityState(const QString &activity) const
     return d->activities.contains(activity) ? d->activities[activity] : Invalid;
 }
 
-bool Activities::isFeatureOperational(const QStringList &feature) const
-{
-    Q_UNUSED(feature);
-
-    return false;
-}
-
-bool Activities::isFeatureEnabled(const QStringList &feature) const
-{
-    Q_UNUSED(feature);
-
-    return false;
-}
-
-void Activities::setFeatureEnabled(const QStringList &feature, bool value)
-{
-    Q_UNUSED(feature);
-    Q_UNUSED(value);
-}
-
-QStringList Activities::listFeatures(const QStringList &feature) const
-{
-    Q_UNUSED(feature);
-
-    return QStringList();
-}
-

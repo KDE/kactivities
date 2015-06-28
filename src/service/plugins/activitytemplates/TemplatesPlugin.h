@@ -35,10 +35,10 @@ public:
 
     bool init(QHash<QString, QObject *> &modules) Q_DECL_OVERRIDE;
 
-    QDBusVariant value(const QStringList &property) const Q_DECL_OVERRIDE;
+    QDBusVariant featureValue(const QStringList &property) const Q_DECL_OVERRIDE;
 
-    virtual void setValue(const QStringList &property,
-                          const QDBusVariant &value) Q_DECL_OVERRIDE;
+    virtual void setFeatureValue(const QStringList &property,
+                                 const QDBusVariant &value) Q_DECL_OVERRIDE;
 
 private:
     inline QStringList activities() const;
