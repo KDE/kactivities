@@ -1,5 +1,7 @@
 # KActivities
 
+Core components for the KDE Activity concept
+
 ## Introduction
 
 When a user is interacting with a computer, there are three main areas of
