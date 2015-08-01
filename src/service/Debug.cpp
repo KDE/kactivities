@@ -19,9 +19,13 @@
 
 #include "Debug.h"
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 4, 0)
+// logging category for this framework, default: log stuff >= warning
+Q_LOGGING_CATEGORY(KAMD_LOG_ACTIVITIES,  "org.kde.kactivities.activities", QtWarningMsg)
+Q_LOGGING_CATEGORY(KAMD_LOG_RESOURCES,   "org.kde.kactivities.resources", QtWarningMsg)
+Q_LOGGING_CATEGORY(KAMD_LOG_APPLICATION, "org.kde.kactivities.application", QtWarningMsg)
+#else
 Q_LOGGING_CATEGORY(KAMD_LOG_ACTIVITIES,  "org.kde.kactivities.activities")
 Q_LOGGING_CATEGORY(KAMD_LOG_RESOURCES,   "org.kde.kactivities.resources")
 Q_LOGGING_CATEGORY(KAMD_LOG_APPLICATION, "org.kde.kactivities.application")
-
-
-
+#endif
