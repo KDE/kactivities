@@ -20,7 +20,7 @@ else()
                     "**********************************************************")
 endif()
 
-set (REQUIRED_QT_VERSION 5.2.0)
+set (REQUIRED_QT_VERSION 5.3.0)
 
 # We don't build in-source
 if ("${CMAKE_SOURCE_DIR}" STREQUAL "${CMAKE_BINARY_DIR}")
