@@ -48,7 +48,7 @@ include (ECMGenerateHeaders)
 
 # Qt
 set (CMAKE_AUTOMOC ON)
-find_package (Qt5 REQUIRED NO_MODULE COMPONENTS Core DBus)
+find_package (Qt5 ${REQUIRED_QT_VERSION} CONFIG REQUIRED COMPONENTS Core DBus)
 
 # KDE Frameworks
 set(KF5_VERSION "5.13.0") # handled by release scripts
