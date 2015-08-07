@@ -8,8 +8,21 @@ Rectangle {
         model: kamdmodel
 
         delegate: Item {
-            height: 100
+            height: 100-32
             width: 500
+
+            Text {
+                text: model.index
+                color: '#ffffff'
+
+                width: 24
+
+                anchors {
+                    left: parent.left
+                    top: parent.top
+                    bottom: parent.bottom
+                }
+            }
 
             Rectangle {
                 id: titleRect
@@ -18,6 +31,7 @@ Rectangle {
                 color: '#202020'
                 anchors {
                     left: parent.left
+                    leftMargin: 24
                     right: parent.right
                     top: parent.top
                 }
@@ -45,12 +59,13 @@ Rectangle {
             Rectangle {
                 anchors {
                     left: parent.left
+                    leftMargin: 24
                     right: parent.right
                     top: titleRect.bottom
                 }
 
                 color: '#303030'
-                height: 64
+                height: 32
 
                 Text {
                     anchors {
@@ -58,7 +73,7 @@ Rectangle {
                         margins: 6
                     }
                     color: 'white'
-                    text: model.resource + "\n" + model.modified + "\n" + model.created
+                    text: model.modified + "\t" + model.created + "\t" + model.resource
                 }
 
             }
