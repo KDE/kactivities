@@ -25,6 +25,7 @@
 #include <controller.h>
 #include <memory>
 
+#include <set>
 #include <boost/container/flat_set.hpp>
 #include <QScopedPointer>
 
