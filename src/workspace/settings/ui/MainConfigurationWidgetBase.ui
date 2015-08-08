@@ -16,6 +16,16 @@
      <property name="currentIndex">
       <number>0</number>
      </property>
+     <widget class="QWidget" name="tab">
+      <attribute name="title">
+       <string>Activities</string>
+      </attribute>
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <item>
+        <widget class="QWidget" name="viewActivitiesContainer" native="true"/>
+       </item>
+      </layout>
+     </widget>
      <widget class="QWidget" name="tabGeneral">
       <attribute name="title">
        <string>Switching</string>

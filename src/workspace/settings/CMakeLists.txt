@@ -46,6 +46,8 @@ install (
    )
 
 install (
-   FILES qml/BlacklistApplicationView.qml
+   FILES
+      qml/BlacklistApplicationView.qml
+      qml/ActivitiesView.qml
    DESTINATION ${KDE_INSTALL_DATADIR_KF5}/kactivitymanagerd/workspace/settings
    )

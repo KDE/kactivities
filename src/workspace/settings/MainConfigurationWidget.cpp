@@ -55,7 +55,8 @@ public:
     BlacklistedApplicationsModel *blacklistedApplicationsModel;
 
     QObject *viewBlacklistedApplicationsRoot;
-    QQuickView *viewBlacklistedApplications;
+    std::unique_ptr<QQuickView> viewBlacklistedApplications;
+    std::unique_ptr<QQuickView> viewActivities;
     KActionCollection *mainActionCollection;
     KActionCollection *activitiesActionCollection;
     KActivities::Consumer activities;
@@ -75,6 +76,19 @@ public:
         , mainActionCollection(Q_NULLPTR)
         , activitiesActionCollection(Q_NULLPTR)
     {
+    }
+
+    inline std::unique_ptr<QQuickView> createView(QWidget *parent) const
+    {
+        auto view = new QQuickView();
+        view->setColor(QGuiApplication::palette().window().color());
+
+        auto container = QWidget::createWindowContainer(view, parent);
+        container->setFocusPolicy(Qt::TabFocus);
+
+        parent->layout()->addWidget(container);
+
+        return std::unique_ptr<QQuickView>(view);
     }
 };
 
@@ -156,25 +170,26 @@ MainConfigurationWidget::MainConfigurationWidget(QWidget *parent, QVariantList a
 
     d->blacklistedApplicationsModel = new BlacklistedApplicationsModel(this);
 
-    auto layout = new QGridLayout(d->viewBlacklistedApplicationsContainer);
+    new QGridLayout(d->viewBlacklistedApplicationsContainer);
 
-    d->viewBlacklistedApplications = new QQuickView();
-    d->viewBlacklistedApplications->setColor(
-        QGuiApplication::palette().window().color());
-
-    QWidget *container = QWidget::createWindowContainer(
-        d->viewBlacklistedApplications,
-        d->viewBlacklistedApplicationsContainer);
-
-
-    container->setFocusPolicy(Qt::TabFocus);
+    d->viewBlacklistedApplications
+        = d->createView(d->viewBlacklistedApplicationsContainer);
     d->viewBlacklistedApplications->rootContext()->setContextProperty(
         "applicationModel", d->blacklistedApplicationsModel);
     d->viewBlacklistedApplications->setSource(
         QStringLiteral(KAMD_INSTALL_PREFIX "/" KAMD_DATA_DIR)
         + "/workspace/settings/BlacklistApplicationView.qml");
 
-    layout->addWidget(container);
+    // layout->addWidget(container);
+
+    // Activities tab
+
+    new QVBoxLayout(d->viewActivitiesContainer);
+
+    d->viewActivities = d->createView(d->viewActivitiesContainer);
+    d->viewActivities->setSource(
+        QStringLiteral(KAMD_INSTALL_PREFIX "/" KAMD_DATA_DIR)
+        + "/workspace/settings/ActivitiesView.qml");
 
     // React to changes
 
