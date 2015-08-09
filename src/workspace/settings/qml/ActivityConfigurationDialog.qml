@@ -39,32 +39,93 @@ Item {
         S.dialogClosed(root);
     }
 
+    property string activityId: ""
+
+    property alias activityName: activityNameText.text
+    property alias activityIconSource: iconButton.iconName
+    property alias activityPrivate: checkPrivate.checked
+    property alias activityShortcut: buttonKeyShorcut.keySequence
+
     signal accepted()
     signal canceled()
-
-    property string activityId: ""
 
     //////////////////////////////////////////////////////////////////////////
 
     visible: false
 
-    height: content.height + units.smallSpacing * 2
+    height: content.height
+
+    QtControls.Button {
+        id: iconButton
+
+        width:  height
+        height: units.iconSizes.medium
+
+        anchors {
+            left:   parent.left
+            top:    parent.top
+
+            topMargin: units.smallSpacing
+            bottomMargin: units.smallSpacing
+        }
+    }
 
     Column {
         id: content
 
         spacing: units.smallSpacing
 
+        width: Math.max(checkPrivate.width, panelShortcut.width)
+
         anchors {
             top: parent.top
             right: parent.right
-            left: parent.left
-            topMargin: units.smallSpacing
-            leftMargin: units.iconSizes.medium + units.largeSpacing
+            left: iconButton.right
+            leftMargin: units.largeSpacing
         }
 
-        QtControls.Label {
-            text: "Are you sure you want to delete this activity?"
+        Item {
+            height: units.iconSizes.medium + 2 * units.smallSpacing
+            width: panelShortcut.width
+
+            anchors {
+                left:  parent.left
+            }
+
+            QtControls.TextField {
+                id: activityNameText
+
+                anchors {
+                    left: parent.left
+                    right: parent.right
+                    verticalCenter: parent.verticalCenter
+                }
+            }
+        }
+
+        QtControls.CheckBox {
+            id: checkPrivate
+
+            text: "Private - do not track usage for this activity"
+        }
+
+        Row {
+            id: panelShortcut
+
+            spacing: units.smallSpacing
+
+            QtControls.Label {
+                anchors.verticalCenter: parent.verticalCenter
+                text: "Shortcut for switching to this activity: "
+            }
+
+            KQuickControls.KeySequenceItem {
+                id: buttonKeyShorcut
+                // keySequence: plasmoid.globalShortcut
+                onKeySequenceChanged: {
+                    root.configurationChanged();
+                }
+            }
         }
 
         Row {
@@ -73,8 +134,8 @@ Item {
             QtControls.Button {
                 id: buttonApply
 
-                text: i18nd("plasma_shell_org.kde.plasma.desktop", "Delete")
-                iconName: "edit-delete" // "trash-empty"
+                text: i18nd("plasma_shell_org.kde.plasma.desktop", "Apply")
+                iconName: "dialog-ok-apply"
 
                 onClicked: {
                     root.accepted();

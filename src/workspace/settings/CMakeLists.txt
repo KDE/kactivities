@@ -50,6 +50,7 @@ install (
       qml/BlacklistApplicationView.qml
       qml/ActivitiesView.qml
       qml/ActivityCreationDialog.qml
+      qml/ActivityConfigurationDialog.qml
       qml/ActivityDeletionDialog.qml
       qml/static.js
    DESTINATION ${KDE_INSTALL_DATADIR_KF5}/kactivitymanagerd/workspace/settings

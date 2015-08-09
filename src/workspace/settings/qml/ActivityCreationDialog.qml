@@ -26,7 +26,7 @@ import org.kde.kquickcontrols 2.0 as KQuickControls
 
 import "static.js" as S
 
-Item {
+QtControls.GroupBox {
     id: root
 
     function open() {
@@ -38,6 +38,8 @@ Item {
         visible = false;
         S.dialogClosed(root);
     }
+
+    property string activityId: ""
 
     property alias activityName: activityNameText.text
     property alias activityIconSource: iconButton.iconName
@@ -51,105 +53,112 @@ Item {
 
     visible: false
 
-    height: content.height
+    Item {
+        id: rootItem
 
-    QtControls.Button {
-        id: iconButton
+        height: content.height
+        width: content.width + iconButton.width + units.largeSpacing
 
-        iconName: model.iconSource
+        QtControls.Button {
+            id: iconButton
 
-        width:  height
-        height: units.iconSizes.medium
+            width:  height
+            height: units.iconSizes.medium
 
-        anchors {
-            left:   parent.left
-            top:    parent.top
-
-            topMargin: units.smallSpacing
-            bottomMargin: units.smallSpacing
-        }
-    }
-
-    Column {
-        id: content
-
-        spacing: units.smallSpacing
-
-        anchors {
-            top: parent.top
-            right: parent.right
-            left: iconButton.right
-            leftMargin: units.largeSpacing
-        }
-
-        Item {
-            height: header.height + 2 * units.smallSpacing
+            iconName: "preferences-activities"
 
             anchors {
-                left:  parent.left
+                left:   parent.left
+                top:    parent.top
+
+                topMargin: units.smallSpacing
+                bottomMargin: units.smallSpacing
+            }
+        }
+
+        Column {
+            id: content
+
+            spacing: units.smallSpacing
+
+            width: Math.max(checkPrivate.width, panelShortcut.width)
+
+            anchors {
+                top: parent.top
                 right: parent.right
+                left: iconButton.right
+                leftMargin: units.largeSpacing
             }
 
-            QtControls.TextField {
-                id: activityNameText
-
-                text: model.name
+            Item {
+                height: units.iconSizes.medium + 2 * units.smallSpacing
+                width: panelShortcut.width
 
                 anchors {
-                    left: parent.left
-                    right: parent.right
-                    verticalCenter: parent.verticalCenter
+                    left:  parent.left
                 }
-            }
-        }
 
-        QtControls.CheckBox {
-            id: checkPrivate
+                QtControls.TextField {
+                    id: activityNameText
 
-            text: "Private - do not track usage for this activity"
-        }
-
-        Row {
-            spacing: units.smallSpacing
-
-            QtControls.Label {
-                anchors.verticalCenter: parent.verticalCenter
-                text: "Shortcut for switching to this activity: "
-            }
-
-            KQuickControls.KeySequenceItem {
-                id: buttonKeyShorcut
-                keySequence: plasmoid.globalShortcut
-                onKeySequenceChanged: {
-                    root.configurationChanged();
-                }
-            }
-        }
-
-        Row {
-            spacing: units.smallSpacing
-
-            QtControls.Button {
-                id: buttonApply
-
-                text: i18nd("plasma_shell_org.kde.plasma.desktop", "Apply")
-                iconName: "dialog-ok-apply"
-
-                onClicked: {
-                    root.accepted();
-                    root.close();
+                    anchors {
+                        left: parent.left
+                        right: parent.right
+                        verticalCenter: parent.verticalCenter
+                    }
                 }
             }
 
-            QtControls.Button {
-                id: buttonCancel
+            QtControls.CheckBox {
+                id: checkPrivate
 
-                text: i18nd("plasma_shell_org.kde.plasma.desktop", "Cancel")
-                iconName: "dialog-cancel"
+                text: "Private - do not track usage for this activity"
+            }
 
-                onClicked: {
-                    root.canceled();
-                    root.close();
+            Row {
+                id: panelShortcut
+
+                spacing: units.smallSpacing
+
+                QtControls.Label {
+                    anchors.verticalCenter: parent.verticalCenter
+                    text: "Shortcut for switching to this activity: "
+                }
+
+                KQuickControls.KeySequenceItem {
+                    id: buttonKeyShorcut
+                    // keySequence: plasmoid.globalShortcut
+                    onKeySequenceChanged: {
+                        root.configurationChanged();
+                    }
+                }
+            }
+
+            Row {
+                spacing: units.smallSpacing
+
+                QtControls.Button {
+                    id: buttonApply
+
+                    text: i18nd("plasma_shell_org.kde.plasma.desktop", "Create")
+                    iconName: "list-add"
+
+                    onClicked: {
+                        root.accepted();
+                        root.close();
+                    }
+                }
+
+                QtControls.Button {
+                    id: buttonCancel
+
+                    text: i18nd("plasma_shell_org.kde.plasma.desktop", "Cancel")
+                    iconName: "dialog-cancel"
+
+                    onClicked: {
+                        root.canceled();
+                        root.close();
+                    }
                 }
             }
         }

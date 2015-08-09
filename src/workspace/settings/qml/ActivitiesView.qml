@@ -25,6 +25,8 @@ import QtQuick.Controls 1.0 as QtControls
 import org.kde.activities 0.1 as Activities
 import org.kde.plasma.core 2.0 as PlasmaCore
 
+import "static.js" as S
+
 Item {
     id: root
 
@@ -40,6 +42,27 @@ Item {
             top: parent.top
             left: parent.left
         }
+
+        onClicked: S.openActivityCreationDialog(
+                        dialogCreateActivityLoader,
+                        {
+                            kactivities: kactivities,
+                            readyStatus: Loader.Ready
+                        }
+                    )
+    }
+
+    Loader {
+        id: dialogCreateActivityLoader
+
+        property bool itemVisible: status == Loader.Ready && item.visible
+
+        z: 1
+
+        anchors {
+            top: buttonCreateActivity.bottom
+            left: buttonCreateActivity.left
+        }
     }
 
     QtControls.ScrollView {
@@ -50,6 +73,8 @@ Item {
             right: parent.right
             bottom: parent.bottom
         }
+
+        enabled: !dialogCreateActivityLoader.itemVisible
 
         ListView {
             width: parent.width
@@ -70,8 +95,8 @@ Item {
 
                 Behavior on height { PropertyAnimation { duration: units.shortDuration } }
                 height: icon.height + units.smallSpacing * 2 +
-                            (dialogConfigure.visible ? dialogConfigure.height : 0) +
-                            (dialogDelete.visible ? dialogDelete.height : 0)
+                            (dialogConfigureLoader.itemVisible ? dialogConfigureLoader.height : 0) +
+                            (dialogDeleteLoader.itemVisible ? dialogDeleteLoader.height : 0)
 
                 color: (model.index % 2 == 0) ? palette.base : palette.alternateBase
 
@@ -130,9 +155,17 @@ Item {
 
                             iconName: "configure"
 
-                            onClicked: {
-                                dialogConfigure.open();
-                            }
+                            onClicked: S.openActivityConfigurationDialog(
+                                            dialogConfigureLoader,
+                                            model.id,
+                                            model.name,
+                                            model.iconSource,
+                                            {
+                                                kactivities: kactivities,
+                                                readyStatus: Loader.Ready,
+                                                i18nd:       i18nd
+                                            }
+                                        );
                         }
 
                         QtControls.Button {
@@ -140,52 +173,46 @@ Item {
 
                             iconName: "edit-delete"
 
-                            onClicked: {
-                                dialogDelete.open();
-                            }
+                            onClicked: S.openActivityDeletionDialog(
+                                            dialogDeleteLoader,
+                                            model.id,
+                                            {
+                                                kactivities: kactivities,
+                                                readyStatus: Loader.Ready,
+                                                i18nd:       i18nd
+                                            }
+                                        );
                         }
+
+                        visible: !dialogDeleteLoader.itemVisible
                     }
 
-                    visible: !dialogConfigure.visible
+                    visible: !dialogConfigureLoader.itemVisible
                 }
 
-                ActivityCreationDialog {
-                    id: dialogConfigure
+                Loader {
+                    id: dialogConfigureLoader
+
+                    property bool itemVisible: status == Loader.Ready && item.visible
 
                     anchors {
                         left: parent.left
-                        right: parent.right
                         top: parent.top
                     }
                 }
 
-                ActivityDeletionDialog {
-                    id: dialogDelete
+                Loader {
+                    id: dialogDeleteLoader
+
+                    property bool itemVisible: status == Loader.Ready && item.visible
 
                     anchors {
                         left: parent.left
-                        right: parent.right
                         top: header.bottom
                     }
                 }
             }
             ///////////////////////////////////////////////////////////////////
         }
-    }
-
-    function configureActivity(id) {
-        console.log(id);
-
-        // dialogConfigureActivity.visualParent = item;
-        dialogConfigureActivity.open(0);
-    }
-
-    function removeActivity(id) {
-        console.log(id);
-    }
-
-    ActivityCreationDialog {
-        id: dialogConfigureActivity
-
     }
 }
