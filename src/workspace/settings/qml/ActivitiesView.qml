@@ -24,16 +24,17 @@ import QtQuick.Controls 1.0 as QtControls
 
 import org.kde.activities 0.1 as Activities
 import org.kde.plasma.core 2.0 as PlasmaCore
-import org.kde.plasma.components 2.0 as PlasmaComponents
 
 Item {
+    id: root
+
     anchors.fill: parent
 
-    PlasmaComponents.Button {
+    QtControls.Button {
         id: buttonCreateActivity
 
         text: i18nd("plasma_shell_org.kde.plasma.desktop", "Create activity...")
-        iconSource: "list-add"
+        iconName: "list-add"
 
         anchors {
             top: parent.top
@@ -63,64 +64,128 @@ Item {
                 colorGroup: SystemPalette.Active
             }
 
+            ///////////////////////////////////////////////////////////////////
             delegate: Rectangle {
                 width: parent.width
-                height: icon.height + units.smallSpacing * 2
+
+                Behavior on height { PropertyAnimation { duration: units.shortDuration } }
+                height: icon.height + units.smallSpacing * 2 +
+                            (dialogConfigure.visible ? dialogConfigure.height : 0) +
+                            (dialogDelete.visible ? dialogDelete.height : 0)
 
                 color: (model.index % 2 == 0) ? palette.base : palette.alternateBase
 
-                QIconItem {
-                    id: icon
-                    icon: model.icon
+                Item {
+                    id: header
 
-                    width: units.iconSizes.medium
                     height: units.iconSizes.medium
 
                     anchors {
-                        left:   parent.left
-                        top:    parent.top
-                        bottom: parent.bottom
-
-                        topMargin: units.smallSpacing
-                        bottomMargin: units.smallSpacing
-                    }
-                }
-
-                QtControls.Label {
-                    text: model.name
-
-                    anchors {
-                        left: icon.right
-                        leftMargin: 8
-                        verticalCenter: icon.verticalCenter
-                        right: buttonConfigure.left
-                    }
-                }
-
-                PlasmaComponents.Button {
-                    id: buttonDelete
-
-                    iconSource: "edit-delete"
-
-                    anchors {
+                        left: parent.left
                         right: parent.right
-                        rightMargin: units.smallSpacing
-                        verticalCenter: icon.verticalCenter
+                        top: parent.top
+                    }
+
+                    QIconItem {
+                        id: icon
+                        icon: model.icon
+
+                        width:  height
+                        height: parent.height
+
+                        anchors {
+                            left:   parent.left
+                            top:    parent.top
+
+                            topMargin: units.smallSpacing
+                            bottomMargin: units.smallSpacing
+                        }
+                    }
+
+                    QtControls.Label {
+                        text: model.name
+
+                        anchors {
+                            left: icon.right
+                            right: buttons.left
+                            leftMargin: units.largeSpacing
+                            verticalCenter: icon.verticalCenter
+                        }
+                    }
+
+                    Row {
+                        id: buttons
+
+                        spacing: units.smallSpacing
+
+                        anchors {
+                            right: parent.right
+
+                            rightMargin: units.smallSpacing
+                            verticalCenter: parent.verticalCenter
+                        }
+
+                        QtControls.Button {
+                            id: buttonConfigure
+
+                            iconName: "configure"
+
+                            onClicked: {
+                                dialogConfigure.open();
+                            }
+                        }
+
+                        QtControls.Button {
+                            id: buttonDelete
+
+                            iconName: "edit-delete"
+
+                            onClicked: {
+                                dialogDelete.open();
+                            }
+                        }
+                    }
+
+                    visible: !dialogConfigure.visible
+                }
+
+                ActivityCreationDialog {
+                    id: dialogConfigure
+
+                    anchors {
+                        left: parent.left
+                        right: parent.right
+                        top: parent.top
                     }
                 }
 
-                PlasmaComponents.Button {
-                    id: buttonConfigure
-
-                    iconSource: "configure"
+                ActivityDeletionDialog {
+                    id: dialogDelete
 
                     anchors {
-                        right: buttonDelete.left
-                        rightMargin: units.smallSpacing
-                        verticalCenter: icon.verticalCenter
+                        left: parent.left
+                        right: parent.right
+                        top: header.bottom
                     }
                 }
             }
+            ///////////////////////////////////////////////////////////////////
         }
+    }
+
+    function configureActivity(id) {
+        console.log(id);
+
+        // dialogConfigureActivity.visualParent = item;
+        dialogConfigureActivity.open(0);
+    }
+
+    function removeActivity(id) {
+        console.log(id);
+    }
+
+    ActivityCreationDialog {
+        id: dialogConfigureActivity
+
     }
 }
