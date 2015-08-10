@@ -50,6 +50,8 @@ Item {
                             readyStatus: Loader.Ready
                         }
                     )
+
+        enabled: !dialogCreateActivityLoader.itemVisible
     }
 
     Loader {

@@ -55,3 +55,12 @@ install (
       qml/static.js
    DESTINATION ${KDE_INSTALL_DATADIR_KF5}/kactivitymanagerd/workspace/settings
    )
+
+install (
+   FILES
+      qml/components/IconChooser.qml
+      qml/components/NameChooser.qml
+      qml/components/ShortcutChooser.qml
+      qml/components/DialogButtons.qml
+   DESTINATION ${KDE_INSTALL_DATADIR_KF5}/kactivitymanagerd/workspace/settings/components
+   )

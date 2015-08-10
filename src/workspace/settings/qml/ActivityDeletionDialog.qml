@@ -25,6 +25,7 @@ import org.kde.plasma.core 2.0 as PlasmaCore
 import org.kde.kquickcontrols 2.0 as KQuickControls
 
 import "static.js" as S
+import "./components" as Local
 
 Item {
     id: root
@@ -67,31 +68,18 @@ Item {
             text: "Are you sure you want to delete this activity?"
         }
 
-        Row {
-            spacing: units.smallSpacing
+        Local.DialogButtons {
+            acceptText: i18nd("plasma_shell_org.kde.plasma.desktop", "Delete")
+            acceptIcon: "edit-delete" // "trash-empty"
 
-            QtControls.Button {
-                id: buttonApply
-
-                text: i18nd("plasma_shell_org.kde.plasma.desktop", "Delete")
-                iconName: "edit-delete" // "trash-empty"
-
-                onClicked: {
-                    root.accepted();
-                    root.close();
-                }
+            onAccepted: {
+                root.accepted();
+                root.close();
             }
 
-            QtControls.Button {
-                id: buttonCancel
-
-                text: i18nd("plasma_shell_org.kde.plasma.desktop", "Cancel")
-                iconName: "dialog-cancel"
-
-                onClicked: {
-                    root.canceled();
-                    root.close();
-                }
+            onCanceled: {
+                root.canceled();
+                root.close();
             }
         }
     }

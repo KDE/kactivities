@@ -23,8 +23,10 @@ import QtQuick.Controls 1.0 as QtControls
 
 import org.kde.plasma.core 2.0 as PlasmaCore
 import org.kde.kquickcontrols 2.0 as KQuickControls
+import org.kde.kquickcontrolsaddons 2.0 as KQuickControls
 
 import "static.js" as S
+import "./components" as Local
 
 QtControls.GroupBox {
     id: root
@@ -41,10 +43,10 @@ QtControls.GroupBox {
 
     property string activityId: ""
 
-    property alias activityName: activityNameText.text
+    property alias activityName: activityName.text
     property alias activityIconSource: iconButton.iconName
     property alias activityPrivate: checkPrivate.checked
-    property alias activityShortcut: buttonKeyShorcut.keySequence
+    property alias activityShortcut: panelShortcut.keySequence
 
     signal accepted()
     signal canceled()
@@ -59,20 +61,14 @@ QtControls.GroupBox {
         height: content.height
         width: content.width + iconButton.width + units.largeSpacing
 
-        QtControls.Button {
+        Local.IconChooser {
             id: iconButton
-
-            width:  height
-            height: units.iconSizes.medium
-
-            iconName: "preferences-activities"
 
             anchors {
                 left:   parent.left
                 top:    parent.top
 
                 topMargin: units.smallSpacing
-                bottomMargin: units.smallSpacing
             }
         }
 
@@ -90,75 +86,38 @@ QtControls.GroupBox {
                 leftMargin: units.largeSpacing
             }
 
-            Item {
-                height: units.iconSizes.medium + 2 * units.smallSpacing
+            Local.NameChooser {
+                id: activityName
+
                 width: panelShortcut.width
 
                 anchors {
                     left:  parent.left
-                }
-
-                QtControls.TextField {
-                    id: activityNameText
-
-                    anchors {
-                        left: parent.left
-                        right: parent.right
-                        verticalCenter: parent.verticalCenter
-                    }
                 }
             }
 
             QtControls.CheckBox {
                 id: checkPrivate
 
-                text: "Private - do not track usage for this activity"
+                text: i18nd("plasma_shell_org.kde.plasma.desktop", "Private - do not track usage for this activity")
             }
 
-            Row {
+            Local.ShortcutChooser {
                 id: panelShortcut
-
-                spacing: units.smallSpacing
-
-                QtControls.Label {
-                    anchors.verticalCenter: parent.verticalCenter
-                    text: "Shortcut for switching to this activity: "
-                }
-
-                KQuickControls.KeySequenceItem {
-                    id: buttonKeyShorcut
-                    // keySequence: plasmoid.globalShortcut
-                    onKeySequenceChanged: {
-                        root.configurationChanged();
-                    }
-                }
             }
 
-            Row {
-                spacing: units.smallSpacing
+            Local.DialogButtons {
+                acceptText: i18nd("plasma_shell_org.kde.plasma.desktop", "Create")
+                acceptIcon: "list-add"
 
-                QtControls.Button {
-                    id: buttonApply
-
-                    text: i18nd("plasma_shell_org.kde.plasma.desktop", "Create")
-                    iconName: "list-add"
-
-                    onClicked: {
-                        root.accepted();
-                        root.close();
-                    }
+                onAccepted: {
+                    root.accepted();
+                    root.close();
                 }
 
-                QtControls.Button {
-                    id: buttonCancel
-
-                    text: i18nd("plasma_shell_org.kde.plasma.desktop", "Cancel")
-                    iconName: "dialog-cancel"
-
-                    onClicked: {
-                        root.canceled();
-                        root.close();
-                    }
+                onCanceled: {
+                    root.canceled();
+                    root.close();
                 }
             }
         }

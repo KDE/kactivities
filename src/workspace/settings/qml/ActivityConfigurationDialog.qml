@@ -25,6 +25,7 @@ import org.kde.plasma.core 2.0 as PlasmaCore
 import org.kde.kquickcontrols 2.0 as KQuickControls
 
 import "static.js" as S
+import "./components" as Local
 
 Item {
     id: root
@@ -41,10 +42,10 @@ Item {
 
     property string activityId: ""
 
-    property alias activityName: activityNameText.text
+    property alias activityName: activityName.text
     property alias activityIconSource: iconButton.iconName
     property alias activityPrivate: checkPrivate.checked
-    property alias activityShortcut: buttonKeyShorcut.keySequence
+    property alias activityShortcut: panelShortcut.keySequence
 
     signal accepted()
     signal canceled()
@@ -55,18 +56,14 @@ Item {
 
     height: content.height
 
-    QtControls.Button {
+    Local.IconChooser {
         id: iconButton
-
-        width:  height
-        height: units.iconSizes.medium
 
         anchors {
             left:   parent.left
             top:    parent.top
 
             topMargin: units.smallSpacing
-            bottomMargin: units.smallSpacing
         }
     }
 
@@ -84,22 +81,13 @@ Item {
             leftMargin: units.largeSpacing
         }
 
-        Item {
-            height: units.iconSizes.medium + 2 * units.smallSpacing
+        Local.NameChooser {
+            id: activityName
+
             width: panelShortcut.width
 
             anchors {
                 left:  parent.left
-            }
-
-            QtControls.TextField {
-                id: activityNameText
-
-                anchors {
-                    left: parent.left
-                    right: parent.right
-                    verticalCenter: parent.verticalCenter
-                }
             }
         }
 
@@ -109,50 +97,22 @@ Item {
             text: "Private - do not track usage for this activity"
         }
 
-        Row {
+        Local.ShortcutChooser {
             id: panelShortcut
-
-            spacing: units.smallSpacing
-
-            QtControls.Label {
-                anchors.verticalCenter: parent.verticalCenter
-                text: "Shortcut for switching to this activity: "
-            }
-
-            KQuickControls.KeySequenceItem {
-                id: buttonKeyShorcut
-                // keySequence: plasmoid.globalShortcut
-                onKeySequenceChanged: {
-                    root.configurationChanged();
-                }
-            }
         }
 
-        Row {
-            spacing: units.smallSpacing
+        Local.DialogButtons {
+            acceptText: i18nd("plasma_shell_org.kde.plasma.desktop", "Apply")
+            acceptIcon: "dialog-ok-apply"
 
-            QtControls.Button {
-                id: buttonApply
-
-                text: i18nd("plasma_shell_org.kde.plasma.desktop", "Apply")
-                iconName: "dialog-ok-apply"
-
-                onClicked: {
-                    root.accepted();
-                    root.close();
-                }
+            onAccepted: {
+                root.accepted();
+                root.close();
             }
 
-            QtControls.Button {
-                id: buttonCancel
-
-                text: i18nd("plasma_shell_org.kde.plasma.desktop", "Cancel")
-                iconName: "dialog-cancel"
-
-                onClicked: {
-                    root.canceled();
-                    root.close();
-                }
+            onCanceled: {
+                root.canceled();
+                root.close();
             }
         }
     }
