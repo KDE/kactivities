@@ -99,7 +99,7 @@ QtControls.GroupBox {
             QtControls.CheckBox {
                 id: checkPrivate
 
-                text: i18nd("plasma_shell_org.kde.plasma.desktop", "Private - do not track usage for this activity")
+                text: i18n("Private - do not track usage for this activity")
             }
 
             Local.ShortcutChooser {
@@ -107,7 +107,7 @@ QtControls.GroupBox {
             }
 
             Local.DialogButtons {
-                acceptText: i18nd("plasma_shell_org.kde.plasma.desktop", "Create")
+                acceptText: i18n("Create")
                 acceptIcon: "list-add"
 
                 onAccepted: {

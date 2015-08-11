@@ -38,7 +38,7 @@ Row {
     QtControls.Button {
         id: buttonAccept
 
-        text: i18nd("plasma_shell_org.kde.plasma.desktop", "Apply")
+        text: i18n("Apply")
         iconName: "list-add"
 
         onClicked: root.accepted()
@@ -47,7 +47,7 @@ Row {
     QtControls.Button {
         id: buttonCancel
 
-        text: i18nd("plasma_shell_org.kde.plasma.desktop", "Cancel")
+        text: i18n("Cancel")
         iconName: "dialog-cancel"
 
         onClicked: root.canceled()

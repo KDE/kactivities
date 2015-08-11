@@ -30,7 +30,7 @@ Row {
 
     QtControls.Label {
         anchors.verticalCenter: parent.verticalCenter
-        text: i18nd("plasma_shell_org.kde.plasma.desktop", "Shortcut for switching to this activity:")
+        text: i18n("Shortcut for switching to this activity:")
     }
 
     KQuickControls.KeySequenceItem {

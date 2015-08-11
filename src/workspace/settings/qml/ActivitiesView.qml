@@ -35,7 +35,7 @@ Item {
     QtControls.Button {
         id: buttonCreateActivity
 
-        text: i18nd("plasma_shell_org.kde.plasma.desktop", "Create activity...")
+        text: i18n("Create activity...")
         iconName: "list-add"
 
         anchors {

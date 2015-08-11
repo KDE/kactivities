@@ -69,7 +69,7 @@ Item {
         }
 
         Local.DialogButtons {
-            acceptText: i18nd("plasma_shell_org.kde.plasma.desktop", "Delete")
+            acceptText: i18n("Delete")
             acceptIcon: "edit-delete" // "trash-empty"
 
             onAccepted: {

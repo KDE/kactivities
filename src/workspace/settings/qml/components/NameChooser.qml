@@ -29,7 +29,7 @@ Item {
     QtControls.TextField {
         id: activityNameText
 
-        placeholderText: i18nd("plasma_shell_org.kde.plasma.desktop", "Activity name")
+        placeholderText: i18n("Activity name")
 
         anchors {
             left: parent.left

@@ -102,7 +102,7 @@ Item {
         }
 
         Local.DialogButtons {
-            acceptText: i18nd("plasma_shell_org.kde.plasma.desktop", "Apply")
+            acceptText: i18n("Apply")
             acceptIcon: "dialog-ok-apply"
 
             onAccepted: {
