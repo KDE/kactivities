@@ -47,6 +47,7 @@ Item {
                         dialogCreateActivityLoader,
                         {
                             kactivities: kactivities,
+                            kactivitiesExtras: kactivitiesExtras,
                             readyStatus: Loader.Ready
                         }
                     )
@@ -164,6 +165,7 @@ Item {
                                             model.iconSource,
                                             {
                                                 kactivities: kactivities,
+                                                kactivitiesExtras: kactivitiesExtras,
                                                 readyStatus: Loader.Ready,
                                                 i18nd:       i18nd
                                             }

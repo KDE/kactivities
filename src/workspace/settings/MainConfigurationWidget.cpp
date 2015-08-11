@@ -39,6 +39,7 @@
 
 #include "ui_MainConfigurationWidgetBase.h"
 #include "BlacklistedApplicationsModel.h"
+#include "ExtraActivitiesInterface.h"
 #include "definitions.h"
 
 #include <utils/d_ptr_implementation.h>
@@ -53,6 +54,7 @@ public:
     KSharedConfig::Ptr mainConfig;
     KSharedConfig::Ptr pluginConfig;
     BlacklistedApplicationsModel *blacklistedApplicationsModel;
+    ExtraActivitiesInterface *extraActivitiesInterface;
 
     QObject *viewBlacklistedApplicationsRoot;
     std::unique_ptr<QQuickView> viewBlacklistedApplications;
@@ -186,7 +188,11 @@ MainConfigurationWidget::MainConfigurationWidget(QWidget *parent, QVariantList a
 
     new QVBoxLayout(d->viewActivitiesContainer);
 
+    d->extraActivitiesInterface = new ExtraActivitiesInterface(this);
+
     d->viewActivities = d->createView(d->viewActivitiesContainer);
+    d->viewActivities->rootContext()->setContextProperty(
+        "kactivitiesExtras", d->extraActivitiesInterface);
     d->viewActivities->setSource(
         QStringLiteral(KAMD_INSTALL_PREFIX "/" KAMD_DATA_DIR)
         + "/workspace/settings/ActivitiesView.qml");

@@ -62,6 +62,10 @@ function openActivityConfigurationDialog(
         item.activityName = activityName;
         item.activityIconSource = activityIcon;
 
+        env.kactivitiesExtras.getIsPrivate(activityId, function (isPrivate) {
+            item.activityIsPrivate = isPrivate;
+        });
+
         item.open();
     };
 
@@ -69,8 +73,6 @@ function openActivityConfigurationDialog(
 
         dialogLoader.onLoaded.connect(function() {
             var item = dialogLoader.item;
-
-            // item.acceptButtonText = env.i18nd("plasma_shell_org.kde.plasma.desktop", "Apply");
 
             item.activityId = activityId;
 
@@ -81,6 +83,9 @@ function openActivityConfigurationDialog(
                     function () {});
                 env.kactivities.setActivityIcon(id,
                     item.activityIconSource,
+                    function () {});
+                env.kactivitiesExtras.setIsPrivate(id,
+                    item.activityIsPrivate,
                     function () {});
             });
 
@@ -94,6 +99,46 @@ function openActivityConfigurationDialog(
         open(dialogLoader.item);
 
     }
+}
+
+function openActivityCreationDialog(
+        dialogLoader,    // loader component that will contain the dialog
+        env              // QML environment stuff that is invisible here
+                         //   - kactivities - interface to KActivities
+                         //   - readyStatus - Loader.Ready value
+    )
+{
+    var open = function (item) {
+        item.visible = true;
+        item.opacity = 1;
+
+        item.open(dialogLoader.height / 2);
+    };
+
+    if (dialogLoader.status != env.readyStatus) {
+
+        dialogLoader.onLoaded.connect(function() {
+            var item = dialogLoader.item;
+
+            dialogLoader.item.accepted.connect(function() {
+                env.kactivities.addActivity(item.activityName, function (id) {
+                    env.kactivities.setActivityIcon(id,
+                        dialogLoader.item.activityIconSource, function() {});
+                    env.kactivitiesExtras.setIsPrivate(id,
+                        item.activityIsPrivate, function () {});
+                });
+            });
+
+            open(item);
+        });
+
+        dialogLoader.source = Qt.resolvedUrl("ActivityCreationDialog.qml");
+
+    } else {
+        open(dialogLoader.item);
+
+    }
+
 }
 
 function openActivityDeletionDialog(
@@ -125,43 +170,6 @@ function openActivityDeletionDialog(
         });
 
         dialogLoader.source = Qt.resolvedUrl("ActivityDeletionDialog.qml");
-
-    } else {
-        open(dialogLoader.item);
-
-    }
-
-}
-
-function openActivityCreationDialog(
-        dialogLoader,    // loader component that will contain the dialog
-        env              // QML environment stuff that is invisible here
-                         //   - kactivities - interface to KActivities
-                         //   - readyStatus - Loader.Ready value
-    )
-{
-    var open = function (item) {
-        item.visible = true;
-        item.opacity = 1;
-
-        item.open(dialogLoader.height / 2);
-    };
-
-    if (dialogLoader.status != env.readyStatus) {
-
-        dialogLoader.onLoaded.connect(function() {
-            var item = dialogLoader.item;
-
-            dialogLoader.item.accepted.connect(function() {
-                env.kactivities.addActivity(item.activityName, function (id) {
-                    env.kactivities.setActivityIcon(id, dialogLoader.item.activityIconSource, function() {});
-                });
-            });
-
-            open(item);
-        });
-
-        dialogLoader.source = Qt.resolvedUrl("ActivityCreationDialog.qml");
 
     } else {
         open(dialogLoader.item);

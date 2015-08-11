@@ -11,11 +11,20 @@ set (KAMD_KCM_SRCS
    kcm_activities.cpp
    MainConfigurationWidget.cpp
    BlacklistedApplicationsModel.cpp
+   ExtraActivitiesInterface.cpp
+   ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/src/utils/dbusfuture_p.cpp
    )
 
 ki18n_wrap_ui (
    KAMD_KCM_SRCS
    ui/MainConfigurationWidgetBase.ui
+   )
+
+qt5_add_dbus_interface (
+   KAMD_KCM_SRCS
+
+   ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.Features.xml
+   features_interface
    )
 
 add_library (kcm_activities MODULE ${KAMD_KCM_SRCS})

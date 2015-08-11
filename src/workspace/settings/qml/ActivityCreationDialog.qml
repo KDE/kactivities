@@ -45,7 +45,7 @@ QtControls.GroupBox {
 
     property alias activityName: activityName.text
     property alias activityIconSource: iconButton.iconName
-    property alias activityPrivate: checkPrivate.checked
+    property alias activityIsPrivate: checkPrivate.checked
     property alias activityShortcut: panelShortcut.keySequence
 
     signal accepted()

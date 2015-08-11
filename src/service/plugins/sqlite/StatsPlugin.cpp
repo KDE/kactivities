@@ -24,7 +24,6 @@
 // Qt
 #include <QFileSystemWatcher>
 #include <QSqlQuery>
-#include <QDebug>
 #include <QStringList>
 
 // KDE
