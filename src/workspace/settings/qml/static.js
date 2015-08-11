@@ -61,6 +61,7 @@ function openActivityConfigurationDialog(
   var open = function (item) {
         item.activityName = activityName;
         item.activityIconSource = activityIcon;
+        item.activityShortcut = env.kactivitiesExtras.shortcut(activityId);
 
         env.kactivitiesExtras.getIsPrivate(activityId, function (isPrivate) {
             item.activityIsPrivate = isPrivate;
@@ -77,13 +78,19 @@ function openActivityConfigurationDialog(
             item.activityId = activityId;
 
             item.onAccepted.connect(function() {
-                var id = item.activityId
+                var id = item.activityId;
                 env.kactivities.setActivityName(id,
                     item.activityName,
                     function () {});
+
                 env.kactivities.setActivityIcon(id,
                     item.activityIconSource,
                     function () {});
+
+                console.log("Setting the shortcut");
+                env.kactivitiesExtras.setShortcut(id,
+                    item.activityShortcut);
+
                 env.kactivitiesExtras.setIsPrivate(id,
                     item.activityIsPrivate,
                     function () {});
@@ -123,9 +130,14 @@ function openActivityCreationDialog(
             dialogLoader.item.accepted.connect(function() {
                 env.kactivities.addActivity(item.activityName, function (id) {
                     env.kactivities.setActivityIcon(id,
-                        dialogLoader.item.activityIconSource, function() {});
+                        dialogLoader.item.activityIconSource,
+                        function() {});
                     env.kactivitiesExtras.setIsPrivate(id,
-                        item.activityIsPrivate, function () {});
+                        item.activityIsPrivate,
+                        function () {});
+                    env.kactivitiesExtras.setShortcut(id,
+                        item.activityShortcut,
+                        function () {});
                 });
             });
 

@@ -35,9 +35,5 @@ Row {
 
     KQuickControls.KeySequenceItem {
         id: buttonKeyShorcut
-        // keySequence: plasmoid.globalShortcut
-        onKeySequenceChanged: {
-            root.configurationChanged();
-        }
     }
 }

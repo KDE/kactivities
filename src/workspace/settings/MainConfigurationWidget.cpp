@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2012, 2013, 2014 Ivan Cukic <ivan.cukic(at)kde.org>
+ *   Copyright (C) 2012, 2013, 2014, 2015 Ivan Cukic <ivan.cukic(at)kde.org>
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License version 2,
@@ -19,7 +19,6 @@
 
 #include "MainConfigurationWidget.h"
 
-#include <QDebug>
 #include <QMenu>
 #include <QQmlContext>
 #include <QQmlEngine>
@@ -60,7 +59,6 @@ public:
     std::unique_ptr<QQuickView> viewBlacklistedApplications;
     std::unique_ptr<QQuickView> viewActivities;
     KActionCollection *mainActionCollection;
-    KActionCollection *activitiesActionCollection;
     KActivities::Consumer activities;
 
     void createAction(const QString &actionName, const QString &actionText,
@@ -76,7 +74,6 @@ public:
         : viewBlacklistedApplicationsRoot(Q_NULLPTR)
         , viewBlacklistedApplications(Q_NULLPTR)
         , mainActionCollection(Q_NULLPTR)
-        , activitiesActionCollection(Q_NULLPTR)
     {
     }
 
@@ -93,27 +90,6 @@ public:
         return std::unique_ptr<QQuickView>(view);
     }
 };
-
-void MainConfigurationWidget::activitiesStateChanged(KActivities::Consumer::ServiceStatus status)
-{
-    if (status == KActivities::Consumer::Running && !d->activitiesActionCollection) {
-        d->activitiesActionCollection = new KActionCollection(this, QStringLiteral("ActivityManager"));
-        d->activitiesActionCollection->setComponentDisplayName(i18n("Activities"));
-        d->activitiesActionCollection->setConfigGlobal(true);
-
-        auto activities = d->activities.activities(KActivities::Info::Running);
-
-        for (const auto &activity: activities) {
-            KActivities::Info info(activity);
-            auto action = d->activitiesActionCollection->addAction("switch-to-activity-" + activity);
-            action->setProperty("isConfigurationAction", true);
-            action->setText(i18nc("@action", "Switch to activity \"%1\"", info.name()));
-            KGlobalAccel::self()->setShortcut(action, {});
-        }
-
-        d->scActivities->addCollection(d->activitiesActionCollection);
-    }
-}
 
 MainConfigurationWidget::MainConfigurationWidget(QWidget *parent, QVariantList args)
     : KCModule(parent, args)
@@ -138,11 +114,6 @@ MainConfigurationWidget::MainConfigurationWidget(QWidget *parent, QVariantList a
 
     d->scActivities->setActionTypes(KShortcutsEditor::GlobalAction);
     d->scActivities->addCollection(d->mainActionCollection);
-
-    // Now, the shortcuts for the activities.
-    connect(&d->activities, &KActivities::Consumer::serviceStatusChanged,
-            this, &MainConfigurationWidget::activitiesStateChanged);
-    activitiesStateChanged(d->activities.serviceStatus());
 
     // Keep history initialization
 
@@ -269,8 +240,6 @@ void MainConfigurationWidget::load()
     auto pluginListConfig = d->mainConfig->group("Plugins");
     d->checkRememberVirtualDesktop->setChecked(
         pluginListConfig.readEntry("org.kde.ActivityManager.VirtualDesktopSwitchEnabled", false));
-
-    // Loading shortcuts
 }
 
 void MainConfigurationWidget::save()

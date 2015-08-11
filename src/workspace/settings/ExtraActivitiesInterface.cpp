@@ -19,6 +19,13 @@
 
 #include "ExtraActivitiesInterface.h"
 
+#include <QAction>
+#include <KLocalizedString>
+#include <KActionCollection>
+#include <KGlobalAccel>
+#include <KActivities/Info>
+
+#include <memory>
 #include <utils/d_ptr_implementation.h>
 
 #include "utils/dbusfuture_p.h"
@@ -33,15 +40,35 @@ class ExtraActivitiesInterface::Private {
 public:
     Private(ExtraActivitiesInterface *q)
         : features(new KAMD_DBUS_CLASS_INTERFACE(Features, Features, q))
+        , activitiesActionCollection(new KActionCollection(q, QStringLiteral("ActivityManager")))
     {
+        activitiesActionCollection->setComponentDisplayName(i18n("Activities"));
+        activitiesActionCollection->setConfigGlobal(true);
     }
 
     ~Private()
     {
-        delete features;
     }
 
-    org::kde::ActivityManager::Features *features;
+    QAction *actionForActivity(const QString &activity)
+    {
+        if (!activityActions.contains(activity)) {
+            auto action = activitiesActionCollection->addAction(
+                "switch-to-activity-" + activity);
+
+            activityActions[activity] = action;
+            action->setProperty("isConfigurationAction", true);
+
+            KGlobalAccel::self()->setShortcut(action, {});
+        }
+
+        return activityActions[activity];
+    }
+
+
+    std::unique_ptr<org::kde::ActivityManager::Features> features;
+    std::unique_ptr<KActionCollection> activitiesActionCollection;
+    QHash<QString, QAction*> activityActions;
 };
 
 ExtraActivitiesInterface::ExtraActivitiesInterface(QObject *parent)
@@ -54,11 +81,11 @@ ExtraActivitiesInterface::~ExtraActivitiesInterface()
 {
 }
 
-void ExtraActivitiesInterface::setIsPrivate(const QString &id, bool isPrivate,
-                                            QJSValue callback)
+void ExtraActivitiesInterface::setIsPrivate(const QString &activity,
+                                            bool isPrivate, QJSValue callback)
 {
     auto result = d->features->SetValue(
-        "org.kde.ActivityManager.Resources.Scoring/isOTR/" + id,
+        "org.kde.ActivityManager.Resources.Scoring/isOTR/" + activity,
         QDBusVariant(isPrivate));
 
     auto *watcher = new QDBusPendingCallWatcher(result, this);
@@ -72,11 +99,11 @@ void ExtraActivitiesInterface::setIsPrivate(const QString &id, bool isPrivate,
         );
 }
 
-void ExtraActivitiesInterface::getIsPrivate(const QString &id,
+void ExtraActivitiesInterface::getIsPrivate(const QString &activity,
                                             QJSValue callback)
 {
     auto result = d->features->GetValue(
-        "org.kde.ActivityManager.Resources.Scoring/isOTR/" + id);
+        "org.kde.ActivityManager.Resources.Scoring/isOTR/" + activity);
 
     auto *watcher = new QDBusPendingCallWatcher(result, this);
 
@@ -90,14 +117,20 @@ void ExtraActivitiesInterface::getIsPrivate(const QString &id,
         );
 }
 
-void ExtraActivitiesInterface::setShortcut(const QString &id,
-                                           const QKeySequence &keySequence,
-                                           QJSValue callback)
+void ExtraActivitiesInterface::setShortcut(const QString &activity,
+                                           const QKeySequence &keySequence)
 {
+    auto action = d->actionForActivity(activity);
+
+    KGlobalAccel::self()->setShortcut(action, { keySequence },
+                                      KGlobalAccel::NoAutoloading);
 }
 
-void ExtraActivitiesInterface::getShortcut(const QString &id,
-                                           QJSValue callback)
+QKeySequence ExtraActivitiesInterface::shortcut(const QString &activity)
 {
+    auto action = d->actionForActivity(activity);
+
+    const auto shortcuts = KGlobalAccel::self()->shortcut(action);
+    return (shortcuts.isEmpty()) ? QKeySequence() : shortcuts.first();
 }
 

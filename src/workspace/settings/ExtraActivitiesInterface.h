@@ -25,6 +25,7 @@
 #include <utils/d_ptr.h>
 
 #include <QJSValue>
+#include <QKeySequence>
 
 class ExtraActivitiesInterface : public QObject {
     Q_OBJECT
@@ -34,12 +35,12 @@ public:
     ~ExtraActivitiesInterface();
 
 public Q_SLOTS:
-    void setIsPrivate(const QString &id, bool isPrivate, QJSValue callback);
-    void getIsPrivate(const QString &id, QJSValue callback);
+    void setIsPrivate(const QString &activity, bool isPrivate,
+                      QJSValue callback);
+    void getIsPrivate(const QString &activity, QJSValue callback);
 
-    void setShortcut(const QString &id, const QKeySequence &keySequence,
-                     QJSValue callback);
-    void getShortcut(const QString &id, QJSValue callback);
+    void setShortcut(const QString &activity, const QKeySequence &keySequence);
+    QKeySequence shortcut(const QString &activity);
 
 private:
     D_PTR;
