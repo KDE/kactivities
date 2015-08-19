@@ -28,7 +28,6 @@
 
 #include <QString>
 #include <QStringList>
-class QueryPrivate;
 
 #include "kactivitiesstats_export.h"
 
@@ -37,6 +36,8 @@ class QueryPrivate;
 namespace KActivities {
 namespace Experimental {
 namespace Stats {
+
+class QueryPrivate;
 
 /**
  * Class which defines what resource statistics should be

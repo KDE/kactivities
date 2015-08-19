@@ -21,7 +21,6 @@
 #define KACTIVITIES_STATS_RESULTWATCHER
 
 #include <QObject>
-class ResultWatcherPrivate;
 
 #include "query.h"
 #include "resultset.h"
@@ -29,6 +28,8 @@ class ResultWatcherPrivate;
 namespace KActivities {
 namespace Experimental {
 namespace Stats {
+
+class ResultWatcherPrivate;
 
 /**
  * A very thin class that sends signals when new resources matching

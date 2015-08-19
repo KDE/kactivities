@@ -26,6 +26,10 @@ namespace KActivities {
 namespace Experimental {
 namespace Stats {
 
+class ResultSetPrivate;
+class ResultSet_ResultPrivate;
+class ResultSet_IteratorPrivate;
+
 /**
  * Class that can query the KActivities usage tracking mechanism
  * for resources.
@@ -63,7 +67,7 @@ public:
         void setFirstUpdate(uint firstUpdate);
 
     private:
-        ResultSetPrivate * d;
+        ResultSet_ResultPrivate * d;
     };
 
     /**
@@ -150,7 +154,7 @@ public:
 
         friend class ResultSet;
 
-        ResultSetPrivate* const d;
+        ResultSet_IteratorPrivate* const d;
     };
 
     /**
@@ -185,6 +189,7 @@ public:
     inline const_iterator constEnd() const   { return cend(); }
 
 private:
+    friend class ResultSet_IteratorPrivate;
     ResultSetPrivate *d;
 };
 

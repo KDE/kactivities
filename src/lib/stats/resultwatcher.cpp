@@ -78,8 +78,8 @@ public:
 
         m_resultInvalidationTimer.setSingleShot(true);
         m_resultInvalidationTimer.setInterval(200);
-        connect(&m_resultInvalidationTimer, &QTimer::timeout,
-                q, emit &ResultWatcher::resultsInvalidated);
+        QObject::connect(&m_resultInvalidationTimer, &QTimer::timeout,
+                         q, emit &ResultWatcher::resultsInvalidated);
     }
 
     // Processing the list of activities as specified by the query.

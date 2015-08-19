@@ -44,7 +44,7 @@ namespace Stats {
 
 using namespace Terms;
 
-class ResultSet::ResultPrivate {
+class ResultSet_ResultPrivate {
 public:
     QString resource;
     QString title;
@@ -56,7 +56,7 @@ public:
 };
 
 ResultSet::Result::Result()
-    : d(new ResultSetPrivate())
+    : d(new ResultSet_ResultPrivate())
 {
 }
 
@@ -67,7 +67,7 @@ ResultSet::Result::Result(Result &&result)
 }
 
 ResultSet::Result::Result(const Result &result)
-    : d(new ResultSetPrivate(*result.d))
+    : d(new ResultSet_ResultPrivate(*result.d))
 {
 }
 
@@ -394,9 +394,9 @@ public:
         return query;
     }
 
-    Result currentResult() const
+    ResultSet::Result currentResult() const
     {
-        Result result;
+        ResultSet::Result result;
         result.setResource(query.value("resource").toString());
         result.setTitle(query.value("title").toString());
         result.setMimetype(query.value("mimetype").toString());

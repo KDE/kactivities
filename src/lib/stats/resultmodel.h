@@ -23,7 +23,6 @@
 // Qt
 #include <QObject>
 #include <QAbstractListModel>
-class ResultModelPrivate;
 
 // Local
 #include "query.h"
@@ -34,6 +33,8 @@ class QDBusPendingCallWatcher;
 namespace KActivities {
 namespace Experimental {
 namespace Stats {
+
+class ResultModelPrivate;
 
 /**
  * ResultModel
@@ -77,6 +78,7 @@ public:
     void forgetAllResources();
 
 private:
+    friend class ResultModelPrivate;
     ResultModelPrivate *const d;
 };
 
