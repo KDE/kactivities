@@ -61,12 +61,12 @@ namespace Stats {
 
 // Main class
 
-class ResultWatcher::Private {
+class ResultWatcherPrivate {
 public:
     mutable ActivitiesSync::ConsumerPtr activities;
     QList<QRegExp> urlFilters;
 
-    Private(ResultWatcher *parent, Query query)
+    ResultWatcherPrivate(ResultWatcher *parent, Query query)
         : linking(new KAMD_DBUS_CLASS_INTERFACE(Resources/Linking, ResourcesLinking, Q_NULLPTR))
         , scoring(new KAMD_DBUS_CLASS_INTERFACE(Resources/Scoring, ResourcesScoring, Q_NULLPTR))
         , q(parent)
@@ -257,7 +257,7 @@ public:
 };
 
 ResultWatcher::ResultWatcher(Query query)
-    : d(new Private(this, query))
+    : d(new ResultWatcherPrivate(this, query))
 {
     using namespace org::kde::ActivityManager;
     using namespace std::placeholders;
@@ -267,24 +267,24 @@ ResultWatcher::ResultWatcher(Query query)
     // Connecting the linking service
     QObject::connect(
         d->linking.data(), &ResourcesLinking::ResourceLinkedToActivity,
-        this, std::bind(&Private::onResourceLinkedToActivity, d, _1, _2, _3));
+        this, std::bind(&ResultWatcherPrivate::onResourceLinkedToActivity, d, _1, _2, _3));
     QObject::connect(
         d->linking.data(), &ResourcesLinking::ResourceUnlinkedFromActivity,
-        this, std::bind(&Private::onResourceUnlinkedFromActivity, d, _1, _2, _3));
+        this, std::bind(&ResultWatcherPrivate::onResourceUnlinkedFromActivity, d, _1, _2, _3));
 
     // Connecting the scoring service
     QObject::connect(
         d->scoring.data(), &ResourcesScoring::ResourceScoreUpdated,
-        this, std::bind(&Private::onResourceScoreUpdated, d, _1, _2, _3, _4, _5, _6));
+        this, std::bind(&ResultWatcherPrivate::onResourceScoreUpdated, d, _1, _2, _3, _4, _5, _6));
     QObject::connect(
         d->scoring.data(), &ResourcesScoring::ResourceScoreDeleted,
-        this, std::bind(&Private::onStatsForResourceDeleted, d, _1, _2, _3));
+        this, std::bind(&ResultWatcherPrivate::onStatsForResourceDeleted, d, _1, _2, _3));
     QObject::connect(
         d->scoring.data(), &ResourcesScoring::RecentStatsDeleted,
-        this, std::bind(&Private::onRecentStatsDeleted, d, _1, _2, _3));
+        this, std::bind(&ResultWatcherPrivate::onRecentStatsDeleted, d, _1, _2, _3));
     QObject::connect(
         d->scoring.data(), &ResourcesScoring::EarlierStatsDeleted,
-        this, std::bind(&Private::onEarlierStatsDeleted, d, _1, _2));
+        this, std::bind(&ResultWatcherPrivate::onEarlierStatsDeleted, d, _1, _2));
 
 }
 

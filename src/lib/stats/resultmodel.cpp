@@ -52,9 +52,9 @@ namespace KActivities {
 namespace Experimental {
 namespace Stats {
 
-class ResultModel::Private {
+class ResultModelPrivate {
 public:
-    Private(Query query, ResultModel *parent)
+    ResultModelPrivate(Query query, ResultModel *parent)
         : cache(this, query.limit())
         , query(query)
         , watcher(query)
@@ -75,7 +75,7 @@ public:
     public:
         typedef QList<ResultSet::Result> Items;
 
-        Cache(Private *d, int limit)
+        Cache(ResultModelPrivate *d, int limit)
             : m_countLimit(limit)
             , d(d)
         {
@@ -90,7 +90,7 @@ public:
 
         QList<ResultSet::Result> m_items;
         int m_countLimit;
-        Private *const d;
+        ResultModelPrivate *const d;
 
     public:
         //_ Fancy iterator
@@ -393,7 +393,7 @@ public:
         using kamd::utils::slide_one;
         using boost::lower_bound;
 
-        QDBG << "ResultModel::Private::onResultAdded "
+        QDBG << "ResultModelPrivate::onResultAdded "
              << "result added:" << resource
              << "score:" << score
              << "last:" << lastUpdate
@@ -544,26 +544,26 @@ private:
 
 ResultModel::ResultModel(Query query, QObject *parent)
     : QAbstractListModel(parent)
-    , d(new Private(query, this))
+    , d(new ResultModelPrivate(query, this))
 {
     using namespace std::placeholders;
 
     connect(&d->watcher, &ResultWatcher::resultAdded,
-            this, std::bind(&Private::onResultAdded, d, _1, _2, _3, _4));
+            this, std::bind(&ResultModelPrivate::onResultAdded, d, _1, _2, _3, _4));
     connect(&d->watcher, &ResultWatcher::resultRemoved,
-            this, std::bind(&Private::onResultRemoved, d, _1));
+            this, std::bind(&ResultModelPrivate::onResultRemoved, d, _1));
 
     connect(&d->watcher, &ResultWatcher::resourceTitleChanged,
-            this, std::bind(&Private::onResourceTitleChanged, d, _1, _2));
+            this, std::bind(&ResultModelPrivate::onResourceTitleChanged, d, _1, _2));
     connect(&d->watcher, &ResultWatcher::resourceMimetypeChanged,
-            this, std::bind(&Private::onResourceMimetypeChanged, d, _1, _2));
+            this, std::bind(&ResultModelPrivate::onResourceMimetypeChanged, d, _1, _2));
 
     connect(&d->watcher, &ResultWatcher::resultsInvalidated,
-            this, std::bind(&Private::reload, d));
+            this, std::bind(&ResultModelPrivate::reload, d));
 
     if (query.activities().contains(CURRENT_ACTIVITY_TAG)) {
         connect(&d->activities, &KActivities::Consumer::currentActivityChanged,
-                this, std::bind(&Private::onCurrentActivityChanged, d, _1));
+                this, std::bind(&ResultModelPrivate::onCurrentActivityChanged, d, _1));
     }
 
     d->init();
@@ -620,7 +620,7 @@ int ResultModel::rowCount(const QModelIndex &parent) const
 void ResultModel::fetchMore(const QModelIndex &parent)
 {
     if (parent.isValid()) return;
-    d->fetch(Private::FetchMore);
+    d->fetch(ResultModelPrivate::FetchMore);
 }
 
 bool ResultModel::canFetchMore(const QModelIndex &parent) const

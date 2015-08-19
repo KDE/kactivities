@@ -23,6 +23,7 @@
 // Qt
 #include <QObject>
 #include <QAbstractListModel>
+class ResultModelPrivate;
 
 // Local
 #include "query.h"
@@ -76,8 +77,7 @@ public:
     void forgetAllResources();
 
 private:
-    class Private;
-    Private *const d;
+    ResultModelPrivate *const d;
 };
 
 } // namespace Stats

@@ -21,6 +21,7 @@
 #define KACTIVITIES_STATS_RESULTWATCHER
 
 #include <QObject>
+class ResultWatcherPrivate;
 
 #include "query.h"
 #include "resultset.h"
@@ -104,9 +105,7 @@ public:
 
 
 private:
-    class Private;
-    friend class Private;
-    Private *const d;
+    ResultWatcherPrivate *const d;
 
 };
 

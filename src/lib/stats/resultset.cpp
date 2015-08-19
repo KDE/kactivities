@@ -44,7 +44,7 @@ namespace Stats {
 
 using namespace Terms;
 
-class ResultSet::Result::Private {
+class ResultSet::ResultPrivate {
 public:
     QString resource;
     QString title;
@@ -56,7 +56,7 @@ public:
 };
 
 ResultSet::Result::Result()
-    : d(new Private())
+    : d(new ResultSetPrivate())
 {
 }
 
@@ -67,7 +67,7 @@ ResultSet::Result::Result(Result &&result)
 }
 
 ResultSet::Result::Result(const Result &result)
-    : d(new Private(*result.d))
+    : d(new ResultSetPrivate(*result.d))
 {
 }
 
@@ -144,7 +144,7 @@ void ResultSet::Result::setFirstUpdate(uint firstUpdate)
 }
 
 
-class ResultSet::Private {
+class ResultSetPrivate {
 public:
     Common::Database::Ptr database;
     QSqlQuery query;
@@ -288,19 +288,19 @@ public:
 
         // WHERE clause for filtering on agents
         QStringList agentsFilter = transformedList(
-                queryDefinition.agents(), &Private::agentClause);
+                queryDefinition.agents(), &ResultSetPrivate::agentClause);
 
         // WHERE clause for filtering on activities
         QStringList activitiesFilter = transformedList(
-                queryDefinition.activities(), &Private::activityClause);
+                queryDefinition.activities(), &ResultSetPrivate::activityClause);
 
         // WHERE clause for filtering on resource URLs
         QStringList urlFilter = transformedList(
-                queryDefinition.urlFilters(), &Private::urlFilterClause);
+                queryDefinition.urlFilters(), &ResultSetPrivate::urlFilterClause);
 
         // WHERE clause for filtering on resource mime
         QStringList mimetypeFilter = transformedList(
-                queryDefinition.types(), &Private::mimetypeClause);
+                queryDefinition.types(), &ResultSetPrivate::mimetypeClause);
 
         auto query = _query + limitOffsetSuffix();
 
@@ -359,19 +359,19 @@ public:
 
         // WHERE clause for filtering on agents
         QStringList agentsFilter = transformedList(
-                queryDefinition.agents(), &Private::agentClause);
+                queryDefinition.agents(), &ResultSetPrivate::agentClause);
 
         // WHERE clause for filtering on activities
         QStringList activitiesFilter = transformedList(
-                queryDefinition.activities(), &Private::activityClause);
+                queryDefinition.activities(), &ResultSetPrivate::activityClause);
 
         // WHERE clause for filtering on resource URLs
         QStringList urlFilter = transformedList(
-                queryDefinition.urlFilters(), &Private::urlFilterClause);
+                queryDefinition.urlFilters(), &ResultSetPrivate::urlFilterClause);
 
         // WHERE clause for filtering on resource mime
         QStringList mimetypeFilter = transformedList(
-                queryDefinition.types(), &Private::mimetypeClause);
+                queryDefinition.types(), &ResultSetPrivate::mimetypeClause);
 
         auto query = _query + limitOffsetSuffix();
 
@@ -408,7 +408,7 @@ public:
 };
 
 ResultSet::ResultSet(Query query)
-    : d(new Private())
+    : d(new ResultSetPrivate())
 {
     using namespace Common;
 
@@ -434,7 +434,7 @@ ResultSet::ResultSet(ResultSet &&source)
 }
 
 ResultSet::ResultSet(const ResultSet &source)
-    : d(new Private(*source.d))
+    : d(new ResultSetPrivate(*source.d))
 {
 }
 

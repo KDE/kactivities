@@ -63,8 +63,7 @@ public:
         void setFirstUpdate(uint firstUpdate);
 
     private:
-        class Private;
-        Private * d;
+        ResultSetPrivate * d;
     };
 
     /**
@@ -151,8 +150,7 @@ public:
 
         friend class ResultSet;
 
-        class Private;
-        Private* const d;
+        ResultSetPrivate* const d;
     };
 
     /**
@@ -187,8 +185,7 @@ public:
     inline const_iterator constEnd() const   { return cend(); }
 
 private:
-    class Private;
-    Private *d;
+    ResultSetPrivate *d;
 };
 
 bool KACTIVITIESSTATS_EXPORT operator==(const ResultSet::const_iterator &left,

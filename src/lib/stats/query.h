@@ -28,6 +28,7 @@
 
 #include <QString>
 #include <QStringList>
+class QueryPrivate;
 
 #include "kactivitiesstats_export.h"
 
@@ -146,8 +147,7 @@ public:
     }
 
 private:
-    class Private;
-    Private* d;
+    QueryPrivate* d;
 };
 
 template <typename Term>

@@ -26,7 +26,7 @@
 
 namespace KActivities {
 
-// Private
+// InfoPrivate
 
 InfoPrivate::InfoPrivate(Info *info, const QString &activity)
     : q(info)
