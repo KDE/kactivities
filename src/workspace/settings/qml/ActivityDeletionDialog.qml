@@ -65,7 +65,7 @@ Item {
         }
 
         QtControls.Label {
-            text: "Are you sure you want to delete this activity?"
+            text: i18n("Are you sure you want to delete this activity?")
         }
 
         Local.DialogButtons {
