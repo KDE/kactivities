@@ -48,6 +48,7 @@ K_PLUGIN_FACTORY_WITH_JSON(ActivityLinkingFileItemActionFactory,
 
 FileItemLinkingPlugin::Private::Private()
     : shouldLoad(false)
+    , loaded(false)
 {
     connect(&activities, &KActivities::Consumer::serviceStatusChanged,
             this, &Private::activitiesServiceStatusChanged);
@@ -139,7 +140,7 @@ void FileItemLinkingPlugin::Private::loadAllActions()
         setActions({ new QAction(
             i18n("The Activity Manager is not running"), Q_NULLPTR) });
 
-    } else {
+    } else if (!loaded) {
         auto loader = new FileItemLinkingPluginActionLoader(items);
 
         static FileItemLinkingPluginActionStaticInit init;
@@ -148,6 +149,8 @@ void FileItemLinkingPlugin::Private::loadAllActions()
                 this, &Private::setActions);
 
         loader->start();
+
+        loaded = true; // ignore that the thread may not be finished at this time
     }
 }
 

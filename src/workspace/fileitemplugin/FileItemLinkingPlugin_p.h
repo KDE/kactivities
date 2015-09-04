@@ -55,6 +55,7 @@ public Q_SLOTS:
 
 private:
     bool shouldLoad : 1;
+    bool loaded : 1;
 };
 
 class FileItemLinkingPluginActionLoader: public QThread {
