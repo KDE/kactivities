@@ -50,7 +50,7 @@ Q_SIGNALS:
      * @param result new data for the resource defined by result.resource
      */
     void resultAdded(const QString &resource, double score, uint lastUpdate,
-                     uint firstUpdate);
+                     uint firstUpdate, int linked);
 
     /**
      * Emitted when a result has been added or updated. This either means

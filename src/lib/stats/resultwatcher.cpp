@@ -172,7 +172,7 @@ public:
         if (!eventMatches(agent, resource, activity)) return;
 
         // TODO: See whether it makes sense to have lastUpdate/firstUpdate here as well
-        emit q->resultAdded(resource, std::numeric_limits<double>::infinity(), 0, 0);
+        emit q->resultAdded(resource, std::numeric_limits<double>::infinity(), 0, 0, true);
     }
 
     void onResourceUnlinkedFromActivity(const QString &agent,
@@ -201,7 +201,7 @@ public:
 
         if (!eventMatches(agent, resource, activity)) return;
 
-        emit q->resultAdded(resource, score, lastUpdate, firstUpdate);
+        emit q->resultAdded(resource, score, lastUpdate, firstUpdate, false);
     }
 
 

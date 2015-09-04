@@ -128,9 +128,17 @@ public:
         inline FindCacheResult lowerBound(What &&what, Predicate &&predicate)
         {
             return FindCacheResult(
-                this,
-                boost::lower_bound(m_items, std::forward<What>(what),
-                                   std::forward<Predicate>(predicate)));
+                this, boost::lower_bound(m_items, std::forward<What>(what),
+                                         std::forward<Predicate>(predicate)));
+        }
+
+        template <typename Predicate>
+        inline FindCacheResult lowerBound(Predicate &&predicate)
+        {
+            using namespace kamd::utils::member_matcher;
+            return FindCacheResult(
+                this, boost::lower_bound(m_items, _,
+                                         std::forward<Predicate>(predicate)));
         }
 
         inline void insertAt(const FindCacheResult &at,
@@ -161,6 +169,21 @@ public:
         inline void replace(const Items &newItems, int from = 0)
         {
             using namespace kamd::utils::member_matcher;
+
+#if 0
+            qDebug() << "===\nOld items {";
+            for (const auto& item: m_items) {
+                qDebug() << item;
+            }
+            qDebug() << "}";
+
+            qDebug() << "New items to be added at " << from << " {";
+            for (const auto& item: newItems) {
+                qDebug() << item;
+            }
+            qDebug() << "}";
+#endif
+
 
             // Based on 'The string to string correction problem
             // with block moves' paper by Walter F. Tichy
@@ -265,6 +288,11 @@ public:
                     if (oldBlockStartIndex != newBlockStartIndex) {
                         // If these blocks do not have the same start,
                         // we need to send the move event.
+
+                        // Note: If there is a crash here, it means we
+                        // are getting a bad query which has duplicate
+                        // results
+
                         d->q->beginMoveRows(QModelIndex(), oldBlockStartIndex,
                                             oldBlockStartIndex + blockSize - 1,
                                             QModelIndex(), newBlockStartIndex);
@@ -386,7 +414,7 @@ public:
 
 
     void onResultAdded(const QString &resource, double score, uint lastUpdate,
-                       uint firstUpdate)
+                       uint firstUpdate, int linkStatus)
     {
         using namespace kamd::utils::member_matcher;
         using namespace Terms;
@@ -404,16 +432,28 @@ public:
         // we already have it in the cache
         const auto result = cache.find(resource);
 
-        // TODO: We should also sort by the resource, not only on a single field
         const auto destination =
             query.ordering() == HighScoredFirst ?
-                cache.lowerBound(score, member(&ResultSet::Result::score) > _) :
+                cache.lowerBound(
+                        member(&ResultSet::Result::linkStatus) < linkStatus
+                        && member(&ResultSet::Result::score) > score
+                        && member(&ResultSet::Result::resource) > resource
+                    ) :
+
             query.ordering() == RecentlyUsedFirst ?
-                cache.lowerBound(lastUpdate, member(&ResultSet::Result::lastUpdate) > _) :
+                cache.lowerBound(
+                        member(&ResultSet::Result::lastUpdate) > lastUpdate &&
+                        member(&ResultSet::Result::resource) > resource
+                    ) :
+
             query.ordering() == RecentlyCreatedFirst ?
-                cache.lowerBound(firstUpdate, member(&ResultSet::Result::firstUpdate) > _) :
+                cache.lowerBound(
+                        member(&ResultSet::Result::firstUpdate) > firstUpdate &&
+                        member(&ResultSet::Result::resource) > resource
+                    ) :
+
             // otherwise
-                cache.lowerBound(resource, member(&ResultSet::Result::resource) > _)
+                cache.lowerBound(member(&ResultSet::Result::resource) > resource)
             ;
 
         if (result) {
@@ -422,6 +462,7 @@ public:
             const int currentIndex = result.index;
 
             result.iterator->setScore(score);
+            result.iterator->setLinkStatus(linkStatus);
             result.iterator->setLastUpdate(lastUpdate);
             result.iterator->setFirstUpdate(firstUpdate);
 
@@ -451,6 +492,7 @@ public:
             fillTitleAndMimetype(result);
 
             result.setScore(score);
+            result.setLinkStatus(linkStatus);
             result.setLastUpdate(lastUpdate);
             result.setFirstUpdate(firstUpdate);
 
@@ -549,7 +591,7 @@ ResultModel::ResultModel(Query query, QObject *parent)
     using namespace std::placeholders;
 
     connect(&d->watcher, &ResultWatcher::resultAdded,
-            this, std::bind(&ResultModelPrivate::onResultAdded, d, _1, _2, _3, _4));
+            this, std::bind(&ResultModelPrivate::onResultAdded, d, _1, _2, _3, _4, _5));
     connect(&d->watcher, &ResultWatcher::resultRemoved,
             this, std::bind(&ResultModelPrivate::onResultRemoved, d, _1));
 
@@ -581,7 +623,8 @@ QHash<int, QByteArray> ResultModel::roleNames() const
         { TitleRole       , "title" },
         { ScoreRole       , "score" },
         { FirstUpdateRole , "created" },
-        { LastUpdateRole  , "modified" }
+        { LastUpdateRole  , "modified" },
+        { LinkStatusRole  , "linkStatus" }
     };
 }
 
@@ -593,12 +636,18 @@ QVariant ResultModel::data(const QModelIndex &item, int role) const
 
     const auto &result = d->cache[row];
 
-    return role == Qt::DisplayRole ? (result.title() + " " + result.resource())
+    return role == Qt::DisplayRole ? (
+               result.title() + " " +
+               result.resource() + " - " +
+               QString::number(result.linkStatus()) + " - " +
+               QString::number(result.score())
+           )
          : role == ResourceRole    ? result.resource()
          : role == TitleRole       ? result.title()
          : role == ScoreRole       ? result.score()
          : role == FirstUpdateRole ? result.firstUpdate()
          : role == LastUpdateRole  ? result.lastUpdate()
+         : role == LinkStatusRole  ? result.linkStatus()
          : QVariant()
          ;
 }

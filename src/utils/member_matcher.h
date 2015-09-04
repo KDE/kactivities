@@ -23,85 +23,126 @@
 namespace kamd {
 namespace utils {
 
-namespace detail { //_
-    enum ComparisonOperation {
-        Less,
-        LessOrEqual,
-        Equal,
-        GreaterOrEqual,
-        Greater
-    };
-
-    template <typename Member, typename Value>
-    struct member_comparator {
-
-        member_comparator(ComparisonOperation comparison, Member member, Value value)
-            : m_comparator(comparison)
-            , m_member(member)
-            , m_value(value)
-        {
-        }
-
-        const ComparisonOperation m_comparator;
-        const Member m_member;
-        const Value m_value;
-
-        template <typename T>
-        inline bool operator()(const T &item) const
-        {
-            return
-                m_comparator == Less           ? (item.*m_member)() <  m_value :
-                m_comparator == LessOrEqual    ? (item.*m_member)() <= m_value :
-                m_comparator == Equal          ? (item.*m_member)() == m_value :
-                m_comparator == GreaterOrEqual ? (item.*m_member)() >= m_value :
-                m_comparator == Greater        ? (item.*m_member)() >  m_value :
-                                                                     false;
-        }
-
-        template <typename T, typename V>
-        inline bool operator()(const T &item, const V &value) const
-        {
-            return
-                m_comparator == Less           ? (item.*m_member)() <  value :
-                m_comparator == LessOrEqual    ? (item.*m_member)() <= value :
-                m_comparator == Equal          ? (item.*m_member)() == value :
-                m_comparator == GreaterOrEqual ? (item.*m_member)() >= value :
-                m_comparator == Greater        ? (item.*m_member)() >  value :
-                                                                     false;
-        }
-
-
-    };
-
-    template <typename Member>
-    struct member_matcher {
-        member_matcher(Member m)
-            : m_member(m)
-        {
-        }
-
-        #define IMPLEMENT_COMPARISON_OPERATOR(OPERATOR, NAME)                  \
-            template <typename Value>                                          \
-            inline member_comparator<Member, Value>                            \
-                    operator OPERATOR (const Value &value) const               \
-            {                                                                  \
-                return member_comparator<Member, Value>(NAME, m_member, value);\
-            }
-
-        IMPLEMENT_COMPARISON_OPERATOR(<  , Less)
-        IMPLEMENT_COMPARISON_OPERATOR(<= , LessOrEqual)
-        IMPLEMENT_COMPARISON_OPERATOR(== , Equal)
-        IMPLEMENT_COMPARISON_OPERATOR(>= , GreaterOrEqual)
-        IMPLEMENT_COMPARISON_OPERATOR(>  , Greater)
-
-        #undef IMPLEMENT_COMPARISON_OPERATOR
-
-        Member m_member;
-    };
-} //^ namespace detail
-
 namespace member_matcher {
     struct placeholder {} _;
+
+    namespace detail { //_
+        enum ComparisonOperation {
+            Less,
+            LessOrEqual,
+            Equal,
+            GreaterOrEqual,
+            Greater
+        };
+
+        // Member comparison object
+        template <typename Member, typename Value>
+        struct member_comparator { //_
+
+            member_comparator(ComparisonOperation comparison, Member member, Value value)
+                : m_comparator(comparison)
+                , m_member(member)
+                , m_value(value)
+            {
+            }
+
+            const ComparisonOperation m_comparator;
+            const Member m_member;
+            const Value m_value;
+
+            // When passing only a item to compare with,
+            // it means that we already have the value for comparison.
+            // For example (member(M) > 5)(2)
+            template <typename T>
+            inline bool operator()(const T &item) const
+            {
+                return operator()(item, m_value);
+            }
+
+            // When passing the placeholder aka 'ignore' as a value,
+            // it means that we already have the value for comparison.
+            // For example (member(M) > 5)(item, _)
+            template <typename T>
+            inline bool operator()(const T &item, const placeholder&) const
+            {
+                return operator()(item, m_value);
+            }
+
+            // Comparing two values
+            // For example (member(M) > _)(item, 5)
+            template <typename T, typename V>
+            inline bool operator()(const T &item, const V &value) const
+            {
+                return
+                    m_comparator == Less           ? (item.*m_member)() <  value :
+                    m_comparator == LessOrEqual    ? (item.*m_member)() <= value :
+                    m_comparator == Equal          ? (item.*m_member)() == value :
+                    m_comparator == GreaterOrEqual ? (item.*m_member)() >= value :
+                    m_comparator == Greater        ? (item.*m_member)() >  value :
+                                                                           false;
+            }
+
+        }; //^
+
+        template <typename First, typename Second>
+        struct member_comparator_chain {
+            member_comparator_chain(First first, Second second)
+                : first(first)
+                , second(second)
+            {
+            }
+
+            template <typename T>
+            inline bool operator()(const T &item) const
+            {
+                return first(item) || second(item);
+            }
+
+            template <typename T, typename V>
+            inline bool operator()(const T &item, const V &value) const
+            {
+                return first(item, value) || second(item, value);
+            }
+
+            First first;
+            Second second;
+        };
+
+        template <typename First, typename Second>
+        inline member_comparator_chain<First, Second> operator&&(First first,
+                                                                 Second second)
+        {
+            return member_comparator_chain<First, Second>(first, second);
+        }
+
+        // Provides syntax sugar for building member comparators
+        template <typename Member>
+        struct member_matcher { //_
+            member_matcher(Member m)
+                : m_member(m)
+            {
+            }
+
+            #define IMPLEMENT_COMPARISON_OPERATOR(OPERATOR, NAME)                  \
+                template <typename Value>                                          \
+                inline member_comparator<Member, Value>                            \
+                        operator OPERATOR (const Value &value) const               \
+                {                                                                  \
+                    return member_comparator<Member, Value>(NAME, m_member, value);\
+                }
+
+            IMPLEMENT_COMPARISON_OPERATOR(<  , Less)
+            IMPLEMENT_COMPARISON_OPERATOR(<= , LessOrEqual)
+            IMPLEMENT_COMPARISON_OPERATOR(== , Equal)
+            IMPLEMENT_COMPARISON_OPERATOR(>= , GreaterOrEqual)
+            IMPLEMENT_COMPARISON_OPERATOR(>  , Greater)
+
+            #undef IMPLEMENT_COMPARISON_OPERATOR
+
+            Member m_member;
+        }; //^
+
+    } //^ namespace detail
 
     template <typename Member>
     detail::member_matcher<Member> member(Member m)

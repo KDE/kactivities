@@ -60,7 +60,10 @@ public:
             currentValue = none;
 
         } else {
-            currentValue = make_optional(std::move(resultSet->d->currentResult()));
+            auto value = resultSet->d->currentResult();
+            qDebug()
+                << "new result : " << value;
+            currentValue = make_optional(std::move(value));
 
         }
     }
