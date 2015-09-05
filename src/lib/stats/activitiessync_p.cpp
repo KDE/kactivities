@@ -58,6 +58,8 @@ namespace ActivitiesSync {
             QCoreApplication::instance()->processEvents();
         }
 
+        qDebug() << "Returning current activity:" << activities->currentActivity();
+
         return activities->currentActivity();
     }
 

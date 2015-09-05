@@ -51,8 +51,6 @@
 
 #include <algorithm>
 
-#include <utils/debug_and_return.h>
-
 #define QDBG qDebug() << "KActivitiesStats(" << (void*)this << ")"
 
 namespace KActivities {
@@ -82,45 +80,75 @@ public:
                          q, emit &ResultWatcher::resultsInvalidated);
     }
 
+    // Like boost any_of, but returning true if the range is empty
+    template <typename Collection, typename Predicate>
+    inline bool any_of(const Collection &collection, Predicate &&predicate) const
+    {
+        const auto begin = collection.cbegin();
+        const auto end = collection.cend();
+
+        return begin == end
+               || std::any_of(begin, end, std::forward<Predicate>(predicate));
+    }
+
+#define DEBUG_MATCHERS 1
+
     // Processing the list of activities as specified by the query.
     // If it contains :any, we are returning true, otherwise
     // we want to match a specific activity (be it the current
     // activity or not). The :global special value is not special here
     bool activityMatches(const QString &activity) const
     {
-        return
+        #if DEBUG_MATCHERS
+        qDebug() << "Activity " << activity << "matching against"
+                 << query.activities();
+        #endif
+
+        return kamd::utils::debug_and_return(DEBUG_MATCHERS, " -> returning ",
             activity == ANY_ACTIVITY_TAG ||
-            std::any_of(query.activities().cbegin(), query.activities().cend(),
-            [&] (const QString &matcher) {
-                return (matcher == ANY_ACTIVITY_TAG)     ? true :
-                       (matcher == CURRENT_ACTIVITY_TAG) ? (matcher == activity || activity == ActivitiesSync::currentActivity(activities)) :
-                                                           activity == matcher;
+            any_of(query.activities(), [&] (const QString &matcher) {
+                return
+                    matcher == ANY_ACTIVITY_TAG
+                        ? true
+                    : matcher == CURRENT_ACTIVITY_TAG
+                        ? (matcher == activity || activity == ActivitiesSync::currentActivity(activities))
+                    : activity == matcher;
             }
-        );
+        ));
     }
 
     // Same as above, but for agents
     bool agentMatches(const QString &agent) const
     {
-        return
+        #if DEBUG_MATCHERS
+        qDebug() << "Agent " << agent << "matching against" << query.agents();
+        #endif
+
+        return kamd::utils::debug_and_return(DEBUG_MATCHERS, " -> returning ",
             agent == ANY_AGENT_TAG ||
-            std::any_of(query.agents().cbegin(), query.agents().cend(),
-            [&] (const QString &matcher) {
-                return (matcher == ANY_AGENT_TAG)     ? true :
-                       (matcher == CURRENT_AGENT_TAG) ? (matcher == agent || agent == QCoreApplication::applicationName()) :
-                                                        agent == matcher;
+            any_of(query.agents(), [&] (const QString &matcher) {
+                return
+                    matcher == ANY_AGENT_TAG
+                        ? true
+                    : matcher == CURRENT_AGENT_TAG
+                        ? (matcher == agent || agent == QCoreApplication::applicationName())
+                    : agent == matcher;
             }
-        );
+        ));
     }
 
     // Same as above, but for urls
     bool urlMatches(const QString &url) const
     {
-        return std::any_of(urlFilters.cbegin(), urlFilters.cend(),
-            [&] (const QRegExp &matcher) {
+        #if DEBUG_MATCHERS
+        qDebug() << "Url " << url << "matching against" << urlFilters;
+        #endif
+
+        return kamd::utils::debug_and_return(DEBUG_MATCHERS, " -> returning ",
+            any_of(urlFilters, [&] (const QRegExp &matcher) {
                 return matcher.exactMatch(url);
             }
-        );
+        ));
     }
 
     bool typeMatches(const QString &resource) const
@@ -143,12 +171,19 @@ public:
             return QString();
         });
 
-        return std::any_of(query.types().cbegin(), query.types().cend(),
-            [&] (const QString &matcher) {
+        #if DEBUG_MATCHERS
+        qDebug() << "Type " << "...type..." << "matching against" << query.types();
+        qDebug() << "ANY_TYPE_TAG" << ANY_TYPE_TAG;
+        #endif
+
+        return kamd::utils::debug_and_return(DEBUG_MATCHERS, " -> returning ",
+            any_of(query.types(), [&] (const QString &matcher) {
                 return matcher == ANY_TYPE_TAG || matcher == type;
             }
-        );
+        ));
     }
+
+#undef DEBUG_MATCHERS
 
     bool eventMatches(const QString &agent, const QString &resource,
                       const QString &activity) const
@@ -166,19 +201,25 @@ public:
                                     const QString &resource,
                                     const QString &activity)
     {
+        qDebug() << "onResourceLinkedToActivity" << resource;
+
         // The used resources do not really care about the linked ones
         if (query.selection() == Terms::UsedResources) return;
 
         if (!eventMatches(agent, resource, activity)) return;
 
-        // TODO: See whether it makes sense to have lastUpdate/firstUpdate here as well
-        emit q->resultAdded(resource, std::numeric_limits<double>::infinity(), 0, 0, true);
+        // TODO: See whether it makes sense to have
+        // lastUpdate/firstUpdate here as well
+        emit q->resultAdded(resource, std::numeric_limits<double>::infinity(),
+                            0, 0, true);
     }
 
     void onResourceUnlinkedFromActivity(const QString &agent,
                                         const QString &resource,
                                         const QString &activity)
     {
+        qDebug() << "onResourceUnlinkedFromActivity" << resource;
+
         // The used resources do not really care about the linked ones
         if (query.selection() == Terms::UsedResources) return;
 
@@ -191,6 +232,8 @@ public:
                                 const QString &resource, double score,
                                 uint lastUpdate, uint firstUpdate)
     {
+        qDebug() << "onResourceScoreUpdated" << resource << score;
+
         Q_ASSERT_X(activity == "00000000-0000-0000-0000-000000000000" ||
                    !QUuid(activity).isNull(),
                    "ResultWatcher::onResourceScoreUpdated",

@@ -35,7 +35,22 @@ namespace member_matcher {
             Greater
         };
 
+        // template <typename T>
+        // class has_helloworld{
+        //     typedef char one;
+        //     typedef long two;
+        //
+        //     template <typename C> static one test( typeof(&C::helloworld) ) ;
+        //     template <typename C> static two test(...);
+        //
+        // public:
+        //     enum { value = sizeof(test<T>(0)) == sizeof(char) };
+        // };
+
         // Member comparison object
+        // Call operator returns true if:
+        //     collection item <comparison> specified item
+        // where <comparison> can be <, >, ==, >=, <=
         template <typename Member, typename Value>
         struct member_comparator { //_
 
@@ -54,36 +69,59 @@ namespace member_matcher {
             // it means that we already have the value for comparison.
             // For example (member(M) > 5)(2)
             template <typename T>
-            inline bool operator()(const T &item) const
+            inline bool operator()(const T &collItem) const
             {
-                return operator()(item, m_value);
+                return operator()(collItem, m_value);
             }
 
             // When passing the placeholder aka 'ignore' as a value,
             // it means that we already have the value for comparison.
-            // For example (member(M) > 5)(item, _)
+            // For example (member(M) > 5)(collItem, _)
             template <typename T>
-            inline bool operator()(const T &item, const placeholder&) const
+            inline bool operator()(const T &collItem,
+                                   const placeholder &) const
             {
-                return operator()(item, m_value);
+                return operator()(collItem, m_value);
+            }
+
+            // Like the previous one, but with reversed argument order
+            template <typename T>
+            inline bool operator()(const placeholder &,
+                                   const T &collItem) const
+            {
+                return compare(m_value, (collItem.*m_member)());
             }
 
             // Comparing two values
             // For example (member(M) > _)(item, 5)
             template <typename T, typename V>
-            inline bool operator()(const T &item, const V &value) const
+            inline bool operator()(const T &collItem, const V &value) const
+            {
+                // TODO: Make this work if the arguments are reversed,
+                //       or even if both arhuments need to be checked
+                //       for the specified member
+                return compare((collItem.*m_member)(), value);
+            }
+
+
+        private:
+            template <typename Left, typename Right>
+            inline bool compare(const Left &left, const Right &right) const
             {
                 return
-                    m_comparator == Less           ? (item.*m_member)() <  value :
-                    m_comparator == LessOrEqual    ? (item.*m_member)() <= value :
-                    m_comparator == Equal          ? (item.*m_member)() == value :
-                    m_comparator == GreaterOrEqual ? (item.*m_member)() >= value :
-                    m_comparator == Greater        ? (item.*m_member)() >  value :
-                                                                           false;
+                    m_comparator == Less           ? left <  right :
+                    m_comparator == LessOrEqual    ? left <= right :
+                    m_comparator == Equal          ? left == right :
+                    m_comparator == GreaterOrEqual ? left >= right :
+                    m_comparator == Greater        ? left >  right :
+                                                     false;
             }
 
         }; //^
 
+        // Chaining multiple comparators to achieve lexicographical
+        // comparison of multiple members in order.
+        // This would me so much nicer with variadic templates... f**ing MSVC.
         template <typename First, typename Second>
         struct member_comparator_chain {
             member_comparator_chain(First first, Second second)
@@ -92,16 +130,22 @@ namespace member_matcher {
             {
             }
 
-            template <typename T>
-            inline bool operator()(const T &item) const
-            {
-                return first(item) || second(item);
-            }
+            // Implement if needed...
+            // template <typename T>
+            // inline bool operator()(const T &item) const
+            // {
+            //     return first(item) || second(item);
+            // }
 
             template <typename T, typename V>
             inline bool operator()(const T &item, const V &value) const
             {
-                return first(item, value) || second(item, value);
+                return first(item, value) ||
+                       (!first(value, item) && second(item, value));
+                //  (bool)(std::get<0>(lhs) < std::get<0>(rhs)) ||
+                //      (!(bool)(std::get<0>(rhs) < std::get<0>(lhs))
+                //       && lhstail < rhstail)
+                // return first(item, value) || second(item, value);
             }
 
             First first;

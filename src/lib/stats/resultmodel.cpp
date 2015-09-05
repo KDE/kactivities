@@ -92,9 +92,17 @@ public:
         int m_countLimit;
         ResultModelPrivate *const d;
 
+        friend QDebug operator<< (QDebug out, const Cache &cache)
+        {
+            for (const auto& item: cache.m_items) {
+                out << "Cache item: " << item << "\n";
+            }
+
+            return out;
+        }
+
     public:
         //_ Fancy iterator
-
         struct FindCacheResult {
             Cache *const cache;
             Items::iterator iterator;
@@ -139,6 +147,11 @@ public:
             return FindCacheResult(
                 this, boost::lower_bound(m_items, _,
                                          std::forward<Predicate>(predicate)));
+        }
+
+        inline int indexOf(const FindCacheResult &result)
+        {
+            return std::distance(m_items.begin(), result.iterator);
         }
 
         inline void insertAt(const FindCacheResult &at,
@@ -432,29 +445,45 @@ public:
         // we already have it in the cache
         const auto result = cache.find(resource);
 
+        qDebug() << "Current cache is:\n" << cache;
+
         const auto destination =
             query.ordering() == HighScoredFirst ?
                 cache.lowerBound(
-                        member(&ResultSet::Result::linkStatus) < linkStatus
-                        && member(&ResultSet::Result::score) > score
-                        && member(&ResultSet::Result::resource) > resource
+                           member(&ResultSet::Result::linkStatus) > linkStatus
+                        && member(&ResultSet::Result::score)      > score
+                        && member(&ResultSet::Result::resource)   > resource
                     ) :
 
             query.ordering() == RecentlyUsedFirst ?
                 cache.lowerBound(
-                        member(&ResultSet::Result::lastUpdate) > lastUpdate &&
-                        member(&ResultSet::Result::resource) > resource
+                           member(&ResultSet::Result::linkStatus) > linkStatus
+                        && member(&ResultSet::Result::lastUpdate) > lastUpdate
+                        && member(&ResultSet::Result::resource)   > resource
                     ) :
 
             query.ordering() == RecentlyCreatedFirst ?
                 cache.lowerBound(
-                        member(&ResultSet::Result::firstUpdate) > firstUpdate &&
-                        member(&ResultSet::Result::resource) > resource
+                           member(&ResultSet::Result::linkStatus)  > linkStatus
+                        && member(&ResultSet::Result::firstUpdate) > firstUpdate
+                        && member(&ResultSet::Result::resource)    > resource
                     ) :
 
             // otherwise
-                cache.lowerBound(member(&ResultSet::Result::resource) > resource)
+                cache.lowerBound(
+                           member(&ResultSet::Result::linkStatus) > linkStatus
+                        && member(&ResultSet::Result::resource)   > resource
+                    )
             ;
+
+
+        qDebug() << "Result has been found: " << bool(result);
+        if (destination) {
+            qDebug() << "Dest" << cache.indexOf(destination);
+        } else {
+            qDebug() << "Dest is NOT valid" << cache.indexOf(destination);
+
+        }
 
         if (result) {
             // We already have the resource in the cache
