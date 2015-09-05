@@ -12,3 +12,7 @@ _tests
 kactivities.kdev4
 compile_commands.json
 /apidocs
+GPATH
+GRTAGS
+GSYMS
+GTAGS
