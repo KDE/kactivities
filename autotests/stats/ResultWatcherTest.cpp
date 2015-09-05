@@ -92,7 +92,7 @@ void ResultWatcherTest::testLinkedResources()
     watcher.linkToActivity(QUrl("test://link1"), Activity::current());
 
     // A signal should arrive soon, waiting for 5 seconds at most
-    CHECK_SIGNAL_RESULT(&watcher, &KAStats::ResultWatcher::resultAdded, 5,
+    CHECK_SIGNAL_RESULT(&watcher, &KAStats::ResultWatcher::resultScoreUpdated, 5,
                         (const QString &uri, double),
                         QCOMPARE(QString("test://link1"), uri));
 
@@ -122,7 +122,7 @@ void ResultWatcherTest::testUsedResources()
     }
 
     // A signal should arrive soon, waiting for 5 seconds at most
-    CHECK_SIGNAL_RESULT(&watcher, &KAStats::ResultWatcher::resultAdded, 5,
+    CHECK_SIGNAL_RESULT(&watcher, &KAStats::ResultWatcher::resultScoreUpdated, 5,
                         (const QString &uri, double),
                         QCOMPARE(QString("test://test1"), uri));
 }

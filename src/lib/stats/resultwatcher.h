@@ -39,7 +39,7 @@ class KACTIVITIESSTATS_EXPORT ResultWatcher: public QObject {
     Q_OBJECT
 
 public:
-    ResultWatcher(Query query);
+    ResultWatcher(Query query, QObject *parent = Q_NULLPTR);
     ~ResultWatcher();
 
 Q_SIGNALS:
@@ -49,8 +49,8 @@ Q_SIGNALS:
      * a previously existing one has some of the attributes changed.
      * @param result new data for the resource defined by result.resource
      */
-    void resultAdded(const QString &resource, double score, uint lastUpdate,
-                     uint firstUpdate);
+    void resultScoreUpdated(const QString &resource, double score,
+                            uint lastUpdate, uint firstUpdate);
 
     /**
      * Emitted when a result has been added or updated. This either means
@@ -59,6 +59,16 @@ Q_SIGNALS:
      * @param result new data for the resource defined by result.resource
      */
     void resultRemoved(const QString &resource);
+
+    /**
+     * Emitted when a result has been linked to the activity
+     */
+    void resultLinked(const QString &resource);
+
+    /**
+     * Emitted when a result has been linked to the activity
+     */
+    void resultUnlinked(const QString &resource);
 
     /**
      * Emitted when the title of a resource has been changed.

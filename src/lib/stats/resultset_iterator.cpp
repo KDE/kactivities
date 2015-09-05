@@ -60,7 +60,8 @@ public:
             currentValue = none;
 
         } else {
-            currentValue = make_optional(std::move(resultSet->d->currentResult()));
+            auto value = resultSet->d->currentResult();
+            currentValue = make_optional(std::move(value));
 
         }
     }
