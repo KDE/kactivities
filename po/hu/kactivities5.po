@@ -1,0 +1,238 @@
+# Copyright (C) YEAR This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Balázs Úr <urbalazs@gmail.com>, 2012, 2013.
+# Kristóf Kiszel <ulysses@kubuntu.org>, 2014.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2015-08-29 08:48+0000\n"
+"PO-Revision-Date: 2014-09-02 10:09+0200\n"
+"Last-Translator: Kristóf Kiszel <ulysses@kubuntu.org>\n"
+"Language-Team: Hungarian <kde-l10n-hu@kde.org>\n"
+"Language: hu\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Lokalize 1.5\n"
+
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Kiszel Kristóf,Úr Balázs"
+
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "ulysses@kubuntu.org,urbalazs@gmail.com"
+
+#: imports/activitymodel.cpp:585
+msgctxt "Header title for activity data model"
+msgid "Activity"
+msgstr "Aktivitás"
+
+#: service/Activities.cpp:139
+msgid "Default"
+msgstr "Alapértelmezés"
+
+#: service/plugins/globalshortcuts/GlobalShortcutsPlugin.cpp:86
+#: service/plugins/globalshortcuts/GlobalShortcutsPlugin.cpp:121
+#, kde-format
+msgctxt "@action"
+msgid "Switch to activity \"%1\""
+msgstr "Váltás a(z) „%1” aktivitásra"
+
+#. i18n: ectx: attribute (title), widget (QWidget, tab)
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:110
+#: workspace/kio/KioActivities.cpp:306
+#: workspace/settings/ExtraActivitiesInterface.cpp:45
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:21
+msgid "Activities"
+msgstr "Aktivitások"
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:113
+msgid "Loading..."
+msgstr "Betöltés…"
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:140
+msgid "The Activity Manager is not running"
+msgstr "Az aktivitáskezelő nem fut"
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:184
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:251
+msgid "Link to the current activity"
+msgstr "Összekapcsolás a jelenlegi aktivitással"
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:187
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:256
+msgid "Unlink from the current activity"
+msgstr "Szétbontás a jelenlegi aktivitásból"
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:190
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:260
+msgid "Link to:"
+msgstr "Összekapcsolás ezzel:"
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:195
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:268
+msgid "Unlink from:"
+msgstr "Szétbontás innen:"
+
+#: workspace/kio/KioActivities.cpp:107 workspace/kio/KioActivities.cpp:229
+msgid "Activity"
+msgstr "Aktivitás"
+
+#: workspace/kio/KioActivities.cpp:228
+msgid "Current activity"
+msgstr "Jelenlegi aktivitás"
+
+#: workspace/settings/MainConfigurationWidget.cpp:107
+#, fuzzy
+#| msgid "Activity"
+msgid "Activity switching"
+msgstr "Aktivitás"
+
+#: workspace/settings/MainConfigurationWidget.cpp:110
+msgctxt "@action"
+msgid "Walk through activities"
+msgstr ""
+
+#: workspace/settings/MainConfigurationWidget.cpp:112
+msgctxt "@action"
+msgid "Walk through activities (Reverse)"
+msgstr ""
+
+#: workspace/settings/MainConfigurationWidget.cpp:121
+msgctxt "unlimited number of months"
+msgid "forever"
+msgstr "örökké"
+
+#: workspace/settings/MainConfigurationWidget.cpp:131
+msgid "Forget the last hour"
+msgstr "Az elmúlt óra elfelejtése"
+
+#: workspace/settings/MainConfigurationWidget.cpp:133
+msgid "Forget the last two hours"
+msgstr "Az elmúlt két óra elfelejtése"
+
+#: workspace/settings/MainConfigurationWidget.cpp:135
+msgid "Forget a day"
+msgstr "Egy nap elfelejtése"
+
+#: workspace/settings/MainConfigurationWidget.cpp:137
+msgid "Forget everything"
+msgstr "Minden elfelejtése"
+
+#: workspace/settings/MainConfigurationWidget.cpp:301
+msgctxt "unit of time. months to keep the history"
+msgid " month"
+msgid_plural " months"
+msgstr[0] " hónap"
+msgstr[1] " hónap"
+
+#: workspace/settings/MainConfigurationWidget.cpp:304
+msgctxt "for in 'keep history for 5 months'"
+msgid "for "
+msgstr "ehhez"
+
+#: workspace/settings/qml/ActivitiesView.qml:38
+#, fuzzy
+#| msgid "Current activity"
+msgid "Create activity..."
+msgstr "Jelenlegi aktivitás"
+
+#: workspace/settings/qml/ActivityConfigurationDialog.qml:105
+#: workspace/settings/qml/components/DialogButtons.qml:41
+msgid "Apply"
+msgstr ""
+
+#: workspace/settings/qml/ActivityCreationDialog.qml:102
+msgid "Private - do not track usage for this activity"
+msgstr ""
+
+#: workspace/settings/qml/ActivityCreationDialog.qml:110
+msgid "Create"
+msgstr ""
+
+#: workspace/settings/qml/ActivityDeletionDialog.qml:68
+msgid "Are you sure you want to delete this activity?"
+msgstr ""
+
+#: workspace/settings/qml/ActivityDeletionDialog.qml:72
+msgid "Delete"
+msgstr ""
+
+#: workspace/settings/qml/components/DialogButtons.qml:50
+msgid "Cancel"
+msgstr ""
+
+#: workspace/settings/qml/components/NameChooser.qml:32
+#, fuzzy
+#| msgid "Activity"
+msgid "Activity name"
+msgstr "Aktivitás"
+
+#: workspace/settings/qml/components/ShortcutChooser.qml:33
+msgid "Shortcut for switching to this activity:"
+msgstr ""
+
+#. i18n: ectx: attribute (title), widget (QWidget, tabGeneral)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:31
+msgid "Switching"
+msgstr ""
+
+#. i18n: ectx: property (title), widget (QGroupBox, groupBox_2)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:37
+msgid "General"
+msgstr ""
+
+#. i18n: ectx: property (text), widget (QCheckBox, checkRememberVirtualDesktop)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:43
+msgid "Remember the current virtual desktop for each activity (needs restart)"
+msgstr ""
+
+#. i18n: ectx: property (title), widget (QGroupBox, groupBox)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:53
+msgid "Shortcuts"
+msgstr ""
+
+#. i18n: ectx: attribute (title), widget (QWidget, tabPrivacy)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:79
+msgid "Privacy"
+msgstr "Adatvédelem"
+
+#. i18n: ectx: property (text), widget (QLabel, labelRememberDocuments)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:85
+msgid "Remember opened documents:"
+msgstr "Emlékezzen a megnyitott dokumentumokra:"
+
+#. i18n: ectx: property (text), widget (QRadioButton, radioRememberAllApplications)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:96
+msgid "For a&ll applications"
+msgstr "Minden a&lkalmazásnál"
+
+#. i18n: ectx: property (text), widget (QRadioButton, radioDontRememberApplications)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:106
+msgid "&Do not remember"
+msgstr "N&e jegyezze meg"
+
+#. i18n: ectx: property (text), widget (QRadioButton, radioRememberSpecificApplications)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:113
+msgid "O&nly for specific applications"
+msgstr "Csak a megadott alkalmazások&nál"
+
+#. i18n: ectx: property (text), widget (QLabel, labelKeepHistory)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:141
+msgid "Keep history"
+msgstr "Előzmények megtartása"
+
+#. i18n: ectx: property (text), widget (QPushButton, buttonClearRecentHistory)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:164
+msgid "Clear recent history"
+msgstr "Előzmények törlése"
+
+#. i18n: ectx: property (text), widget (QCheckBox, checkBlacklistAllNotOnList)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:206
+msgid "Blacklist all applications not on this list"
+msgstr ""
+"Minden alkalmazás feketelistára tétele, amelyek nincsenek ezen a listán"

@@ -1,0 +1,237 @@
+# Translation of kactivities5.po to Ukrainian
+# Copyright (C) 2014-2015 This_file_is_part_of_KDE
+# This file is distributed under the license LGPL version 2.1 or
+# version 3 or later versions approved by the membership of KDE e.V.
+#
+# Yuri Chornoivan <yurchor@ukr.net>, 2014, 2015.
+msgid ""
+msgstr ""
+"Project-Id-Version: kactivities5\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2015-08-29 08:48+0000\n"
+"PO-Revision-Date: 2015-08-29 14:38+0300\n"
+"Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
+"Language-Team: Ukrainian <kde-i18n-uk@kde.org>\n"
+"Language: uk\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=n==1 ? 3 : n%10==1 && n%100!=11 ? 0 : n"
+"%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Lokalize 1.5\n"
+
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Юрій Чорноіван"
+
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "yurchor@ukr.net"
+
+#: imports/activitymodel.cpp:585
+msgctxt "Header title for activity data model"
+msgid "Activity"
+msgstr "Дія"
+
+#: service/Activities.cpp:139
+msgid "Default"
+msgstr "Типовий"
+
+#: service/plugins/globalshortcuts/GlobalShortcutsPlugin.cpp:86
+#: service/plugins/globalshortcuts/GlobalShortcutsPlugin.cpp:121
+#, kde-format
+msgctxt "@action"
+msgid "Switch to activity \"%1\""
+msgstr "Перемкнутися на простір дій «%1»"
+
+#. i18n: ectx: attribute (title), widget (QWidget, tab)
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:110
+#: workspace/kio/KioActivities.cpp:306
+#: workspace/settings/ExtraActivitiesInterface.cpp:45
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:21
+msgid "Activities"
+msgstr "Простори дій"
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:113
+msgid "Loading..."
+msgstr "Завантаження…"
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:140
+msgid "The Activity Manager is not running"
+msgstr "Засіб керування просторами дій не запущено"
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:184
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:251
+msgid "Link to the current activity"
+msgstr "З’єднати з поточним простором дій"
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:187
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:256
+msgid "Unlink from the current activity"
+msgstr "Від’єднати від поточного простору дій"
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:190
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:260
+msgid "Link to:"
+msgstr "З’єднати з:"
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:195
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:268
+msgid "Unlink from:"
+msgstr "Від’єднати від:"
+
+#: workspace/kio/KioActivities.cpp:107 workspace/kio/KioActivities.cpp:229
+msgid "Activity"
+msgstr "Простір дій"
+
+#: workspace/kio/KioActivities.cpp:228
+msgid "Current activity"
+msgstr "Поточний простір дій"
+
+#: workspace/settings/MainConfigurationWidget.cpp:107
+msgid "Activity switching"
+msgstr "Перемикання просторів дій"
+
+#: workspace/settings/MainConfigurationWidget.cpp:110
+msgctxt "@action"
+msgid "Walk through activities"
+msgstr "Перехід списком просторів дій"
+
+#: workspace/settings/MainConfigurationWidget.cpp:112
+msgctxt "@action"
+msgid "Walk through activities (Reverse)"
+msgstr "Перехід списком просторів дій (зворотний)"
+
+#: workspace/settings/MainConfigurationWidget.cpp:121
+msgctxt "unlimited number of months"
+msgid "forever"
+msgstr "назавжди"
+
+#: workspace/settings/MainConfigurationWidget.cpp:131
+msgid "Forget the last hour"
+msgstr "Забути останню годину"
+
+#: workspace/settings/MainConfigurationWidget.cpp:133
+msgid "Forget the last two hours"
+msgstr "Забути останні дві години"
+
+#: workspace/settings/MainConfigurationWidget.cpp:135
+msgid "Forget a day"
+msgstr "Забути день"
+
+#: workspace/settings/MainConfigurationWidget.cpp:137
+msgid "Forget everything"
+msgstr "Забути все"
+
+#: workspace/settings/MainConfigurationWidget.cpp:301
+msgctxt "unit of time. months to keep the history"
+msgid " month"
+msgid_plural " months"
+msgstr[0] " місяця"
+msgstr[1] " місяців"
+msgstr[2] " місяців"
+msgstr[3] " місяця"
+
+#: workspace/settings/MainConfigurationWidget.cpp:304
+msgctxt "for in 'keep history for 5 months'"
+msgid "for "
+msgstr "протягом "
+
+#: workspace/settings/qml/ActivitiesView.qml:38
+msgid "Create activity..."
+msgstr "Створити простір дій…"
+
+#: workspace/settings/qml/ActivityConfigurationDialog.qml:105
+#: workspace/settings/qml/components/DialogButtons.qml:41
+msgid "Apply"
+msgstr "Застосувати"
+
+#: workspace/settings/qml/ActivityCreationDialog.qml:102
+msgid "Private - do not track usage for this activity"
+msgstr "Конфіденційний — не стежити за діями у цьому просторі"
+
+#: workspace/settings/qml/ActivityCreationDialog.qml:110
+msgid "Create"
+msgstr "Створити"
+
+#: workspace/settings/qml/ActivityDeletionDialog.qml:68
+msgid "Are you sure you want to delete this activity?"
+msgstr "Ви справді хочете вилучити цей простір дій?"
+
+#: workspace/settings/qml/ActivityDeletionDialog.qml:72
+msgid "Delete"
+msgstr "Вилучити"
+
+#: workspace/settings/qml/components/DialogButtons.qml:50
+msgid "Cancel"
+msgstr "Скасувати"
+
+#: workspace/settings/qml/components/NameChooser.qml:32
+msgid "Activity name"
+msgstr "Назва простору дій"
+
+#: workspace/settings/qml/components/ShortcutChooser.qml:33
+msgid "Shortcut for switching to this activity:"
+msgstr "Скорочення для перемикання на цей просторі дій:"
+
+#. i18n: ectx: attribute (title), widget (QWidget, tabGeneral)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:31
+msgid "Switching"
+msgstr "Перемикання"
+
+#. i18n: ectx: property (title), widget (QGroupBox, groupBox_2)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:37
+msgid "General"
+msgstr "Загальне"
+
+#. i18n: ectx: property (text), widget (QCheckBox, checkRememberVirtualDesktop)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:43
+msgid "Remember the current virtual desktop for each activity (needs restart)"
+msgstr ""
+"Запам’ятовувати поточну віртуальну стільницю для кожного простору дій "
+"(потребує перезапуску)"
+
+#. i18n: ectx: property (title), widget (QGroupBox, groupBox)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:53
+msgid "Shortcuts"
+msgstr "Скорочення"
+
+#. i18n: ectx: attribute (title), widget (QWidget, tabPrivacy)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:79
+msgid "Privacy"
+msgstr "Конфіденційність"
+
+#. i18n: ectx: property (text), widget (QLabel, labelRememberDocuments)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:85
+msgid "Remember opened documents:"
+msgstr "Запам’ятовувати відкриті документи:"
+
+#. i18n: ectx: property (text), widget (QRadioButton, radioRememberAllApplications)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:96
+msgid "For a&ll applications"
+msgstr "Для &всіх програм"
+
+#. i18n: ectx: property (text), widget (QRadioButton, radioDontRememberApplications)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:106
+msgid "&Do not remember"
+msgstr "&Не запам’ятовувати"
+
+#. i18n: ectx: property (text), widget (QRadioButton, radioRememberSpecificApplications)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:113
+msgid "O&nly for specific applications"
+msgstr "&Лише для певних програм"
+
+#. i18n: ectx: property (text), widget (QLabel, labelKeepHistory)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:141
+msgid "Keep history"
+msgstr "Зберігати журнал"
+
+#. i18n: ectx: property (text), widget (QPushButton, buttonClearRecentHistory)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:164
+msgid "Clear recent history"
+msgstr "Спорожнити журнал останніх подій"
+
+#. i18n: ectx: property (text), widget (QCheckBox, checkBlacklistAllNotOnList)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:206
+msgid "Blacklist all applications not on this list"
+msgstr "Не запам’ятовувати дані для всіх програм поза цим списком"
