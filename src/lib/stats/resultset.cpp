@@ -52,7 +52,7 @@ public:
     double  score;
     uint    lastUpdate;
     uint    firstUpdate;
-    int     linkStatus;
+    ResultSet::Result::LinkStatus linkStatus;
 
 };
 
@@ -101,7 +101,7 @@ CREATE_GETTER_AND_SETTER(QString, mimetype, setMimetype)
 CREATE_GETTER_AND_SETTER(double, score, setScore)
 CREATE_GETTER_AND_SETTER(uint, lastUpdate, setLastUpdate)
 CREATE_GETTER_AND_SETTER(uint, firstUpdate, setFirstUpdate)
-CREATE_GETTER_AND_SETTER(int, linkStatus, setLinkStatus)
+CREATE_GETTER_AND_SETTER(ResultSet::Result::LinkStatus, linkStatus, setLinkStatus)
 
 #undef CREATE_GETTER_AND_SETTER
 

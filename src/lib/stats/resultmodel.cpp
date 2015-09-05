@@ -71,7 +71,7 @@ public:
         FetchMore     // Load more data if there is any
     };
 
-    class Cache {
+    class Cache { //_
     public:
         typedef QList<ResultSet::Result> Items;
 
@@ -357,7 +357,74 @@ public:
             d->q->endRemoveRows();
         }
 
-    } cache;
+    } cache; //^
+
+    inline Cache::FindCacheResult destinationFor(const ResultSet::Result &result)
+    {
+        using namespace kamd::utils::member_matcher;
+        using namespace Terms;
+
+        const auto resource    = result.resource();
+        const auto score       = result.score();
+        const auto firstUpdate = result.firstUpdate();
+        const auto lastUpdate  = result.lastUpdate();
+        const auto linkStatus  = result.linkStatus();
+
+#define ORDER_BY(Field) member(&ResultSet::Result::Field) > Field
+#define ORDER_BY_FULL(Field)                                                   \
+    cache.lowerBound(ORDER_BY(linkStatus) && ORDER_BY(Field)                   \
+                     && ORDER_BY(resource))
+
+        const auto destination =
+            query.ordering() == HighScoredFirst      ? ORDER_BY_FULL(score):
+            query.ordering() == RecentlyUsedFirst    ? ORDER_BY_FULL(lastUpdate):
+            query.ordering() == RecentlyCreatedFirst ? ORDER_BY_FULL(firstUpdate):
+            // otherwise
+            cache.lowerBound(ORDER_BY(linkStatus) && ORDER_BY(resource))
+            ;
+#undef ORDER_BY
+#undef ORDER_BY_FULL
+
+        if (destination) {
+            qDebug() << "Dest" << cache.indexOf(destination);
+        } else {
+            qDebug() << "Dest is NOT valid" << cache.indexOf(destination);
+
+        }
+
+        return destination;
+    }
+
+    inline void removeResult(const Cache::FindCacheResult &result)
+    {
+        q->beginRemoveRows(QModelIndex(), result.index, result.index);
+        cache.removeAt(result);
+        q->endRemoveRows();
+
+        fetch(cache.size(), 1);
+    }
+
+    inline void repositionResult(const Cache::FindCacheResult &result,
+                                 const Cache::FindCacheResult &destination)
+    {
+        using kamd::utils::slide_one;
+
+        // We already have the resource in the cache
+        // So, it is the time for a reshuffle
+        const int currentIndex = result.index;
+
+        q->dataChanged(q->index(currentIndex), q->index(currentIndex));
+
+        bool moving
+            = q->beginMoveRows(QModelIndex(), currentIndex, currentIndex,
+                               QModelIndex(), destination.index);
+
+        slide_one(result.iterator, destination.iterator);
+
+        if (moving) {
+            q->endMoveRows();
+        }
+    }
 
     void reload()
     {
@@ -425,13 +492,9 @@ public:
         }
     }
 
-
-    void onResultAdded(const QString &resource, double score, uint lastUpdate,
-                       uint firstUpdate, int linkStatus)
+    void onResultScoreUpdated(const QString &resource, double score,
+                              uint lastUpdate, uint firstUpdate)
     {
-        using namespace kamd::utils::member_matcher;
-        using namespace Terms;
-        using kamd::utils::slide_one;
         using boost::lower_bound;
 
         QDBG << "ResultModelPrivate::onResultAdded "
@@ -447,68 +510,30 @@ public:
 
         qDebug() << "Current cache is:\n" << cache;
 
-        const auto destination =
-            query.ordering() == HighScoredFirst ?
-                cache.lowerBound(
-                           member(&ResultSet::Result::linkStatus) > linkStatus
-                        && member(&ResultSet::Result::score)      > score
-                        && member(&ResultSet::Result::resource)   > resource
-                    ) :
+        ResultSet::Result::LinkStatus linkStatus
+            = result ? result.iterator->linkStatus()
+                     : ResultSet::Result::NotLinked;
 
-            query.ordering() == RecentlyUsedFirst ?
-                cache.lowerBound(
-                           member(&ResultSet::Result::linkStatus) > linkStatus
-                        && member(&ResultSet::Result::lastUpdate) > lastUpdate
-                        && member(&ResultSet::Result::resource)   > resource
-                    ) :
-
-            query.ordering() == RecentlyCreatedFirst ?
-                cache.lowerBound(
-                           member(&ResultSet::Result::linkStatus)  > linkStatus
-                        && member(&ResultSet::Result::firstUpdate) > firstUpdate
-                        && member(&ResultSet::Result::resource)    > resource
-                    ) :
-
-            // otherwise
-                cache.lowerBound(
-                           member(&ResultSet::Result::linkStatus) > linkStatus
-                        && member(&ResultSet::Result::resource)   > resource
-                    )
-            ;
-
-
-        qDebug() << "Result has been found: " << bool(result);
-        if (destination) {
-            qDebug() << "Dest" << cache.indexOf(destination);
-        } else {
-            qDebug() << "Dest is NOT valid" << cache.indexOf(destination);
-
-        }
+        const auto destination = destinationFor(*result.iterator);
 
         if (result) {
-            // We already have the resource in the cache
-            // So, it is the time for a reshuffle
-            const int currentIndex = result.index;
+            // We are only updating a result we already had,
+            // lets fill out the data and send the update signal.
+            // Move it if necessary.
 
-            result.iterator->setScore(score);
-            result.iterator->setLinkStatus(linkStatus);
-            result.iterator->setLastUpdate(lastUpdate);
-            result.iterator->setFirstUpdate(firstUpdate);
+            auto &item = *result.iterator;
 
-            q->dataChanged(q->index(currentIndex), q->index(currentIndex));
+            item.setScore(score);
+            item.setLinkStatus(linkStatus);
+            item.setLastUpdate(lastUpdate);
+            item.setFirstUpdate(firstUpdate);
 
-            bool moving
-                = q->beginMoveRows(QModelIndex(), currentIndex, currentIndex,
-                                   QModelIndex(), destination.index);
-
-            slide_one(result.iterator, destination.iterator);
-
-            if (moving) {
-                q->endMoveRows();
-            }
+            repositionResult(result, destination);
 
         } else {
-            // We do not have the resource in the cache
+            // We do not have the resource in the cache,
+            // lets fill out the data and insert it
+            // at the desired position
 
             q->beginInsertRows(QModelIndex(), destination.index,
                                destination.index);
@@ -539,13 +564,68 @@ public:
 
         if (!result) return;
 
-        q->beginRemoveRows(QModelIndex(), result.index, result.index);
+        if (query.selection() == Terms::UsedResources
+            || result.iterator->linkStatus() != ResultSet::Result::Linked) {
+            removeResult(result);
+        }
+    }
 
-        cache.removeAt(result);
+    void onResultLinked(const QString &resource)
+    {
+        const auto result = cache.find(resource);
 
-        q->endRemoveRows();
+        if (!result) return;
 
-        fetch(cache.size(), 1);
+        if (query.selection() == Terms::LinkedResources) {
+            onResultScoreUpdated(resource, 0, 0, 0);
+
+        } else if (query.selection() == Terms::AllResources) {
+            result.iterator->setLinkStatus(ResultSet::Result::Linked);
+            repositionResult(result, destinationFor(*result.iterator));
+
+        }
+    }
+
+    void onResultUnlinked(const QString &resource)
+    {
+        const auto result = cache.find(resource);
+
+        if (!result) return;
+
+        if (query.selection() == Terms::LinkedResources) {
+            removeResult(result);
+
+        } else if (query.selection() == Terms::AllResources) {
+            result.iterator->setLinkStatus(ResultSet::Result::NotLinked);
+            repositionResult(result, destinationFor(*result.iterator));
+
+        }
+    }
+
+    Query query;
+    ResultWatcher watcher;
+    bool hasMore;
+
+    KActivities::Consumer activities;
+    Common::Database::Ptr database;
+
+    //_ Title and mimetype functions
+    void fillTitleAndMimetype(ResultSet::Result &result)
+    {
+        auto query = database->execQuery(
+                "SELECT "
+                "title, mimetype "
+                "FROM "
+                "ResourceInfo "
+                "WHERE "
+                "targettedResource = '" + result.resource() + "'"
+                );
+
+        // Only one item at most
+        for (const auto &item: query) {
+            result.setTitle(item["title"].toString());
+            result.setMimetype(item["mimetype"].toString());
+        }
     }
 
     void onResourceTitleChanged(const QString &resource, const QString &title)
@@ -571,31 +651,7 @@ public:
 
         q->dataChanged(q->index(result.index), q->index(result.index));
     }
-
-    Query query;
-    ResultWatcher watcher;
-    bool hasMore;
-
-    KActivities::Consumer activities;
-    Common::Database::Ptr database;
-
-    void fillTitleAndMimetype(ResultSet::Result &result)
-    {
-        auto query = database->execQuery(
-                "SELECT "
-                "title, mimetype "
-                "FROM "
-                "ResourceInfo "
-                "WHERE "
-                "targettedResource = '" + result.resource() + "'"
-                );
-
-        // Only one item at most
-        for (const auto &item: query) {
-            result.setTitle(item["title"].toString());
-            result.setMimetype(item["mimetype"].toString());
-        }
-    }
+    //^
 
     void onCurrentActivityChanged(const QString &activity)
     {
@@ -619,10 +675,14 @@ ResultModel::ResultModel(Query query, QObject *parent)
 {
     using namespace std::placeholders;
 
-    connect(&d->watcher, &ResultWatcher::resultAdded,
-            this, std::bind(&ResultModelPrivate::onResultAdded, d, _1, _2, _3, _4, _5));
+    connect(&d->watcher, &ResultWatcher::resultScoreUpdated,
+            this, std::bind(&ResultModelPrivate::onResultScoreUpdated, d, _1, _2, _3, _4));
     connect(&d->watcher, &ResultWatcher::resultRemoved,
             this, std::bind(&ResultModelPrivate::onResultRemoved, d, _1));
+    connect(&d->watcher, &ResultWatcher::resultLinked,
+            this, std::bind(&ResultModelPrivate::onResultLinked, d, _1));
+    connect(&d->watcher, &ResultWatcher::resultUnlinked,
+            this, std::bind(&ResultModelPrivate::onResultUnlinked, d, _1));
 
     connect(&d->watcher, &ResultWatcher::resourceTitleChanged,
             this, std::bind(&ResultModelPrivate::onResourceTitleChanged, d, _1, _2));

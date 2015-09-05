@@ -210,8 +210,7 @@ public:
 
         // TODO: See whether it makes sense to have
         // lastUpdate/firstUpdate here as well
-        emit q->resultAdded(resource, std::numeric_limits<double>::infinity(),
-                            0, 0, true);
+        emit q->resultLinked(resource);
     }
 
     void onResourceUnlinkedFromActivity(const QString &agent,
@@ -225,7 +224,7 @@ public:
 
         if (!eventMatches(agent, resource, activity)) return;
 
-        emit q->resultRemoved(resource);
+        emit q->resultUnlinked(resource);
     }
 
     void onResourceScoreUpdated(const QString &activity, const QString &agent,
@@ -244,7 +243,7 @@ public:
 
         if (!eventMatches(agent, resource, activity)) return;
 
-        emit q->resultAdded(resource, score, lastUpdate, firstUpdate, false);
+        emit q->resultScoreUpdated(resource, score, lastUpdate, firstUpdate);
     }
 
 
@@ -299,8 +298,9 @@ public:
     Query query;
 };
 
-ResultWatcher::ResultWatcher(Query query)
-    : d(new ResultWatcherPrivate(this, query))
+ResultWatcher::ResultWatcher(Query query, QObject *parent)
+    : QObject(parent)
+    , d(new ResultWatcherPrivate(this, query))
 {
     using namespace org::kde::ActivityManager;
     using namespace std::placeholders;

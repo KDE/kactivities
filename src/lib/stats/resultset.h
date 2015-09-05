@@ -60,13 +60,13 @@ public:
             Linked    = 2
         };
 
-        QString resource() const;  ///< URL of the resource
-        QString title() const;     ///< Title of the resource, or URL if title is not known
-        QString mimetype() const;  ///< Mimetype of the resource, or URL if title is not known
-        double score() const;      ///< The score calculated based on the usage statistics
-        uint lastUpdate() const;   ///< Timestamp of the last update
-        uint firstUpdate() const;  ///< Timestamp of the first update
-        int linkStatus() const;    ///< Differentiates between linked and non-linked resources in mixed queries
+        QString resource() const;      ///< URL of the resource
+        QString title() const;         ///< Title of the resource, or URL if title is not known
+        QString mimetype() const;      ///< Mimetype of the resource, or URL if title is not known
+        double score() const;          ///< The score calculated based on the usage statistics
+        uint lastUpdate() const;       ///< Timestamp of the last update
+        uint firstUpdate() const;      ///< Timestamp of the first update
+        LinkStatus linkStatus() const; ///< Differentiates between linked and non-linked resources in mixed queries
 
         void setResource(QString resource);
         void setTitle(QString title);
@@ -74,7 +74,7 @@ public:
         void setScore(double score);
         void setLastUpdate(uint lastUpdate);
         void setFirstUpdate(uint firstUpdate);
-        void setLinkStatus(int linkedStatus);
+        void setLinkStatus(LinkStatus linkedStatus);
 
     private:
         ResultSet_ResultPrivate * d;
