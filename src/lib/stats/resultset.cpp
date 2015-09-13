@@ -158,14 +158,14 @@ public:
     {
         if (urlFilter == "*") return "1";
 
-        return "starmatch('" + urlFilter + "', resource)";
+        return "resource GLOB '" + urlFilter + "'";
     }
 
     QString mimetypeClause(const QString &mimetype) const
     {
         if (mimetype == ":any" || mimetype == "*") return "1";
 
-        return "starmatch('" + mimetype + "', mimetype)";
+        return "mimetype GLOB '" + mimetype + "'";
     }
 
     /**

@@ -22,7 +22,6 @@
 
 #include <utils/d_ptr_implementation.h>
 #include <common/database/schema/ResourcesDatabaseSchema.h>
-#include <utils/qsqlquery_iterator.h>
 
 #include <QSqlDatabase>
 #include <QSqlQuery>
@@ -35,83 +34,6 @@
 #include <memory>
 #include <mutex>
 #include <map>
-
-#include <sqlite3.h>
-
-QRegExp Common::starMatcher(const QString &pattern)
-{
-    const auto begin     = pattern.constBegin();
-    const auto end       = pattern.constEnd();
-
-    auto currentStart    = pattern.constBegin();
-    auto currentPosition = pattern.constBegin();
-
-    bool isEscaped = false;
-
-    // This should be available in the QString class...
-    auto stringFromIterators = [&](const QString::const_iterator &currentStart,
-                                   const QString::const_iterator &currentPosition) {
-        return pattern.mid(std::distance(begin, currentStart),
-                       std::distance(currentStart, currentPosition));
-    };
-
-    QString regexPattern;
-    regexPattern.reserve(pattern.size() * 1.5);
-
-    for (; currentPosition != end; ++currentPosition) {
-        if (isEscaped) {
-            // Just skip the current character
-            isEscaped = false;
-
-        } else if (*currentPosition == '\\') {
-            // Skip two characters
-            isEscaped = true;
-
-        } else if (*currentPosition == '*') {
-            regexPattern.append(QRegExp::escape(stringFromIterators(
-                                    currentStart, currentPosition)) + ".*");
-            currentStart = currentPosition + 1;
-
-        } else {
-            // This one is boring, nothing to do
-        }
-    }
-
-    if (currentStart != currentPosition) {
-        regexPattern.append(QRegExp::escape(stringFromIterators(
-                                currentStart, currentPosition)));
-    }
-
-    return QRegExp(regexPattern);
-}
-
-static void sqlite3_starmatch(sqlite3_context *context, int argc,
-                              sqlite3_value **argv)
-{
-    Q_ASSERT_X(argc == 2, "Star match", "Wrong number of arguments");
-
-    auto toQString = [&] (int arg_id) {
-        const auto &value = argv[arg_id];
-        // if (sqlite3_value_type(value) != QSQLITE_TEXT) return QString();
-
-        return QString(
-            reinterpret_cast<const QChar *>(sqlite3_value_text16(value)),
-            sqlite3_value_bytes16(value) / sizeof(QChar));
-    };
-
-    const auto pattern = toQString(0);
-    const auto str = toQString(1);
-
-    static QString lastPattern;
-    static QRegExp lastPatternRegex;
-
-    if (lastPattern != pattern) {
-        lastPattern = pattern;
-        lastPatternRegex = Common::starMatcher(pattern);
-    }
-
-    sqlite3_result_int(context, lastPatternRegex.exactMatch(str));
-}
 
 namespace Common {
 
@@ -131,28 +53,6 @@ Database::Locker::~Locker()
     m_database.commit();
 }
 
-void sqlite3_register_starmatch_function(QSqlDatabase &db)
-{
-    QVariant v = db.driver()->handle();
-
-    if (v.isValid() && qstrcmp(v.typeName(), "sqlite3*") == 0) {
-        // v.data() returns a pointer to the handle
-        sqlite3 *handle = *static_cast<sqlite3 **>(v.data());
-        if (handle != 0) { // check that it is not NULL
-            sqlite3_create_function(
-                    handle,             // connection
-                    "starmatch",        // function name
-                    2,                  // arity
-                    SQLITE_UTF8 |       // text representation
-                        SQLITE_DETERMINISTIC, // the function is pure
-                    0,                  // We are not going to pass anything back to ourselves
-                    &sqlite3_starmatch, // Function
-                    0, 0                // No aggregation-related functions
-                    );
-
-        }
-    }
-}
 
 namespace {
 #ifdef QT_DEBUG
@@ -267,9 +167,6 @@ Database::Ptr Database::instance(Source source, OpenMode openMode)
         << "\n    wal_autocheckpoint: " << ptr->pragma("wal_autocheckpoint")
         << "\n    synchronous:        " << ptr->pragma("synchronous")
         ;
-
-    // Initialize the more limited matching function
-    sqlite3_register_starmatch_function(ptr->d->database);
 
     return ptr;
 }

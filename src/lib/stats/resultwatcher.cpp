@@ -71,7 +71,7 @@ public:
         , query(query)
     {
         for (const auto& urlFilter: query.urlFilters()) {
-            urlFilters << Common::starMatcher(urlFilter);
+            urlFilters << QRegExp(urlFilter, Qt::CaseSensitive, QRegExp::WildcardUnix);
         }
 
         m_resultInvalidationTimer.setSingleShot(true);

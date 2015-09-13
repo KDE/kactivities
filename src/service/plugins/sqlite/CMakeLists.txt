@@ -2,16 +2,6 @@
 
 project (kactivitymanagerd-plugin-sqlite)
 
-# SQLite
-set (SQLITE_MIN_VERSION 3.6.23)
-find_package(Sqlite ${SQLITE_MIN_VERSION} REQUIRED)
-set_package_properties(Sqlite PROPERTIES
-   URL "http://www.sqlite.org"
-   DESCRIPTION "The Sqlite database library"
-   TYPE REQUIRED
-   PURPOSE "Required by the Sqlite backend"
-   )
-
 set (
    sqliteplugin_SRCS
    Database.cpp
@@ -50,7 +40,6 @@ include_directories (
    ${CMAKE_CURRENT_BINARY_DIR}
    ${CMAKE_CURRENT_BINARY_DIR}/../..
    ${KConfig_INCLUDE_DIR}
-   ${SQLITE_INCLUDE_DIR}
    )
 
 add_library (
@@ -67,7 +56,6 @@ target_link_libraries (
    KF5::DBusAddons
    KF5::CoreAddons
    KF5::Activities
-   ${SQLITE_LIBRARIES}
    )
 
 kservice_desktop_to_json (
