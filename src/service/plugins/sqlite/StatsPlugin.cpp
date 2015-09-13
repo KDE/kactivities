@@ -133,7 +133,7 @@ void StatsPlugin::loadConfiguration()
             );
 
     for (const auto& filter: filters) {
-        m_urlFilters << QRegExp(filter, Qt::CaseInsensitive, QRegExp::WildcardUnix);
+        m_urlFilters << Common::starMatcher(filter);
     }
 
     // Loading the private activities
@@ -588,7 +588,7 @@ void StatsPlugin::DeleteStatsForResource(const QString &activity,
             "WHERE "
                 + activityFilter + " AND "
                 + clientFilter + " AND "
-                + "targettedResource GLOB :targettedResource"
+                + "starmatch(:targettedResource, targettedResource)"
         );
 
     auto removeScoreCachesQuery = resourcesDatabase().createQuery();
@@ -597,7 +597,7 @@ void StatsPlugin::DeleteStatsForResource(const QString &activity,
             "WHERE "
                 + activityFilter + " AND "
                 + clientFilter + " AND "
-                + "targettedResource GLOB :targettedResource"
+                + "starmatch(:targettedResource, targettedResource)"
         );
 
     Utils::exec(Utils::FailOnError, removeEventsQuery,

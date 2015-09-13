@@ -24,8 +24,11 @@
 #include <utils/d_ptr.h>
 #include <memory>
 #include <QSqlQuery>
+#include <QRegExp>
 
 namespace Common {
+
+QRegExp starMatcher(const QString &pattern);
 
 class Database {
 public:
