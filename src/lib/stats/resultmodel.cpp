@@ -183,7 +183,7 @@ public:
         {
             using namespace kamd::utils::member_matcher;
 
-#if 0
+#if 1
             QDBG << "===\nOld items {";
             for (const auto& item: m_items) {
                 QDBG << item;
@@ -510,14 +510,14 @@ public:
             // lets fill out the data and send the update signal.
             // Move it if necessary.
 
-            const auto destination = destinationFor(*result.iterator);
-
             auto &item = *result.iterator;
 
             item.setScore(score);
             item.setLinkStatus(linkStatus);
             item.setLastUpdate(lastUpdate);
             item.setFirstUpdate(firstUpdate);
+
+            const auto destination = destinationFor(item);
 
             repositionResult(result, destination);
 
