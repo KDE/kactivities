@@ -133,7 +133,7 @@ void StatsPlugin::loadConfiguration()
             );
 
     for (const auto& filter: filters) {
-        m_urlFilters << QRegExp(filter, Qt::CaseInsensitive, QRegExp::WildcardUnix);
+        m_urlFilters << Common::starPatternToRegex(filter);
     }
 
     // Loading the private activities
@@ -588,7 +588,7 @@ void StatsPlugin::DeleteStatsForResource(const QString &activity,
             "WHERE "
                 + activityFilter + " AND "
                 + clientFilter + " AND "
-                + "targettedResource GLOB :targettedResource"
+                + "targettedResource LIKE :targettedResource ESCAPE '\\'"
         );
 
     auto removeScoreCachesQuery = resourcesDatabase().createQuery();
@@ -597,14 +597,16 @@ void StatsPlugin::DeleteStatsForResource(const QString &activity,
             "WHERE "
                 + activityFilter + " AND "
                 + clientFilter + " AND "
-                + "targettedResource GLOB :targettedResource"
+                + "targettedResource LIKE :targettedResource ESCAPE '\\'"
         );
 
+    const auto pattern = Common::starPatternToLike(resource);
+
     Utils::exec(Utils::FailOnError, removeEventsQuery,
-                ":targettedResource", resource);
+                ":targettedResource", pattern);
 
     Utils::exec(Utils::FailOnError, removeScoreCachesQuery,
-                ":targettedResource", resource);
+                ":targettedResource", pattern);
 
     emit ResourceScoreDeleted(activity, client, resource);
 }
