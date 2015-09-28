@@ -18,38 +18,38 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import QtQuick 2.0
+import QtQuick 2.2
 import QtQuick.Controls 1.0 as QtControls
 
-Row {
+import "./components" as Local
+
+Item {
     id: root
 
-    property alias acceptText: buttonAccept.text
-    property alias acceptIcon: buttonAccept.iconName
+    property alias activityIsPrivate : checkPrivate.checked
+    property alias activityShortcut  : panelShortcut.keySequence
 
-    property alias cancelText: buttonCancel.text
-    property alias cancelIcon: buttonCancel.iconName
+    height : content.childrenRect.height + 4 * units.smallSpacing
+    width  : content.childrenRect.width + 4 * units.smallSpacing
 
-    signal accepted()
-    signal canceled()
+    Column {
+        anchors {
+            fill: parent
+            margins: 2 * units.smallSpacing
+        }
 
-    spacing: units.smallSpacing
+        QtControls.CheckBox {
+            id: checkPrivate
 
-    QtControls.Button {
-        id: buttonAccept
+            text: "Private - do not track usage for this activity"
 
-        text: i18n("Apply")
-        iconName: "list-add"
+            width: parent.width
+        }
 
-        onClicked: root.accepted()
-    }
+        Local.ShortcutChooser {
+            id: panelShortcut
 
-    QtControls.Button {
-        id: buttonCancel
-
-        text: i18n("Cancel")
-        iconName: "dialog-cancel"
-
-        onClicked: root.canceled()
+            width: parent.width
+        }
     }
 }

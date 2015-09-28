@@ -35,6 +35,9 @@ Row {
 
     spacing: units.smallSpacing
 
+    height : buttonAccept.height //childrenRect.height
+    width  : buttonAccept.width + spacing + buttonCancel.width
+
     QtControls.Button {
         id: buttonAccept
 

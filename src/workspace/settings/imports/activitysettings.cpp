@@ -1,5 +1,4 @@
-/*   vim:set foldmethod=marker:
- *
+/*
  *   Copyright (C) 2015 Ivan Cukic <ivan.cukic(at)kde.org>
  *
  *   This program is free software; you can redistribute it and/or modify
@@ -18,25 +17,33 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import QtQuick 2.0
-import QtQuick.Controls 1.0 as QtControls
-import org.kde.kquickcontrols 2.0 as KQuickControls
-import org.kde.kquickcontrolsaddons 2.0 as KQuickControls
+#include "activitysettings.h"
 
-QtControls.Button {
-    id: root
+#include <QDebug>
 
-    width:  height
-    height: units.iconSizes.medium
+#include "dialog.h"
 
-    iconName: "preferences-activities"
-
-    KQuickControls.IconDialog {
-        id: iconDialog
-        onIconNameChanged: root.iconName = iconName
-    }
-
-    onClicked: {
-        iconDialog.open();
-    }
+ActivitySettings::ActivitySettings(QObject *parent)
+    : QObject(parent)
+{
 }
+
+ActivitySettings::~ActivitySettings()
+{
+}
+
+void ActivitySettings::configureActivity(const QString &id)
+{
+    qDebug() << "configure activity requested: " << id;
+    (new Dialog(id))->exec();
+}
+
+void ActivitySettings::newActivity()
+{
+    qDebug() << "activity creation requested";
+    (new Dialog())->exec();
+}
+
+#include "activitysettings.moc"
+
+

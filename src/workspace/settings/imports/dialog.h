@@ -1,5 +1,4 @@
-/*   vim:set foldmethod=marker:
- *
+/*
  *   Copyright (C) 2015 Ivan Cukic <ivan.cukic(at)kde.org>
  *
  *   This program is free software; you can redistribute it and/or modify
@@ -18,22 +17,31 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import QtQuick 2.0
-import QtQuick.Controls 1.0 as QtControls
-import org.kde.kquickcontrols 2.0 as KQuickControls
-import org.kde.kquickcontrolsaddons 2.0 as KQuickControls
+#ifndef DIALOG_H
+#define DIALOG_H
 
-Row {
-    spacing: units.smallSpacing
+#include <QDialog>
 
-    property alias keySequence: buttonKeyShorcut.keySequence
+#include "utils/d_ptr.h"
 
-    QtControls.Label {
-        anchors.verticalCenter: parent.verticalCenter
-        text: i18n("Shortcut for switching to this activity:")
-    }
+class Dialog: public QDialog {
+    Q_OBJECT
 
-    KQuickControls.KeySequenceItem {
-        id: buttonKeyShorcut
-    }
-}
+public:
+    Dialog(QObject *parent = Q_NULLPTR);
+    Dialog(const QString &activityId, QObject *parent = Q_NULLPTR);
+
+    ~Dialog();
+
+    void initUi();
+
+protected:
+    void showEvent(QShowEvent *event) Q_DECL_OVERRIDE;
+
+private:
+    D_PTR;
+
+};
+
+#endif // DIALOG_H
+

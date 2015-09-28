@@ -7,6 +7,8 @@ find_package (KF5Declarative ${KF5_DEP_VERSION} CONFIG REQUIRED)
 find_package (KF5XmlGui ${KF5_DEP_VERSION} CONFIG REQUIRED)
 find_package (KF5GlobalAccel ${KF5_DEP_VERSION} CONFIG REQUIRED)
 
+add_subdirectory(imports)
+
 set (KAMD_KCM_SRCS
    kcm_activities.cpp
 

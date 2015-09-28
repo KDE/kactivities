@@ -1,5 +1,4 @@
-/*   vim:set foldmethod=marker:
- *
+/*
  *   Copyright (C) 2015 Ivan Cukic <ivan.cukic(at)kde.org>
  *
  *   This program is free software; you can redistribute it and/or modify
@@ -18,23 +17,23 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import QtQuick 2.0
-import QtQuick.Controls 1.0 as QtControls
+#ifndef ACTIVITYSETTINGS_H
+#define ACTIVITYSETTINGS_H
 
-Item {
-    height: units.iconSizes.medium + 2 * units.smallSpacing
+#include <QObject>
 
-    property alias text: activityNameText.text
+class ActivitySettings: public QObject {
+    Q_OBJECT
 
-    QtControls.TextField {
-        id: activityNameText
+public:
+    ActivitySettings(QObject *parent = Q_NULLPTR);
+    ~ActivitySettings();
 
-        placeholderText: i18n("Activity name")
+public Q_SLOTS:
+    Q_INVOKABLE void configureActivity(const QString &id);
+    Q_INVOKABLE void newActivity();
+};
 
-        anchors {
-            left: parent.left
-            right: parent.right
-            verticalCenter: parent.verticalCenter
-        }
-    }
-}
+#endif // ACTIVITYSETTINGS_H
+
+

@@ -18,23 +18,40 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import QtQuick 2.0
+import QtQuick 2.2
 import QtQuick.Controls 1.0 as QtControls
 
+import org.kde.plasma.core 2.0 as PlasmaCore
+
 Item {
-    height: units.iconSizes.medium + 2 * units.smallSpacing
+    property alias text  : textField.text
+    property alias label : label.text
 
-    property alias text: activityNameText.text
+    property alias labelWidth        : label.width
+    property alias desiredLabelWidth : label.contentWidth
 
-    QtControls.TextField {
-        id: activityNameText
+    height : textField.height
+    width  : parent.width
 
-        placeholderText: i18n("Activity name")
+    QtControls.Label {
+        id: label
+
+        horizontalAlignment: Text.AlignRight
 
         anchors {
             left: parent.left
-            right: parent.right
-            verticalCenter: parent.verticalCenter
+            verticalCenter: textField.verticalCenter
+        }
+    }
+
+    QtControls.TextField {
+        id: textField
+
+        anchors {
+            left  : label.right
+            right : parent.right
+
+            leftMargin : units.smallSpacing
         }
     }
 }

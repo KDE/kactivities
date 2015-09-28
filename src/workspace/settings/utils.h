@@ -20,10 +20,13 @@
 #ifndef UTILS_H
 #define UTILS_H
 
+#include <QGuiApplication>
+
 inline std::unique_ptr<QQuickView> createView(QWidget *parent)
 {
     auto view = new QQuickView();
     view->setColor(QGuiApplication::palette().window().color());
+    view->setResizeMode(QQuickView::SizeRootObjectToView);
 
     auto container = QWidget::createWindowContainer(view, parent);
     container->setFocusPolicy(Qt::TabFocus);
