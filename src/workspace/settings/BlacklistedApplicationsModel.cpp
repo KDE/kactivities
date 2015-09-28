@@ -108,8 +108,6 @@ void BlacklistedApplicationsModel::load()
     while (query.next()) {
         const auto name = query.value(0).toString();
 
-        qDebug() << "New name: " << name;
-
         if (defaultBlockedValue) {
             if (!allowedApplications.contains(name)) {
                 blockedApplications << name;
@@ -141,7 +139,7 @@ void BlacklistedApplicationsModel::load()
                                        blocked
                                    };
             } else {
-                d->applications << Private::ApplicationData{ name, name, name, blocked };
+                d->applications << Private::ApplicationData{ name, name, QString(), blocked };
             }
         }
 
@@ -216,7 +214,7 @@ QVariant BlacklistedApplicationsModel::data(const QModelIndex &modelIndex, int r
         return application.title;
 
     case Qt::DecorationRole:
-        return application.icon;
+        return application.icon.isEmpty() ? "application-x-executable" : application.icon;
 
     case BlockedApplicationRole:
         return application.blocked;

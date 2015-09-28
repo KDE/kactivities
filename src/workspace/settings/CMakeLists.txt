@@ -9,15 +9,23 @@ find_package (KF5GlobalAccel ${KF5_DEP_VERSION} CONFIG REQUIRED)
 
 set (KAMD_KCM_SRCS
    kcm_activities.cpp
+
    MainConfigurationWidget.cpp
+   ActivitiesTab.cpp
+   SwitchingTab.cpp
+   PrivacyTab.cpp
+
    BlacklistedApplicationsModel.cpp
    ExtraActivitiesInterface.cpp
+
    ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/src/utils/dbusfuture_p.cpp
    )
 
 ki18n_wrap_ui (
    KAMD_KCM_SRCS
    ui/MainConfigurationWidgetBase.ui
+   ui/PrivacyTabBase.ui
+   ui/SwitchingTabBase.ui
    )
 
 qt5_add_dbus_interface (
@@ -55,21 +63,11 @@ install (
    )
 
 install (
-   FILES
-      qml/BlacklistApplicationView.qml
-      qml/ActivitiesView.qml
-      qml/ActivityCreationDialog.qml
-      qml/ActivityConfigurationDialog.qml
-      qml/ActivityDeletionDialog.qml
-      qml/static.js
-   DESTINATION ${KDE_INSTALL_DATADIR_KF5}/kactivitymanagerd/workspace/settings
+   DIRECTORY
+
+   qml/activitiesTab
+   qml/privacyTab
+
+   DESTINATION ${KDE_INSTALL_DATADIR_KF5}/kactivitymanagerd/workspace/settings/qml
    )
 
-install (
-   FILES
-      qml/components/IconChooser.qml
-      qml/components/NameChooser.qml
-      qml/components/ShortcutChooser.qml
-      qml/components/DialogButtons.qml
-   DESTINATION ${KDE_INSTALL_DATADIR_KF5}/kactivitymanagerd/workspace/settings/components
-   )

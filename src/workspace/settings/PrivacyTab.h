@@ -17,32 +17,44 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef MAIN_CONFIGURATION_WIDGET_H
-#define MAIN_CONFIGURATION_WIDGET_H
+#ifndef PRIVACY_TAB_H
+#define PRIVACY_TAB_H
 
-#include <KCModule>
-#include <KPluginFactory>
-#include <KActivities/Consumer>
-#include <KActivities/Info>
+#include <QWidget>
 
 #include <utils/d_ptr.h>
 
 /**
- * MainConfigurationWidget
+ * PrivacyTab
  */
-class MainConfigurationWidget : public KCModule {
+class PrivacyTab : public QWidget {
     Q_OBJECT
 public:
-    MainConfigurationWidget(QWidget *parent, QVariantList args);
-    ~MainConfigurationWidget();
+    PrivacyTab(QWidget *parent);
+    ~PrivacyTab();
 
 public Q_SLOTS:
-    void defaults() Q_DECL_OVERRIDE;
-    void load() Q_DECL_OVERRIDE;
-    void save() Q_DECL_OVERRIDE;
+    void defaults();
+    void load();
+    void save();
+
+private Q_SLOTS:
+    void forget(int count, const QString &what);
+    void forgetLastHour();
+    void forgetTwoHours();
+    void forgetDay();
+    void forgetAll();
+
+    void spinKeepHistoryValueChanged(int value);
 
 private:
+    enum WhatToRemember {
+        AllApplications = 0,
+        SpecificApplications = 1,
+        NoApplications = 2
+    };
+
     D_PTR;
 };
 
-#endif // MAIN_CONFIGURATION_WIDGET_H
+#endif // PRIVACY_TAB_H

@@ -1,5 +1,6 @@
-/*
- *   Copyright (C) 2012, 2013, 2014, 2015 Ivan Cukic <ivan.cukic(at)kde.org>
+/*   vim:set foldmethod=marker:
+ *
+ *   Copyright (C) 2015 Ivan Cukic <ivan.cukic(at)kde.org>
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License version 2,
@@ -17,32 +18,22 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef MAIN_CONFIGURATION_WIDGET_H
-#define MAIN_CONFIGURATION_WIDGET_H
+import QtQuick 2.0
+import QtQuick.Controls 1.0 as QtControls
+import org.kde.kquickcontrols 2.0 as KQuickControls
+import org.kde.kquickcontrolsaddons 2.0 as KQuickControls
 
-#include <KCModule>
-#include <KPluginFactory>
-#include <KActivities/Consumer>
-#include <KActivities/Info>
+Row {
+    spacing: units.smallSpacing
 
-#include <utils/d_ptr.h>
+    property alias keySequence: buttonKeyShorcut.keySequence
 
-/**
- * MainConfigurationWidget
- */
-class MainConfigurationWidget : public KCModule {
-    Q_OBJECT
-public:
-    MainConfigurationWidget(QWidget *parent, QVariantList args);
-    ~MainConfigurationWidget();
+    QtControls.Label {
+        anchors.verticalCenter: parent.verticalCenter
+        text: i18n("Shortcut for switching to this activity:")
+    }
 
-public Q_SLOTS:
-    void defaults() Q_DECL_OVERRIDE;
-    void load() Q_DECL_OVERRIDE;
-    void save() Q_DECL_OVERRIDE;
-
-private:
-    D_PTR;
-};
-
-#endif // MAIN_CONFIGURATION_WIDGET_H
+    KQuickControls.KeySequenceItem {
+        id: buttonKeyShorcut
+    }
+}

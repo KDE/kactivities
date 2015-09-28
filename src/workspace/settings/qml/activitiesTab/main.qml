@@ -1,5 +1,6 @@
-/*
- *   Copyright (C) 2012, 2013, 2014, 2015 Ivan Cukic <ivan.cukic(at)kde.org>
+/*   vim:set foldmethod=marker:
+ *
+ *   Copyright (C) 2015 Ivan Cukic <ivan.cukic(at)kde.org>
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License version 2,
@@ -17,32 +18,10 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef MAIN_CONFIGURATION_WIDGET_H
-#define MAIN_CONFIGURATION_WIDGET_H
+import QtQuick 2.2
 
-#include <KCModule>
-#include <KPluginFactory>
-#include <KActivities/Consumer>
-#include <KActivities/Info>
+ActivitiesView {
+    anchors.fill: parent
 
-#include <utils/d_ptr.h>
+}
 
-/**
- * MainConfigurationWidget
- */
-class MainConfigurationWidget : public KCModule {
-    Q_OBJECT
-public:
-    MainConfigurationWidget(QWidget *parent, QVariantList args);
-    ~MainConfigurationWidget();
-
-public Q_SLOTS:
-    void defaults() Q_DECL_OVERRIDE;
-    void load() Q_DECL_OVERRIDE;
-    void save() Q_DECL_OVERRIDE;
-
-private:
-    D_PTR;
-};
-
-#endif // MAIN_CONFIGURATION_WIDGET_H

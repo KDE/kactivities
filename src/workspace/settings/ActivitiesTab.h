@@ -17,32 +17,32 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef MAIN_CONFIGURATION_WIDGET_H
-#define MAIN_CONFIGURATION_WIDGET_H
+#ifndef ACTIVITIES_TAB_H
+#define ACTIVITIES_TAB_H
 
-#include <KCModule>
-#include <KPluginFactory>
-#include <KActivities/Consumer>
-#include <KActivities/Info>
+#include <QWidget>
 
 #include <utils/d_ptr.h>
 
 /**
- * MainConfigurationWidget
+ * ActivitiesTab
  */
-class MainConfigurationWidget : public KCModule {
+class ActivitiesTab : public QWidget {
     Q_OBJECT
 public:
-    MainConfigurationWidget(QWidget *parent, QVariantList args);
-    ~MainConfigurationWidget();
+    ActivitiesTab(QWidget *parent);
+    ~ActivitiesTab();
 
 public Q_SLOTS:
-    void defaults() Q_DECL_OVERRIDE;
-    void load() Q_DECL_OVERRIDE;
-    void save() Q_DECL_OVERRIDE;
+    void defaults();
+    void load();
+    void save();
+
+Q_SIGNALS:
+    void changed();
 
 private:
     D_PTR;
 };
 
-#endif // MAIN_CONFIGURATION_WIDGET_H
+#endif // ACTIVITIES_TAB_H
