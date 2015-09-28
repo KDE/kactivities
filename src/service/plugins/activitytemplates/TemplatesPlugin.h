@@ -25,8 +25,7 @@ class KActionCollection;
 
 class TemplatesPlugin : public Plugin {
     Q_OBJECT
-    // Q_CLASSINFO("D-Bus Interface", "org.kde.ActivityManager.SLC")
-    // Q_PLUGIN_METADATA(IID "org.kde.ActivityManager.plugins.activitytemplates")
+    Q_CLASSINFO("D-Bus Interface", "org.kde.ActivityManager.Templates")
 
 public:
     TemplatesPlugin(QObject *parent = Q_NULLPTR,
@@ -40,11 +39,10 @@ public:
     virtual void setFeatureValue(const QStringList &property,
                                  const QDBusVariant &value) Q_DECL_OVERRIDE;
 
-private:
-    inline QStringList activities() const;
-    inline QStringList templates() const;
-    inline QStringList templateFor(const QString &activity) const;
+public Q_SLOTS:
+    void createActivity(const QDBusVariant &values);
 
+private:
     QObject *m_activities;
 
 };

@@ -39,6 +39,7 @@ public:
     void stopped(const QString &) const;
     void infoChanged(const QString &) const;
     void nameChanged(const QString &, const QString &) const;
+    void descriptionChanged(const QString &, const QString &) const;
     void iconChanged(const QString &, const QString &) const;
     void setServiceStatus(Consumer::ServiceStatus status) const;
 

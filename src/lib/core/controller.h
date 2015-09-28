@@ -63,6 +63,14 @@ public:
     QFuture<void> setActivityName(const QString &id, const QString &name);
 
     /**
+     * Sets the description of the specified activity
+     * @param id id of the activity
+     * @param description description to be set
+     */
+    QFuture<void> setActivityDescription(const QString &id,
+                                         const QString &description);
+
+    /**
      * Sets the icon of the specified activity
      * @param id id of the activity
      * @param icon icon to be set - freedesktop.org name or file path

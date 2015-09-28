@@ -25,6 +25,7 @@
 #include <QObject>
 
 #include <common/dbus/org.kde.ActivityManager.Activities.h>
+#include <utils/ptr_to.h>
 
 #include "activities_interface.h"
 #include "consumer.h"
@@ -46,6 +47,7 @@ Q_SIGNALS:
 
     void activityStateChanged(const QString &id, int state);
     void activityNameChanged(const QString &id, const QString &name);
+    void activityDescriptionChanged(const QString &id, const QString &description);
     void activityIconChanged(const QString &id, const QString &icon);
 
     void currentActivityChanged(const QString &id);
@@ -65,6 +67,7 @@ private Q_SLOTS:
     void setCurrentActivityFromReply(QDBusPendingCallWatcher *watcher);
 
     void setActivityName(const QString &id, const QString &name);
+    void setActivityDescription(const QString &id, const QString &description);
     void setActivityIcon(const QString &id, const QString &icon);
 
     void setActivityInfo(const ActivityInfo &info);
@@ -77,17 +80,25 @@ public:
     template <typename _Result, typename _Functor>
     void passInfoFromReply(QDBusPendingCallWatcher *watcher, _Functor f);
 
-    inline
-    const ActivityInfo *cfind(const QString & id)
+    template <int Policy = kamd::utils::Const>
+    inline typename kamd::utils::ptr_to<ActivityInfo, Policy>::type
+    find(const ActivityInfo &info)
     {
-        auto where = std::lower_bound(
-            m_activities.begin(), m_activities.end(), ActivityInfo(id));
+        auto where
+            = std::lower_bound(m_activities.begin(), m_activities.end(), info);
 
-        if (where != m_activities.end() && where->id == id) {
+        if (where != m_activities.end() && where->id == info.id) {
             return &(*where);
         }
 
         return Q_NULLPTR;
+    }
+
+    template <int Policy = kamd::utils::Const>
+    inline typename kamd::utils::ptr_to<ActivityInfo, Policy>::type
+    find(const QString &id)
+    {
+        return find<Policy>(ActivityInfo(id));
     }
 
     ActivitiesCache();

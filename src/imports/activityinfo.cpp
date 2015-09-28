@@ -42,6 +42,7 @@ void ActivityInfo::setCurrentActivity(const QString &id)
     setIdInternal(id);
 
     emit nameChanged(m_info->name());
+    emit descriptionChanged(m_info->description());
     emit iconChanged(m_info->icon());
 }
 
@@ -60,40 +61,39 @@ void ActivityInfo::setIdInternal(const QString &id)
     // We are killing the old info object, if any
     m_info.reset(new KActivities::Info(id));
 
-    connect(m_info.get(), &Info::nameChanged,
+    auto ptr = m_info.get();
+
+    connect(ptr, &Info::nameChanged,
             this, &ActivityInfo::nameChanged);
-    connect(m_info.get(), &Info::iconChanged,
+    connect(ptr, &Info::descriptionChanged,
+            this, &ActivityInfo::descriptionChanged);
+    connect(ptr, &Info::iconChanged,
             this, &ActivityInfo::iconChanged);
 }
 
-void ActivityInfo::setName(const QString &name)
-{
-    if (!m_info) return;
+#define CREATE_GETTER_AND_SETTER(WHAT, What)                                   \
+    QString ActivityInfo::What() const                                         \
+    {                                                                          \
+        return m_info ? m_info->What() : "";                                   \
+    }                                                                          \
+                                                                               \
+    void ActivityInfo::set##WHAT(const QString &value)                         \
+    {                                                                          \
+        if (!m_info)                                                           \
+            return;                                                            \
+                                                                               \
+        m_service.setActivity##WHAT(m_info->id(), value);                      \
+    }
 
-    m_service.setActivityName(m_info->id(), name);
-}
+CREATE_GETTER_AND_SETTER(Name, name)
+CREATE_GETTER_AND_SETTER(Description, description)
+CREATE_GETTER_AND_SETTER(Icon, icon)
 
-void ActivityInfo::setIcon(const QString &icon)
-{
-    if (!m_info) return;
-
-    m_service.setActivityIcon(m_info->id(), icon);
-}
-
+#undef CREATE_GETTER_AND_SETTER
 
 QString ActivityInfo::activityId() const
 {
     return m_info ? m_info->id() : "";
-}
-
-QString ActivityInfo::name() const
-{
-    return m_info ? m_info->name() : "";
-}
-
-QString ActivityInfo::icon() const
-{
-    return m_info ? m_info->icon() : "";
 }
 
 bool ActivityInfo::valid() const

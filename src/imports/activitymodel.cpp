@@ -302,14 +302,15 @@ ActivityModel::~ActivityModel()
 QHash<int, QByteArray> ActivityModel::roleNames() const
 {
     return {
-        {Qt::DisplayRole,    "name"},
-        {Qt::DecorationRole, "icon"},
+        {Qt::DisplayRole,     "name"},
+        {Qt::DecorationRole,  "icon"},
 
-        {ActivityState,      "state"},
-        {ActivityId,         "id"},
-        {ActivityIcon,       "iconSource"},
-        {ActivityBackground, "background"},
-        {ActivityCurrent,    "current"}
+        {ActivityState,       "state"},
+        {ActivityId,          "id"},
+        {ActivityIcon,        "iconSource"},
+        {ActivityDescription, "description"},
+        {ActivityBackground,  "background"},
+        {ActivityCurrent,     "current"}
     };
 }
 
@@ -376,12 +377,16 @@ ActivityModel::InfoPtr ActivityModel::registerActivity(const QString &id)
     } else {
         auto activityInfo = std::make_shared<Info>(id);
 
-        connect(activityInfo.get(), &Info::nameChanged,
-                this,               &ActivityModel::onActivityNameChanged);
-        connect(activityInfo.get(), &Info::iconChanged,
-                this,               &ActivityModel::onActivityIconChanged);
-        connect(activityInfo.get(), &Info::stateChanged,
-                this,               &ActivityModel::onActivityStateChanged);
+        auto ptr = activityInfo.get();
+
+        connect(ptr,  &Info::nameChanged,
+                this, &ActivityModel::onActivityNameChanged);
+        connect(ptr,  &Info::descriptionChanged,
+                this, &ActivityModel::onActivityDescriptionChanged);
+        connect(ptr,  &Info::iconChanged,
+                this, &ActivityModel::onActivityIconChanged);
+        connect(ptr,  &Info::stateChanged,
+                this, &ActivityModel::onActivityStateChanged);
 
         m_knownActivities.insert(InfoPtr(activityInfo));
 
@@ -456,21 +461,17 @@ void ActivityModel::hideActivity(const QString &id)
     }
 }
 
-void ActivityModel::onActivityNameChanged(const QString &name)
-{
-    Q_UNUSED(name);
+#define CREATE_SIGNAL_EMITTER(What, Role)                                      \
+    void ActivityModel::onActivity##What##Changed(const QString &)             \
+    {                                                                          \
+        Private::emitActivityUpdated(this, m_shownActivities, sender(), Role); \
+    }
 
-    Private::emitActivityUpdated(this, m_shownActivities, sender(),
-                                 Qt::DisplayRole);
-}
+CREATE_SIGNAL_EMITTER(Name, Qt::DisplayRole)
+CREATE_SIGNAL_EMITTER(Description, ActivityDescription)
+CREATE_SIGNAL_EMITTER(Icon, Qt::DecorationRole)
 
-void ActivityModel::onActivityIconChanged(const QString &icon)
-{
-    Q_UNUSED(icon);
-
-    Private::emitActivityUpdated(this, m_shownActivities, sender(),
-                                 Qt::DecorationRole);
-}
+#undef CREATE_SIGNAL_EMITTER
 
 void ActivityModel::onActivityStateChanged(Info::State state)
 {
@@ -565,6 +566,9 @@ QVariant ActivityModel::data(const QModelIndex &index, int role) const
             return icon.isEmpty() ? "preferences-activities" : icon;
         }
 
+    case ActivityDescription:
+        return item->description();
+
     case ActivityCurrent:
         return m_service.currentActivity() == item->id();
 
@@ -601,19 +605,19 @@ ActivityModel::InfoPtr ActivityModel::findActivity(QObject *ptr) const
     }
 }
 
-// QFuture<void> Controller::setActivityName(id, name)
-void ActivityModel::setActivityName(const QString &id, const QString &name,
-                                    const QJSValue &callback)
-{
-    continue_with(m_service.setActivityName(id, name), callback);
-}
+// QFuture<void> Controller::setActivityWhat(id, value)
+#define CREATE_SETTER(What)                                                    \
+    void ActivityModel::setActivity##What(                                     \
+        const QString &id, const QString &value, const QJSValue &callback)     \
+    {                                                                          \
+        continue_with(m_service.setActivity##What(id, value), callback);       \
+    }
 
-// QFuture<void> Controller::setActivityIcon(id, icon)
-void ActivityModel::setActivityIcon(const QString &id, const QString &icon,
-                                    const QJSValue &callback)
-{
-    continue_with(m_service.setActivityIcon(id, icon), callback);
-}
+CREATE_SETTER(Name)
+CREATE_SETTER(Description)
+CREATE_SETTER(Icon)
+
+#undef CREATE_SETTER
 
 // QFuture<bool> Controller::setCurrentActivity(id)
 void ActivityModel::setCurrentActivity(const QString &id,

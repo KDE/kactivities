@@ -17,6 +17,11 @@ set (
    ${plugin_implementation_SRCS}
    )
 
+qt5_add_dbus_adaptor (
+   activitytemplates_SRCS org.kde.ActivityManager.Templates.xml
+   TemplatesPlugin.h TemplatesPlugin
+   )
+
 add_library (
    kactivitymanagerd_plugin_activitytemplates SHARED
    ${activitytemplates_SRCS}

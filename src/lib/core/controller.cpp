@@ -35,34 +35,22 @@ Controller::~Controller()
 {
 }
 
-QFuture<void> Controller::setActivityName(const QString &id, const QString &name)
-{
-    // Manager::activities()->SetActivityName(id, name);
-    // TODO: Make Q_ASSERT_EVENTUALLY_X or something similar
-    Q_ASSERT_X(!name.isEmpty(), "Controller::setActivityName",
-               "The activity name can not be an empty string");
+#define CREATE_SETTER(What)                                                    \
+    QFuture<void> Controller::setActivity##What(const QString &id,             \
+                                                const QString &value)          \
+    {                                                                          \
+        return Manager::isServiceRunning()                                     \
+                   ? DBusFuture::asyncCall<void>(                              \
+                         Manager::activities(),                                \
+                         QStringLiteral("SetActivity" #What), id, value)       \
+                   : DBusFuture::fromVoid();                                   \
+    }
 
-    return Manager::isServiceRunning() ?
-        DBusFuture::asyncCall<void>(
-            Manager::activities(), QStringLiteral("SetActivityName"), id, name)
-        :
-        DBusFuture::fromVoid();
-}
+CREATE_SETTER(Name)
+CREATE_SETTER(Description)
+CREATE_SETTER(Icon)
 
-QFuture<void> Controller::setActivityIcon(const QString &id,
-                                          const QString &icon)
-{
-    // Q_ASSERT_X(activities().contains(id), "Controller::setActivityIcon",
-    //            "You can not change the icon of an non-existent activity");
-
-    // Manager::activities()->SetActivityIcon(id, icon);
-    return Manager::isServiceRunning() ?
-        DBusFuture::asyncCall<void>(
-            Manager::activities(), QStringLiteral("SetActivityIcon"), id, icon)
-        :
-        DBusFuture::fromVoid();
-
-}
+#undef CREATE_SETTER
 
 QFuture<bool> Controller::setCurrentActivity(const QString &id)
 {

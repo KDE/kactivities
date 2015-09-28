@@ -71,6 +71,7 @@ class KACTIVITIES_EXPORT Info : public QObject {
 
     Q_PROPERTY(QString id READ id)
     Q_PROPERTY(QString name READ name NOTIFY nameChanged)
+    Q_PROPERTY(QString description READ description NOTIFY descriptionChanged)
     Q_PROPERTY(QString icon READ icon NOTIFY iconChanged)
     Q_PROPERTY(Info::State state READ state NOTIFY stateChanged)
 
@@ -126,6 +127,11 @@ public:
     QString name() const;
 
     /**
+     * @returns the description of the activity
+     */
+    QString description() const;
+
+    /**
      * @returns the icon of the activity. Icon can be a freedesktop.org name or
      * a file path. Or empty if no icon is set.
      */
@@ -172,6 +178,11 @@ Q_SIGNALS:
     void nameChanged(const QString &name);
 
     /**
+     * Emitted when the description is changed
+     */
+    void descriptionChanged(const QString &description);
+
+    /**
      * Emitted when the icon was changed
      */
     void iconChanged(const QString &icon);
@@ -212,6 +223,7 @@ private:
     Q_PRIVATE_SLOT(d, void stopped(const QString &))
     Q_PRIVATE_SLOT(d, void infoChanged(const QString &))
     Q_PRIVATE_SLOT(d, void nameChanged(const QString &, const QString &))
+    Q_PRIVATE_SLOT(d, void descriptionChanged(const QString &, const QString &))
     Q_PRIVATE_SLOT(d, void iconChanged(const QString &, const QString &))
     Q_PRIVATE_SLOT(d, void setServiceStatus(Consumer::ServiceStatus))
 
