@@ -1,0 +1,229 @@
+# Copyright (C) YEAR This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Franklin Weng <franklin at goodhorse dot idv dot tw>, 2012, 2013, 2014, 2015.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2015-09-05 08:48+0000\n"
+"PO-Revision-Date: 2015-09-02 15:34+0800\n"
+"Last-Translator: Franklin\n"
+"Language-Team: Chinese Traditional <kde-i18n-doc@kde.org>\n"
+"Language: zh_TW\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Lokalize 1.5\n"
+
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Franklin Weng"
+
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "franklin@goodhorse.idv.tw"
+
+#: imports/activitymodel.cpp:585
+msgctxt "Header title for activity data model"
+msgid "Activity"
+msgstr "活動"
+
+#: service/Activities.cpp:139
+msgid "Default"
+msgstr "預設"
+
+#: service/plugins/globalshortcuts/GlobalShortcutsPlugin.cpp:86
+#: service/plugins/globalshortcuts/GlobalShortcutsPlugin.cpp:121
+#, kde-format
+msgctxt "@action"
+msgid "Switch to activity \"%1\""
+msgstr "切換到活動 %1"
+
+#. i18n: ectx: attribute (title), widget (QWidget, tab)
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:111
+#: workspace/kio/KioActivities.cpp:306
+#: workspace/settings/ExtraActivitiesInterface.cpp:45
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:21
+msgid "Activities"
+msgstr "活動"
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:114
+msgid "Loading..."
+msgstr "載入中..."
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:141
+msgid "The Activity Manager is not running"
+msgstr "活動管理員並未執行。"
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:187
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:254
+msgid "Link to the current activity"
+msgstr "連結到目前的活動"
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:190
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:259
+msgid "Unlink from the current activity"
+msgstr "取消與目前的活動的連結"
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:193
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:263
+msgid "Link to:"
+msgstr "連結到："
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:198
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:271
+msgid "Unlink from:"
+msgstr "取消連結："
+
+#: workspace/kio/KioActivities.cpp:107 workspace/kio/KioActivities.cpp:229
+msgid "Activity"
+msgstr "活動"
+
+#: workspace/kio/KioActivities.cpp:228
+msgid "Current activity"
+msgstr "目前活動"
+
+#: workspace/settings/MainConfigurationWidget.cpp:107
+msgid "Activity switching"
+msgstr "活動切換"
+
+#: workspace/settings/MainConfigurationWidget.cpp:110
+msgctxt "@action"
+msgid "Walk through activities"
+msgstr "瀏覽活動"
+
+#: workspace/settings/MainConfigurationWidget.cpp:112
+msgctxt "@action"
+msgid "Walk through activities (Reverse)"
+msgstr "瀏覽活動(反向)"
+
+#: workspace/settings/MainConfigurationWidget.cpp:121
+msgctxt "unlimited number of months"
+msgid "forever"
+msgstr "永久"
+
+#: workspace/settings/MainConfigurationWidget.cpp:131
+msgid "Forget the last hour"
+msgstr "丟掉最後一小時"
+
+#: workspace/settings/MainConfigurationWidget.cpp:133
+msgid "Forget the last two hours"
+msgstr "丟掉最後兩小時"
+
+#: workspace/settings/MainConfigurationWidget.cpp:135
+msgid "Forget a day"
+msgstr "丟掉一天內"
+
+#: workspace/settings/MainConfigurationWidget.cpp:137
+msgid "Forget everything"
+msgstr "全部丟掉"
+
+#: workspace/settings/MainConfigurationWidget.cpp:301
+msgctxt "unit of time. months to keep the history"
+msgid " month"
+msgid_plural " months"
+msgstr[0] " 個月"
+
+#: workspace/settings/MainConfigurationWidget.cpp:304
+msgctxt "for in 'keep history for 5 months'"
+msgid "for "
+msgstr "多久："
+
+#: workspace/settings/qml/ActivitiesView.qml:38
+msgid "Create activity..."
+msgstr "建立活動..."
+
+#: workspace/settings/qml/ActivityConfigurationDialog.qml:105
+#: workspace/settings/qml/components/DialogButtons.qml:41
+msgid "Apply"
+msgstr "套用"
+
+#: workspace/settings/qml/ActivityCreationDialog.qml:102
+msgid "Private - do not track usage for this activity"
+msgstr "私人活動 - 不要追蹤此活動"
+
+#: workspace/settings/qml/ActivityCreationDialog.qml:110
+msgid "Create"
+msgstr "建立"
+
+#: workspace/settings/qml/ActivityDeletionDialog.qml:68
+msgid "Are you sure you want to delete this activity?"
+msgstr "您確定要刪除此活動嗎？"
+
+#: workspace/settings/qml/ActivityDeletionDialog.qml:72
+msgid "Delete"
+msgstr "刪除"
+
+#: workspace/settings/qml/components/DialogButtons.qml:50
+msgid "Cancel"
+msgstr "取消"
+
+#: workspace/settings/qml/components/NameChooser.qml:32
+msgid "Activity name"
+msgstr "活動名稱"
+
+#: workspace/settings/qml/components/ShortcutChooser.qml:33
+msgid "Shortcut for switching to this activity:"
+msgstr "切換到此活動的快捷鍵："
+
+#. i18n: ectx: attribute (title), widget (QWidget, tabGeneral)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:31
+msgid "Switching"
+msgstr "切換"
+
+#. i18n: ectx: property (title), widget (QGroupBox, groupBox_2)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:37
+msgid "General"
+msgstr "一般"
+
+#. i18n: ectx: property (text), widget (QCheckBox, checkRememberVirtualDesktop)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:43
+msgid "Remember the current virtual desktop for each activity (needs restart)"
+msgstr "記住每個活動目前的虛擬桌面 (需要重新啟動)"
+
+#. i18n: ectx: property (title), widget (QGroupBox, groupBox)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:53
+msgid "Shortcuts"
+msgstr "捷徑"
+
+#. i18n: ectx: attribute (title), widget (QWidget, tabPrivacy)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:79
+msgid "Privacy"
+msgstr "隱私"
+
+#. i18n: ectx: property (text), widget (QLabel, labelRememberDocuments)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:85
+msgid "Remember opened documents:"
+msgstr "記住開啟的文件："
+
+#. i18n: ectx: property (text), widget (QRadioButton, radioRememberAllApplications)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:96
+msgid "For a&ll applications"
+msgstr "所有的應用程式(&L)"
+
+#. i18n: ectx: property (text), widget (QRadioButton, radioDontRememberApplications)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:106
+msgid "&Do not remember"
+msgstr "不要記住(&D)"
+
+#. i18n: ectx: property (text), widget (QRadioButton, radioRememberSpecificApplications)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:113
+msgid "O&nly for specific applications"
+msgstr "只對特定的應用程式(&N)"
+
+#. i18n: ectx: property (text), widget (QLabel, labelKeepHistory)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:141
+msgid "Keep history"
+msgstr "保存歷史紀錄"
+
+#. i18n: ectx: property (text), widget (QPushButton, buttonClearRecentHistory)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:164
+msgid "Clear recent history"
+msgstr "清除最近的歷史紀錄"
+
+#. i18n: ectx: property (text), widget (QCheckBox, checkBlacklistAllNotOnList)
+#: workspace/settings/ui/MainConfigurationWidgetBase.ui:206
+msgid "Blacklist all applications not on this list"
+msgstr "擋掉所有不在此清單上的應用程式"
