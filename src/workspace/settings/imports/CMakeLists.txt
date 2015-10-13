@@ -5,20 +5,28 @@ find_package (ECM 0.0.8 REQUIRED NO_MODULE)
 set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH})
 
 find_package (Qt5 REQUIRED NO_MODULE COMPONENTS Sql Gui Widgets Qml Quick Sql QuickWidgets)
+find_package (KF5GlobalAccel ${KF5_DEP_VERSION} CONFIG REQUIRED)
 # find_package (KF5DBusAddons ${KF5_DEP_VERSION} CONFIG REQUIRED)
-# find_package (KF5I18n       ${KF5_DEP_VERSION} CONFIG REQUIRED)
+find_package (KF5I18n       ${KF5_DEP_VERSION} CONFIG REQUIRED)
 # find_package (KF5Config     ${KF5_DEP_VERSION} CONFIG REQUIRED)
 # find_package (KF5CoreAddons ${KF5_DEP_VERSION} CONFIG REQUIRED)
 # find_package (KF5KIO        ${KF5_DEP_VERSION} CONFIG REQUIRED)
 
 set (
-   kactivities_imports_LIB_SRCS
+   kactivities_KCM_imports_LIB_SRCS
    plugin.cpp
    activitysettings.cpp
    dialog.cpp
    )
 
-add_library (kactivitiessettingsplugin SHARED ${kactivities_imports_LIB_SRCS})
+qt5_add_dbus_interface (
+   kactivities_KCM_imports_LIB_SRCS
+
+   ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.Features.xml
+   features_interface
+   )
+
+add_library (kactivitiessettingsplugin SHARED ${kactivities_KCM_imports_LIB_SRCS})
 
 target_link_libraries (
    kactivitiessettingsplugin
@@ -30,6 +38,8 @@ target_link_libraries (
    Qt5::Widgets
    Qt5::QuickWidgets
    KF5::I18n
+   KF5::Activities
+   KF5::GlobalAccel
    )
 
 ## install

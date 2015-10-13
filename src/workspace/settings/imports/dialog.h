@@ -21,6 +21,7 @@
 #define DIALOG_H
 
 #include <QDialog>
+#include <QKeySequence>
 
 #include "utils/d_ptr.h"
 
@@ -33,7 +34,33 @@ public:
 
     ~Dialog();
 
-    void initUi();
+    void initUi(const QString &activityId = QString());
+
+    QString activityId() const;
+    void setActivityId(const QString &activityId);
+
+    QString activityName() const;
+    void setActivityName(const QString &activityName);
+
+    QString activityDescription() const;
+    void setActivityDescription(const QString &activityDescription);
+
+    QString activityIcon() const;
+    void setActivityIcon(const QString &activityIcon);
+
+    QString activityWallpaper() const;
+    void setActivityWallpaper(const QString &activityWallpaper);
+
+    bool activityIsPrivate() const;
+    void setActivityIsPrivate(bool activityIsPrivate);
+
+    QKeySequence activityShortcut() const;
+    void setActivityShortcut(const QKeySequence &activityShortcut);
+
+public Q_SLOTS:
+    void save();
+    void create();
+    void saveChanges(const QString &activityId);
 
 protected:
     void showEvent(QShowEvent *event) Q_DECL_OVERRIDE;

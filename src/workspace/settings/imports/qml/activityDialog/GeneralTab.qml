@@ -28,12 +28,17 @@ import "./components" as Local
 Item {
     id: root
 
+    function setFocus() {
+        activityName.forceActiveFocus();
+        console.log("GeneralTab: Set focus called");
+    }
+
     property string activityId: ""
 
-    property alias  activityName        : activityName.text
-    property alias  activityDescription : activityDescription.text
-    property alias  activityIconSource  : buttonIcon.iconName
-    property string activityWallpaper   : ""
+    property alias activityName        : activityName.text
+    property alias activityDescription : activityDescription.text
+    property alias activityIcon        : buttonIcon.iconName
+    property alias activityWallpaper   : imageWallpaper.source
 
     height : content.childrenRect.height + 4 * units.smallSpacing
     width  : content.childrenRect.width + 4 * units.smallSpacing
@@ -83,6 +88,8 @@ Item {
             Item {
                 id: panelWallpaper
 
+                visible: false
+
                 height: parent.height
                 width: buttonChangeWallpaper.width + imageWallpaper.width + units.smallSpacing
 
@@ -104,7 +111,7 @@ Item {
 
                 Image {
                     id: imageWallpaper
-                    source: "/home/ivan/documents/art/wallpapers/Strange\ Lands/strangelands.png"
+                    source: ""
 
                     width: height / 3 * 4
 

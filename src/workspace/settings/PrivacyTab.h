@@ -47,6 +47,9 @@ private Q_SLOTS:
 
     void spinKeepHistoryValueChanged(int value);
 
+Q_SIGNALS:
+    void changed();
+
 private:
     enum WhatToRemember {
         AllApplications = 0,
