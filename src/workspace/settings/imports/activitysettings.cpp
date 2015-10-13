@@ -20,6 +20,7 @@
 #include "activitysettings.h"
 
 #include <QMessageBox>
+#include <QProcess>
 
 #include <KLocalizedString>
 
@@ -56,6 +57,11 @@ void ActivitySettings::deleteActivity(const QString &id)
                                    info.name())) == QMessageBox::Yes) {
         KActivities::Controller().removeActivity(id);
     }
+}
+
+void ActivitySettings::configureActivities()
+{
+    QProcess::startDetached("kcmshell5", { "activities" });
 }
 
 
