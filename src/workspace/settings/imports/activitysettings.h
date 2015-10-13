@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2012, 2013, 2014, 2015 Ivan Cukic <ivan.cukic(at)kde.org>
+ *   Copyright (C) 2015 Ivan Cukic <ivan.cukic(at)kde.org>
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License version 2,
@@ -17,32 +17,23 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef MAIN_CONFIGURATION_WIDGET_H
-#define MAIN_CONFIGURATION_WIDGET_H
+#ifndef ACTIVITYSETTINGS_H
+#define ACTIVITYSETTINGS_H
 
-#include <KCModule>
-#include <KPluginFactory>
-#include <KActivities/Consumer>
-#include <KActivities/Info>
+#include <QObject>
 
-#include <utils/d_ptr.h>
-
-/**
- * MainConfigurationWidget
- */
-class MainConfigurationWidget : public KCModule {
+class ActivitySettings: public QObject {
     Q_OBJECT
+
 public:
-    MainConfigurationWidget(QWidget *parent, QVariantList args);
-    ~MainConfigurationWidget();
+    ActivitySettings(QObject *parent = Q_NULLPTR);
+    ~ActivitySettings();
 
 public Q_SLOTS:
-    void defaults() Q_DECL_OVERRIDE;
-    void load() Q_DECL_OVERRIDE;
-    void save() Q_DECL_OVERRIDE;
-
-private:
-    D_PTR;
+    Q_INVOKABLE void configureActivity(const QString &id);
+    Q_INVOKABLE void newActivity();
 };
 
-#endif // MAIN_CONFIGURATION_WIDGET_H
+#endif // ACTIVITYSETTINGS_H
+
+

@@ -51,6 +51,11 @@ class ActivityInfo : public QObject {
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
 
     /**
+     * Name of the activity
+     */
+    Q_PROPERTY(QString description READ description WRITE setDescription NOTIFY descriptionChanged)
+
+    /**
      * Activity icon
      */
     Q_PROPERTY(QString icon READ icon WRITE setIcon NOTIFY iconChanged)
@@ -71,6 +76,9 @@ public Q_SLOTS:
     void setName(const QString &name);
     QString name() const;
 
+    void setDescription(const QString &description);
+    QString description() const;
+
     void setIcon(const QString &icon);
     QString icon() const;
 
@@ -79,6 +87,7 @@ public Q_SLOTS:
 Q_SIGNALS:
     void activityIdChanged(const QString &id);
     void nameChanged(const QString &name);
+    void descriptionChanged(const QString &description);
     void iconChanged(const QString &icon);
     void validChanged(bool valid);
 

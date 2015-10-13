@@ -17,32 +17,37 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef MAIN_CONFIGURATION_WIDGET_H
-#define MAIN_CONFIGURATION_WIDGET_H
+#ifndef SWITCHING_TAB_H
+#define SWITCHING_TAB_H
 
-#include <KCModule>
-#include <KPluginFactory>
-#include <KActivities/Consumer>
-#include <KActivities/Info>
+#include <QWidget>
 
 #include <utils/d_ptr.h>
 
+class QKeySequence;
+
 /**
- * MainConfigurationWidget
+ * SwitchingTab
  */
-class MainConfigurationWidget : public KCModule {
+class SwitchingTab : public QWidget {
     Q_OBJECT
 public:
-    MainConfigurationWidget(QWidget *parent, QVariantList args);
-    ~MainConfigurationWidget();
+    SwitchingTab(QWidget *parent);
+    ~SwitchingTab();
 
 public Q_SLOTS:
-    void defaults() Q_DECL_OVERRIDE;
-    void load() Q_DECL_OVERRIDE;
-    void save() Q_DECL_OVERRIDE;
+    void defaults();
+    void load();
+    void save();
+
+private Q_SLOTS:
+    void shortcutChanged(const QKeySequence &sequence);
+
+Q_SIGNALS:
+    void changed();
 
 private:
     D_PTR;
 };
 
-#endif // MAIN_CONFIGURATION_WIDGET_H
+#endif // SWITCHING_TAB_H

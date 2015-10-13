@@ -31,6 +31,7 @@ namespace KActivities {
 
 static QString nulluuid = QStringLiteral("00000000-0000-0000-0000-000000000000");
 
+using kamd::utils::Mutable;
 
 std::shared_ptr<ActivitiesCache> ActivitiesCache::self()
 {
@@ -69,6 +70,8 @@ ActivitiesCache::ActivitiesCache()
             this, &ActivitiesCache::updateActivityState);
     connect(activities, &Activities::ActivityNameChanged,
             this, &ActivitiesCache::setActivityName);
+    connect(activities, &Activities::ActivityDescriptionChanged,
+            this, &ActivitiesCache::setActivityDescription);
     connect(activities, &Activities::ActivityIconChanged,
             this, &ActivitiesCache::setActivityIcon);
 
@@ -100,7 +103,8 @@ void ActivitiesCache::loadOfflineDefaults()
     m_status = Consumer::NotRunning;
 
     m_activities.clear();
-    m_activities << ActivityInfo(nulluuid, QString(), QString(), Info::Running);
+    m_activities << ActivityInfo(nulluuid, QString(), QString(), QString(),
+                                 Info::Running);
     m_currentActivity = nulluuid;
 
     emit serviceStatusChanged(m_status);
@@ -116,8 +120,8 @@ void ActivitiesCache::removeActivity(const QString &id)
 {
     // qDebug() << "Removing the activity";
 
-    auto where = std::lower_bound(
-        m_activities.begin(), m_activities.end(), ActivityInfo(id));
+    auto where = std::lower_bound(m_activities.begin(), m_activities.end(),
+                                  ActivityInfo(id));
 
     if (where != m_activities.end() && where->id == id) {
         m_activities.erase(where);
@@ -166,12 +170,9 @@ void ActivitiesCache::updateActivity(const QString &id)
 
 void ActivitiesCache::updateActivityState(const QString &id, int state)
 {
-    // qDebug() << "Updating activity state" << id << "to" << state;
+    auto where = find<Mutable>(id);
 
-    auto where = std::lower_bound(
-        m_activities.begin(), m_activities.end(), ActivityInfo(id));
-
-    if (where != m_activities.end() && where->id == id) {
+    if (where) {
         where->state = state;
 
         emit activityStateChanged(id, state);
@@ -235,35 +236,23 @@ void ActivitiesCache::setActivityInfo(const ActivityInfo &info)
     }
 }
 
-void ActivitiesCache::setActivityName(const QString &id, const QString &name)
-{
-    auto where = std::lower_bound(
-        m_activities.begin(), m_activities.end(), ActivityInfo(id));
-
-    if (where != m_activities.end() && where->id == id) {
-        where->name = name;
-
-        emit activityNameChanged(id, name);
-
-    } else {
-        // qFatal("Requested to rename an non-existent activity");
+#define CREATE_SETTER(WHAT, What)                                              \
+    void ActivitiesCache::setActivity##WHAT(const QString &id,                 \
+                                            const QString &value)              \
+    {                                                                          \
+        auto where = find<Mutable>(id);                                        \
+                                                                               \
+        if (where) {                                                           \
+            where->What = value;                                               \
+            emit activity##WHAT##Changed(id, value);                           \
+        }                                                                      \
     }
-}
 
-void ActivitiesCache::setActivityIcon(const QString &id, const QString &icon)
-{
-    auto where = std::lower_bound(
-        m_activities.begin(), m_activities.end(), ActivityInfo(id));
+CREATE_SETTER(Name, name)
+CREATE_SETTER(Description, description)
+CREATE_SETTER(Icon, icon)
 
-    if (where != m_activities.end() && where->id == id) {
-        where->icon = icon;
-
-        emit activityIconChanged(id, icon);
-
-    } else {
-        // qFatal("Requested to change the icon of an non-existent activity");
-    }
-}
+#undef CREATE_SETTER
 
 void ActivitiesCache::setAllActivities(const ActivityInfoList &_activities)
 {

@@ -22,6 +22,15 @@
 #include <QStringList>
 #include <QString>
 
+// KDE
+#include <KDBusConnectionPool>
+
+// Utils
+#include <utils/for_each_assoc.h>
+
+// Local
+#include "templatesadaptor.h"
+
 KAMD_EXPORT_PLUGIN(templatesplugin, TemplatesPlugin, "kactivitymanagerd-plugin-activitytemplates.json")
 
 
@@ -31,6 +40,9 @@ TemplatesPlugin::TemplatesPlugin(QObject *parent, const QVariantList &args)
     Q_UNUSED(args);
 
     setName(QStringLiteral("org.kde.ActivityManager.ActivityTemplates"));
+
+    new TemplatesAdaptor(this);
+    KDBusConnectionPool::threadConnection().registerObject(QStringLiteral("/Templates"), this);
 }
 
 TemplatesPlugin::~TemplatesPlugin()
@@ -46,48 +58,25 @@ bool TemplatesPlugin::init(QHash<QString, QObject *> &modules)
     return true;
 }
 
-QStringList TemplatesPlugin::templates() const
-{
-    return { QStringLiteral("Test Template 1"),
-             QStringLiteral("Template 2"),
-             QStringLiteral("Default Template"),
-             QStringLiteral("Killer Template"),
-             QStringLiteral("Failed Attempt") };
-}
-
-QStringList TemplatesPlugin::templateFor(const QString &activity) const
-{
-    Q_UNUSED(activity);
-    return { QStringLiteral("Default Template") };
-}
-
-QStringList TemplatesPlugin::activities() const
-{
-    return Plugin::callOnRet<QStringList, Qt::DirectConnection>(
-        m_activities, "ListActivities", "QStringList");
-}
-
 QDBusVariant TemplatesPlugin::featureValue(const QStringList &property) const
 {
-    static const auto emptyResult = QStringList();
+    if (property.size() == 0) {
+        return QDBusVariant(QString());
+    }
 
-    return QDBusVariant(
-        // no request
-        property.size() == 0 ?
-            emptyResult :
+    const auto& id = property[0];
 
-        // requesting a global variable
-        property[0] == QStringLiteral("templates") ?
-            templates() :
+    KConfigGroup pluginConfig(config());
+    KConfigGroup activityConfig(&pluginConfig, id);
 
-        // requesting the template of the specified activity
-        activities().contains(property[0]) ?
-            templateFor(property[0]) :
+    if (property.size() == 2) {
+        const auto& key = property[1];
+        return QDBusVariant(activityConfig.readEntry(key, QVariant(QString())));
 
-        // error
-            emptyResult
-    );
+    } else {
+        return QDBusVariant(activityConfig.keyList());
 
+    }
 }
 
 void TemplatesPlugin::setFeatureValue(const QStringList &property,
@@ -95,6 +84,63 @@ void TemplatesPlugin::setFeatureValue(const QStringList &property,
 {
     Q_UNUSED(property);
     Q_UNUSED(value);
+
+    // TODO: Remove. For testing purposes only
+    if (property.size() == 1 && property[0] == "createActivity") {
+        QVariantHash info {
+            { "activity.name", value.variant().toString() },
+            { "activity.description", "Nothing special" },
+            { "activity.wallpaper", "stripes.png" },
+            { "activity.icon", "kate" },
+            { "activity.cloneFrom", "id" },
+            { "activity.linkedResources", QStringList { "a", "b", "c" } }
+        };
+        createActivity(QDBusVariant(info));
+
+    }
+}
+
+void TemplatesPlugin::createActivity(const QDBusVariant &_values)
+{
+    using namespace kamd::utils;
+
+    QVariantHash values = _values.variant().toHash();
+
+    auto takeStringValue = [&values] (const QString &key) {
+        auto result = values[key].toString();
+        values.remove(key);
+        return result;
+    };
+
+    const QString name        = takeStringValue("activity.name");
+    const QString description = takeStringValue("activity.description");
+    const QString icon        = takeStringValue("activity.icon");
+
+    // Creating the activity, and getting the id
+    const QString id = Plugin::callOnRetWithArgs<QString, Qt::DirectConnection>(
+        m_activities, "AddActivity", "QString",
+        Q_ARG(QString, name));
+
+    // Saving the provided data to the configuration file
+    KConfigGroup pluginConfig(config());
+    KConfigGroup activityConfig(&pluginConfig, id);
+
+    for_each_assoc(values, [&activityConfig] (const QString &key, const QVariant &value) {
+        activityConfig.writeEntry(key, value);
+    });
+
+    activityConfig.sync();
+
+    // Changing the icon and description of the activity
+    Plugin::callOnWithArgs<Qt::DirectConnection>(
+        m_activities, "SetActivityDescription",
+        Q_ARG(QString, id),
+        Q_ARG(QString, description));
+    Plugin::callOnWithArgs<Qt::DirectConnection>(
+        m_activities, "SetActivityIcon",
+        Q_ARG(QString, id),
+        Q_ARG(QString, icon));
+
 }
 
 #include "TemplatesPlugin.moc"

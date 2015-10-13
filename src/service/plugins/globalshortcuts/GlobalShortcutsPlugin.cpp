@@ -76,6 +76,10 @@ bool GlobalShortcutsPlugin::init(QHash<QString, QObject *> &modules)
 
 void GlobalShortcutsPlugin::activityAdded(const QString &activity)
 {
+    if (activity == "00000000-0000-0000-0000-000000000000") {
+        return;
+    }
+
     if (!m_activitiesList.contains(activity)) {
         m_activitiesList << activity;
     }

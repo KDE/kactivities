@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2012, 2013, 2014, 2015 Ivan Cukic <ivan.cukic(at)kde.org>
+ *   Copyright (C) 2015 Ivan Cukic <ivan.cukic(at)kde.org>
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License version 2,
@@ -17,32 +17,30 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef MAIN_CONFIGURATION_WIDGET_H
-#define MAIN_CONFIGURATION_WIDGET_H
+#ifndef PTR_TO_H
+#define PTR_TO_H
 
-#include <KCModule>
-#include <KPluginFactory>
-#include <KActivities/Consumer>
-#include <KActivities/Info>
+namespace kamd {
+namespace utils {
 
-#include <utils/d_ptr.h>
-
-/**
- * MainConfigurationWidget
- */
-class MainConfigurationWidget : public KCModule {
-    Q_OBJECT
-public:
-    MainConfigurationWidget(QWidget *parent, QVariantList args);
-    ~MainConfigurationWidget();
-
-public Q_SLOTS:
-    void defaults() Q_DECL_OVERRIDE;
-    void load() Q_DECL_OVERRIDE;
-    void save() Q_DECL_OVERRIDE;
-
-private:
-    D_PTR;
+enum {
+    Const = 0,
+    Mutable = 1
 };
 
-#endif // MAIN_CONFIGURATION_WIDGET_H
+template <typename T, int Policy = Const>
+struct ptr_to {
+    typedef const T * const type;
+};
+
+template <typename T>
+struct ptr_to<T, Mutable> {
+    typedef T * const type;
+};
+
+
+
+} // namespace utils
+} // namespace kamd
+
+#endif // PTR_TO_H

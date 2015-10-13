@@ -60,7 +60,7 @@ public:
      * Returns the config group for the plugin.
      * In order to use it, you need to set the plugin name.
      */
-    KConfigGroup config();
+    KConfigGroup config() const;
     QString name() const;
 
     /**

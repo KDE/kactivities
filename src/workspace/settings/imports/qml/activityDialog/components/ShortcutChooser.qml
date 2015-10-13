@@ -18,23 +18,25 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import QtQuick 2.0
+import QtQuick 2.2
 import QtQuick.Controls 1.0 as QtControls
 
-Item {
-    height: units.iconSizes.medium + 2 * units.smallSpacing
+import org.kde.plasma.core 2.0 as PlasmaCore
 
-    property alias text: activityNameText.text
+import org.kde.kquickcontrols 2.0 as KQuickControls
+import org.kde.kquickcontrolsaddons 2.0 as KQuickControls
 
-    QtControls.TextField {
-        id: activityNameText
+Row {
+    spacing: units.smallSpacing
 
-        placeholderText: i18n("Activity name")
+    property alias keySequence: buttonKeyShorcut.keySequence
 
-        anchors {
-            left: parent.left
-            right: parent.right
-            verticalCenter: parent.verticalCenter
-        }
+    QtControls.Label {
+        anchors.verticalCenter: parent.verticalCenter
+        text: i18n("Shortcut for switching to this activity:")
+    }
+
+    KQuickControls.KeySequenceItem {
+        id: buttonKeyShorcut
     }
 }

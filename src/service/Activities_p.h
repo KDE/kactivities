@@ -73,12 +73,17 @@ public:
     KSMServer *ksmserver;
 
 public:
-    inline KConfigGroup activitiesConfig()
+    inline KConfigGroup activityNameConfig()
     {
         return KConfigGroup(&config, "activities");
     }
 
-    inline KConfigGroup activityIconsConfig()
+    inline KConfigGroup activityDescriptionConfig()
+    {
+        return KConfigGroup(&config, "activities-descriptions");
+    }
+
+    inline KConfigGroup activityIconConfig()
     {
         return KConfigGroup(&config, "activities-icons");
     }
@@ -90,12 +95,17 @@ public:
 
     inline QString activityName(const QString &activity)
     {
-        return activitiesConfig().readEntry(activity, QString());
+        return activityNameConfig().readEntry(activity, QString());
+    }
+
+    inline QString activityDescription(const QString &activity)
+    {
+        return activityDescriptionConfig().readEntry(activity, QString());
     }
 
     inline QString activityIcon(const QString &activity)
     {
-        return activityIconsConfig().readEntry(activity, QString());
+        return activityIconConfig().readEntry(activity, QString());
     }
 
 public Q_SLOTS:

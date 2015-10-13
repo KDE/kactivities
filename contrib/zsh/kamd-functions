@@ -57,9 +57,10 @@ function kamd_listactivities() {
         echo -n "$STATE$reset_color $activity "
 
         ACTIVITY_NAME=`qdbus org.kde.ActivityManager /ActivityManager/Activities ActivityName $activity`
+        ACTIVITY_DESC=`qdbus org.kde.ActivityManager /ActivityManager/Activities ActivityDescription $activity`
         ACTIVITY_ICON=`qdbus org.kde.ActivityManager /ActivityManager/Activities ActivityIcon $activity`
 
-        echo "$ACTIVITY_NAME ($ACTIVITY_ICON)"
+        echo "$ACTIVITY_NAME ($ACTIVITY_DESC, $ACTIVITY_ICON)"
     done
 }
 

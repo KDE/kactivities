@@ -18,38 +18,10 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import QtQuick 2.0
-import QtQuick.Controls 1.0 as QtControls
+import QtQuick 2.2
 
-Row {
-    id: root
+ActivitiesView {
+    anchors.fill: parent
 
-    property alias acceptText: buttonAccept.text
-    property alias acceptIcon: buttonAccept.iconName
-
-    property alias cancelText: buttonCancel.text
-    property alias cancelIcon: buttonCancel.iconName
-
-    signal accepted()
-    signal canceled()
-
-    spacing: units.smallSpacing
-
-    QtControls.Button {
-        id: buttonAccept
-
-        text: i18n("Apply")
-        iconName: "list-add"
-
-        onClicked: root.accepted()
-    }
-
-    QtControls.Button {
-        id: buttonCancel
-
-        text: i18n("Cancel")
-        iconName: "dialog-cancel"
-
-        onClicked: root.canceled()
-    }
 }
+

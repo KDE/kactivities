@@ -51,7 +51,7 @@ Plugin::~Plugin()
 {
 }
 
-KConfigGroup Plugin::config()
+KConfigGroup Plugin::config() const
 {
     if (d->name.isEmpty()) {
         qWarning() << "The plugin needs a name in order to have a config section";

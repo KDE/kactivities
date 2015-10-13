@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2012, 2013, 2014, 2015 Ivan Cukic <ivan.cukic(at)kde.org>
+ *   Copyright (C) 2015 Ivan Cukic <ivan.cukic(at)kde.org>
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License version 2,
@@ -17,32 +17,24 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef MAIN_CONFIGURATION_WIDGET_H
-#define MAIN_CONFIGURATION_WIDGET_H
+#ifndef UTILS_H
+#define UTILS_H
 
-#include <KCModule>
-#include <KPluginFactory>
-#include <KActivities/Consumer>
-#include <KActivities/Info>
+#include <QGuiApplication>
 
-#include <utils/d_ptr.h>
+inline std::unique_ptr<QQuickView> createView(QWidget *parent)
+{
+    auto view = new QQuickView();
+    view->setColor(QGuiApplication::palette().window().color());
+    view->setResizeMode(QQuickView::SizeRootObjectToView);
 
-/**
- * MainConfigurationWidget
- */
-class MainConfigurationWidget : public KCModule {
-    Q_OBJECT
-public:
-    MainConfigurationWidget(QWidget *parent, QVariantList args);
-    ~MainConfigurationWidget();
+    auto container = QWidget::createWindowContainer(view, parent);
+    container->setFocusPolicy(Qt::TabFocus);
 
-public Q_SLOTS:
-    void defaults() Q_DECL_OVERRIDE;
-    void load() Q_DECL_OVERRIDE;
-    void save() Q_DECL_OVERRIDE;
+    parent->layout()->addWidget(container);
 
-private:
-    D_PTR;
-};
+    return std::unique_ptr<QQuickView>(view);
+}
 
-#endif // MAIN_CONFIGURATION_WIDGET_H
+#endif // UTILS_H
+

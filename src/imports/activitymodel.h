@@ -66,12 +66,12 @@ public:
     QHash<int, QByteArray> roleNames() const Q_DECL_OVERRIDE;
 
     enum Roles {
-        ActivityId         = Qt::UserRole,
-        // ActivityName       = Qt::UserRole + 1,
-        ActivityIcon       = Qt::UserRole + 2,
-        ActivityState      = Qt::UserRole + 3,
-        ActivityBackground = Qt::UserRole + 4,
-        ActivityCurrent    = Qt::UserRole + 5,
+        ActivityId          = Qt::UserRole,
+        ActivityDescription = Qt::UserRole + 1,
+        ActivityIcon        = Qt::UserRole + 2,
+        ActivityState       = Qt::UserRole + 3,
+        ActivityBackground  = Qt::UserRole + 4,
+        ActivityCurrent     = Qt::UserRole + 5,
     };
 
     enum State {
@@ -87,6 +87,8 @@ public Q_SLOTS:
     // Activity control methods
     void setActivityName(const QString &id, const QString &name,
                          const QJSValue &callback);
+    void setActivityDescription(const QString &id, const QString &description,
+                                const QJSValue &callback);
     void setActivityIcon(const QString &id, const QString &icon,
                          const QJSValue &callback);
 
@@ -107,6 +109,7 @@ Q_SIGNALS:
 
 private Q_SLOTS:
     void onActivityNameChanged(const QString &name);
+    void onActivityDescriptionChanged(const QString &description);
     void onActivityIconChanged(const QString &icon);
     void onActivityStateChanged(KActivities::Info::State state);
 

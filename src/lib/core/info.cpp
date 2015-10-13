@@ -49,15 +49,17 @@ IMPLEMENT_SIGNAL_HANDLER(infoChanged)
 #undef IMPLEMENT_SIGNAL_HANDLER
 
 #define IMPLEMENT_SIGNAL_HANDLER(INTERNAL)                                     \
-    void InfoPrivate::INTERNAL(const QString &_id, const QString &val) const   \
+    void InfoPrivate::INTERNAL##Changed(const QString &_id,                    \
+                                        const QString &val) const              \
     {                                                                          \
         if (id == _id) {                                                       \
-            emit q->INTERNAL(val);                                             \
+            emit q->INTERNAL##Changed(val);                                    \
         }                                                                      \
     }
 
-IMPLEMENT_SIGNAL_HANDLER(nameChanged)
-IMPLEMENT_SIGNAL_HANDLER(iconChanged)
+IMPLEMENT_SIGNAL_HANDLER(name)
+IMPLEMENT_SIGNAL_HANDLER(description)
+IMPLEMENT_SIGNAL_HANDLER(icon)
 
 #undef IMPLEMENT_SIGNAL_HANDLER
 
@@ -98,8 +100,9 @@ Info::Info(const QString &activity, QObject *parent)
             this,            SLOT(SLOT_NAME(QString, TYPE)));                  \
 
     PASS_SIGNAL_HANDLER(activityStateChanged, activityStateChanged, int);
-    PASS_SIGNAL_HANDLER(activityIconChanged, iconChanged, QString);
     PASS_SIGNAL_HANDLER(activityNameChanged, nameChanged, QString);
+    PASS_SIGNAL_HANDLER(activityDescriptionChanged, descriptionChanged, QString);
+    PASS_SIGNAL_HANDLER(activityIconChanged, iconChanged, QString);
 #undef PASS_SIGNAL_HANDLER
 
 }
@@ -129,7 +132,7 @@ Info::State Info::state() const
 {
     if (d->cache->m_status == Consumer::Unknown) return Info::Unknown;
 
-    auto info = d->cache->cfind(d->id);
+    auto info = d->cache->find(d->id);
 
     if (!info) return Info::Invalid;
 
@@ -171,21 +174,18 @@ Info::Availability Info::availability() const
     return result;
 }
 
-QString Info::name() const
-{
-    // qDebug() << "Getting the name of Info: " << (void*)this;
+#define CREATE_GETTER(What)                                                    \
+    QString Info::What() const                                                 \
+    {                                                                          \
+        auto info = d->cache->find(d->id);                                     \
+        return info ? info->What : QString();                                  \
+    }
 
-    auto info = d->cache->cfind(d->id);
+CREATE_GETTER(name)
+CREATE_GETTER(description)
+CREATE_GETTER(icon)
 
-    return info ? info->name : QString();
-}
-
-QString Info::icon() const
-{
-    auto info = d->cache->cfind(d->id);
-
-    return info ? info->icon : QString();
-}
+#undef CREATE_GETTER
 
 } // namespace KActivities
 

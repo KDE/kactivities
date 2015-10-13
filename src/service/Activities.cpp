@@ -128,7 +128,7 @@ Activities::Activities(QObject *parent)
               .readEntry("runningActivities", d->activities.keys())
               .toSet();
 
-    for (const auto & activity: d->activitiesConfig().keyList()) {
+    for (const auto & activity: d->activityNameConfig().keyList()) {
         d->activities[activity] = runningActivities.contains(activity)
                                       ? Activities::Running
                                       : Activities::Stopped;
@@ -282,7 +282,9 @@ void Activities::Private::removeActivity(const QString &activity)
 
     // Removing the activity
     activities.remove(activity);
-    activitiesConfig().deleteEntry(activity);
+    activityNameConfig().deleteEntry(activity);
+    activityDescriptionConfig().deleteEntry(activity);
+    activityIconConfig().deleteEntry(activity);
 
     // If the removed activity was the current one,
     // set another activity as current
@@ -345,57 +347,39 @@ ActivityInfo Activities::ActivityInformation(const QString &activity) const
     return ActivityInfo {
         activity,
         ActivityName(activity),
+        ActivityDescription(activity),
         ActivityIcon(activity),
         ActivityState(activity)
     };
 }
 
-QString Activities::ActivityName(const QString &activity) const
-{
-    if (!d->activities.contains(activity)) {
-        return QString();
+#define CREATE_GETTER_AND_SETTER(What)                                         \
+    QString Activities::Activity##What(const QString &activity) const          \
+    {                                                                          \
+        return d->activities.contains(activity) ? d->activity##What(activity)  \
+                                                : QString();                   \
+    }                                                                          \
+                                                                               \
+    void Activities::SetActivity##What(const QString &activity,                \
+                                       const QString &value)                   \
+    {                                                                          \
+        if (value == d->activity##What(activity)                               \
+            || !d->activities.contains(activity)) {                            \
+            return;                                                            \
+        }                                                                      \
+                                                                               \
+        d->activity##What##Config().writeEntry(activity, value);              \
+        d->scheduleConfigSync(true);                                           \
+                                                                               \
+        emit Activity##What##Changed(activity, value);                         \
+        emit ActivityChanged(activity);                                        \
     }
 
-    return d->activityName(activity);
-}
+CREATE_GETTER_AND_SETTER(Name)
+CREATE_GETTER_AND_SETTER(Description)
+CREATE_GETTER_AND_SETTER(Icon)
 
-void Activities::SetActivityName(const QString &activity, const QString &name)
-{
-    if (name == d->activityName(activity)
-            || !d->activities.contains(activity)) {
-        return;
-    }
-
-    d->activitiesConfig().writeEntry(activity, name);
-
-    d->scheduleConfigSync(true);
-
-    emit ActivityNameChanged(activity, name);
-    emit ActivityChanged(activity);
-}
-
-QString Activities::ActivityIcon(const QString &activity) const
-{
-    if (!d->activities.contains(activity)) {
-        return QString();
-    }
-
-    return d->activityIcon(activity);
-}
-
-void Activities::SetActivityIcon(const QString &activity, const QString &icon)
-{
-    if (!d->activities.contains(activity)) {
-        return;
-    }
-
-    d->activityIconsConfig().writeEntry(activity, icon);
-
-    d->scheduleConfigSync();
-
-    emit ActivityIconChanged(activity, icon);
-    emit ActivityChanged(activity);
-}
+#undef CREATE_GETTE_AND_SETTERR
 
 void Activities::Private::setActivityState(const QString &activity,
                                            Activities::State state)
