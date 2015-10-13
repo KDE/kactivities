@@ -26,8 +26,6 @@ import org.kde.activities 0.1 as Activities
 import org.kde.activities.settings 0.1
 import org.kde.plasma.core 2.0 as PlasmaCore
 
-// import "static.js" as S
-
 Item {
     id: root
 
@@ -45,15 +43,6 @@ Item {
         }
 
         onClicked: ActivitySettings.newActivity();
-
-        // S.openAc tivityCreationDialog(
-                    //      dialogCreateActivityLoader,
-                    //      {
-                    //          kactivities: kactivities,
-                    //          kactivitiesExtras: kactivitiesExtras,
-                    //          readyStatus: Loader.Ready
-                    //      }
-                   //  )
 
         enabled: !dialogCreateActivityLoader.itemVisible
     }
@@ -162,18 +151,6 @@ Item {
                             iconName: "configure"
 
                             onClicked: ActivitySettings.configureActivity(model.id);
-                            // onClicked: S.openActivityConfigurationDialog(
-                            //                 dialogConfigureLoader,
-                            //                 model.id,
-                            //                 model.name,
-                            //                 model.iconSource,
-                            //                 {
-                            //                     kactivities: kactivities,
-                            //                     kactivitiesExtras: kactivitiesExtras,
-                            //                     readyStatus: Loader.Ready,
-                            //                     i18nd:       i18nd
-                            //                 }
-                            //             );
                         }
 
                         QtControls.Button {
@@ -181,15 +158,7 @@ Item {
 
                             iconName: "edit-delete"
 
-                            // onClicked: S.openActivityDeletionDialog(
-                            //                 dialogDeleteLoader,
-                            //                 model.id,
-                            //                 {
-                            //                     kactivities: kactivities,
-                            //                     readyStatus: Loader.Ready,
-                            //                     i18nd:       i18nd
-                            //                 }
-                            //             );
+                            onClicked: ActivitySettings.deleteActivity(model.id);
                         }
 
                         visible: !dialogDeleteLoader.itemVisible

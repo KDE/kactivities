@@ -19,9 +19,14 @@
 
 #include "activitysettings.h"
 
-#include <QDebug>
+#include <QMessageBox>
+
+#include <KLocalizedString>
 
 #include "dialog.h"
+
+#include <kactivities/info.h>
+#include <kactivities/controller.h>
 
 ActivitySettings::ActivitySettings(QObject *parent)
     : QObject(parent)
@@ -34,15 +39,25 @@ ActivitySettings::~ActivitySettings()
 
 void ActivitySettings::configureActivity(const QString &id)
 {
-    qDebug() << "configure activity requested: " << id;
     (new Dialog(id))->exec();
 }
 
 void ActivitySettings::newActivity()
 {
-    qDebug() << "activity creation requested";
     (new Dialog())->exec();
 }
+
+void ActivitySettings::deleteActivity(const QString &id)
+{
+    KActivities::Info info(id);
+
+    if (QMessageBox::question(Q_NULLPTR, i18n("Delete activity"),
+                              i18n("Are you sure you want to delete '%1'?",
+                                   info.name())) == QMessageBox::Yes) {
+        KActivities::Controller().removeActivity(id);
+    }
+}
+
 
 #include "activitysettings.moc"
 

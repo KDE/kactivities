@@ -32,6 +32,7 @@ public:
 public Q_SLOTS:
     Q_INVOKABLE void configureActivity(const QString &id);
     Q_INVOKABLE void newActivity();
+    Q_INVOKABLE void deleteActivity(const QString &id);
 };
 
 #endif // ACTIVITYSETTINGS_H
