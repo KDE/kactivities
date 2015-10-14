@@ -42,9 +42,11 @@ include_directories (
    ${KConfig_INCLUDE_DIR}
    )
 
-add_library (
-   kactivitymanagerd_plugin_sqlite MODULE
-   ${sqliteplugin_SRCS}
+kcoreaddons_add_plugin(
+   kactivitymanagerd_plugin_sqlite
+   JSON kactivitymanagerd-plugin-sqlite.json
+   SOURCES ${sqliteplugin_SRCS}
+   INSTALL_NAMESPACE ${KAMD_PLUGIN_DIR}
    )
 
 target_link_libraries (
@@ -60,9 +62,4 @@ target_link_libraries (
 set_target_properties (
    kactivitymanagerd_plugin_sqlite
    PROPERTIES PREFIX ""
-   )
-
-install (
-   TARGETS kactivitymanagerd_plugin_sqlite
-   DESTINATION ${KAMD_PLUGIN_DIR}
    )

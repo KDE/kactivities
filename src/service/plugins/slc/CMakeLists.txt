@@ -24,9 +24,11 @@ qt5_add_dbus_adaptor (
    SlcPlugin.h SlcPlugin
    )
 
-add_library (
-   kactivitymanagerd_plugin_slc SHARED
-   ${slc_SRCS}
+kcoreaddons_add_plugin(
+   kactivitymanagerd_plugin_slc
+   JSON kactivitymanagerd-plugin-slc.json
+   SOURCES ${slc_SRCS}
+   INSTALL_NAMESPACE ${KAMD_PLUGIN_DIR}
    )
 
 target_link_libraries (
@@ -41,9 +43,4 @@ target_link_libraries (
 set_target_properties (
    kactivitymanagerd_plugin_slc
    PROPERTIES PREFIX ""
-   )
-
-install (
-   TARGETS kactivitymanagerd_plugin_slc
-   DESTINATION ${KAMD_PLUGIN_DIR}
    )

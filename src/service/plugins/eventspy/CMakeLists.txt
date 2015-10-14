@@ -19,9 +19,11 @@ set (
    ${plugin_implementation_SRCS}
    )
 
-add_library (
-   kactivitymanagerd_plugin_eventspy SHARED
-   ${evenyspy_SRCS}
+kcoreaddons_add_plugin(
+   kactivitymanagerd_plugin_eventspy
+   JSON kactivitymanagerd-plugin-eventspy.json
+   SOURCES ${evenyspy_SRCS}
+   INSTALL_NAMESPACE ${KAMD_PLUGIN_DIR}
    )
 
 target_link_libraries (
@@ -36,9 +38,4 @@ target_link_libraries (
 set_target_properties (
    kactivitymanagerd_plugin_eventspy
    PROPERTIES PREFIX ""
-   )
-
-install (
-   TARGETS kactivitymanagerd_plugin_eventspy
-   DESTINATION ${KAMD_PLUGIN_DIR}
    )

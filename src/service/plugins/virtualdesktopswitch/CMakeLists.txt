@@ -17,9 +17,11 @@ set (
    ${plugin_implementation_SRCS}
    )
 
-add_library (
-   kactivitymanagerd_plugin_virtualdesktopswitch SHARED
-   ${virtualdesktopswitch_SRCS}
+kcoreaddons_add_plugin(
+   kactivitymanagerd_plugin_virtualdesktopswitch
+   JSON kactivitymanagerd-plugin-virtualdesktopswitch.json
+   SOURCES ${virtualdesktopswitch_SRCS}
+   INSTALL_NAMESPACE ${KAMD_PLUGIN_DIR}
    )
 
 target_link_libraries (
@@ -34,9 +36,4 @@ target_link_libraries (
 set_target_properties (
    kactivitymanagerd_plugin_virtualdesktopswitch
    PROPERTIES PREFIX ""
-   )
-
-install (
-   TARGETS kactivitymanagerd_plugin_virtualdesktopswitch
-   DESTINATION ${KAMD_PLUGIN_DIR}
    )
