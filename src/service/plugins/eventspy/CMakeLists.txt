@@ -33,12 +33,6 @@ target_link_libraries (
    KF5::KIOCore
    )
 
-kcoreaddons_desktop_to_json (
-   kactivitymanagerd_plugin_eventspy
-   kactivitymanagerd-plugin-eventspy.desktop
-   COMPAT_MODE DEFAULT_SERVICE_TYPE
-   )
-
 set_target_properties (
    kactivitymanagerd_plugin_eventspy
    PROPERTIES PREFIX ""
@@ -48,8 +42,3 @@ install (
    TARGETS kactivitymanagerd_plugin_eventspy
    DESTINATION ${KAMD_PLUGIN_DIR}
    )
-install (
-   FILES kactivitymanagerd-plugin-eventspy.desktop
-   DESTINATION ${KDE_INSTALL_KSERVICES5DIR}
-   )
-

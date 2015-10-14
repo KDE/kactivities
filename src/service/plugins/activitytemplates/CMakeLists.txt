@@ -41,18 +41,8 @@ set_target_properties (
    PROPERTIES PREFIX ""
    )
 
-kcoreaddons_desktop_to_json (
-   kactivitymanagerd_plugin_activitytemplates
-   kactivitymanagerd-plugin-activitytemplates.desktop
-   COMPAT_MODE DEFAULT_SERVICE_TYPE
-   )
 
 install (
    TARGETS kactivitymanagerd_plugin_activitytemplates
    DESTINATION ${KAMD_PLUGIN_DIR}
    )
-install (
-   FILES kactivitymanagerd-plugin-activitytemplates.desktop
-   DESTINATION ${KDE_INSTALL_KSERVICES5DIR}
-   )
-
