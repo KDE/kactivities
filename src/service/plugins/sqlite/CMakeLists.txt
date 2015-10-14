@@ -57,9 +57,10 @@ target_link_libraries (
    KF5::CoreAddons
    )
 
-kservice_desktop_to_json (
+kcoreaddons_desktop_to_json (
    kactivitymanagerd_plugin_sqlite
    kactivitymanagerd-plugin-sqlite.desktop
+   COMPAT_MODE DEFAULT_SERVICE_TYPE
    )
 
 set_target_properties (

@@ -41,9 +41,10 @@ set_target_properties (
    PROPERTIES PREFIX ""
    )
 
-kservice_desktop_to_json (
+kcoreaddons_desktop_to_json (
    kactivitymanagerd_plugin_activitytemplates
    kactivitymanagerd-plugin-activitytemplates.desktop
+   COMPAT_MODE DEFAULT_SERVICE_TYPE
    )
 
 install (

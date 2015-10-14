@@ -33,9 +33,10 @@ target_link_libraries (
    KF5::KIOCore
    )
 
-kservice_desktop_to_json (
+kcoreaddons_desktop_to_json (
    kactivitymanagerd_plugin_eventspy
    kactivitymanagerd-plugin-eventspy.desktop
+   COMPAT_MODE DEFAULT_SERVICE_TYPE
    )
 
 set_target_properties (
