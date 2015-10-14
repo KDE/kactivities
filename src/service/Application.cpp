@@ -33,11 +33,11 @@
 // #include <KCrash>
 // #include <KAboutData>
 // #include <KCmdLineArgs>
-#include <kservicetypetrader.h>
+#include <KPluginMetaData>
+#include <KPluginLoader>
 #include <ksharedconfig.h>
 #include <kdbusconnectionpool.h>
 #include <kdbusservice.h>
-#include <kplugintrader.h>
 
 // Boost and utils
 #include <boost/range/adaptor/filtered.hpp>
@@ -105,27 +105,20 @@ public:
     }
 
     static inline bool isPluginEnabled(const KConfigGroup &config,
-                                QExplicitlySharedDataPointer<KService> plugin)
-                                // const QExplicitlySharedDataPointer<KService> &plugin)
+                                const KPluginMetaData& plugin)
     {
-        const auto pluginName
-            = plugin->property("X-KDE-PluginInfo-Name",
-                               QVariant::String).toString();
-        // qDebug() << "Plugin Name is " << pluginName;
+        const auto pluginName = plugin.pluginId();
+        qCDebug(KAMD_LOG_APPLICATION) << "Plugin Name is " << pluginName << plugin.fileName();
 
         if (pluginName == "org.kde.ActivityManager.ResourceScoring") {
             // SQLite plugin is necessary for the proper workspace behaviour
             return true;
-
         } else {
-            return config.readEntry(
-                pluginName + "Enabled",
-                plugin->property("X-KDE-PluginInfo-EnabledByDefault",
-                                 QVariant::Bool).toBool());
+            return config.readEntry(pluginName + "Enabled", plugin.isEnabledByDefault());
         }
     }
 
-    bool loadPlugin(KService::Ptr offer);
+    bool loadPlugin(const KPluginMetaData& plugin);
 
     Resources *resources;
     Activities *activities;
@@ -165,35 +158,40 @@ void Application::init()
             QDBusConnection::ExportAllSlots);
 }
 
-bool Application::Private::loadPlugin(KService::Ptr offer)
+bool Application::Private::loadPlugin(const KPluginMetaData& plugin)
 {
-    if (!offer) {
+    if (!plugin.isValid()) {
         qCWarning(KAMD_LOG_APPLICATION) << "[ FAILED ] plugin offer not valid";
         return false;
     }
 
-    if (pluginIds.contains(offer->storageId())) {
-        qCDebug(KAMD_LOG_APPLICATION)   << "[   OK   ] already loaded:  " << offer->name();
+    if (pluginIds.contains(plugin.pluginId())) {
+        qCDebug(KAMD_LOG_APPLICATION)   << "[   OK   ] already loaded:  " << plugin.pluginId();
         return true;
     }
 
-    QString error;
-    auto pluginInstance = dynamic_cast<Plugin*>(
-            offer->createInstance<QObject>(Q_NULLPTR, {}, &error)
-        );
+    KPluginLoader loader(plugin.fileName());
+    KPluginFactory* factory = loader.factory();
+    if (!factory) {
+        qCWarning(KAMD_LOG_APPLICATION) << "[ FAILED ] Could not load KPluginFactory for:"
+                << plugin.pluginId() << loader.errorString();
+        return false;
+    }
+    QObject* obj = factory->create<QObject>();
+    auto pluginInstance = factory->create<Plugin>();
 
     auto &modules = Module::get();
 
     if (pluginInstance) {
         pluginInstance->init(modules);
 
-        pluginIds << offer->storageId();
+        pluginIds << plugin.pluginId();
 
-        qCDebug(KAMD_LOG_APPLICATION)   << "[   OK   ] loaded:  " << offer->name();
+        qCDebug(KAMD_LOG_APPLICATION)   << "[   OK   ] loaded:  " << plugin.pluginId();
         return true;
 
     } else {
-        qCWarning(KAMD_LOG_APPLICATION) << "[ FAILED ] loading: " << offer->name() << error;
+        qCWarning(KAMD_LOG_APPLICATION) << "[ FAILED ] loading: " << plugin.pluginId() << loader.errorString();
         // TODO: Show a notification for a plugin that failed to load
         return false;
     }
@@ -201,36 +199,30 @@ bool Application::Private::loadPlugin(KService::Ptr offer)
 
 void Application::loadPlugins()
 {
-    using namespace boost::adaptors;
     using namespace std::placeholders;
-
-    const auto pluginsDir(QLatin1String(KAMD_PLUGIN_DIR));
-    QApplication::addLibraryPath(pluginsDir);
 
     const auto config
         = KSharedConfig::openConfig(QStringLiteral("kactivitymanagerdrc"))
               ->group("Plugins");
-    const auto allOffers
-        = KServiceTypeTrader::self()->query("ActivityManager/Plugin");
+    const auto offers = KPluginLoader::findPlugins(QStringLiteral(KAMD_PLUGIN_DIR),
+        std::bind(Private::isPluginEnabled, config, _1));
+    qCDebug(KAMD_LOG_APPLICATION) << "Found" << offers.size() << "enabled plugins:";
 
-    const auto filteredOffers = allOffers
-        | filtered(std::bind(Private::isPluginEnabled, config, _1));
-
-    for (const auto &offer : filteredOffers) {
+    for (const auto &offer : offers) {
         d->loadPlugin(offer);
     }
 }
 
-bool Application::loadPlugin(const QString &plugin)
+bool Application::loadPlugin(const QString &pluginId)
 {
-    auto offer = KService::serviceByStorageId(plugin);
+    auto offers = KPluginLoader::findPluginsById(QStringLiteral(KAMD_PLUGIN_DIR), pluginId);
 
-    if (!offer) {
-        qCWarning(KAMD_LOG_APPLICATION) << "[ FAILED ] not found: " << plugin;
+    if (offers.isEmpty()) {
+        qCWarning(KAMD_LOG_APPLICATION) << "[ FAILED ] not found: " << pluginId;
         return false;
     }
 
-    return d->loadPlugin(offer);
+    return d->loadPlugin(offers.first());
 }
 
 Application::~Application()
