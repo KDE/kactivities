@@ -43,13 +43,9 @@ class ResultModelPrivate;
 class KACTIVITIESSTATS_EXPORT ResultModel : public QAbstractListModel {
     Q_OBJECT
 
-    // Q_PROPERTY(int itemCountLimit READ itemCountLimit WRITE setItemCountLimit)
-
 public:
     ResultModel(Query query, QObject *parent = 0);
     virtual ~ResultModel();
-
-
 
     enum Roles {
         ResourceRole    = Qt::UserRole,
@@ -71,9 +67,6 @@ public:
 
     void fetchMore(const QModelIndex &parent) Q_DECL_OVERRIDE;
     bool canFetchMore(const QModelIndex &parent) const Q_DECL_OVERRIDE;
-
-    // int itemCountLimit() const;
-    // void setItemCountLimit(int count);
 
     void forgetResource(const QString &resource);
     void forgetResource(int row);
