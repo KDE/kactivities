@@ -30,6 +30,8 @@
 class QModelIndex;
 class QDBusPendingCallWatcher;
 
+class KConfigGroup;
+
 namespace KActivities {
 namespace Experimental {
 namespace Stats {
@@ -45,6 +47,7 @@ class KACTIVITIESSTATS_EXPORT ResultModel : public QAbstractListModel {
 
 public:
     ResultModel(Query query, QObject *parent = 0);
+    ResultModel(Query query, const KConfigGroup &config, QObject *parent = 0);
     virtual ~ResultModel();
 
     enum Roles {
@@ -68,9 +71,42 @@ public:
     void fetchMore(const QModelIndex &parent) Q_DECL_OVERRIDE;
     bool canFetchMore(const QModelIndex &parent) const Q_DECL_OVERRIDE;
 
+public Q_SLOTS:
+    /**
+     * Removes the specified resource from the history
+     */
     void forgetResource(const QString &resource);
+
+    /**
+     * Removes the specified resource from the history
+     */
     void forgetResource(int row);
+
+    /**
+     * Clears the history of all resources that match the current
+     * model query
+     */
     void forgetAllResources();
+
+    /**
+     * Moves the resource to the specified position.
+     *
+     * Note that this only applies to the linked resources
+     * since the recently/frequently used ones have
+     * their natural order.
+     * This requires the config to be specified on construction.
+     */
+    void setResultPosition(const QString &resource, int position);
+
+    /**
+     * Sort the items by title.
+     *
+     * Note that this only affects the linked resources
+     * since the recently/frequently used ones have
+     * their natural order.
+     * This requires the config to be specified on construction.
+     */
+    void sortItems(Qt::SortOrder sortOrder);
 
 private:
     friend class ResultModelPrivate;
