@@ -139,7 +139,7 @@ public:
 Application *Application::Private::s_instance = Q_NULLPTR;
 
 Application::Application(int &argc, char **argv)
-    : QGuiApplication(argc, argv)
+    : QApplication(argc, argv)
 {
 }
 
@@ -205,7 +205,7 @@ void Application::loadPlugins()
     using namespace std::placeholders;
 
     const auto pluginsDir(QLatin1String(KAMD_PLUGIN_DIR));
-    QGuiApplication::addLibraryPath(pluginsDir);
+    QApplication::addLibraryPath(pluginsDir);
 
     const auto config
         = KSharedConfig::openConfig(QStringLiteral("kactivitymanagerdrc"))
@@ -271,7 +271,7 @@ Resources &Application::resources() const
 
 void Application::quit()
 {
-    QGuiApplication::quit();
+    QApplication::quit();
 }
 
 #include "../lib/core/version.h"
