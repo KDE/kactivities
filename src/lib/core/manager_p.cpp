@@ -113,9 +113,10 @@ void Manager::serviceOwnerChanged(const QString &serviceName, const QString &old
                     QDBusConnection::sessionBus(),
                     Q_NULLPTR);
 
-            kamd::utils::continue_with(
+            using namespace kamd::utils;
+            continue_with(
                 DBusFuture::asyncCall<QString>(&service, "serviceVersion"),
-                [this] (const boost::optional<QString> &serviceVersion) {
+                [this] (const optional_view<QString> &serviceVersion) {
                     // Test whether the service is older than the library.
                     // If it is, we need to end this
 

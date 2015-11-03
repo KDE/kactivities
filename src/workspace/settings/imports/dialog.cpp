@@ -234,9 +234,10 @@ void Dialog::save()
 
 void Dialog::create()
 {
-    kamd::utils::continue_with(
+    using namespace kamd::utils;
+    continue_with(
         d->activities.addActivity(activityName()),
-        [this](const boost::optional<QString> &activityId) {
+        [this](const optional_view<QString> &activityId) {
             if (activityId.is_initialized()) {
                 saveChanges(activityId.get());
             }
