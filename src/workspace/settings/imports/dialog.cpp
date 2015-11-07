@@ -71,7 +71,13 @@ public:
         auto view = new QQuickWidget();
 
         view->setResizeMode(QQuickWidget::SizeRootObjectToView);
+
+// TODO: Remove this once we start requiring Qt 5.4
+#if QT_VERSION < QT_VERSION_CHECK(5, 4, 0)
+        view->quickWindow()->setColor(QGuiApplication::palette().window().color());
+#else
         view->setClearColor(QGuiApplication::palette().window().color());
+#endif
 
         view->rootContext()->setContextProperty("dialog", q);
         view->setSource(QUrl::fromLocalFile(
