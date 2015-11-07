@@ -74,7 +74,7 @@ public:
 
 // TODO: Remove this once we start requiring Qt 5.4
 #if QT_VERSION < QT_VERSION_CHECK(5, 4, 0)
-        view->quickWindow()->setColor(QGuiApplication::palette().window().color());
+        #warning "The activity configuration dialogue will not fully follow the system colours. Update to Qt 5.5."
 #else
         view->setClearColor(QGuiApplication::palette().window().color());
 #endif
