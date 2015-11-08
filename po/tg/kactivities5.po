@@ -1,0 +1,265 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+# FVictor Ibragimov <victor.ibragimov@gmail.com>, 2013
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Tajik KDE Localization\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2015-11-08 08:26+0000\n"
+"PO-Revision-Date: 2013-07-26 14:48-0000\n"
+"Last-Translator: Victor Ibragimov <victor.ibragimov@gmail.com>\n"
+"Language-Team: Tajik <kde-i18n-doc@kde.org>\n"
+"Language: Tajik\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.7\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr ""
+
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr ""
+
+#: imports/activitymodel.cpp:589
+msgctxt "Header title for activity data model"
+msgid "Activity"
+msgstr ""
+
+#: service/Activities.cpp:139
+msgid "Default"
+msgstr ""
+
+#: service/plugins/globalshortcuts/GlobalShortcutsPlugin.cpp:90
+#: service/plugins/globalshortcuts/GlobalShortcutsPlugin.cpp:125
+#, kde-format
+msgctxt "@action"
+msgid "Switch to activity \"%1\""
+msgstr "Гузариш ба фаъолияти \"%1\""
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:111
+#: workspace/kio/KioActivities.cpp:306
+#: workspace/settings/ExtraActivitiesInterface.cpp:45
+#: workspace/settings/MainConfigurationWidget.cpp:45
+msgid "Activities"
+msgstr ""
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:114
+msgid "Loading..."
+msgstr ""
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:141
+msgid "The Activity Manager is not running"
+msgstr ""
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:187
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:254
+msgid "Link to the current activity"
+msgstr ""
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:190
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:259
+msgid "Unlink from the current activity"
+msgstr ""
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:193
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:263
+msgid "Link to:"
+msgstr ""
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:198
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:271
+msgid "Unlink from:"
+msgstr ""
+
+#: workspace/kio/KioActivities.cpp:107 workspace/kio/KioActivities.cpp:229
+msgid "Activity"
+msgstr ""
+
+#: workspace/kio/KioActivities.cpp:228
+msgid "Current activity"
+msgstr ""
+
+#: workspace/settings/imports/activitysettings.cpp:55
+msgid "Delete activity"
+msgstr ""
+
+#: workspace/settings/imports/activitysettings.cpp:56
+#, kde-format
+msgid "Are you sure you want to delete '%1'?"
+msgstr ""
+
+#: workspace/settings/imports/dialog.cpp:124
+msgid "Create a new activity"
+msgstr ""
+
+#: workspace/settings/imports/dialog.cpp:132
+msgid "Activity settings"
+msgstr ""
+
+#. i18n: ectx: property (title), widget (QGroupBox, groupBox_2)
+#: workspace/settings/imports/dialog.cpp:172
+#: workspace/settings/ui/SwitchingTabBase.ui:20
+msgid "General"
+msgstr ""
+
+#: workspace/settings/imports/dialog.cpp:173
+msgid "Other"
+msgstr ""
+
+#: workspace/settings/imports/dialog.cpp:181
+msgid "Create"
+msgstr ""
+
+#: workspace/settings/imports/qml/activityDialog/components/DialogButtons.qml:44
+msgid "Apply"
+msgstr ""
+
+#: workspace/settings/imports/qml/activityDialog/components/DialogButtons.qml:53
+msgid "Cancel"
+msgstr ""
+
+#: workspace/settings/imports/qml/activityDialog/components/ShortcutChooser.qml:36
+msgid "Shortcut for switching to this activity:"
+msgstr ""
+
+#: workspace/settings/imports/qml/activityDialog/GeneralTab.qml:58
+msgid "Activity information"
+msgstr ""
+
+#: workspace/settings/imports/qml/activityDialog/GeneralTab.qml:66
+msgid "Name"
+msgstr ""
+
+#: workspace/settings/imports/qml/activityDialog/GeneralTab.qml:73
+msgid "Description"
+msgstr ""
+
+#: workspace/settings/imports/qml/activityDialog/GeneralTab.qml:99
+msgid "Wallpaper"
+msgstr ""
+
+#: workspace/settings/imports/qml/activityDialog/GeneralTab.qml:105
+msgid "Change..."
+msgstr ""
+
+#: workspace/settings/imports/qml/activityDialog/GeneralTab.qml:138
+msgid "Icon"
+msgstr ""
+
+#: workspace/settings/MainConfigurationWidget.cpp:46
+msgid "Switching"
+msgstr ""
+
+#: workspace/settings/MainConfigurationWidget.cpp:47
+msgid "Privacy"
+msgstr ""
+
+#: workspace/settings/PrivacyTab.cpp:72
+msgctxt "unlimited number of months"
+msgid "forever"
+msgstr ""
+
+#: workspace/settings/PrivacyTab.cpp:82
+msgid "Forget the last hour"
+msgstr ""
+
+#: workspace/settings/PrivacyTab.cpp:84
+msgid "Forget the last two hours"
+msgstr ""
+
+#: workspace/settings/PrivacyTab.cpp:86
+msgid "Forget a day"
+msgstr ""
+
+#: workspace/settings/PrivacyTab.cpp:88
+msgid "Forget everything"
+msgstr ""
+
+#: workspace/settings/PrivacyTab.cpp:217
+msgctxt "unit of time. months to keep the history"
+msgid " month"
+msgid_plural " months"
+msgstr[0] ""
+msgstr[1] ""
+
+#: workspace/settings/PrivacyTab.cpp:221
+msgctxt "for in 'keep history for 5 months'"
+msgid "for "
+msgstr ""
+
+#: workspace/settings/qml/activitiesTab/ActivitiesView.qml:37
+msgid "Create activity..."
+msgstr ""
+
+#: workspace/settings/SwitchingTab.cpp:64
+msgid "Activity switching"
+msgstr ""
+
+#: workspace/settings/SwitchingTab.cpp:68
+msgctxt "@action"
+msgid "Walk through activities"
+msgstr ""
+
+#: workspace/settings/SwitchingTab.cpp:71
+msgctxt "@action"
+msgid "Walk through activities (Reverse)"
+msgstr ""
+
+#. i18n: ectx: property (windowTitle), widget (QWidget, PrivacyTabBase)
+#. i18n: ectx: property (windowTitle), widget (QWidget, SwitchingTabBase)
+#: workspace/settings/ui/PrivacyTabBase.ui:14
+#: workspace/settings/ui/SwitchingTabBase.ui:14
+msgid "Form"
+msgstr ""
+
+#. i18n: ectx: property (text), widget (QLabel, labelRememberDocuments)
+#: workspace/settings/ui/PrivacyTabBase.ui:20
+msgid "Remember opened documents:"
+msgstr ""
+
+#. i18n: ectx: property (text), widget (QRadioButton, radioRememberAllApplications)
+#: workspace/settings/ui/PrivacyTabBase.ui:31
+msgid "For a&ll applications"
+msgstr ""
+
+#. i18n: ectx: property (text), widget (QRadioButton, radioDontRememberApplications)
+#: workspace/settings/ui/PrivacyTabBase.ui:41
+msgid "&Do not remember"
+msgstr ""
+
+#. i18n: ectx: property (text), widget (QRadioButton, radioRememberSpecificApplications)
+#: workspace/settings/ui/PrivacyTabBase.ui:48
+msgid "O&nly for specific applications"
+msgstr ""
+
+#. i18n: ectx: property (text), widget (QLabel, labelKeepHistory)
+#: workspace/settings/ui/PrivacyTabBase.ui:70
+msgid "Keep history"
+msgstr ""
+
+#. i18n: ectx: property (text), widget (QPushButton, buttonClearRecentHistory)
+#: workspace/settings/ui/PrivacyTabBase.ui:96
+msgid "Clear recent history"
+msgstr ""
+
+#. i18n: ectx: property (text), widget (QCheckBox, checkBlacklistAllNotOnList)
+#: workspace/settings/ui/PrivacyTabBase.ui:115
+msgid "Blacklist all applications not on this list"
+msgstr ""
+
+#. i18n: ectx: property (text), widget (QCheckBox, checkRememberVirtualDesktop)
+#: workspace/settings/ui/SwitchingTabBase.ui:26
+msgid "Remember the current virtual desktop for each activity (needs restart)"
+msgstr ""
+
+#. i18n: ectx: property (title), widget (QGroupBox, groupBox)
+#: workspace/settings/ui/SwitchingTabBase.ui:36
+msgid "Shortcuts"
+msgstr ""

@@ -1,0 +1,273 @@
+# translation of kcm_activities.po to Français
+# Copyright (C) YEAR This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+# Joëlle Cornavin <jcorn@free.fr>, 2012, 2013.
+# xavier <ktranslator31@yahoo.fr>, 2013, 2014.
+# Maxime Corteel <mcorteel@gmail.com>, 2015.
+# Thomas Vergnaud <thomas.vergnaud@gmx.fr>, 2015.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: kcm_activities\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2015-11-08 08:26+0000\n"
+"PO-Revision-Date: 2015-10-31 12:02+0100\n"
+"Last-Translator: Thomas Vergnaud <thomas.vergnaud@gmx.fr>\n"
+"Language-Team: French <kde-francophone@kde.org>\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Lokalize 2.0\n"
+"X-Environment: kde\n"
+"X-Accelerator-Marker: &\n"
+"X-Text-Markup: kde4\n"
+
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Joëlle Cornavin, Thomas Vergnaud"
+
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "jcorn@free.fr, thomas.vergnaud@gmx.fr"
+
+#: imports/activitymodel.cpp:589
+msgctxt "Header title for activity data model"
+msgid "Activity"
+msgstr "Activité"
+
+#: service/Activities.cpp:139
+msgid "Default"
+msgstr "Défaut"
+
+#: service/plugins/globalshortcuts/GlobalShortcutsPlugin.cpp:90
+#: service/plugins/globalshortcuts/GlobalShortcutsPlugin.cpp:125
+#, kde-format
+msgctxt "@action"
+msgid "Switch to activity \"%1\""
+msgstr "Passer à l'activité « %1 »"
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:111
+#: workspace/kio/KioActivities.cpp:306
+#: workspace/settings/ExtraActivitiesInterface.cpp:45
+#: workspace/settings/MainConfigurationWidget.cpp:45
+msgid "Activities"
+msgstr "Activités"
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:114
+msgid "Loading..."
+msgstr "Chargement…"
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:141
+msgid "The Activity Manager is not running"
+msgstr "Le gestionnaire d'activités n'est pas en cours d'exécution"
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:187
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:254
+msgid "Link to the current activity"
+msgstr "Lier à l'activité en cours"
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:190
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:259
+msgid "Unlink from the current activity"
+msgstr "Se détacher de l'activité en cours"
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:193
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:263
+msgid "Link to:"
+msgstr "Lier à:"
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:198
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:271
+msgid "Unlink from:"
+msgstr "Se déconnecter de;"
+
+#: workspace/kio/KioActivities.cpp:107 workspace/kio/KioActivities.cpp:229
+msgid "Activity"
+msgstr "Activité"
+
+#: workspace/kio/KioActivities.cpp:228
+msgid "Current activity"
+msgstr "Activité en cours"
+
+#: workspace/settings/imports/activitysettings.cpp:55
+msgid "Delete activity"
+msgstr "Supprimer l'activité"
+
+#: workspace/settings/imports/activitysettings.cpp:56
+#, kde-format
+msgid "Are you sure you want to delete '%1'?"
+msgstr "Souhaitez-vous vraiment supprimer « %1 » ?"
+
+#: workspace/settings/imports/dialog.cpp:124
+msgid "Create a new activity"
+msgstr "Créer une nouvelle activité"
+
+#: workspace/settings/imports/dialog.cpp:132
+msgid "Activity settings"
+msgstr "Configuration de l'activité"
+
+#. i18n: ectx: property (title), widget (QGroupBox, groupBox_2)
+#: workspace/settings/imports/dialog.cpp:172
+#: workspace/settings/ui/SwitchingTabBase.ui:20
+msgid "General"
+msgstr "Général"
+
+#: workspace/settings/imports/dialog.cpp:173
+msgid "Other"
+msgstr "Autre"
+
+#: workspace/settings/imports/dialog.cpp:181
+msgid "Create"
+msgstr "Créer"
+
+#: workspace/settings/imports/qml/activityDialog/components/DialogButtons.qml:44
+msgid "Apply"
+msgstr "Appliquer"
+
+#: workspace/settings/imports/qml/activityDialog/components/DialogButtons.qml:53
+msgid "Cancel"
+msgstr "Annuler"
+
+#: workspace/settings/imports/qml/activityDialog/components/ShortcutChooser.qml:36
+msgid "Shortcut for switching to this activity:"
+msgstr "Raccourcis pour basculer vers cette activité :"
+
+#: workspace/settings/imports/qml/activityDialog/GeneralTab.qml:58
+msgid "Activity information"
+msgstr "Informations sur l'activité"
+
+#: workspace/settings/imports/qml/activityDialog/GeneralTab.qml:66
+msgid "Name"
+msgstr "Nom"
+
+#: workspace/settings/imports/qml/activityDialog/GeneralTab.qml:73
+msgid "Description"
+msgstr "Description"
+
+#: workspace/settings/imports/qml/activityDialog/GeneralTab.qml:99
+msgid "Wallpaper"
+msgstr "Papier peint"
+
+#: workspace/settings/imports/qml/activityDialog/GeneralTab.qml:105
+msgid "Change..."
+msgstr "Changer…"
+
+#: workspace/settings/imports/qml/activityDialog/GeneralTab.qml:138
+msgid "Icon"
+msgstr "Icône"
+
+#: workspace/settings/MainConfigurationWidget.cpp:46
+msgid "Switching"
+msgstr "Basculement"
+
+#: workspace/settings/MainConfigurationWidget.cpp:47
+msgid "Privacy"
+msgstr "Respect de la vie privée"
+
+#: workspace/settings/PrivacyTab.cpp:72
+msgctxt "unlimited number of months"
+msgid "forever"
+msgstr "indéfiniment"
+
+#: workspace/settings/PrivacyTab.cpp:82
+msgid "Forget the last hour"
+msgstr "Oublier la dernière heure"
+
+#: workspace/settings/PrivacyTab.cpp:84
+msgid "Forget the last two hours"
+msgstr "Oublier les deux dernières heures"
+
+#: workspace/settings/PrivacyTab.cpp:86
+msgid "Forget a day"
+msgstr "Oublier un jour"
+
+#: workspace/settings/PrivacyTab.cpp:88
+msgid "Forget everything"
+msgstr "Oublier tout"
+
+#: workspace/settings/PrivacyTab.cpp:217
+msgctxt "unit of time. months to keep the history"
+msgid " month"
+msgid_plural " months"
+msgstr[0] " mois"
+msgstr[1] " mois"
+
+#: workspace/settings/PrivacyTab.cpp:221
+msgctxt "for in 'keep history for 5 months'"
+msgid "for "
+msgstr "pendant"
+
+#: workspace/settings/qml/activitiesTab/ActivitiesView.qml:37
+msgid "Create activity..."
+msgstr "Créer une activité…"
+
+#: workspace/settings/SwitchingTab.cpp:64
+msgid "Activity switching"
+msgstr "Basculement d'activité"
+
+#: workspace/settings/SwitchingTab.cpp:68
+msgctxt "@action"
+msgid "Walk through activities"
+msgstr "Parcourir les activités"
+
+#: workspace/settings/SwitchingTab.cpp:71
+msgctxt "@action"
+msgid "Walk through activities (Reverse)"
+msgstr "Parcourir les activités (en sens inverse)"
+
+#. i18n: ectx: property (windowTitle), widget (QWidget, PrivacyTabBase)
+#. i18n: ectx: property (windowTitle), widget (QWidget, SwitchingTabBase)
+#: workspace/settings/ui/PrivacyTabBase.ui:14
+#: workspace/settings/ui/SwitchingTabBase.ui:14
+msgid "Form"
+msgstr "Forme"
+
+#. i18n: ectx: property (text), widget (QLabel, labelRememberDocuments)
+#: workspace/settings/ui/PrivacyTabBase.ui:20
+msgid "Remember opened documents:"
+msgstr "Mémoriser les documents ouverts :"
+
+#. i18n: ectx: property (text), widget (QRadioButton, radioRememberAllApplications)
+#: workspace/settings/ui/PrivacyTabBase.ui:31
+msgid "For a&ll applications"
+msgstr "Pour toutes les applications"
+
+#. i18n: ectx: property (text), widget (QRadioButton, radioDontRememberApplications)
+#: workspace/settings/ui/PrivacyTabBase.ui:41
+msgid "&Do not remember"
+msgstr "Ne pas mémoriser"
+
+#. i18n: ectx: property (text), widget (QRadioButton, radioRememberSpecificApplications)
+#: workspace/settings/ui/PrivacyTabBase.ui:48
+msgid "O&nly for specific applications"
+msgstr "Uniquement pour des applications spécifiques"
+
+#. i18n: ectx: property (text), widget (QLabel, labelKeepHistory)
+#: workspace/settings/ui/PrivacyTabBase.ui:70
+msgid "Keep history"
+msgstr "Conserver l'historique"
+
+#. i18n: ectx: property (text), widget (QPushButton, buttonClearRecentHistory)
+#: workspace/settings/ui/PrivacyTabBase.ui:96
+msgid "Clear recent history"
+msgstr "Effacer l'historique récent"
+
+#. i18n: ectx: property (text), widget (QCheckBox, checkBlacklistAllNotOnList)
+#: workspace/settings/ui/PrivacyTabBase.ui:115
+msgid "Blacklist all applications not on this list"
+msgstr ""
+"Mettre en liste noire toutes les applications ne figurant pas sur cette liste"
+
+#. i18n: ectx: property (text), widget (QCheckBox, checkRememberVirtualDesktop)
+#: workspace/settings/ui/SwitchingTabBase.ui:26
+msgid "Remember the current virtual desktop for each activity (needs restart)"
+msgstr ""
+"Mémoriser le bureau virtuel actuel pour chaque activité (nécessite un "
+"redémarrage)"
+
+#. i18n: ectx: property (title), widget (QGroupBox, groupBox)
+#: workspace/settings/ui/SwitchingTabBase.ui:36
+msgid "Shortcuts"
+msgstr "Raccourcis"
