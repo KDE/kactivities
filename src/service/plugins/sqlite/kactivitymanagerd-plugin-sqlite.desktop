@@ -50,6 +50,7 @@ Name[x-test]=xxSqlite Feederxx
 Name[zh_CN]=Sqlite 采集器
 Name[zh_TW]=Sqlite Feeder
 Comment=Plugin to store and score events in Sqlite
+Comment[ast]=Complementu p'atroxar y puntuar eventos en Sqlite
 Comment[bs]=Dodatak za smiještanje i evidentiranje događaja u Sqlite
 Comment[ca]=Connector per emmagatzemar i classificar esdeveniments en el Sqlite
 Comment[ca@valencia]=Connector per emmagatzemar i classificar esdeveniments en el Sqlite

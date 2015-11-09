@@ -1,5 +1,6 @@
 [Desktop Entry]
 Name=Event Spy
+Name[ast]=Esclucador d'eventos
 Name[ca]=Espia l'esdeveniment
 Name[ca@valencia]=Espia l'esdeveniment
 Name[cs]=Špeh událostí
@@ -35,6 +36,7 @@ Name[x-test]=xxEvent Spyxx
 Name[zh_CN]=事件间谍
 Name[zh_TW]=事件監控器
 Comment=Collects events from applications that support recent documents specification
+Comment[ast]=Coleiciona eventos d'aplicaciones que sofiten la especificación de documentos recientes
 Comment[ca]=Recull els esdeveniments de les aplicacions que admeten l'especificació dels documents recents
 Comment[ca@valencia]=Recull els esdeveniments de les aplicacions que admeten l'especificació dels documents recents
 Comment[cs]=Sbírá z aplikací události jenž podporují určení nedávných dokumentů

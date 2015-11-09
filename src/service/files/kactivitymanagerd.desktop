@@ -8,6 +8,7 @@ Exec=kactivitymanagerd
 
 Name=Activity Manager
 Name[ar]=مدير الأنشطة
+Name[ast]=Xestor d'actividaes
 Name[bs]=Menadžer aktivnosti
 Name[ca]=Gestor d'activitats
 Name[ca@valencia]=Gestor d'activitats

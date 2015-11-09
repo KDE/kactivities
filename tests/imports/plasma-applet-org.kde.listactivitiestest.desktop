@@ -43,6 +43,7 @@ Name[x-test]=xxList activities testxx
 Name[zh_CN]=显示活动测试项
 Name[zh_TW]=列出活動測試
 Comment=Strange, but not a Clock
+Comment[ast]=Estrañu, pero nun ye un reló
 Comment[ca]=És estrany, però no és cap rellotge
 Comment[ca@valencia]=És estrany, però no és cap rellotge
 Comment[da]=Mærkelig, men ikke et ur

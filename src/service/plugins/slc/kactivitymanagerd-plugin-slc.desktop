@@ -1,6 +1,7 @@
 [Desktop Entry]
 Name=Share-Like-Connect
 Name[ar]=شارك-أُعجَب-اتّصل
+Name[ast]=Compartir-Prestar-Coneutar
 Name[bs]=Povezivanje kao Share
 Name[ca]=«Share-Like-Connect»
 Name[ca@valencia]=«Share-Like-Connect»
@@ -50,6 +51,7 @@ Name[zh_CN]=分享-喜爱-连接
 Name[zh_TW]=Share-Like-Connect
 Comment=Provides data to Share-Like-Connect applet
 Comment[ar]=يوفّر بيانات لبريمج "شارك-أُعجَب-اتّصل"
+Comment[ast]=Apurre datos pal applet Compartir-Prestar-Coneutar
 Comment[bs]=Pruža podatke za programčić Share-Like-Connect
 Comment[ca]=Proporciona dades a la miniaplicació «Share-Like-Connect»
 Comment[ca@valencia]=Proporciona dades a la miniaplicació «Share-Like-Connect»

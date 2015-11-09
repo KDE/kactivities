@@ -1,6 +1,7 @@
 [Desktop Entry]
 Name=Global Shortcuts
 Name[ar]=اختصارات عموميّة
+Name[ast]=Atayos globales
 Name[bs]=Globalne kratice
 Name[ca]=Dreceres globals
 Name[ca@valencia]=Dreceres globals
@@ -52,6 +53,7 @@ Name[zh_CN]=全局快捷键
 Name[zh_TW]=全域捷徑
 Comment=Adds global keyboard shortcuts for activity switching
 Comment[ar]=يضيف اختصارات لوحة المفاتيح العموميّة لتبديل النّشاط
+Comment[ast]=Amiesta atayos de tecláu globales pa la conmutación d'actividaes
 Comment[bs]=Dodaje globalne kratice tastature za prebacivanje aktivnosti
 Comment[ca]=Afegeix dreceres de teclat globals per canviar d'activitat
 Comment[ca@valencia]=Afig dreceres de teclat globals per canviar d'activitat

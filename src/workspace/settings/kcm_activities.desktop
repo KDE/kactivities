@@ -12,6 +12,7 @@ X-KDE-Weight=80
 
 Name=Activities
 Name[ar]=الأنشطة
+Name[ast]=Actividaes
 Name[bs]=Aktivnosti
 Name[ca]=Activitats
 Name[ca@valencia]=Activitats
@@ -62,6 +63,7 @@ Name[x-test]=xxActivitiesxx
 Name[zh_CN]=活动
 Name[zh_TW]=活動
 Comment=Activities help you to focus on a specific task
+Comment[ast]=Actividaes que t'ayuden a enfocate nuna xera específica
 Comment[ca]=Les activitats ajuden a centrar-vos en una tasca específica
 Comment[ca@valencia]=Les activitats ajuden a centrar-vos en una tasca específica
 Comment[de]=Aktivitäten helfen Ihnen dabei, sich auf eine Aufgabe zu konzentrieren
