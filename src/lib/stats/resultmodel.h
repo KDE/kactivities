@@ -71,6 +71,19 @@ public:
     void fetchMore(const QModelIndex &parent) Q_DECL_OVERRIDE;
     bool canFetchMore(const QModelIndex &parent) const Q_DECL_OVERRIDE;
 
+    // TODO: BLOCKER Move these to libKActivities
+    void linkToActivity(const QUrl &resource,
+                        const Terms::Activity &activity
+                            = Terms::Activity(QStringList()),
+                        const Terms::Agent &agent
+                            = Terms::Agent(QStringList()));
+
+    void unlinkFromActivity(const QUrl &resource,
+                            const Terms::Activity &activity
+                                = Terms::Activity(QStringList()),
+                            const Terms::Agent &agent
+                                = Terms::Agent(QStringList()));
+
 public Q_SLOTS:
     /**
      * Removes the specified resource from the history

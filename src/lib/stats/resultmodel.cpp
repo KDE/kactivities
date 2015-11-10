@@ -950,6 +950,20 @@ void ResultModel::sortItems(Qt::SortOrder sortOrder)
     // TODO
 }
 
+void ResultModel::linkToActivity(const QUrl &resource,
+                                 const Terms::Activity &activity,
+                                 const Terms::Agent &agent)
+{
+    d->watcher.linkToActivity(resource, activity, agent);
+}
+
+void ResultModel::unlinkFromActivity(const QUrl &resource,
+                                     const Terms::Activity &activity,
+                                     const Terms::Agent &agent)
+{
+    d->watcher.unlinkFromActivity(resource, activity, agent);
+}
+
 } // namespace Stats
 } // namespace Experimental
 } // namespace KActivities
