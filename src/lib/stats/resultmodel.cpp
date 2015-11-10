@@ -58,8 +58,8 @@ namespace Stats {
 
 class ResultModelPrivate {
 public:
-    ResultModelPrivate(Query query, const KConfigGroup &config, ResultModel *parent)
-        : cache(this, config, query.limit())
+    ResultModelPrivate(Query query, const QString &clientId, ResultModel *parent)
+        : cache(this, clientId, query.limit())
         , query(query)
         , watcher(query)
         , hasMore(true)
@@ -79,15 +79,30 @@ public:
     public:
         typedef QList<ResultSet::Result> Items;
 
-        Cache(ResultModelPrivate *d, const KConfigGroup &config, int limit)
+        Cache(ResultModelPrivate *d, const QString &clientId, int limit)
             : d(d)
             , m_countLimit(limit)
-            , m_config(config)
+            , m_clientId(clientId)
         {
-            if (m_config.isValid()) {
-                m_fixedItems = m_config.readEntry("kactivitiesLinkedItemsOrder",
-                                                  QStringList());
+            if (!m_clientId.isEmpty()) {
+                m_configFile = new KConfig(
+                        QStandardPaths::writableLocation(QStandardPaths::ConfigLocation)
+                        + QStringLiteral("/kactivitymanagerd-statsrc"));
+
+                m_config = KConfigGroup(m_configFile, "ResultModel-OrderingFor-" + clientId);
+
+                if (m_config.isValid()) {
+                    m_fixedItems = m_config.readEntry("kactivitiesLinkedItemsOrder",
+                                                      QStringList());
+                }
+
+                qDebug() << "Configuration activated " << m_configFile->name();
             }
+        }
+
+        ~Cache()
+        {
+            delete m_configFile;
         }
 
         inline int size() const
@@ -98,7 +113,10 @@ public:
         inline void setLinkedResultPosition(const QString &resource,
                                             int position)
         {
-            if (!m_config.isValid()) return;
+            if (!m_config.isValid()) {
+                qWarning() << "We can not reorder the results, no clientId was specified";
+                return;
+            }
 
             // Preconditions:
             //  - cache is ordered properly, first on the user's desired order,
@@ -110,9 +128,14 @@ public:
             //    reordering of the statistics-based resources)
             //  - the new position for the resource is not outside of the cache
 
+            qDebug() << "Searching for " << resource;
             auto resourcePosition = find(resource);
+            qDebug() << "Was resource found? " << (bool)resourcePosition;
+            if (resourcePosition) {
+                qDebug() << "What is the status? " << resourcePosition.iterator->linkStatus();
+            }
             if (!resourcePosition
-                || resourcePosition.iterator->linkStatus() != ResultSet::Result::NotLinked) {
+                || resourcePosition.iterator->linkStatus() == ResultSet::Result::NotLinked) {
                 qWarning("Trying to reposition a resource that we do not have, or is not linked");
                 return;
             }
@@ -141,6 +164,7 @@ public:
             m_fixedItems = linkedItems;
 
             m_config.writeEntry("kactivitiesLinkedItemsOrder", m_fixedItems);
+            m_config.sync();
 
             // We are prepared to reorder the cache
             d->repositionResult(resourcePosition,
@@ -153,6 +177,8 @@ public:
         QList<ResultSet::Result> m_items;
         int m_countLimit;
 
+        QString m_clientId;
+        KConfig *m_configFile;
         KConfigGroup m_config;
         QStringList m_fixedItems;
 
@@ -189,10 +215,25 @@ public:
                 return iterator != cache->m_items.end();
             }
 
-            const ResultSet::Result &operator*() const
+            ResultSet::Result &operator*() const
             {
                 return *iterator;
             }
+
+            ResultSet::Result *operator->() const
+            {
+                return &(*iterator);
+            }
+
+            // const ResultSet::Result &operator*() const
+            // {
+            //     return *iterator;
+            // }
+            //
+            // const ResultSet::Result *operator->() const
+            // {
+            //     return &(*iterator);
+            // }
         };
 
         inline FindCacheResult find(const QString &resource)
@@ -665,7 +706,7 @@ public:
         const auto result = cache.find(resource);
 
         ResultSet::Result::LinkStatus linkStatus
-            = result ? result.iterator->linkStatus()
+            = result ? result->linkStatus()
                      : ResultSet::Result::NotLinked;
 
         if (result) {
@@ -721,7 +762,7 @@ public:
         if (!result) return;
 
         if (query.selection() == Terms::UsedResources
-            || result.iterator->linkStatus() != ResultSet::Result::Linked) {
+            || result->linkStatus() != ResultSet::Result::Linked) {
             removeResult(result);
         }
     }
@@ -736,8 +777,8 @@ public:
             onResultScoreUpdated(resource, 0, 0, 0);
 
         } else if (query.selection() == Terms::AllResources) {
-            result.iterator->setLinkStatus(ResultSet::Result::Linked);
-            repositionResult(result, destinationFor(*result.iterator));
+            result->setLinkStatus(ResultSet::Result::Linked);
+            repositionResult(result, destinationFor(*result));
 
         }
     }
@@ -752,8 +793,8 @@ public:
             removeResult(result);
 
         } else if (query.selection() == Terms::AllResources) {
-            result.iterator->setLinkStatus(ResultSet::Result::NotLinked);
-            repositionResult(result, destinationFor(*result.iterator));
+            result->setLinkStatus(ResultSet::Result::NotLinked);
+            repositionResult(result, destinationFor(*result));
 
         }
     }
@@ -790,7 +831,7 @@ public:
 
         if (!result) return;
 
-        result.iterator->setTitle(title);
+        result->setTitle(title);
 
         q->dataChanged(q->index(result.index), q->index(result.index));
     }
@@ -803,7 +844,7 @@ public:
 
         if (!result) return;
 
-        result.iterator->setMimetype(mimetype);
+        result->setMimetype(mimetype);
 
         q->dataChanged(q->index(result.index), q->index(result.index));
     }
@@ -827,14 +868,14 @@ private:
 
 ResultModel::ResultModel(Query query, QObject *parent)
     : QAbstractListModel(parent)
-    , d(new ResultModelPrivate(query, KConfigGroup(), this))
+    , d(new ResultModelPrivate(query, QString(), this))
 {
     d->init();
 }
 
-ResultModel::ResultModel(Query query, const KConfigGroup &config, QObject *parent)
+ResultModel::ResultModel(Query query, const QString &clientId, QObject *parent)
     : QAbstractListModel(parent)
-    , d(new ResultModelPrivate(query, config, this))
+    , d(new ResultModelPrivate(query, clientId, this))
 {
     d->init();
 }

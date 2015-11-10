@@ -47,7 +47,7 @@ class KACTIVITIESSTATS_EXPORT ResultModel : public QAbstractListModel {
 
 public:
     ResultModel(Query query, QObject *parent = 0);
-    ResultModel(Query query, const KConfigGroup &config, QObject *parent = 0);
+    ResultModel(Query query, const QString &clientId, QObject *parent = 0);
     virtual ~ResultModel();
 
     enum Roles {
@@ -107,7 +107,7 @@ public Q_SLOTS:
      * Note that this only applies to the linked resources
      * since the recently/frequently used ones have
      * their natural order.
-     * This requires the config to be specified on construction.
+     * This requires the clientId to be specified on construction.
      */
     void setResultPosition(const QString &resource, int position);
 
