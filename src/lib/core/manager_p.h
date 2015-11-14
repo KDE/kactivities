@@ -22,6 +22,7 @@
 
 #include <common/dbus/org.kde.ActivityManager.Activities.h>
 
+#include "application_interface.h"
 #include "activities_interface.h"
 #include "resources_interface.h"
 #include "resources_linking_interface.h"
@@ -60,6 +61,7 @@ private:
 
     static Manager *s_instance;
 
+    Service::Application *const m_service;
     Service::Activities *const m_activities;
     Service::Resources *const m_resources;
     Service::ResourcesLinking *const m_resourcesLinking;

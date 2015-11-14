@@ -58,6 +58,13 @@ qt5_add_dbus_interface (
    resources_linking_interface
    )
 
+qt5_add_dbus_interface (
+   KActivities_LIB_SRCS
+
+   ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.Application.xml
+   application_interface
+   )
+
 add_library (
    KF5Activities SHARED
    ${KActivities_LIB_SRCS}

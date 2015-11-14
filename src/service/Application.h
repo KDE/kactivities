@@ -38,6 +38,7 @@ class Features;
  */
 class Application : public QApplication {
     Q_OBJECT
+    Q_CLASSINFO("D-Bus Interface", "org.kde.ActivityManager.Application")
 
 public:
     Application(int &argc, char **argv);
