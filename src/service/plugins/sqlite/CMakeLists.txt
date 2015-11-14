@@ -55,7 +55,6 @@ target_link_libraries (
    KF5::KIOCore
    KF5::DBusAddons
    KF5::CoreAddons
-   KF5::Activities
    )
 
 kservice_desktop_to_json (

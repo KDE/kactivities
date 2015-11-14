@@ -72,6 +72,8 @@ bool StatsPlugin::init(QHash<QString, QObject *> &modules)
     m_activities = modules[QStringLiteral("activities")];
     m_resources = modules[QStringLiteral("resources")];
 
+    m_resourceLinking->init();
+
     // Initializing the database
     resourcesDatabase();
 

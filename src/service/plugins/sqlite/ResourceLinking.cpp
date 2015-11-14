@@ -47,13 +47,18 @@ ResourceLinking::ResourceLinking(QObject *parent)
     new ResourcesLinkingAdaptor(this);
     KDBusConnectionPool::threadConnection().registerObject(
         QStringLiteral("/ActivityManager/Resources/Linking"), this);
+}
 
-    connect(&m_activities, &KActivities::Consumer::currentActivityChanged,
-            this, &ResourceLinking::onCurrentActivityChanged);
-    connect(&m_activities, &KActivities::Consumer::activityAdded,
-            this, &ResourceLinking::onActivityAdded);
-    connect(&m_activities, &KActivities::Consumer::activityRemoved,
-            this, &ResourceLinking::onActivityRemoved);
+void ResourceLinking::init()
+{
+    auto activities = StatsPlugin::self()->activitiesInterface();
+
+    connect(activities, SIGNAL(CurrentActivityChanged(QString)),
+            this, SLOT(onCurrentActivityChanged(QString)));
+    connect(activities, SIGNAL(ActivityAdded(QString)),
+            this, SLOT(onActivityAdded(QString)));
+    connect(activities, SIGNAL(ActivityRemoved(QString)),
+            this, SLOT(onActivityRemoved(QString)));
 }
 
 void ResourceLinking::LinkResourceToActivity(QString initiatingAgent,
@@ -102,7 +107,7 @@ void ResourceLinking::LinkResourceToActivity(QString initiatingAgent,
         org::kde::KDirNotify::emitFilesAdded(QStringLiteral("activities:/")
                                              + usedActivity);
 
-        if (usedActivity == m_activities.currentActivity()) {
+        if (usedActivity == StatsPlugin::self()->currentActivity()) {
             // qDebug() << "Sending link event added: activities:/current";
             org::kde::KDirNotify::emitFilesAdded(
                 QStringLiteral("activities:/current"));
@@ -161,7 +166,7 @@ void ResourceLinking::UnlinkResourceFromActivity(QString initiatingAgent,
         org::kde::KDirNotify::emitFilesRemoved(
             { QStringLiteral("activities:/") + usedActivity + '/' + mangled });
 
-        if (usedActivity == m_activities.currentActivity()) {
+        if (usedActivity == StatsPlugin::self()->currentActivity()) {
             // qDebug() << "Sending link event removed: activities:/current/" << mangled;
             org::kde::KDirNotify::emitFilesRemoved({
                 QStringLiteral("activities:/current/") + mangled});
@@ -234,10 +239,8 @@ bool ResourceLinking::validateArguments(QString &initiatingAgent,
 
     // Handling special values for activities
     if (usedActivity == ":current") {
-        usedActivity =
-            Plugin::callOnRet<QString, Qt::DirectConnection>(
-                StatsPlugin::self()->activitiesInterface(),
-                "CurrentActivity", "QString");
+        usedActivity = StatsPlugin::self()->currentActivity();
+
     } else if (usedActivity.isEmpty()) {
         usedActivity = ":global";
     }
@@ -245,9 +248,7 @@ bool ResourceLinking::validateArguments(QString &initiatingAgent,
     // If the activity is not empty and the passed activity
     // does not exist, cancel the request
     if (!usedActivity.isEmpty()
-        && !Plugin::callOnRet<QStringList, Qt::DirectConnection>(
-                StatsPlugin::self()->activitiesInterface(),
-                "ListActivities", "QStringList").contains(usedActivity)) {
+        && !StatsPlugin::self()->listActivities().contains(usedActivity)) {
         return false;
     }
 
@@ -286,4 +287,3 @@ void ResourceLinking::onCurrentActivityChanged(const QString &activity)
     org::kde::KDirNotify::emitFilesAdded(
         { QStringLiteral("activities:/current") });
 }
-
