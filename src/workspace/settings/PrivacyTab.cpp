@@ -185,7 +185,7 @@ void PrivacyTab::save()
 
 void PrivacyTab::forget(int count, const QString &what)
 {
-    KAMD_DECL_DBUS_INTERFACE(rankingsservice, Resources / Scoring,
+    KAMD_DBUS_DECL_INTERFACE(rankingsservice, Resources / Scoring,
                              ResourcesScoring);
 
     rankingsservice.asyncCall("DeleteRecentStats", QString(), count, what);

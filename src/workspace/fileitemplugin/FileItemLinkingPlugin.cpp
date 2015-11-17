@@ -79,7 +79,7 @@ void FileItemLinkingPlugin::Private::actionTriggered()
     bool link = action->property("link").toBool();
     QString activity = action->property("activity").toString();
 
-    KAMD_DECL_DBUS_INTERFACE(service, Resources/Linking, ResourcesLinking);
+    KAMD_DBUS_DECL_INTERFACE(service, Resources/Linking, ResourcesLinking);
 
     foreach (const auto &item, items.urlList())
     {
