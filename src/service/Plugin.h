@@ -66,29 +66,28 @@ public:
     /**
      * Convenience meta-method to provide prettier invocation of QMetaObject::invokeMethod
      */
-    template <typename ReturnType, Qt::ConnectionType connection>
-    inline static ReturnType callOn(QObject *object, const char *method,
-                                    const char *returnTypeName)
+    // template <typename ReturnType>
+    // inline static ReturnType retrieve(QObject *object, const char *method,
+    //                                   const char *returnTypeName)
+    // {
+    //     ReturnType result;
+    //
+    //     QMetaObject::invokeMethod(
+    //         object, method, Qt::DirectConnection,
+    //         QReturnArgument<ReturnType>(returnTypeName, result));
+    //
+    //     return result;
+    // }
+
+    template <typename ReturnType, typename... Args>
+    inline static ReturnType retrieve(QObject *object, const char *method,
+                                      const char *returnTypeName,
+                                      Args... args)
     {
         ReturnType result;
 
         QMetaObject::invokeMethod(
-            object, method, connection,
-            QReturnArgument<ReturnType>(returnTypeName, result));
-
-        return result;
-    }
-
-    template
-        <typename ReturnType, Qt::ConnectionType connection, typename... Args>
-    inline static ReturnType callOnWithArgs(QObject *object, const char *method,
-                                            const char *returnTypeName,
-                                            Args... args)
-    {
-        ReturnType result;
-
-        QMetaObject::invokeMethod(
-            object, method, connection,
+            object, method, Qt::DirectConnection,
             QReturnArgument<ReturnType>(returnTypeName, result),
             args...);
 
@@ -98,50 +97,17 @@ public:
     /**
      * Convenience meta-method to provide prettier invocation of QMetaObject::invokeMethod
      */
-    template <typename ReturnType, Qt::ConnectionType connection>
-    inline static ReturnType callOnRet(QObject *object, const char *method,
-                                       const char *returnTypeName)
-    {
-        ReturnType result;
-
-        QMetaObject::invokeMethod(
-            object, method, connection,
-            QReturnArgument<ReturnType>(returnTypeName, result));
-
-        return result;
-    }
-
-    template
-        <typename ReturnType, Qt::ConnectionType connection, typename... Args>
-    inline static ReturnType callOnRetWithArgs(QObject *object,
-                                               const char *method,
-                                               const char *returnTypeName,
-                                                Args... args)
-    {
-        ReturnType result;
-
-        QMetaObject::invokeMethod(
-            object, method, connection,
-            QReturnArgument<ReturnType>(returnTypeName, result),
-            args...);
-
-        return result;
-    }
-
-    /**
-     * Convenience meta-method to provide prettier invocation of QMetaObject::invokeMethod
-     */
-    template <Qt::ConnectionType connection>
-    inline static void callOn(QObject *object, const char *method,
-                                    const char *returnTypeName)
-    {
-        Q_UNUSED(returnTypeName);
-        QMetaObject::invokeMethod(object, method, connection);
-    }
+    // template <Qt::ConnectionType connection = Qt::QueuedConnection>
+    // inline static void invoke(QObject *object, const char *method,
+    //                            const char *returnTypeName)
+    // {
+    //     Q_UNUSED(returnTypeName);
+    //     QMetaObject::invokeMethod(object, method, connection);
+    // }
 
     template <Qt::ConnectionType connection, typename... Args>
-    inline static void callOnWithArgs(QObject *object, const char *method,
-                                            Args... args)
+    inline static void invoke(QObject *object, const char *method,
+                              Args... args)
     {
         QMetaObject::invokeMethod(
             object, method, connection,

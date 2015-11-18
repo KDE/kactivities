@@ -117,7 +117,7 @@ void TemplatesPlugin::createActivity(const QDBusVariant &_values)
     const QString icon        = takeStringValue("activity.icon");
 
     // Creating the activity, and getting the id
-    const QString id = Plugin::callOnRetWithArgs<QString, Qt::DirectConnection>(
+    const QString id = Plugin::retrieve<QString>(
         m_activities, "AddActivity", "QString",
         Q_ARG(QString, name));
 
@@ -132,11 +132,11 @@ void TemplatesPlugin::createActivity(const QDBusVariant &_values)
     activityConfig.sync();
 
     // Changing the icon and description of the activity
-    Plugin::callOnWithArgs<Qt::DirectConnection>(
+    Plugin::invoke<Qt::DirectConnection>(
         m_activities, "SetActivityDescription",
         Q_ARG(QString, id),
         Q_ARG(QString, description));
-    Plugin::callOnWithArgs<Qt::DirectConnection>(
+    Plugin::invoke<Qt::DirectConnection>(
         m_activities, "SetActivityIcon",
         Q_ARG(QString, id),
         Q_ARG(QString, icon));

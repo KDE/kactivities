@@ -370,13 +370,13 @@ Event StatsPlugin::validateEvent(Event event)
 
 QStringList StatsPlugin::listActivities() const
 {
-    return Plugin::callOnRet<QStringList, Qt::DirectConnection>(
+    return Plugin::retrieve<QStringList>(
                 m_activities, "ListActivities", "QStringList");
 }
 
 QString StatsPlugin::currentActivity() const
 {
-    return Plugin::callOnRet<QString, Qt::DirectConnection>(
+    return Plugin::retrieve<QString>(
                 m_activities, "CurrentActivity", "QString");
 }
 

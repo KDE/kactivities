@@ -26,6 +26,7 @@
 // Qt
 #include <QString>
 #include <QTimer>
+#include <QReadWriteLock>
 
 // KDE
 #include <kconfig.h>
@@ -56,10 +57,6 @@ public Q_SLOTS:
 
 public:
     void setActivityState(const QString &activity, Activities::State state);
-    QHash<QString, Activities::State> activities;
-
-    // Current activity
-    QString currentActivity;
 
     // Configuration
     class ConfigurationChecker {
@@ -71,6 +68,10 @@ public:
 
     // Interface to the session management
     KSMServer *ksmserver;
+
+    QHash<QString, Activities::State> activities;
+    QReadWriteLock activitiesLock;
+    QString currentActivity;
 
 public:
     inline KConfigGroup activityNameConfig()
@@ -118,10 +119,9 @@ public Q_SLOTS:
     // Immediately syncs the configuration file
     void configSync();
 
+    QString addActivity(const QString &name);
     void removeActivity(const QString &activity);
     void activitySessionStateChanged(const QString &activity, int state);
-
-    void emitCurrentActivityChanged(const QString &activity);
 
 private:
     Activities *const q;

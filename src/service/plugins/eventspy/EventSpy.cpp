@@ -68,7 +68,7 @@ void EventSpyPlugin::addDocument(const QString &document)
     const QString application
         = desktopGroup.readEntry("X-KDE-LastOpenedWith", QString());
 
-    Plugin::callOnWithArgs<Qt::QueuedConnection>(
+    Plugin::invoke<Qt::QueuedConnection>(
         m_resources, "RegisterResourceEvent",
                 Q_ARG(QString, application), // Application
                 Q_ARG(uint, 0),              // Window ID

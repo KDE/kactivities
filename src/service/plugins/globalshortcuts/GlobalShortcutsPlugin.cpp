@@ -52,7 +52,7 @@ bool GlobalShortcutsPlugin::init(QHash<QString, QObject *> &modules)
 
     m_activitiesService = modules["activities"];
 
-    m_activitiesList = Plugin::callOnRet<QStringList, Qt::DirectConnection>(
+    m_activitiesList = Plugin::retrieve<QStringList>(
             m_activitiesService, "ListActivities", "QStringList");
 
     for (const auto &activity: m_activitiesList) {
@@ -130,7 +130,7 @@ void GlobalShortcutsPlugin::activityChanged(const QString &activity)
 
 QString GlobalShortcutsPlugin::activityName(const QString &activity) const
 {
-    return Plugin::callOnWithArgs<QString, Qt::DirectConnection>(
+    return Plugin::retrieve<QString>(
         m_activitiesService, "ActivityName", "QString",
         Q_ARG(QString, activity));
 }
