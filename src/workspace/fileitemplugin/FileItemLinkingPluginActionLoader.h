@@ -17,56 +17,37 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef FILE_ITEM_LINKING_PLUGIN_P_H
-#define FILE_ITEM_LINKING_PLUGIN_P_H
+#ifndef FILE_ITEM_LINKING_PLUGIN_ACTION_LOADER_H
+#define FILE_ITEM_LINKING_PLUGIN_ACTION_LOADER_H
 
 #include "FileItemLinkingPlugin.h"
+#include "FileItemLinkingPlugin_p.h"
 
 #include <QThread>
 
 #include <KFileItemListProperties>
 
 #include "lib/core/consumer.h"
-#include "lib/core/info.h"
 
-struct Action {
-    QString title;
-    QString icon;
-    QString activity;
-    bool link;
-};
-typedef QList<Action> ActionList;
-
-class FileItemLinkingPlugin::Private : public QObject {
+class FileItemLinkingPluginActionLoader: public QThread {
     Q_OBJECT
 
 public:
-    Private();
+    FileItemLinkingPluginActionLoader(const KFileItemListProperties &items);
 
-    QAction *root;
-    QMenu *rootMenu;
-    KFileItemListProperties items;
+    void run() Q_DECL_OVERRIDE;
 
-    QAction *basicAction(QWidget *parentWidget);
+    Action createAction(const QString &activity, bool link,
+                          const QString &title = QString(),
+                          const QString &icon = QString()) const;
+    Action createSeparator(const QString &title) const;
 
-    KActivities::Consumer activities;
-
-public Q_SLOTS:
-    void activitiesServiceStatusChanged(KActivities::Consumer::ServiceStatus status);
-    void rootActionHovered();
-    void setActions(const ActionList &actions);
-
-    void actionTriggered();
-    void loadAllActions();
+Q_SIGNALS:
+    void result(const ActionList &actions);
 
 private:
-    bool shouldLoad : 1;
-    bool loaded : 1;
+    KFileItemListProperties items;
+    KActivities::Consumer activities;
 };
 
-class FileItemLinkingPluginActionStaticInit {
-public:
-    FileItemLinkingPluginActionStaticInit();
-};
-
-#endif // FILE_ITEM_LINKING_PLUGIN_P_H
+#endif // FILE_ITEM_LINKING_PLUGIN_ACTION_LOADER_H
