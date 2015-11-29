@@ -99,7 +99,12 @@ Activities::Private::Private(Activities *parent)
 
     // Is this our first start?
     if (activities.isEmpty()) {
-        q->AddActivity(i18n("Default"));
+        // We need to add this only after the service has been properly started
+        QMetaObject::invokeMethod(
+                q,
+                "AddActivity",
+                Qt::QueuedConnection,
+                Q_ARG(QString, i18n("Default")));
     }
 }
 
