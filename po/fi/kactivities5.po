@@ -1,0 +1,268 @@
+# Copyright (C) YEAR This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+# Lasse Liehu <lasse.liehu@gmail.com>, 2012, 2014, 2015.
+#
+# KDE Finnish translation sprint participants:
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2015-11-29 06:53+0000\n"
+"PO-Revision-Date: 2015-11-05 15:22+0200\n"
+"Last-Translator: Lasse Liehu <lasse.liehu@gmail.com>\n"
+"Language-Team: Finnish <kde-i18n-doc@kde.org>\n"
+"Language: fi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Lokalize 2.0\n"
+"X-POT-Import-Date: 2012-12-01 22:24:16+0000\n"
+
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Lasse Liehu"
+
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "lasse.liehu@gmail.com"
+
+#: imports/activitymodel.cpp:589
+msgctxt "Header title for activity data model"
+msgid "Activity"
+msgstr "Aktiviteetti"
+
+#: service/Activities.cpp:107
+msgid "Default"
+msgstr "Oletus"
+
+#: service/plugins/globalshortcuts/GlobalShortcutsPlugin.cpp:90
+#: service/plugins/globalshortcuts/GlobalShortcutsPlugin.cpp:125
+#, kde-format
+msgctxt "@action"
+msgid "Switch to activity \"%1\""
+msgstr "Vaihda aktiviteettiin %1"
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:99
+#: workspace/kio/KioActivities.cpp:306
+#: workspace/settings/ExtraActivitiesInterface.cpp:45
+#: workspace/settings/MainConfigurationWidget.cpp:45
+msgid "Activities"
+msgstr "Aktiviteetit"
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:102
+msgid "Loading..."
+msgstr "Ladataan…"
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:122
+msgid "The Activity Manager is not running"
+msgstr "Aktiviteettienhallinta ei ole käynnissä"
+
+#: workspace/fileitemplugin/FileItemLinkingPluginActionLoader.cpp:59
+#: workspace/fileitemplugin/FileItemLinkingPluginActionLoader.cpp:126
+msgid "Link to the current activity"
+msgstr "Liitä nykyiseen aktiviteettiin"
+
+#: workspace/fileitemplugin/FileItemLinkingPluginActionLoader.cpp:62
+#: workspace/fileitemplugin/FileItemLinkingPluginActionLoader.cpp:131
+msgid "Unlink from the current activity"
+msgstr "Poista nykyisestä aktiviteetista"
+
+#: workspace/fileitemplugin/FileItemLinkingPluginActionLoader.cpp:65
+#: workspace/fileitemplugin/FileItemLinkingPluginActionLoader.cpp:135
+msgid "Link to:"
+msgstr "Liitä aktiviteettiin:"
+
+#: workspace/fileitemplugin/FileItemLinkingPluginActionLoader.cpp:70
+#: workspace/fileitemplugin/FileItemLinkingPluginActionLoader.cpp:143
+msgid "Unlink from:"
+msgstr "Poista aktiviteetistä:"
+
+#: workspace/kio/KioActivities.cpp:107 workspace/kio/KioActivities.cpp:229
+msgid "Activity"
+msgstr "Aktiviteetti"
+
+#: workspace/kio/KioActivities.cpp:228
+msgid "Current activity"
+msgstr "Nykyinen aktiviteetti"
+
+#: workspace/settings/imports/activitysettings.cpp:55
+msgid "Delete activity"
+msgstr "Poista aktiviteetti"
+
+#: workspace/settings/imports/activitysettings.cpp:56
+#, kde-format
+msgid "Are you sure you want to delete '%1'?"
+msgstr "Haluatko varmasti poistaa aktiviteetin ”%1”?"
+
+#: workspace/settings/imports/dialog.cpp:124
+msgid "Create a new activity"
+msgstr "Luo uusi aktiviteetti"
+
+#: workspace/settings/imports/dialog.cpp:132
+msgid "Activity settings"
+msgstr "Aktiviteetin asetukset"
+
+#. i18n: ectx: property (title), widget (QGroupBox, groupBox_2)
+#: workspace/settings/imports/dialog.cpp:172
+#: workspace/settings/ui/SwitchingTabBase.ui:20
+msgid "General"
+msgstr "Yleistä"
+
+#: workspace/settings/imports/dialog.cpp:173
+msgid "Other"
+msgstr "Muuta"
+
+#: workspace/settings/imports/dialog.cpp:181
+msgid "Create"
+msgstr "Luo"
+
+#: workspace/settings/imports/qml/activityDialog/components/DialogButtons.qml:44
+msgid "Apply"
+msgstr "Käytä"
+
+#: workspace/settings/imports/qml/activityDialog/components/DialogButtons.qml:53
+msgid "Cancel"
+msgstr "Peru"
+
+#: workspace/settings/imports/qml/activityDialog/components/ShortcutChooser.qml:36
+msgid "Shortcut for switching to this activity:"
+msgstr "Pikanäppäin tähän aktiviteettiin vaihtamiseen:"
+
+#: workspace/settings/imports/qml/activityDialog/GeneralTab.qml:58
+msgid "Activity information"
+msgstr "Aktiviteetin tiedot"
+
+#: workspace/settings/imports/qml/activityDialog/GeneralTab.qml:66
+msgid "Name"
+msgstr "Nimi"
+
+#: workspace/settings/imports/qml/activityDialog/GeneralTab.qml:73
+msgid "Description"
+msgstr "Kuvaus"
+
+#: workspace/settings/imports/qml/activityDialog/GeneralTab.qml:99
+msgid "Wallpaper"
+msgstr "Tausta"
+
+#: workspace/settings/imports/qml/activityDialog/GeneralTab.qml:105
+msgid "Change..."
+msgstr "Vaihda…"
+
+#: workspace/settings/imports/qml/activityDialog/GeneralTab.qml:138
+msgid "Icon"
+msgstr "Kuvake"
+
+#: workspace/settings/MainConfigurationWidget.cpp:46
+msgid "Switching"
+msgstr "Vaihto"
+
+#: workspace/settings/MainConfigurationWidget.cpp:47
+msgid "Privacy"
+msgstr "Yksityisyys"
+
+#: workspace/settings/PrivacyTab.cpp:72
+msgctxt "unlimited number of months"
+msgid "forever"
+msgstr "ikuisesti"
+
+#: workspace/settings/PrivacyTab.cpp:82
+msgid "Forget the last hour"
+msgstr "Unohda viime tunti"
+
+#: workspace/settings/PrivacyTab.cpp:84
+msgid "Forget the last two hours"
+msgstr "Unohda viime kaksi tuntia"
+
+#: workspace/settings/PrivacyTab.cpp:86
+msgid "Forget a day"
+msgstr "Unohda viime päivä"
+
+#: workspace/settings/PrivacyTab.cpp:88
+msgid "Forget everything"
+msgstr "Unohda kaikki"
+
+#: workspace/settings/PrivacyTab.cpp:217
+msgctxt "unit of time. months to keep the history"
+msgid " month"
+msgid_plural " months"
+msgstr[0] " kuukausi"
+msgstr[1] " kuukautta"
+
+# Suomennettu yhdeksi välilyönniksi, koska etuliitettä ei tarvita. Esimerkiksi ”Säilytä historia 5 kuukautta”
+#: workspace/settings/PrivacyTab.cpp:221
+msgctxt "for in 'keep history for 5 months'"
+msgid "for "
+msgstr " "
+
+#: workspace/settings/qml/activitiesTab/ActivitiesView.qml:37
+msgid "Create activity..."
+msgstr "Luo aktiviteetti…"
+
+#: workspace/settings/SwitchingTab.cpp:64
+msgid "Activity switching"
+msgstr "Aktiviteettien vaihto"
+
+#: workspace/settings/SwitchingTab.cpp:68
+msgctxt "@action"
+msgid "Walk through activities"
+msgstr "Selaa aktiviteetteja"
+
+#: workspace/settings/SwitchingTab.cpp:71
+msgctxt "@action"
+msgid "Walk through activities (Reverse)"
+msgstr "Selaa aktiviteetteja (käänteisessä järjestyksessä)"
+
+#. i18n: ectx: property (windowTitle), widget (QWidget, PrivacyTabBase)
+#. i18n: ectx: property (windowTitle), widget (QWidget, SwitchingTabBase)
+#: workspace/settings/ui/PrivacyTabBase.ui:14
+#: workspace/settings/ui/SwitchingTabBase.ui:14
+msgid "Form"
+msgstr "Lomake"
+
+#. i18n: ectx: property (text), widget (QLabel, labelRememberDocuments)
+#: workspace/settings/ui/PrivacyTabBase.ui:20
+msgid "Remember opened documents:"
+msgstr "Muista avatut tiedostot:"
+
+#. i18n: ectx: property (text), widget (QRadioButton, radioRememberAllApplications)
+#: workspace/settings/ui/PrivacyTabBase.ui:31
+msgid "For a&ll applications"
+msgstr "&Kaikkien sovellusten tiedostot"
+
+#. i18n: ectx: property (text), widget (QRadioButton, radioDontRememberApplications)
+#: workspace/settings/ui/PrivacyTabBase.ui:41
+msgid "&Do not remember"
+msgstr "&Älä muista tiedostoja"
+
+#. i18n: ectx: property (text), widget (QRadioButton, radioRememberSpecificApplications)
+#: workspace/settings/ui/PrivacyTabBase.ui:48
+msgid "O&nly for specific applications"
+msgstr "&Vain valittujen sovellusten tiedostot"
+
+#. i18n: ectx: property (text), widget (QLabel, labelKeepHistory)
+#: workspace/settings/ui/PrivacyTabBase.ui:70
+msgid "Keep history"
+msgstr "Säilytä historiaa"
+
+#. i18n: ectx: property (text), widget (QPushButton, buttonClearRecentHistory)
+#: workspace/settings/ui/PrivacyTabBase.ui:96
+msgid "Clear recent history"
+msgstr "Tyhjennä viimeaikainen historia"
+
+#. i18n: ectx: property (text), widget (QCheckBox, checkBlacklistAllNotOnList)
+#: workspace/settings/ui/PrivacyTabBase.ui:115
+msgid "Blacklist all applications not on this list"
+msgstr "Estä kaikki tässä mainitsemattomat sovellukset"
+
+#. i18n: ectx: property (text), widget (QCheckBox, checkRememberVirtualDesktop)
+#: workspace/settings/ui/SwitchingTabBase.ui:26
+msgid "Remember the current virtual desktop for each activity (needs restart)"
+msgstr ""
+"Muista nykyinen virtuaalityöpöytä kullekin aktiviteetille (tarvitsee "
+"uudelleenkäynnistyksen)"
+
+#. i18n: ectx: property (title), widget (QGroupBox, groupBox)
+#: workspace/settings/ui/SwitchingTabBase.ui:36
+msgid "Shortcuts"
+msgstr "Pikanäppäimet"
