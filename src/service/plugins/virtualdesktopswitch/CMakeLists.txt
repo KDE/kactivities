@@ -31,6 +31,7 @@ target_link_libraries (
    KF5::ConfigCore
    KF5::WindowSystem
    KF5::CoreAddons
+   kactivitymanagerd_plugin
    )
 
 set_target_properties (

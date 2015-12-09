@@ -14,7 +14,6 @@ include_directories (
 set (
    activitytemplates_SRCS
    TemplatesPlugin.cpp
-   ${plugin_implementation_SRCS}
    )
 
 qt5_add_dbus_adaptor (
@@ -36,6 +35,7 @@ target_link_libraries (
    KF5::ConfigCore
    KF5::DBusAddons
    KF5::CoreAddons
+   kactivitymanagerd_plugin
    )
 
 set_target_properties (

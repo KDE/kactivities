@@ -20,6 +20,8 @@
 #ifndef PLUGIN_H
 #define PLUGIN_H
 
+#include "kactivitymanagerd_plugin_export.h"
+
 // Qt
 #include <QObject>
 #include <QMetaObject>
@@ -41,7 +43,7 @@
 /**
  *
  */
-class Plugin : public Module {
+class KACTIVITYMANAGERD_PLUGIN_EXPORT Plugin : public Module {
     Q_OBJECT
 
 public:

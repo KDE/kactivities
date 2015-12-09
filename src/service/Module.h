@@ -20,6 +20,8 @@
 #ifndef MODULE_H
 #define MODULE_H
 
+#include "kactivitymanagerd_plugin_export.h"
+
 // Qt
 #include <QObject>
 #include <QString>
@@ -33,7 +35,7 @@
 /**
  * Module
  */
-class Module : public QObject {
+class KACTIVITYMANAGERD_PLUGIN_EXPORT Module : public QObject {
     Q_OBJECT
 
 public:

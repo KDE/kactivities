@@ -14,8 +14,6 @@ set (
    ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/src/common/database/schema/ResourcesDatabaseSchema.cpp
 
    ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/src/utils/qsqlquery_iterator.cpp
-
-   ${plugin_implementation_SRCS}
    )
 
 qt5_add_dbus_adaptor (
@@ -57,6 +55,7 @@ target_link_libraries (
    KF5::KIOCore
    KF5::DBusAddons
    KF5::CoreAddons
+   kactivitymanagerd_plugin
    )
 
 set_target_properties (

@@ -20,12 +20,9 @@ find_package (KF5KIO ${KF5_DEP_VERSION} CONFIG REQUIRED)
 
 set (CMAKE_INCLUDE_CURRENT_DIR ON)
 
-set (plugin_implementation_SRCS
-   ${CMAKE_CURRENT_SOURCE_DIR}/Plugin.cpp
-   ${CMAKE_CURRENT_SOURCE_DIR}/Module.cpp
-   ${CMAKE_CURRENT_SOURCE_DIR}/Event.cpp
-   ${CMAKE_CURRENT_SOURCE_DIR}/Debug.cpp
-   )
+add_library(kactivitymanagerd_plugin SHARED Plugin.cpp Module.cpp Event.cpp Debug.cpp)
+generate_export_header(kactivitymanagerd_plugin)
+target_link_libraries(kactivitymanagerd_plugin PUBLIC Qt5::Core Qt5::DBus KF5::CoreAddons KF5::ConfigCore)
 
 add_subdirectory (plugins)
 
@@ -37,10 +34,6 @@ set (kactivitymanager_SRCS
    Resources.cpp
    Features.cpp
    Config.cpp
-
-   ${plugin_implementation_SRCS}
-
-   Event.cpp
 
    ksmserver/KSMServer.cpp
    )
@@ -74,6 +67,7 @@ target_link_libraries (kactivitymanagerd
    KF5::ConfigCore
    KF5::I18n
    KF5::WindowSystem
+   kactivitymanagerd_plugin
    )
 
 ########### install application ###############
@@ -84,7 +78,7 @@ install (FILES
    )
 
 install (TARGETS
-   kactivitymanagerd ${KF5_INSTALL_TARGETS_DEFAULT_ARGS}
+   kactivitymanagerd kactivitymanagerd_plugin ${KF5_INSTALL_TARGETS_DEFAULT_ARGS}
    )
 
 install (FILES

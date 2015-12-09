@@ -16,7 +16,6 @@ include_directories (
 set (
    evenyspy_SRCS
    EventSpy.cpp
-   ${plugin_implementation_SRCS}
    )
 
 kcoreaddons_add_plugin(
@@ -33,6 +32,7 @@ target_link_libraries (
    KF5::ConfigCore
    KF5::CoreAddons
    KF5::KIOCore
+   kactivitymanagerd_plugin
    )
 
 set_target_properties (

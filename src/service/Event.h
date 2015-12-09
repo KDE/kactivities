@@ -20,6 +20,8 @@
 #ifndef EVENT_H
 #define EVENT_H
 
+#include "kactivitymanagerd_plugin_export.h"
+
 // Qt
 #include <QString>
 #include <QDateTime>
@@ -29,7 +31,7 @@
 /**
  *
  */
-class Event {
+class KACTIVITYMANAGERD_PLUGIN_EXPORT Event {
 public:
     enum Type {
         Accessed = 0, ///< resource was accessed, but we don't know for how long it will be open/used

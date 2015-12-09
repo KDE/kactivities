@@ -14,7 +14,6 @@ include_directories (
 set (
    globalshortcuts_SRCS
    GlobalShortcutsPlugin.cpp
-   ${plugin_implementation_SRCS}
    )
 
 kcoreaddons_add_plugin(
@@ -34,6 +33,7 @@ target_link_libraries (
    KF5::I18n
    KF5::XmlGui
    KF5::CoreAddons
+   kactivitymanagerd_plugin
    )
 
 set_target_properties (
