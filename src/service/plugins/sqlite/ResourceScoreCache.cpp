@@ -151,7 +151,7 @@ void ResourceScoreCache::update()
     QDateTime lastUpdate;
     QDateTime firstUpdate;
     QDateTime currentTime = QDateTime::currentDateTime();
-    qreal score;
+    qreal score = 0;
 
     DATABASE_TRANSACTION(resourcesDatabase());
 
