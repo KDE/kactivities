@@ -177,7 +177,7 @@ bool Application::Private::loadPlugin(const KPluginMetaData& plugin)
                 << plugin.pluginId() << loader.errorString();
         return false;
     }
-    QObject* obj = factory->create<QObject>();
+
     auto pluginInstance = factory->create<Plugin>();
 
     auto &modules = Module::get();

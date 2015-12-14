@@ -70,7 +70,7 @@ void Plugin::setName(const QString &name)
     Q_ASSERT_X(d->name.isEmpty(), "Plugin::setName", "The name can not be set twice");
     Q_ASSERT_X(!name.isEmpty(), "Plugin::setName", "The name can not be empty");
 
-    qDebug() << "Setting the name: " << name;
+    qDebug() << "Setting the name of " << (void*)this << " to " << name;
     d->name = name;
 }
 
