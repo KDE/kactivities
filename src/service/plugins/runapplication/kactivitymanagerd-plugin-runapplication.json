@@ -1,0 +1,23 @@
+{
+    "KPlugin": {
+        "Authors": [
+            {
+                "Email": "ivan.cukic@kde.org",
+                "Name": "Ivan Cukic"
+            }
+        ],
+        "Category": "",
+        "Dependencies": [],
+        "Description": "When switching activities, or when starting and stopping them, execute specified applications",
+        "EnabledByDefault": true,
+        "Icon": "preferences-system-windows",
+        "Id": "org.kde.ActivityManager.RunApplication",
+        "License": "GPL",
+        "Name": "Run applications on activity state change",
+        "ServiceTypes": [
+            "ActivityManager/Plugin"
+        ],
+        "Version": "1.0",
+        "Website": "http://plasma.kde.org/"
+    }
+}
