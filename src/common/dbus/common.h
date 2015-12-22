@@ -27,7 +27,7 @@
     QStringLiteral("org.kde.ActivityManager")
 
 #define KAMD_DBUS_OBJECT_PATH(A)                                               \
-    (sizeof(#A) > 1 ? QLatin1String("/ActivityManager/" #A)                    \
+    (sizeof(#A) > 2 ? QLatin1String("/ActivityManager/" #A)                    \
                     : QLatin1String("/ActivityManager"))
 
 #define KAMD_DBUS_OBJECT(A)                                                    \
