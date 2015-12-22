@@ -37,23 +37,6 @@
 
 namespace Common {
 
-class Database::Private {
-public:
-    QSqlDatabase database;
-};
-
-Database::Locker::Locker(Database &database)
-    : m_database(database.d->database)
-{
-    m_database.transaction();
-}
-
-Database::Locker::~Locker()
-{
-    m_database.commit();
-}
-
-
 namespace {
 #ifdef QT_DEBUG
     QString lastExecutedQuery;
@@ -76,6 +59,100 @@ namespace {
 
     std::map<DatabaseInfo, std::weak_ptr<Database>> databases;
 };
+
+class QSqlDatabaseWrapper {
+private:
+    QSqlDatabase m_database;
+    bool m_open;
+    QString m_connectionName;
+
+public:
+    QSqlDatabaseWrapper(const DatabaseInfo &info)
+        : m_open(false)
+    {
+        m_connectionName =
+                "kactivities_db_resources_"
+                    // Adding the thread number to the database name
+                    + QString::number((quintptr)info.thread)
+                    // And whether it is read-only or read-write
+                    + (info.openMode == Database::ReadOnly ? "_readonly" : "_readwrite");
+
+        m_database =
+            QSqlDatabase::contains(m_connectionName)
+                ? QSqlDatabase::database(m_connectionName)
+                : QSqlDatabase::addDatabase(QStringLiteral("QSQLITE"), m_connectionName);
+
+        if (info.openMode == Database::ReadOnly) {
+            m_database.setConnectOptions(QStringLiteral("QSQLITE_OPEN_READONLY"));
+        }
+
+        // We are allowing the database file to be overridden mostly for testing purposes
+        m_database.setDatabaseName(ResourcesDatabaseSchema::path());
+
+        m_open = m_database.open();
+
+        if (!m_open) {
+            qWarning() << "KActivities: Database is not open: "
+                       << m_database.connectionName()
+                       << m_database.databaseName()
+                       << m_database.lastError();
+
+            if (info.openMode == Database::ReadWrite) {
+                qFatal("KActivities: Opening the database in RW mode should always succeed");
+            }
+        }
+    }
+
+    ~QSqlDatabaseWrapper()
+    {
+        qDebug() << "Closing SQL connection: " << m_connectionName;
+    }
+
+    QSqlDatabase &get()
+    {
+        return m_database;
+    }
+
+    bool isOpen() const
+    {
+        return m_open;
+    }
+
+    QString connectionName() const
+    {
+        return m_connectionName;
+    }
+};
+
+class Database::Private {
+public:
+    Private()
+    {
+    }
+
+    QSqlQuery query(const QString &query)
+    {
+        return database ? QSqlQuery(query, database->get()) : QSqlQuery();
+    }
+
+    QSqlQuery query()
+    {
+        return database ? QSqlQuery(database->get()) : QSqlQuery();
+    }
+
+    QScopedPointer<QSqlDatabaseWrapper> database;
+};
+
+Database::Locker::Locker(Database &database)
+    : m_database(database.d->database->get())
+{
+    m_database.transaction();
+}
+
+Database::Locker::~Locker()
+{
+    m_database.commit();
+}
 
 Database::Ptr Database::instance(Source source, OpenMode openMode)
 {
@@ -101,37 +178,10 @@ Database::Ptr Database::instance(Source source, OpenMode openMode)
     // Creating a new database instance
     auto ptr = std::make_shared<Database>();
 
-    auto databaseConnectionName =
-            "kactivities_db_resources_"
-                // Adding the thread number to the database name
-                + QString::number((quintptr)info.thread)
-                // And whether it is read-only or read-write
-                + (info.openMode == ReadOnly ? "_readonly" : "_readwrite");
+    ptr->d->database.reset(new QSqlDatabaseWrapper(info));
 
-    ptr->d->database
-        = QSqlDatabase::contains(databaseConnectionName)
-              ? QSqlDatabase::database(databaseConnectionName)
-              : QSqlDatabase::addDatabase(QStringLiteral("QSQLITE"), databaseConnectionName);
-
-    if (info.openMode == ReadOnly) {
-        ptr->d->database.setConnectOptions(QStringLiteral("QSQLITE_OPEN_READONLY"));
-    }
-
-    // We are allowing the database file to be overridden mostly for testing purposes
-    ptr->d->database.setDatabaseName(ResourcesDatabaseSchema::path());
-
-    if (!ptr->d->database.open()) {
-        qWarning() << "KActivities: Database is not open: "
-                   << ptr->d->database.connectionName()
-                   << ptr->d->database.databaseName()
-                   << ptr->d->database.lastError();
-
-        if (info.openMode == ReadWrite) {
-            qFatal("KActivities: Opening the database in RW mode should always succeed");
-        }
-
+    if (!ptr->d->database->isOpen()) {
         return Q_NULLPTR;
-
     }
 
     databases[info] = ptr;
@@ -161,7 +211,7 @@ Database::Ptr Database::instance(Source source, OpenMode openMode)
     // it reaches 400k, not 4M as is default
     ptr->setPragma(QStringLiteral("wal_autocheckpoint = 100"));
 
-    qDebug() << "KActivities: Database connection: " << databaseConnectionName
+    qDebug() << "KActivities: Database connection: " << ptr->d->database->connectionName()
         << "\n    query_only:         " << ptr->pragma(QStringLiteral("query_only"))
         << "\n    journal_mode:       " << ptr->pragma(QStringLiteral("journal_mode"))
         << "\n    wal_autocheckpoint: " << ptr->pragma(QStringLiteral("wal_autocheckpoint"))
@@ -173,9 +223,7 @@ Database::Ptr Database::instance(Source source, OpenMode openMode)
 
 Database::Database()
 {
-
 }
-
 
 Database::~Database()
 {
@@ -183,7 +231,7 @@ Database::~Database()
 
 QSqlQuery Database::createQuery() const
 {
-    return QSqlQuery(d->database);
+    return d->query();
 }
 
 QString Database::lastQuery() const
@@ -197,9 +245,9 @@ QString Database::lastQuery() const
 QSqlQuery Database::execQuery(const QString &query, bool ignoreErrors) const
 {
 #ifdef QT_NO_DEBUG
-    return QSqlQuery(query, d->database);
+    return d->query(query);
 #else
-    auto result = QSqlQuery(query, d->database);
+    auto result = d->query(query);
 
     lastExecutedQuery = query;
 

@@ -125,6 +125,7 @@ public:
     Features *features;
 
     QStringList pluginIds;
+    QList<Plugin *> plugins;
 
     static Application *s_instance;
 };
@@ -186,6 +187,7 @@ bool Application::Private::loadPlugin(const KPluginMetaData& plugin)
         pluginInstance->init(modules);
 
         pluginIds << plugin.pluginId();
+        plugins << pluginInstance;
 
         qCDebug(KAMD_LOG_APPLICATION)   << "[   OK   ] loaded:  " << plugin.pluginId();
         return true;
@@ -227,11 +229,19 @@ bool Application::loadPlugin(const QString &pluginId)
 
 Application::~Application()
 {
-    for (const auto thread: s_moduleThreads) {
+    qDebug() << "Cleaning up...";
+
+    // Waiting for the threads to finish
+    for (const auto thread : s_moduleThreads) {
         thread->quit();
         thread->wait();
 
         delete thread;
+    }
+
+    // Deleting plugin objects
+    for (const auto plugin : d->plugins) {
+        delete plugin;
     }
 
     Private::s_instance = Q_NULLPTR;
@@ -411,3 +421,24 @@ int main(int argc, char **argv)
         return EXIT_FAILURE;
     }
 }
+
+#ifndef DISABLE_CSIGNAL_HANDLING
+
+#include <csignal>
+
+struct CleanUpOnExit{
+
+    CleanUpOnExit() {
+        signal(SIGINT,   &CleanUpOnExit::exit);
+        signal(SIGTERM,  &CleanUpOnExit::exit);
+    }
+
+    static void exit(int sig) {
+        Q_UNUSED(sig)
+
+        QCoreApplication::exit(0);
+    }
+
+} cleanup;
+
+#endif
