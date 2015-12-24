@@ -118,7 +118,7 @@ void FileItemLinkingPlugin::Private::loadAllActions()
     }
 
     if (activities.serviceStatus() == KActivities::Consumer::NotRunning) {
-        Action action;
+        Action action = { };
         action.title = i18n("The Activity Manager is not running");
 
         setActions({ action });

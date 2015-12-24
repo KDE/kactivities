@@ -159,7 +159,7 @@ FileItemLinkingPluginActionLoader::createAction(const QString &activity,
                                                 bool link, const QString &title,
                                                 const QString &icon) const
 {
-    Action action;
+    Action action = { };
     action.link = link;
 
     if (title.isEmpty()) {
@@ -185,7 +185,7 @@ FileItemLinkingPluginActionLoader::createAction(const QString &activity,
 Action
 FileItemLinkingPluginActionLoader::createSeparator(const QString &title) const
 {
-    Action action;
+    Action action = { };
     action.icon = "-";
     action.title = title;
     return action;
