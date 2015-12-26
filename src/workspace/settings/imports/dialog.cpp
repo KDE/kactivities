@@ -34,8 +34,11 @@
 
 #include <KLocalizedString>
 #include <KGlobalAccel>
+#include <KMessageWidget>
 
 #include "kactivities-features.h"
+#include "../kactivities-kcm-features.h"
+
 #include "kactivities/info.h"
 #include "kactivities/controller.h"
 #include "features_interface.h"
@@ -65,6 +68,7 @@ public:
 
     QQuickWidget *tabGeneral;
     QQuickWidget *tabOther;
+    KMessageWidget *message;
 
     QQuickWidget *createTab(const QString &title, const QString &file)
     {
@@ -80,17 +84,19 @@ public:
 #endif
 
         view->rootContext()->setContextProperty("dialog", q);
-        view->setSource(QUrl::fromLocalFile(
-            QStringLiteral(KAMD_INSTALL_PREFIX "/" KAMD_DATA_DIR)
-            + "/workspace/settings/qml/activityDialog/" + file));
 
-        tabs->addTab(view, title);
+        if (setViewSource(view, "/qml/activityDialog/" + file)) {
+            tabs->addTab(view, title);
 
-        auto root = view->rootObject();
-        Q_ASSERT(root);
-        QMetaObject::invokeMethod(root, "load", Qt::DirectConnection);
+            auto root = view->rootObject();
+            Q_ASSERT(root);
+            QMetaObject::invokeMethod(root, "load", Qt::DirectConnection);
 
-        // root->setProperty("activityName", "TEST");
+        } else {
+            message->setText(i18n("Error loading the QML files. Check your installation.\nMissing %1",
+                                  QStringLiteral(KAMD_KCM_DATADIR) + "/qml/activityDialog/" + file));
+            message->setVisible(true);
+        }
 
         return view;
     }
@@ -99,6 +105,10 @@ public:
     {
         // TODO: does not work...
         widget->setFocus();
+        auto root = widget->rootObject();
+
+        if (!root) return;
+
         QMetaObject::invokeMethod(widget->rootObject(), "setFocus",
                                   Qt::DirectConnection);
     }
@@ -166,6 +176,12 @@ void Dialog::initUi(const QString &activityId)
 
     d->layout = new QVBoxLayout(this);
 
+    // Message widget for showing errors
+    d->message = new KMessageWidget(this);
+    d->message->setMessageType(KMessageWidget::Error);
+    d->message->setVisible(false);
+    d->layout->addWidget(d->message);
+
     // Tabs
     d->tabs = new QTabWidget(this);
     d->layout->addWidget(d->tabs);
@@ -208,13 +224,24 @@ void Dialog::showEvent(QShowEvent *event)
     Type Dialog::activity##PropName() const                                    \
     {                                                                          \
         auto root = d->tab##Scope->rootObject();                               \
-        Q_ASSERT(root);                                                        \
+                                                                               \
+        if (!root) {                                                           \
+            qDebug() << "Root does not exist";                                 \
+            return Type();                                                     \
+        }                                                                      \
+                                                                               \
         return root->property("activity" #PropName).value<Type>();             \
     }                                                                          \
+                                                                               \
     void Dialog::setActivity##PropName(PType value)                            \
     {                                                                          \
         auto root = d->tab##Scope->rootObject();                               \
-        Q_ASSERT(root);                                                        \
+                                                                               \
+        if (!root) {                                                           \
+            qDebug() << "Root does not exist";                                 \
+            return;                                                            \
+        }                                                                      \
+                                                                               \
         root->setProperty("activity" #PropName, value);                        \
     }
 

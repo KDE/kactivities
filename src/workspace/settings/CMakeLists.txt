@@ -7,6 +7,16 @@ find_package (KF5Declarative ${KF5_DEP_VERSION} CONFIG REQUIRED)
 find_package (KF5XmlGui ${KF5_DEP_VERSION} CONFIG REQUIRED)
 find_package (KF5GlobalAccel ${KF5_DEP_VERSION} CONFIG REQUIRED)
 
+set (KAMD_KCM_DATADIR
+   ${KDE_INSTALL_DATADIR_KF5}/kactivitymanagerd/workspace/settings/
+   )
+
+if (NOT IS_ABSOLUTE "${KDE_INSTALL_DATADIR_KF5}")
+   set (KAMD_KCM_DATADIR "${CMAKE_INSTALL_PREFIX}/${KAMD_KCM_DATADIR}")
+endif ()
+
+configure_file (kactivities-kcm-features.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/kactivities-kcm-features.h)
+
 add_subdirectory(imports)
 
 set (KAMD_KCM_SRCS
@@ -70,6 +80,6 @@ install (
    qml/activitiesTab
    qml/privacyTab
 
-   DESTINATION ${KDE_INSTALL_DATADIR_KF5}/kactivitymanagerd/workspace/settings/qml
+   DESTINATION ${KAMD_KCM_DATADIR}/qml
    )
 

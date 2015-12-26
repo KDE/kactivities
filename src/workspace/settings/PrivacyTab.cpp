@@ -37,6 +37,8 @@
 #include <utils/d_ptr_implementation.h>
 
 #include "kactivities-features.h"
+#include "kactivities-kcm-features.h"
+
 #include "common/dbus/common.h"
 
 #include "utils.h"
@@ -100,9 +102,8 @@ PrivacyTab::PrivacyTab(QWidget *parent)
         = createView(d->viewBlacklistedApplicationsContainer);
     d->viewBlacklistedApplications->rootContext()->setContextProperty(
         "applicationModel", d->blacklistedApplicationsModel);
-    d->viewBlacklistedApplications->setSource(
-        QStringLiteral(KAMD_INSTALL_PREFIX "/" KAMD_DATA_DIR)
-        + "/workspace/settings/qml/privacyTab/BlacklistApplicationView.qml");
+    setViewSource(d->viewBlacklistedApplications,
+        "/qml/privacyTab/BlacklistApplicationView.qml");
 
     // React to changes
 

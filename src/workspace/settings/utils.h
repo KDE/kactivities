@@ -36,5 +36,21 @@ inline std::unique_ptr<QQuickView> createView(QWidget *parent)
     return std::unique_ptr<QQuickView>(view);
 }
 
+template <typename View>
+inline bool setViewSource(View &view, const QString &file)
+{
+    QString sourceFile = QStringLiteral(KAMD_KCM_DATADIR) + file;
+
+    if (QFile::exists(sourceFile)) {
+        view->setSource(sourceFile);
+
+        return true;
+
+    } else {
+        return false;
+    }
+
+}
+
 #endif // UTILS_H
 

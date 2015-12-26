@@ -33,6 +33,7 @@
 #include <utils/d_ptr_implementation.h>
 
 #include "kactivities-features.h"
+#include "kactivities-kcm-features.h"
 
 #include "utils.h"
 
@@ -53,9 +54,7 @@ ActivitiesTab::ActivitiesTab(QWidget *parent)
     d->viewActivities = createView(this);
     d->viewActivities->rootContext()->setContextProperty(
         "kactivitiesExtras", d->extraActivitiesInterface);
-    d->viewActivities->setSource(
-        QStringLiteral(KAMD_INSTALL_PREFIX "/" KAMD_DATA_DIR)
-        + "/workspace/settings/qml/activitiesTab/main.qml");
+    setViewSource(d->viewActivities, "/qml/activitiesTab/main.qml");
 }
 
 ActivitiesTab::~ActivitiesTab()
