@@ -42,7 +42,7 @@ Controller::~Controller()
         return Manager::isServiceRunning()                                     \
                    ? DBusFuture::asyncCall<void>(                              \
                          Manager::activities(),                                \
-                         QStringLiteral("SetActivity" #What), id, value)       \
+                         QString::fromLatin1("SetActivity" #What), id, value)  \
                    : DBusFuture::fromVoid();                                   \
     }
 
