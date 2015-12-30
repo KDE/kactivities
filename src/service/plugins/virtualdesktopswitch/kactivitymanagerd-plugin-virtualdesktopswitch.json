@@ -3,7 +3,8 @@
         "Authors": [
             {
                 "Email": "ivan.cukic@kde.org", 
-                "Name": "Ivan Cukic"
+                "Name": "Ivan Cukic", 
+                "Name[x-test]": "xxIvan Cukicxx"
             }
         ], 
         "Category": "", 

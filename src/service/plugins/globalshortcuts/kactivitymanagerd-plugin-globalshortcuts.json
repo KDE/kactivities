@@ -3,7 +3,8 @@
         "Authors": [
             {
                 "Email": "makhsm@gmail.com", 
-                "Name": "Makis Marimpis"
+                "Name": "Makis Marimpis", 
+                "Name[x-test]": "xxMakis Marimpisxx"
             }
         ], 
         "Category": "", 
