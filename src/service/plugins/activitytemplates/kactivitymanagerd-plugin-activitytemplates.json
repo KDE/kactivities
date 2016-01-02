@@ -4,6 +4,8 @@
             {
                 "Email": "ivan.cukic@kde.org", 
                 "Name": "Ivan Čukić", 
+                "Name[sr@ijekavian]": "Иван Чукић", 
+                "Name[sr]": "Иван Чукић", 
                 "Name[x-test]": "xxIvan Čukićxx"
             }
         ], 

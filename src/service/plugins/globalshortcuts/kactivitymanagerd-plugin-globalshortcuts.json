@@ -4,6 +4,8 @@
             {
                 "Email": "makhsm@gmail.com", 
                 "Name": "Makis Marimpis", 
+                "Name[sr@ijekavian]": "Макис Маримпис", 
+                "Name[sr]": "Макис Маримпис", 
                 "Name[x-test]": "xxMakis Marimpisxx"
             }
         ], 
