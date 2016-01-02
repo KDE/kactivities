@@ -1,0 +1,277 @@
+# Copyright (C) YEAR This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Andrej Vernekar <andrej.vernekar@gmail.com>, 2012.
+# Jure Repinc <jlp@holodeck1.com>, 2013.
+# Andrej Mernik <andrejm@ubuntu.si>, 2013, 2014, 2015.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2015-12-27 07:07+0000\n"
+"PO-Revision-Date: 2015-10-25 19:02+0100\n"
+"Last-Translator: Andrej Mernik <andrejm@ubuntu.si>\n"
+"Language-Team: Slovenian <lugos-slo@lugos.si>\n"
+"Language: sl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n%100==1 ? 1 : n%100==2 ? 2 : n%100==3 || n"
+"%100==4 ? 3 : 0);\n"
+"X-Generator: Lokalize 1.5\n"
+
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Andrej Vernekar,Andrej Mernik"
+
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "andrej.vernekar@gmail.com,andrejm@ubuntu.si"
+
+#: imports/activitymodel.cpp:589
+msgctxt "Header title for activity data model"
+msgid "Activity"
+msgstr "Dejavnost"
+
+#: service/Activities.cpp:107
+msgid "Default"
+msgstr "Privzeta"
+
+#: service/plugins/globalshortcuts/GlobalShortcutsPlugin.cpp:90
+#: service/plugins/globalshortcuts/GlobalShortcutsPlugin.cpp:125
+#, kde-format
+msgctxt "@action"
+msgid "Switch to activity \"%1\""
+msgstr "Preklopi na dejavnost »%1«"
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:99
+#: workspace/kio/KioActivities.cpp:306
+#: workspace/settings/ExtraActivitiesInterface.cpp:45
+#: workspace/settings/MainConfigurationWidget.cpp:45
+msgid "Activities"
+msgstr "Dejavnosti"
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:102
+msgid "Loading..."
+msgstr "Nalaganje ..."
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:122
+msgid "The Activity Manager is not running"
+msgstr "Upravljalnik dejavnosti ne teče"
+
+#: workspace/fileitemplugin/FileItemLinkingPluginActionLoader.cpp:59
+#: workspace/fileitemplugin/FileItemLinkingPluginActionLoader.cpp:126
+msgid "Link to the current activity"
+msgstr "Poveži s trenutno dejavnostjo"
+
+#: workspace/fileitemplugin/FileItemLinkingPluginActionLoader.cpp:62
+#: workspace/fileitemplugin/FileItemLinkingPluginActionLoader.cpp:131
+msgid "Unlink from the current activity"
+msgstr "Prekini povezavo s trenutno dejavnostjo"
+
+#: workspace/fileitemplugin/FileItemLinkingPluginActionLoader.cpp:65
+#: workspace/fileitemplugin/FileItemLinkingPluginActionLoader.cpp:135
+msgid "Link to:"
+msgstr "Poveži z:"
+
+#: workspace/fileitemplugin/FileItemLinkingPluginActionLoader.cpp:70
+#: workspace/fileitemplugin/FileItemLinkingPluginActionLoader.cpp:143
+msgid "Unlink from:"
+msgstr "Prekini povezavo z:"
+
+#: workspace/kio/KioActivities.cpp:107 workspace/kio/KioActivities.cpp:229
+msgid "Activity"
+msgstr "Dejavnost"
+
+#: workspace/kio/KioActivities.cpp:228
+msgid "Current activity"
+msgstr "Trenutna dejavnost"
+
+#: workspace/settings/imports/activitysettings.cpp:55
+msgid "Delete activity"
+msgstr "Izbriši dejavnost"
+
+#: workspace/settings/imports/activitysettings.cpp:56
+#, kde-format
+msgid "Are you sure you want to delete '%1'?"
+msgstr "Ali ste prepričani, da želite izbrisati »%1«?"
+
+#: workspace/settings/imports/dialog.cpp:96
+#, kde-format
+msgid ""
+"Error loading the QML files. Check your installation.\n"
+"Missing %1"
+msgstr ""
+
+#: workspace/settings/imports/dialog.cpp:134
+msgid "Create a new activity"
+msgstr "Ustvari novo dejavnost"
+
+#: workspace/settings/imports/dialog.cpp:142
+msgid "Activity settings"
+msgstr "Nastavitve dejavnosti"
+
+#. i18n: ectx: property (title), widget (QGroupBox, groupBox_2)
+#: workspace/settings/imports/dialog.cpp:188
+#: workspace/settings/ui/SwitchingTabBase.ui:20
+msgid "General"
+msgstr "Splošno"
+
+#: workspace/settings/imports/dialog.cpp:189
+msgid "Other"
+msgstr "Drugo"
+
+#: workspace/settings/imports/dialog.cpp:197
+msgid "Create"
+msgstr "Ustvari"
+
+#: workspace/settings/imports/qml/activityDialog/components/DialogButtons.qml:44
+msgid "Apply"
+msgstr "Uveljavi"
+
+#: workspace/settings/imports/qml/activityDialog/components/DialogButtons.qml:53
+msgid "Cancel"
+msgstr "Prekliči"
+
+#: workspace/settings/imports/qml/activityDialog/components/ShortcutChooser.qml:36
+msgid "Shortcut for switching to this activity:"
+msgstr "Bližnjica za preklop na to dejavnost:"
+
+#: workspace/settings/imports/qml/activityDialog/GeneralTab.qml:58
+msgid "Activity information"
+msgstr "Podrobnosti o dejavnosti"
+
+#: workspace/settings/imports/qml/activityDialog/GeneralTab.qml:66
+msgid "Name"
+msgstr "Ime"
+
+#: workspace/settings/imports/qml/activityDialog/GeneralTab.qml:73
+msgid "Description"
+msgstr "Opis"
+
+#: workspace/settings/imports/qml/activityDialog/GeneralTab.qml:99
+msgid "Wallpaper"
+msgstr "Slika ozadja"
+
+#: workspace/settings/imports/qml/activityDialog/GeneralTab.qml:105
+msgid "Change..."
+msgstr "Spremeni ..."
+
+#: workspace/settings/imports/qml/activityDialog/GeneralTab.qml:138
+msgid "Icon"
+msgstr "Ikona"
+
+#: workspace/settings/MainConfigurationWidget.cpp:46
+msgid "Switching"
+msgstr "Preklapljanje"
+
+#: workspace/settings/MainConfigurationWidget.cpp:47
+msgid "Privacy"
+msgstr "Zasebnost"
+
+#: workspace/settings/PrivacyTab.cpp:74
+msgctxt "unlimited number of months"
+msgid "forever"
+msgstr "vedno"
+
+#: workspace/settings/PrivacyTab.cpp:84
+msgid "Forget the last hour"
+msgstr "Pozabi zadnjo uro"
+
+#: workspace/settings/PrivacyTab.cpp:86
+msgid "Forget the last two hours"
+msgstr "Pozabi zadnji dve uri"
+
+#: workspace/settings/PrivacyTab.cpp:88
+msgid "Forget a day"
+msgstr "Pozabi dan"
+
+#: workspace/settings/PrivacyTab.cpp:90
+msgid "Forget everything"
+msgstr "Pozabi vse"
+
+#: workspace/settings/PrivacyTab.cpp:218
+msgctxt "unit of time. months to keep the history"
+msgid " month"
+msgid_plural " months"
+msgstr[0] "%1 mesecev"
+msgstr[1] "%1 mesec"
+msgstr[2] "%1 meseca"
+msgstr[3] "%1 mesece"
+
+#: workspace/settings/PrivacyTab.cpp:222
+msgctxt "for in 'keep history for 5 months'"
+msgid "for "
+msgstr "za "
+
+#: workspace/settings/qml/activitiesTab/ActivitiesView.qml:37
+msgid "Create activity..."
+msgstr "Ustvari dejavnost ..."
+
+#: workspace/settings/SwitchingTab.cpp:64
+msgid "Activity switching"
+msgstr "Preklop med dejavnostmi"
+
+#: workspace/settings/SwitchingTab.cpp:68
+msgctxt "@action"
+msgid "Walk through activities"
+msgstr "Sprehodite se med dejavnostmi"
+
+#: workspace/settings/SwitchingTab.cpp:71
+msgctxt "@action"
+msgid "Walk through activities (Reverse)"
+msgstr "Sprehodite se med dejavnostmi (obratno)"
+
+#. i18n: ectx: property (windowTitle), widget (QWidget, PrivacyTabBase)
+#. i18n: ectx: property (windowTitle), widget (QWidget, SwitchingTabBase)
+#: workspace/settings/ui/PrivacyTabBase.ui:14
+#: workspace/settings/ui/SwitchingTabBase.ui:14
+msgid "Form"
+msgstr "Obrazec"
+
+#. i18n: ectx: property (text), widget (QLabel, labelRememberDocuments)
+#: workspace/settings/ui/PrivacyTabBase.ui:20
+msgid "Remember opened documents:"
+msgstr "Zapomni si odprte dokumente:"
+
+#. i18n: ectx: property (text), widget (QRadioButton, radioRememberAllApplications)
+#: workspace/settings/ui/PrivacyTabBase.ui:31
+msgid "For a&ll applications"
+msgstr "Za &vse programe"
+
+#. i18n: ectx: property (text), widget (QRadioButton, radioDontRememberApplications)
+#: workspace/settings/ui/PrivacyTabBase.ui:41
+msgid "&Do not remember"
+msgstr "&Ne zapomni si"
+
+#. i18n: ectx: property (text), widget (QRadioButton, radioRememberSpecificApplications)
+#: workspace/settings/ui/PrivacyTabBase.ui:48
+msgid "O&nly for specific applications"
+msgstr "Sa&mo za določene programe"
+
+#. i18n: ectx: property (text), widget (QLabel, labelKeepHistory)
+#: workspace/settings/ui/PrivacyTabBase.ui:70
+msgid "Keep history"
+msgstr "Ohrani zgodovino"
+
+#. i18n: ectx: property (text), widget (QPushButton, buttonClearRecentHistory)
+#: workspace/settings/ui/PrivacyTabBase.ui:96
+msgid "Clear recent history"
+msgstr "Počisti nedavno zgodovino"
+
+#. i18n: ectx: property (text), widget (QCheckBox, checkBlacklistAllNotOnList)
+#: workspace/settings/ui/PrivacyTabBase.ui:115
+msgid "Blacklist all applications not on this list"
+msgstr "Na črni seznam daj vse programe, ki niso na tem seznamu"
+
+#. i18n: ectx: property (text), widget (QCheckBox, checkRememberVirtualDesktop)
+#: workspace/settings/ui/SwitchingTabBase.ui:26
+msgid "Remember the current virtual desktop for each activity (needs restart)"
+msgstr ""
+"Zapomni si trenutno navidezno namizje za vsako dejavnost (zahteva ponovni "
+"zagon)"
+
+#. i18n: ectx: property (title), widget (QGroupBox, groupBox)
+#: workspace/settings/ui/SwitchingTabBase.ui:36
+msgid "Shortcuts"
+msgstr "Bližnjice"
