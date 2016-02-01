@@ -2,7 +2,3 @@
 
 add_subdirectory (core)
 
-if (KACTIVITIES_INSTALL_EXPERIMENTAL_LIBRARIES)
-   add_subdirectory (stats)
-endif()
-
