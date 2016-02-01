@@ -4,6 +4,7 @@ cmake_minimum_required (VERSION 2.8.11)
 
 project (KActivities)
 
+option (KACTIVITIES_LIBRARY_ONLY "If true, compiles only the KActivities library, without the QML imports." OFF)
 option (KACTIVITIES_ENABLE_EXCEPTIONS "If you have Boost 1.53, you need to build KActivities with exceptions enabled. This is UNTESTED and EXPERIMENTAL!" OFF)
 
 message (
