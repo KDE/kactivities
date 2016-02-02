@@ -40,12 +40,16 @@ ActivitySettings::~ActivitySettings()
 
 void ActivitySettings::configureActivity(const QString &id)
 {
-    (new Dialog(id))->exec();
+    auto dialog = new Dialog(id);
+    dialog->setAttribute(Qt::WA_DeleteOnClose);
+    dialog->show();
 }
 
 void ActivitySettings::newActivity()
 {
-    (new Dialog())->exec();
+    auto dialog = new Dialog();
+    dialog->setAttribute(Qt::WA_DeleteOnClose);
+    dialog->show();
 }
 
 void ActivitySettings::deleteActivity(const QString &id)
