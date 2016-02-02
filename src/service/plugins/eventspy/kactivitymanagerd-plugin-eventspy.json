@@ -12,6 +12,7 @@
         "Category": "", 
         "Dependencies": [], 
         "Description": "Collects events from applications that support recent documents specification", 
+        "Description[ast]": "Collecha eventos d'apliaciones que sofiten la especificación de documentos recientes", 
         "Description[ca@valencia]": "Recull els esdeveniments de les aplicacions que admeten l'especificació dels documents recents", 
         "Description[ca]": "Recull els esdeveniments de les aplicacions que admeten l'especificació dels documents recents", 
         "Description[cs]": "Sbírá z aplikací události jenž podporují určení nedávných dokumentů", 

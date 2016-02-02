@@ -39,6 +39,7 @@
         "Id": "org.kde.ActivityManager.RunApplication", 
         "License": "GPL", 
         "Name": "Run applications on activity state change", 
+        "Name[ast]": "Executar aplicaciones nel cambéu d'estáu d'actividaes", 
         "Name[ca@valencia]": "Executa aplicacions en canviar l'estat de l'activitat", 
         "Name[ca]": "Executa aplicacions en canviar l'estat de l'activitat", 
         "Name[de]": "Anwendungsstart bei Zustandsänderung einer Aktivität", 
