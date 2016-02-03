@@ -39,6 +39,7 @@
         "Id": "org.kde.ActivityManager.EventSpy", 
         "License": "GPL", 
         "Name": "Event Spy", 
+        "Name[ast]": "Esclucador d'eventos", 
         "Name[ca@valencia]": "Espia l'esdeveniment", 
         "Name[ca]": "Espia l'esdeveniment", 
         "Name[cs]": "Špeh událostí", 

@@ -41,6 +41,7 @@
         "Id": "org.kde.ActivityManager.ResourceScoring", 
         "License": "GPL", 
         "Name": "Sqlite Feeder", 
+        "Name[ast]": "Alimentador de Sqlite", 
         "Name[ca@valencia]": "Alimentador del Sqlite", 
         "Name[ca]": "Alimentador del Sqlite", 
         "Name[da]": "Sqlite-feeder", 
