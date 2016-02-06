@@ -40,6 +40,13 @@
 
 #include "common/dbus/common.h"
 
+FileItemLinkingPluginActionLoader* FileItemLinkingPluginActionLoader::create(const KFileItemListProperties &items)
+{
+    auto l = new FileItemLinkingPluginActionLoader(items);
+    connect(l, &QThread::finished, l, &QObject::deleteLater);
+    return l;
+}
+
 FileItemLinkingPluginActionLoader::FileItemLinkingPluginActionLoader(
     const KFileItemListProperties &items)
     : items(items)
@@ -150,8 +157,6 @@ void FileItemLinkingPluginActionLoader::run()
     }
 
     emit result(actions);
-
-    deleteLater();
 }
 
 Action

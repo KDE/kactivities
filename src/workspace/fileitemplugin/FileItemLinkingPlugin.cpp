@@ -124,7 +124,7 @@ void FileItemLinkingPlugin::Private::loadAllActions()
         setActions({ action });
 
     } else if (!loaded) {
-        auto loader = new FileItemLinkingPluginActionLoader(items);
+        auto loader = FileItemLinkingPluginActionLoader::create(items);
 
         static FileItemLinkingPluginActionStaticInit init;
 

@@ -33,8 +33,7 @@ class FileItemLinkingPluginActionLoader: public QThread {
     Q_OBJECT
 
 public:
-    FileItemLinkingPluginActionLoader(const KFileItemListProperties &items);
-
+    static FileItemLinkingPluginActionLoader* create(const KFileItemListProperties &items);
     void run() Q_DECL_OVERRIDE;
 
     Action createAction(const QString &activity, bool link,
@@ -46,6 +45,7 @@ Q_SIGNALS:
     void result(const ActionList &actions);
 
 private:
+    FileItemLinkingPluginActionLoader(const KFileItemListProperties &items);
     KFileItemListProperties items;
     KActivities::Consumer activities;
 };
