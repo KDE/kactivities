@@ -1,0 +1,297 @@
+# Language  translations for PACKAGE package.
+# Copyright (C) 2013 This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+# Safa Alfulaij <safaalfulaij@hotmail.con>, 2013.
+# Automatically generated, 2013.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2016-02-03 07:21+0000\n"
+"PO-Revision-Date: 2013-07-07 23:56+0300\n"
+"Last-Translator: Safa Alfulaij <safaalfulaij@hotmail.con>\n"
+"Language-Team: Arabic <doc@arabeyes.org>\n"
+"Language: ar\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
+"&& n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+"X-Generator: Lokalize 1.4\n"
+
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "صفا الفليج"
+
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "safaalfulaij@hotmail.com"
+
+#: imports/activitymodel.cpp:589
+#, fuzzy
+msgctxt "Header title for activity data model"
+msgid "Activity"
+msgstr "النشاط"
+
+#: service/Activities.cpp:107
+#, fuzzy
+msgid "Default"
+msgstr "الافتراضي"
+
+#: service/plugins/globalshortcuts/GlobalShortcutsPlugin.cpp:90
+#: service/plugins/globalshortcuts/GlobalShortcutsPlugin.cpp:125
+#, fuzzy, kde-format
+msgctxt "@action"
+msgid "Switch to activity \"%1\""
+msgstr "بدِّل إلى النشاط \"%1\""
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:99
+#: workspace/kio/KioActivities.cpp:306
+#: workspace/settings/ExtraActivitiesInterface.cpp:45
+#: workspace/settings/MainConfigurationWidget.cpp:45
+msgid "Activities"
+msgstr "الأنشطة"
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:102
+msgid "Loading..."
+msgstr ""
+
+#: workspace/fileitemplugin/FileItemLinkingPlugin.cpp:122
+#, fuzzy
+msgid "The Activity Manager is not running"
+msgstr "مدير الأنشطة لا يعمل بشكل صحيح."
+
+#: workspace/fileitemplugin/FileItemLinkingPluginActionLoader.cpp:59
+#: workspace/fileitemplugin/FileItemLinkingPluginActionLoader.cpp:126
+#, fuzzy
+msgid "Link to the current activity"
+msgstr "أوصِل إلى النشاط الحالي"
+
+#: workspace/fileitemplugin/FileItemLinkingPluginActionLoader.cpp:62
+#: workspace/fileitemplugin/FileItemLinkingPluginActionLoader.cpp:131
+#, fuzzy
+msgid "Unlink from the current activity"
+msgstr "أزل الوصل من النشاط الحالي"
+
+#: workspace/fileitemplugin/FileItemLinkingPluginActionLoader.cpp:65
+#: workspace/fileitemplugin/FileItemLinkingPluginActionLoader.cpp:135
+#, fuzzy
+msgid "Link to:"
+msgstr "أوصِل إلى:"
+
+#: workspace/fileitemplugin/FileItemLinkingPluginActionLoader.cpp:70
+#: workspace/fileitemplugin/FileItemLinkingPluginActionLoader.cpp:143
+#, fuzzy
+msgid "Unlink from:"
+msgstr "أزل الوصل من:"
+
+#: workspace/kio/KioActivities.cpp:107 workspace/kio/KioActivities.cpp:229
+#, fuzzy
+msgid "Activity"
+msgstr "النشاط"
+
+#: workspace/kio/KioActivities.cpp:228
+#, fuzzy
+msgid "Current activity"
+msgstr "النشاط الحاليّ"
+
+#: workspace/settings/imports/activitysettings.cpp:59
+#, fuzzy
+msgid "Delete activity"
+msgstr "النشاط الحاليّ"
+
+#: workspace/settings/imports/activitysettings.cpp:60
+#, kde-format
+msgid "Are you sure you want to delete '%1'?"
+msgstr ""
+
+#: workspace/settings/imports/dialog.cpp:96
+#, kde-format
+msgid ""
+"Error loading the QML files. Check your installation.\n"
+"Missing %1"
+msgstr ""
+
+#: workspace/settings/imports/dialog.cpp:134
+#, fuzzy
+msgid "Create a new activity"
+msgstr "النشاط الحاليّ"
+
+#: workspace/settings/imports/dialog.cpp:142
+#, fuzzy
+msgid "Activity settings"
+msgstr "النشاط"
+
+#. i18n: ectx: property (title), widget (QGroupBox, groupBox_2)
+#: workspace/settings/imports/dialog.cpp:188
+#: workspace/settings/ui/SwitchingTabBase.ui:20
+msgid "General"
+msgstr ""
+
+#: workspace/settings/imports/dialog.cpp:189
+msgid "Other"
+msgstr ""
+
+#: workspace/settings/imports/dialog.cpp:197
+msgid "Create"
+msgstr ""
+
+#: workspace/settings/imports/qml/activityDialog/components/DialogButtons.qml:44
+msgid "Apply"
+msgstr ""
+
+#: workspace/settings/imports/qml/activityDialog/components/DialogButtons.qml:53
+msgid "Cancel"
+msgstr ""
+
+#: workspace/settings/imports/qml/activityDialog/components/ShortcutChooser.qml:36
+msgid "Shortcut for switching to this activity:"
+msgstr ""
+
+#: workspace/settings/imports/qml/activityDialog/GeneralTab.qml:58
+#, fuzzy
+msgid "Activity information"
+msgstr "النشاط"
+
+#: workspace/settings/imports/qml/activityDialog/GeneralTab.qml:66
+msgid "Name"
+msgstr ""
+
+#: workspace/settings/imports/qml/activityDialog/GeneralTab.qml:73
+msgid "Description"
+msgstr ""
+
+#: workspace/settings/imports/qml/activityDialog/GeneralTab.qml:99
+msgid "Wallpaper"
+msgstr ""
+
+#: workspace/settings/imports/qml/activityDialog/GeneralTab.qml:105
+msgid "Change..."
+msgstr ""
+
+#: workspace/settings/imports/qml/activityDialog/GeneralTab.qml:138
+msgid "Icon"
+msgstr ""
+
+#: workspace/settings/MainConfigurationWidget.cpp:46
+msgid "Switching"
+msgstr ""
+
+#: workspace/settings/MainConfigurationWidget.cpp:47
+msgid "Privacy"
+msgstr "الخصوصية"
+
+#: workspace/settings/PrivacyTab.cpp:74
+msgctxt "unlimited number of months"
+msgid "forever"
+msgstr ""
+
+#: workspace/settings/PrivacyTab.cpp:84
+msgid "Forget the last hour"
+msgstr "أنسَ الساعة الأخيرة"
+
+#: workspace/settings/PrivacyTab.cpp:86
+msgid "Forget the last two hours"
+msgstr "أنسَ الساعتان الأخيرتان"
+
+#: workspace/settings/PrivacyTab.cpp:88
+msgid "Forget a day"
+msgstr "أنسَ يوم"
+
+#: workspace/settings/PrivacyTab.cpp:90
+msgid "Forget everything"
+msgstr "أنسَ كل شيء"
+
+#: workspace/settings/PrivacyTab.cpp:218
+msgctxt "unit of time. months to keep the history"
+msgid " month"
+msgid_plural " months"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+msgstr[4] ""
+msgstr[5] ""
+
+#: workspace/settings/PrivacyTab.cpp:222
+msgctxt "for in 'keep history for 5 months'"
+msgid "for "
+msgstr ""
+
+#: workspace/settings/qml/activitiesTab/ActivitiesView.qml:37
+#, fuzzy
+msgid "Create activity..."
+msgstr "النشاط الحاليّ"
+
+#: workspace/settings/SwitchingTab.cpp:64
+#, fuzzy
+msgid "Activity switching"
+msgstr "النشاط"
+
+#: workspace/settings/SwitchingTab.cpp:68
+msgctxt "@action"
+msgid "Walk through activities"
+msgstr ""
+
+#: workspace/settings/SwitchingTab.cpp:71
+msgctxt "@action"
+msgid "Walk through activities (Reverse)"
+msgstr ""
+
+#. i18n: ectx: property (windowTitle), widget (QWidget, PrivacyTabBase)
+#. i18n: ectx: property (windowTitle), widget (QWidget, SwitchingTabBase)
+#: workspace/settings/ui/PrivacyTabBase.ui:14
+#: workspace/settings/ui/SwitchingTabBase.ui:14
+msgid "Form"
+msgstr ""
+
+#. i18n: ectx: property (text), widget (QLabel, labelRememberDocuments)
+#: workspace/settings/ui/PrivacyTabBase.ui:20
+msgid "Remember opened documents:"
+msgstr "المستندات المفتوحة لتذكرها:"
+
+#. i18n: ectx: property (text), widget (QRadioButton, radioRememberAllApplications)
+#: workspace/settings/ui/PrivacyTabBase.ui:31
+#, fuzzy
+#| msgid "For all applications"
+msgid "For a&ll applications"
+msgstr "لكل التطبيقات"
+
+#. i18n: ectx: property (text), widget (QRadioButton, radioDontRememberApplications)
+#: workspace/settings/ui/PrivacyTabBase.ui:41
+#, fuzzy
+#| msgid "Do not remember"
+msgid "&Do not remember"
+msgstr "لا تتذكر"
+
+#. i18n: ectx: property (text), widget (QRadioButton, radioRememberSpecificApplications)
+#: workspace/settings/ui/PrivacyTabBase.ui:48
+#, fuzzy
+#| msgid "Only for specific applications"
+msgid "O&nly for specific applications"
+msgstr "فقط لتطبيقات معيّنة"
+
+#. i18n: ectx: property (text), widget (QLabel, labelKeepHistory)
+#: workspace/settings/ui/PrivacyTabBase.ui:70
+msgid "Keep history"
+msgstr "أبقِ التأريخ"
+
+#. i18n: ectx: property (text), widget (QPushButton, buttonClearRecentHistory)
+#: workspace/settings/ui/PrivacyTabBase.ui:96
+msgid "Clear recent history"
+msgstr "أمح التأريخ الأخير"
+
+#. i18n: ectx: property (text), widget (QCheckBox, checkBlacklistAllNotOnList)
+#: workspace/settings/ui/PrivacyTabBase.ui:115
+msgid "Blacklist all applications not on this list"
+msgstr ""
+
+#. i18n: ectx: property (text), widget (QCheckBox, checkRememberVirtualDesktop)
+#: workspace/settings/ui/SwitchingTabBase.ui:26
+msgid "Remember the current virtual desktop for each activity (needs restart)"
+msgstr ""
+
+#. i18n: ectx: property (title), widget (QGroupBox, groupBox)
+#: workspace/settings/ui/SwitchingTabBase.ui:36
+msgid "Shortcuts"
+msgstr ""
