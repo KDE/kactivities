@@ -30,8 +30,6 @@
 
 #include <QDBusConnection>
 
-#include "kactivities-features.h"
-
 #include <sys/types.h>
 #include <signal.h>
 
@@ -85,7 +83,7 @@ void Modifier::initTestCase()
             // qDebug() << env;
 
             s_process->setEnvironment(env);
-            s_process->start(QStringLiteral(KAMD_INSTALL_PREFIX "/bin/kactivitymanagerd"));
+            s_process->start(QStringLiteral("kactivitymanagerd"));
             s_process->waitForStarted();
 
 

@@ -20,8 +20,6 @@
 #ifndef UTILS_FOR_EACH_ASSOC_H
 #define UTILS_FOR_EACH_ASSOC_H
 
-#include <kactivities-features.h>
-
 /********************************************************************
  *  Associative container's for_each (for hash, map, and similar )  *
  ********************************************************************/

@@ -20,7 +20,6 @@
 #ifndef UTILS_REMOVE_IF_H
 #define UTILS_REMOVE_IF_H
 
-#include <kactivities-features.h>
 #include <algorithm>
 
 /********************************************************************

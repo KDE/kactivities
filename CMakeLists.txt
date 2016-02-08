@@ -4,25 +4,19 @@ cmake_minimum_required (VERSION 2.8.11)
 
 project (KActivities)
 
-option (KACTIVITIES_LIBRARY_ONLY "If true, compiles only the KActivities library, without the service and other modules." ON)
 option (KACTIVITIES_ENABLE_EXCEPTIONS "If you have Boost 1.53, you need to build KActivities with exceptions enabled. This is UNTESTED and EXPERIMENTAL!" OFF)
 
 message (
    WARNING "
         +----------------------------------------------------------------+
-   !!!  |  Only the library (libKF5Activities) is built from this        |
-   !!!  |  repository by default.                                        |
+   !!!  |  Only the library (libKF5Activities) and the QML imports       |
+   !!!  |  are build from this repository.                               |
    !!!  |                                                                |
-   !!!  |  The activities service (kactivitymanagerd), QML imports used  |
-   !!!  |  in Plasma, Dolphin plugins and the activities KIO slave now   |
-   !!!  |  live in the kde:kactivitymanagerd repository.                 |
+   !!!  |  The activities service (kactivitymanagerd) has been moved to  |
+   !!!  |  the kde:kactivitymanagerd repository along with its plugins.  |
    !!!  |                                                                |
-   !!!  |  If you still want to build everything from this repository,   |
-   !!!  |  you can do so by passing -DKACTIVITIES_LIBRARY_ONLY=Off       |
-   !!!  |  when invoking cmake.                                          |
-   !!!  |                                                                |
-   !!!  |  THIS OPTION IS PROVIDED ONLY TO EASE UP THE TRANSITION AND    |
-   !!!  |  WILL BE REMOVED IN A FUTURE RELEASE!                          |
+   !!!  |  The Dolphin plugins (fileitem plugin), the KIO slave and KCM  |
+   !!!  |  now live in the kde:kactivities-workspace repository.         |
         +----------------------------------------------------------------+
    "
    )
