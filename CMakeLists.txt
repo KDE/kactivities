@@ -62,7 +62,7 @@ if (IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/po")
     ki18n_install (po)
 endif ()
 
-if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
    set(CMAKE_CXX_VISIBILITY_PRESET default)
    set(CMAKE_VISIBILITY_INLINES_HIDDEN 0)
 endif ()
