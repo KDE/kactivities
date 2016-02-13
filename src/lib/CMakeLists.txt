@@ -13,6 +13,7 @@ set (
    controller.cpp
    info.cpp
    resourceinstance.cpp
+   activitiesmodel.cpp
 
    mainthreadexecutor_p.cpp
    manager_p.cpp
