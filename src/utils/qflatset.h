@@ -39,21 +39,21 @@ public:
 
         // We want small sets, so a binary search
         // will be slower than a serial search
-        auto position = std::find_if(begin, end,
+        auto iterator = std::find_if(begin, end,
             [&] (const T &current) {
-                return comparator(current, value);
+                return comparator(value, current);
             });
 
-        if (position != end) {
-            if (comparator(value, *position)) {
+        if (iterator != end) {
+            if (comparator(*iterator, value)) {
                 // Already present
-                return { position, false };
+                return { iterator, false };
             }
         }
 
-        QVector<T>::insert(position, value);
+        QVector<T>::insert(iterator, value);
 
-        return { position, true };
+        return { iterator, true };
     }
 };
 

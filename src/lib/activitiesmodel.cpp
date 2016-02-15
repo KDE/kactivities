@@ -76,13 +76,7 @@ namespace Private {
     inline bool matchingState(ActivitiesModelPrivate::InfoPtr activity,
                               const T &states)
     {
-        // Are we filtering activities on their states?
-        if (!states.empty()
-            && !states.contains(activity->state())) {
-            return false;
-        }
-
-        return true;
+        return states.empty() || states.contains(activity->state());
     }
 
     /**
@@ -277,8 +271,7 @@ void ActivitiesModelPrivate::unregisterActivity(const QString &id)
 
     if (position) {
         if (auto shown = Private::activityPosition(shownActivities, id)) {
-            model_remove(q, QModelIndex(), shown.index,
-                                  shown.index);
+            model_remove m(q, QModelIndex(), shown.index, shown.index);
             shownActivities.removeAt(shown.index);
         }
 
@@ -312,7 +305,7 @@ void ActivitiesModelPrivate::showActivity(InfoPtr activityInfo, bool notifyClien
             (position.second ? position.first : shownActivities.end())
             - shownActivities.begin();
 
-        model_insert(q, QModelIndex(), index, index);
+        model_insert m(q, QModelIndex(), index, index);
     }
 }
 
@@ -321,16 +314,15 @@ void ActivitiesModelPrivate::hideActivity(const QString &id)
     auto position = Private::activityPosition(shownActivities, id);
 
     if (position) {
-        model_remove(q, QModelIndex(),
-            position.index, position.index);
+        model_remove m(q, QModelIndex(), position.index, position.index);
         shownActivities.removeAt(position.index);
     }
 }
 
 #define CREATE_SIGNAL_EMITTER(What, Role)                                      \
-    void ActivitiesModelPrivate::onActivity##What##Changed(const QString &)             \
+    void ActivitiesModelPrivate::onActivity##What##Changed(const QString &)    \
     {                                                                          \
-        Private::emitActivityUpdated(this, shownActivities, sender(), Role); \
+        Private::emitActivityUpdated(this, shownActivities, sender(), Role);   \
     }
 
 CREATE_SIGNAL_EMITTER(Name, Qt::DisplayRole)
@@ -352,7 +344,7 @@ void ActivitiesModelPrivate::onActivityStateChanged(Info::State state)
             return;
         }
 
-        if (std::binary_search(shownStates.cbegin(), shownStates.cend(), state)) {
+        if (shownStates.contains(state)) {
             showActivity(info, true);
         } else {
             hideActivity(info->id());

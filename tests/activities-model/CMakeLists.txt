@@ -2,6 +2,8 @@
 project (KActivitiesModelTestApp)
 
 find_package (Qt5 REQUIRED NO_MODULE COMPONENTS Core Gui Widgets)
+find_package (Qt5 REQUIRED NO_MODULE COMPONENTS Core Gui Widgets)
+find_package (KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS WindowSystem)
 
 include_directories (
    ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/src/lib/core/
@@ -35,6 +37,7 @@ if (NOT WIN32)
       Qt5::Widgets
       Qt5::DBus
       KF5::Activities
+      KF5::WindowSystem
       )
 
 endif ()

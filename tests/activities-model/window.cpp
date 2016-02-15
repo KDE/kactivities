@@ -24,6 +24,8 @@
 #include <QItemDelegate>
 #include <QPainter>
 
+#include <KWindowSystem>
+
 class Delegate: public QItemDelegate {
 public:
     void paint(QPainter *painter, const QStyleOptionViewItem &option,
@@ -93,14 +95,24 @@ public:
 
 Window::Window()
     : ui(new Ui::MainWindow())
-    , model(new KActivities::ActivitiesModel(this))
+    , modelRunningActivities(new KActivities::ActivitiesModel({ KActivities::Info::Running, KActivities::Info::Stopping }, this))
+    , modelStoppedActivities(new KActivities::ActivitiesModel({ KActivities::Info::Stopped, KActivities::Info::Starting }, this))
 {
     ui->setupUi(this);
 
-    model->setShownStates({ KActivities::Info::Running });
+    modelRunningActivities->setObjectName("RUNNING");
+    ui->listRunningActivities->setModel(modelRunningActivities);
+    ui->listRunningActivities->setItemDelegate(new Delegate());
 
-    ui->listActivities->setModel(model);
-    ui->listActivities->setItemDelegate(new Delegate());
+    modelStoppedActivities->setObjectName("STOPPED");
+    ui->listStoppedActivities->setModel(modelStoppedActivities);
+    ui->listStoppedActivities->setItemDelegate(new Delegate());
+}
+
+void Window::showEvent(QShowEvent * event)
+{
+    KWindowSystem::self()->setOnActivities(effectiveWinId(), QStringList());
+    KWindowSystem::self()->setOnAllDesktops(effectiveWinId(), true);
 }
 
 Window::~Window()

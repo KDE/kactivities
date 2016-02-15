@@ -71,8 +71,6 @@ public:
     QFlatSet<InfoPtr, InfoPtrComparator> knownActivities;
     QFlatSet<InfoPtr, InfoPtrComparator> shownActivities;
 
-
-
     InfoPtr registerActivity(const QString &id);
     void unregisterActivity(const QString &id);
     void showActivity(InfoPtr activityInfo, bool notifyClients);

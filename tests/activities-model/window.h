@@ -34,8 +34,12 @@ public:
     Window();
     ~Window();
 
+protected:
+    void showEvent(QShowEvent * event);
+
 private:
     Ui::MainWindow *ui;
-    KActivities::ActivitiesModel *model;
+    KActivities::ActivitiesModel *modelRunningActivities;
+    KActivities::ActivitiesModel *modelStoppedActivities;
 };
 
