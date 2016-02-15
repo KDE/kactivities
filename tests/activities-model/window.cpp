@@ -69,7 +69,7 @@ public:
             painter->drawText(titleRect, index.data(KActivities::ActivitiesModel::ActivityId).toString());
         }
 
-        const QString iconName = index.data(KActivities::ActivitiesModel::ActivityIcon).toString();
+        const QString iconName = index.data(KActivities::ActivitiesModel::ActivityIconSource).toString();
 
         if (!iconName.isEmpty()) {
             painter->drawPixmap(option.rect.x(), option.rect.y(),

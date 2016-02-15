@@ -44,8 +44,6 @@ public:
                 return comparator(current, value);
             });
 
-        bool inserted = false;
-
         if (position != end) {
             if (comparator(value, *position)) {
                 // Already present

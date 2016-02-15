@@ -121,7 +121,7 @@ namespace Private {
                 model->q->index(position.index),
                 model->q->index(position.index),
                 role == Qt::DecorationRole ?
-                    QVector<int> {role, ActivitiesModel::ActivityIcon} :
+                    QVector<int> {role, ActivitiesModel::ActivityIconSource} :
                     QVector<int> {role}
             );
         }
@@ -165,6 +165,26 @@ ActivitiesModel::ActivitiesModel(QObject *parent)
     d->setServiceStatus(d->activities.serviceStatus());
 }
 
+ActivitiesModel::ActivitiesModel(QVector<Info::State> shownStates, QObject *parent)
+    : QAbstractListModel(parent)
+    , d(new ActivitiesModelPrivate(this))
+{
+    d->shownStates = shownStates;
+
+    // Initializing role names for qml
+    connect(&d->activities, &Consumer::serviceStatusChanged,
+            this,           [this] (Consumer::ServiceStatus status) { d->setServiceStatus(status); });
+
+    connect(&d->activities, &Consumer::activityAdded,
+            this,           [this] (const QString &activity) { d->onActivityAdded(activity); });
+    connect(&d->activities, &Consumer::activityRemoved,
+            this,           [this] (const QString &activity) { d->onActivityRemoved(activity); });
+    connect(&d->activities, &Consumer::currentActivityChanged,
+            this,           [this] (const QString &activity) { d->onCurrentActivityChanged(activity); });
+
+    d->setServiceStatus(d->activities.serviceStatus());
+}
+
 ActivitiesModel::~ActivitiesModel()
 {
     delete d;
@@ -173,12 +193,10 @@ ActivitiesModel::~ActivitiesModel()
 QHash<int, QByteArray> ActivitiesModel::roleNames() const
 {
     return {
-        {Qt::DisplayRole,     "name"},
-        {Qt::DecorationRole,  "icon"},
-
+        {ActivityName,        "name"},
         {ActivityState,       "state"},
         {ActivityId,          "id"},
-        {ActivityIcon,        "iconSource"},
+        {ActivityIconSource,  "iconSource"},
         {ActivityDescription, "description"},
         {ActivityBackground,  "background"},
         {ActivityIsCurrent,   "current"},
@@ -370,45 +388,42 @@ QVariant ActivitiesModel::data(const QModelIndex &index, int role) const
     const auto &item = *(d->shownActivities.cbegin() + row);
 
     switch (role) {
-    case Qt::DisplayRole:
-        return item->name();
+        case Qt::DisplayRole:
+        case ActivityName:
+            return item->name();
 
-    case Qt::DecorationRole:
-        return QVariant(); // QIcon::fromTheme(data(index, ActivityIcon).toString());
+        case ActivityId:
+            return item->id();
 
-    case ActivityId:
-        return item->id();
+        case ActivityState:
+            return item->state();
 
-    case ActivityState:
-        return item->state();
+        case Qt::DecorationRole:
+        case ActivityIconSource:
+            {
+                const QString &icon = item->icon();
 
-    case ActivityIcon:
-        {
-            const QString &icon = item->icon();
+                // We need a default icon for activities
+                return icon.isEmpty() ? "preferences-activities" : icon;
+            }
 
-            // We need a default icon for activities
-            return icon.isEmpty() ? "preferences-activities" : icon;
-        }
+        case ActivityDescription:
+            return item->description();
 
-    case ActivityDescription:
-        return item->description();
+        case ActivityIsCurrent:
+            return d->activities.currentActivity() == item->id();
 
-    case ActivityIsCurrent:
-        return d->activities.currentActivity() == item->id();
-
-    default:
-        return QVariant();
+        default:
+            return QVariant();
     }
 }
 
 QVariant ActivitiesModel::headerData(int section, Qt::Orientation orientation,
                                    int role) const
 {
+    Q_UNUSED(section);
     Q_UNUSED(orientation);
-
-    // if (section == 0 && role == Qt::DisplayRole) {
-    //     return i18nc("Header title for activity data model", "Activity");
-    // }
+    Q_UNUSED(role);
 
     return QVariant();
 }

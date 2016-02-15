@@ -47,6 +47,11 @@ class KACTIVITIES_EXPORT ActivitiesModel : public QAbstractListModel {
 
 public:
     ActivitiesModel(QObject *parent = 0);
+
+    /**
+     * Constructs the model and sets the shownStates
+     */
+    ActivitiesModel(QVector<Info::State> shownStates, QObject *parent = 0);
     virtual ~ActivitiesModel();
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const
@@ -61,17 +66,26 @@ public:
     QHash<int, QByteArray> roleNames() const Q_DECL_OVERRIDE;
 
     enum Roles {
-        ActivityId          = Qt::UserRole,
-        ActivityDescription = Qt::UserRole + 1,
-        ActivityIcon        = Qt::UserRole + 2,
-        ActivityState       = Qt::UserRole + 3,
-        ActivityBackground  = Qt::UserRole + 4,
-        ActivityIsCurrent   = Qt::UserRole + 5,
+        ActivityId          = Qt::UserRole,       ///< UUID of the activity
+        ActivityName        = Qt::UserRole + 1,   ///< Activity name
+        ActivityDescription = Qt::UserRole + 2,   ///< Activity description
+        ActivityIconSource  = Qt::UserRole + 3,   ///< Activity icon source name
+        ActivityState       = Qt::UserRole + 4,   ///< The current state of the activity @see Info::State
+        ActivityBackground  = Qt::UserRole + 5,   ///< Activity wallpaper (currently unsupported)
+        ActivityIsCurrent   = Qt::UserRole + 6,   ///< Is this activity the current one current
     };
 
 public Q_SLOTS:
-    // Model property getters and setters
-    void setShownStates(const QVector<Info::State> &states);
+    /**
+     * The model can filter the list of activities based on their state.
+     * This method sets which states should be shown.
+     */
+    void setShownStates(const QVector<Info::State> &shownStates);
+
+    /**
+     * The model can filter the list of activities based on their state.
+     * This method returns which states are currently shown.
+     */
     QVector<Info::State> shownStates() const;
 
 Q_SIGNALS:
