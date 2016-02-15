@@ -28,6 +28,8 @@
 
 #include "utils/model_updaters.h"
 
+#include "utils/qflatset.h"
+
 namespace KActivities {
 
 class ActivitiesModelPrivate : public QObject {
@@ -66,8 +68,10 @@ public:
         }
     };
 
-    boost::container::flat_set<InfoPtr, InfoPtrComparator> knownActivities;
-    boost::container::flat_set<InfoPtr, InfoPtrComparator> shownActivities;
+    QFlatSet<InfoPtr, InfoPtrComparator> knownActivities;
+    QFlatSet<InfoPtr, InfoPtrComparator> shownActivities;
+
+
 
     InfoPtr registerActivity(const QString &id);
     void unregisterActivity(const QString &id);

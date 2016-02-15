@@ -24,8 +24,7 @@
 #include <QObject>
 #include <QAbstractListModel>
 
-// STL and Boost
-#include <boost/container/flat_set.hpp>
+// STL
 #include <memory>
 
 // Local

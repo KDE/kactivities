@@ -31,12 +31,6 @@
 #include <QFutureWatcher>
 #include <QModelIndex>
 
-// Boost
-#include <boost/range/algorithm/find_if.hpp>
-#include <boost/range/algorithm/binary_search.hpp>
-#include <boost/range/adaptor/filtered.hpp>
-#include <boost/optional.hpp>
-
 // Local
 #include "utils/remove_if.h"
 #include "utils/model_updaters.h"
@@ -45,6 +39,34 @@ namespace KActivities {
 
 namespace Private {
     // DECLARE_RAII_MODEL_UPDATERS(ActivitiesModel)
+    template <typename _Container>
+    struct ActivityPosition {
+        ActivityPosition()
+            : isValid(false)
+            , index(0)
+            , iterator()
+        {
+        }
+
+        ActivityPosition(unsigned int index,
+                         typename _Container::const_iterator iterator)
+            : isValid(true)
+            , index(index)
+            , iterator(iterator)
+        {
+        }
+
+        operator bool() const
+        {
+            return isValid;
+        }
+
+        const bool isValid;
+        const unsigned int index;
+        const typename _Container::const_iterator iterator;
+
+        typedef typename _Container::value_type ContainerElement;
+    };
 
     /**
      * Returns whether the the activity has a desired state.
@@ -52,11 +74,11 @@ namespace Private {
      */
     template <typename T>
     inline bool matchingState(ActivitiesModelPrivate::InfoPtr activity,
-                                     T states)
+                              const T &states)
     {
         // Are we filtering activities on their states?
         if (!states.empty()
-            && !boost::binary_search(states, activity->state())) {
+            && !states.contains(activity->state())) {
             return false;
         }
 
@@ -69,27 +91,18 @@ namespace Private {
      */
     template <typename _Container>
     inline
-    boost::optional<
-        std::pair<unsigned int, typename _Container::const_iterator>
-    >
+    ActivityPosition<_Container>
     activityPosition(const _Container &container, const QString &activityId)
     {
-        using ActivityPosition =
-                decltype(activityPosition(container, activityId));
-        using ContainerElement =
-                typename _Container::value_type;
-
-        auto position = boost::find_if(container,
-            [&] (const ContainerElement &activity) {
+        auto position = std::find_if(container.begin(), container.end(),
+            [&] (const typename ActivityPosition<_Container>::ContainerElement &activity) {
                 return activity->id() == activityId;
             }
         );
 
         return (position != container.end()) ?
-            ActivityPosition(
-                std::make_pair(position - container.begin(), position)
-            ) :
-            ActivityPosition();
+            ActivityPosition<_Container>(position - container.begin(), position) :
+            ActivityPosition<_Container>();
     }
 
     /**
@@ -105,8 +118,8 @@ namespace Private {
 
         if (position) {
             emit model->q->dataChanged(
-                model->q->index(position->first),
-                model->q->index(position->first),
+                model->q->index(position.index),
+                model->q->index(position.index),
                 role == Qt::DecorationRole ?
                     QVector<int> {role, ActivitiesModel::ActivityIcon} :
                     QVector<int> {role}
@@ -219,7 +232,7 @@ ActivitiesModelPrivate::InfoPtr ActivitiesModelPrivate::registerActivity(const Q
     auto position = Private::activityPosition(knownActivities, id);
 
     if (position) {
-        return *(position->second);
+        return *(position.iterator);
 
     } else {
         auto activityInfo = std::make_shared<Info>(id);
@@ -247,12 +260,12 @@ void ActivitiesModelPrivate::unregisterActivity(const QString &id)
 
     if (position) {
         if (auto shown = Private::activityPosition(shownActivities, id)) {
-            model_remove(q, QModelIndex(), shown->first,
-                                  shown->first);
-            shownActivities.erase(shown->second);
+            model_remove(q, QModelIndex(), shown.index,
+                                  shown.index);
+            shownActivities.removeAt(shown.index);
         }
 
-        knownActivities.erase(position->second);
+        knownActivities.removeAt(position.index);
     }
 }
 
@@ -262,8 +275,8 @@ void ActivitiesModelPrivate::showActivity(InfoPtr activityInfo, bool notifyClien
     if (!Private::matchingState(activityInfo, shownStates)) return;
 
     // Is it already shown?
-    if (boost::binary_search(shownActivities, activityInfo,
-                             InfoPtrComparator())) return;
+    if (std::binary_search(shownActivities.cbegin(), shownActivities.cend(),
+                           activityInfo, InfoPtrComparator())) return;
 
     auto registeredPosition
         = Private::activityPosition(knownActivities, activityInfo->id());
@@ -273,7 +286,7 @@ void ActivitiesModelPrivate::showActivity(InfoPtr activityInfo, bool notifyClien
         return;
     }
 
-    auto activityInfoPtr = *(registeredPosition->second);
+    auto activityInfoPtr = *(registeredPosition.iterator);
 
     auto position = shownActivities.insert(activityInfoPtr);
 
@@ -292,8 +305,8 @@ void ActivitiesModelPrivate::hideActivity(const QString &id)
 
     if (position) {
         model_remove(q, QModelIndex(),
-            position->first, position->first);
-        shownActivities.erase(position->second);
+            position.index, position.index);
+        shownActivities.removeAt(position.index);
     }
 }
 
@@ -322,7 +335,7 @@ void ActivitiesModelPrivate::onActivityStateChanged(Info::State state)
             return;
         }
 
-        if (boost::binary_search(shownStates, state)) {
+        if (std::binary_search(shownStates.cbegin(), shownStates.cend(), state)) {
             showActivity(info, true);
         } else {
             hideActivity(info->id());
@@ -402,9 +415,11 @@ QVariant ActivitiesModel::headerData(int section, Qt::Orientation orientation,
 
 ActivitiesModelPrivate::InfoPtr ActivitiesModelPrivate::findActivity(QObject *ptr) const
 {
-    auto info = boost::find_if(knownActivities, [ptr] (const InfoPtr &info) {
+    auto info = std::find_if(knownActivities.cbegin(), knownActivities.cend(),
+        [ptr] (const InfoPtr &info) {
             return ptr == info.get();
-        });
+        }
+    );
 
     if (info == knownActivities.end()) {
         return nullptr;
