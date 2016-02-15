@@ -199,7 +199,6 @@ QHash<int, QByteArray> ActivitiesModel::roleNames() const
         {ActivityIconSource,  "iconSource"},
         {ActivityDescription, "description"},
         {ActivityBackground,  "background"},
-        {ActivityIsCurrent,   "current"},
         {ActivityIsCurrent,   "isCurrent"}
     };
 }
