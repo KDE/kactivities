@@ -110,6 +110,7 @@ ecm_generate_headers (
    Controller
    Info
    ResourceInstance
+   ActivitiesModel
    Version
    PREFIX KActivities
    REQUIRED_HEADERS KActivities_HEADERS

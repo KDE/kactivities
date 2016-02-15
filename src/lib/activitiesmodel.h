@@ -28,7 +28,7 @@
 #include <memory>
 
 // Local
-#include <lib/info.h>
+#include "info.h"
 
 class QModelIndex;
 class QDBusPendingCallWatcher;
