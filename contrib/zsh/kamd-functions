@@ -60,7 +60,11 @@ function kamd_listactivities() {
         ACTIVITY_DESC=`qdbus org.kde.ActivityManager /ActivityManager/Activities ActivityDescription $activity`
         ACTIVITY_ICON=`qdbus org.kde.ActivityManager /ActivityManager/Activities ActivityIcon $activity`
 
-        echo "$ACTIVITY_NAME ($ACTIVITY_DESC, $ACTIVITY_ICON)"
+        if [ -n "$ACTIVITY_DESC" ]; then
+            echo "$ACTIVITY_NAME ($ACTIVITY_DESC, $ACTIVITY_ICON)"
+        else
+            echo "$ACTIVITY_NAME ($ACTIVITY_ICON)"
+        fi
     done
 }
 
