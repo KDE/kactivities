@@ -5,10 +5,8 @@ find_package (Qt5 REQUIRED NO_MODULE COMPONENTS Test Core DBus)
 
 include_directories (
    ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/src/
-   ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/src/lib/core/
    ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/tests/
    ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/autotests/
-   ${CMAKE_BINARY_DIR}/src/lib/core/
    ${CMAKE_BINARY_DIR}/src/
    )
 
