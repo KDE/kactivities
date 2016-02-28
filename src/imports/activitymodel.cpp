@@ -32,7 +32,6 @@
 #include <QModelIndex>
 
 // KDE
-#include <klocalizedstring.h>
 #include <kconfig.h>
 #include <kconfiggroup.h>
 #include <kdirwatch.h>

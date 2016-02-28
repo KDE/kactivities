@@ -31,7 +31,6 @@
 #include <QUuid>
 
 // KDE
-#include <klocalizedstring.h>
 #include <kconfig.h>
 #include <kconfiggroup.h>
 #include <ksharedconfig.h>
