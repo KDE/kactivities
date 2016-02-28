@@ -583,11 +583,9 @@ QVariant ActivityModel::data(const QModelIndex &index, int role) const
 QVariant ActivityModel::headerData(int section, Qt::Orientation orientation,
                                    int role) const
 {
+    Q_UNUSED(section);
     Q_UNUSED(orientation);
-
-    if (section == 0 && role == Qt::DisplayRole) {
-        return i18nc("Header title for activity data model", "Activity");
-    }
+    Q_UNUSED(role);
 
     return QVariant();
 }

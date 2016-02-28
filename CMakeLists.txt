@@ -56,7 +56,6 @@ find_package (Qt5 ${REQUIRED_QT_VERSION} CONFIG REQUIRED COMPONENTS Core DBus)
 set(KF5_VERSION "5.20.0") # handled by release scripts
 set(KF5_DEP_VERSION "5.19.0") # handled by release scripts
 find_package (KF5DBusAddons ${KF5_DEP_VERSION} CONFIG REQUIRED)
-find_package (KF5I18n ${KF5_DEP_VERSION} CONFIG REQUIRED)
 
 # Basic includes
 include (CPack)
@@ -71,11 +70,6 @@ set (
    ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules
    ${CMAKE_MODULE_PATH}
    )
-
-add_definitions (-DTRANSLATION_DOMAIN=\"kactivities5\")
-if (IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/po")
-    ki18n_install (po)
-endif ()
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
    set(CMAKE_CXX_VISIBILITY_PRESET default)
