@@ -92,7 +92,6 @@ target_link_libraries (
       Qt5::Core
    PRIVATE
       Qt5::DBus
-      KF5::DBusAddons
    )
 
 target_include_directories (
