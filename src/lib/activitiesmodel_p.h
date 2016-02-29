@@ -26,8 +26,6 @@
 
 #include "consumer.h"
 
-#include "utils/model_updaters.h"
-
 #include "utils/qflatset.h"
 
 namespace KActivities {
@@ -80,8 +78,6 @@ public:
     InfoPtr findActivity(QObject *ptr) const;
 
     ActivitiesModel *const q;
-
-    DECLARE_RAII_MODEL_UPDATERS(ActivitiesModel)
 };
 
 

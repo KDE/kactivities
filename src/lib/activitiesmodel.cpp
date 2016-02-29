@@ -33,12 +33,10 @@
 
 // Local
 #include "utils/remove_if.h"
-#include "utils/model_updaters.h"
 
 namespace KActivities {
 
 namespace Private {
-    // DECLARE_RAII_MODEL_UPDATERS(ActivitiesModel)
     template <typename _Container>
     struct ActivityPosition {
         ActivityPosition()
@@ -205,7 +203,7 @@ void ActivitiesModelPrivate::setServiceStatus(Consumer::ServiceStatus)
 
 void ActivitiesModelPrivate::replaceActivities(const QStringList &activities)
 {
-    model_reset m(q);
+    q->beginResetModel();
 
     knownActivities.clear();
     shownActivities.clear();
@@ -213,6 +211,8 @@ void ActivitiesModelPrivate::replaceActivities(const QStringList &activities)
     for (const QString &activity: activities) {
         onActivityAdded(activity, false);
     }
+
+    q->endResetModel();
 }
 
 void ActivitiesModelPrivate::onActivityAdded(const QString &id, bool notifyClients)
@@ -271,8 +271,9 @@ void ActivitiesModelPrivate::unregisterActivity(const QString &id)
 
     if (position) {
         if (auto shown = Private::activityPosition(shownActivities, id)) {
-            model_remove m(q, QModelIndex(), shown.index, shown.index);
+            q->beginRemoveRows(QModelIndex(), shown.index, shown.index);
             shownActivities.removeAt(shown.index);
+            q->endRemoveRows();
         }
 
         knownActivities.removeAt(position.index);
@@ -305,7 +306,9 @@ void ActivitiesModelPrivate::showActivity(InfoPtr activityInfo, bool notifyClien
             (position.second ? position.first : shownActivities.end())
             - shownActivities.begin();
 
-        model_insert m(q, QModelIndex(), index, index);
+
+        q->beginInsertRows(QModelIndex(), index, index);
+        q->endInsertRows();
     }
 }
 
@@ -314,8 +317,9 @@ void ActivitiesModelPrivate::hideActivity(const QString &id)
     auto position = Private::activityPosition(shownActivities, id);
 
     if (position) {
-        model_remove m(q, QModelIndex(), position.index, position.index);
+        q->beginRemoveRows(QModelIndex(), position.index, position.index);
         shownActivities.removeAt(position.index);
+        q->endRemoveRows();
     }
 }
 
