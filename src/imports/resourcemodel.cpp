@@ -35,7 +35,6 @@
 #include <kconfiggroup.h>
 #include <ksharedconfig.h>
 #include <kfileitem.h>
-#include <kservice.h>
 #include <kdesktopfile.h>
 
 // STL and Boost
