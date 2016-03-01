@@ -4,7 +4,7 @@ project (kactivities-imports)
 find_package (ECM 0.0.8 REQUIRED NO_MODULE)
 set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH})
 
-find_package (Qt5 REQUIRED NO_MODULE COMPONENTS Sql Gui Widgets Qml Quick Sql)
+find_package (Qt5 REQUIRED NO_MODULE COMPONENTS Sql Gui Qml Quick Sql)
 find_package (KF5Config     ${KF5_DEP_VERSION} CONFIG REQUIRED)
 find_package (KF5CoreAddons ${KF5_DEP_VERSION} CONFIG REQUIRED)
 find_package (KF5KIO        ${KF5_DEP_VERSION} CONFIG REQUIRED)

@@ -74,7 +74,6 @@ add_library (KF5::Activities ALIAS KF5Activities)
 
 include_directories (
    ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/src
-   ${KDBusAddons_INCLUDE_DIR}
    ${Boost_INCLUDE_DIR}
    )
 
@@ -148,7 +147,6 @@ include (ECMGeneratePriFile)
 ecm_generate_pri_file (
    BASE_NAME KActivities
    LIB_NAME KF5Activities
-   DEPS "KDBusAddons"
    FILENAME_VAR PRI_FILENAME INCLUDE_INSTALL_DIR ${KDE_INSTALL_INCLUDEDIR_KF5}/KActivities
    )
 install (
