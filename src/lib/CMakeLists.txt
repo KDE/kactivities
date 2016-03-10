@@ -74,7 +74,6 @@ add_library (KF5::Activities ALIAS KF5Activities)
 
 include_directories (
    ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/src
-   ${Boost_INCLUDE_DIR}
    )
 
 set_target_properties (
