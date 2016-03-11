@@ -23,8 +23,14 @@
 
 #include "activitymodel.h"
 #include "activityinfo.h"
-#include "resourcemodel.h"
 #include "resourceinstance.h"
+
+// #include "resourcemodel.h"
+
+// TODO: Clean up unused classes from the imports module
+// TODO: Since plasma is now dealing with activity model wallpapers,
+//       replace ActivityModel with the KActivities::ActivitiesModel
+//       (but keep the name)
 
 #include <QDebug>
 
@@ -37,9 +43,14 @@ void ActivitiesExtensionPlugin::registerTypes(const char *uri)
 {
     Q_ASSERT(QLatin1String(uri) == QLatin1String("org.kde.activities"));
 
+    // Used by applets/activitybar
     qmlRegisterType<KActivities::Imports::ActivityModel>(uri, 0, 1, "ActivityModel");
+
     qmlRegisterType<KActivities::Imports::ActivityInfo>(uri, 0, 1, "ActivityInfo");
-    qmlRegisterType<KActivities::Imports::ResourceModel>(uri, 0, 1, "ResourceModel");
     qmlRegisterType<KActivities::Imports::ResourceInstance>(uri, 0, 1, "ResourceInstance");
+
+    // This one is removed in favor of KActivities::Stats::ResultModel.
+    // Subclass it, and make it do what you want.
+    // qmlRegisterType<KActivities::Imports::ResourceModel>(uri, 0, 1, "ResourceModel");
 }
 
