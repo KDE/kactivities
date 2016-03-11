@@ -28,6 +28,7 @@
 // #include "resourcemodel.h"
 
 // TODO: Clean up unused classes from the imports module
+
 // TODO: Since plasma is now dealing with activity model wallpapers,
 //       replace ActivityModel with the KActivities::ActivitiesModel
 //       (but keep the name)

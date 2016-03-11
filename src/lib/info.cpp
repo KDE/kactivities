@@ -168,7 +168,6 @@ Info::Availability Info::availability() const
     if (Manager::activities()->ListActivities().value().contains(d->id)) {
         result = BasicInfo;
 
-        // TODO: This needs to be changed, test for the new linking feature
         if (Manager::features()->IsFeatureOperational(QStringLiteral("resources/linking"))) {
             result = Everything;
         }

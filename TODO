@@ -1,85 +1,28 @@
-
-libKActivities
-==============
-src/lib/core/controller.cpp:41:
- TODO: Make Q_ASSERT_EVENTUALLY_X or something similar
-
-src/lib/core/info.cpp:165:
- TODO: This needs to be changed, test for the new linking feature
-
-src/lib/core/resourceinstance.cpp:147:
+src/lib/resourceinstance.cpp:149:
  TODO: update the service info
-src/lib/core/resourceinstance.cpp:159:
+src/lib/resourceinstance.cpp:161:
  TODO: update the service info
 
-
-libKActivitiesStats
-===================
-src/lib/stats/resultset.cpp:243:
- TODO: We need to correct the scores based on the time that passed
-       since the cache was last updated, although, for this query,
-       scores are not that important.
-src/lib/stats/resultset.cpp:319:
- TODO: We need to correct the scores based on the time that passed
-       since the cache was last updated
-src/lib/stats/resultset.cpp:390:
- TODO: Get this to work
-
-src/lib/stats/resultwatcher.h:93:
- TODO: BLOCKER Move these to libKActivities
-
-src/lib/stats/resultmodel.cpp:407:
- TODO: We should also sort by the resource, not only on a single field
-src/lib/stats/resultmodel.cpp:493:
- TODO: This can add or remove items from the model
-
-src/lib/stats/resultwatcher.cpp:174:
- TODO: See whether it makes sense to have lastUpdate/firstUpdate here as well
-
-
-KActivityManagerD
-=================
-src/service/ksmserver/KSMServer.cpp:72:
- TODO: in multi-head environment there are multiple kwin instances
- running and they will export different dbus name on different
- root window. We have no support for that currently.
- In future, the session management for Wayland may also need to be
- reimplemented in some way.
-
-src/service/plugins/sqlite/StatsPlugin.cpp:434:
- TODO: Add focus and modification
-
-src/service/Application.cpp:155:
- TODO: Restart on crash
-       KCrash::setFlags(KCrash::AutoRestart);
-src/service/Application.cpp:197:
- TODO: Show a notification for a plugin that failed to load
-
-
-QML imports
-===========
-src/imports/resourcemodel.cpp:105:
+src/imports/resourcemodel.cpp:103:
  NOTE: What to do if the file does not exist?
        Ignoring that case since the daemon creates it on startup.
        Is it plausible that somebody will instantiate the ResourceModel
        before the daemon is started?
-src/imports/resourcemodel.cpp:135:
+src/imports/resourcemodel.cpp:133:
  TODO: Database connection naming could be smarter (thread-id-based,
        reusing connections...?)
-src/imports/resourcemodel.cpp:337:
+src/imports/resourcemodel.cpp:335:
  TODO: Will probably need some more special handling -
        for application:/ and a few more
-src/imports/resourcemodel.cpp:553:
+src/imports/resourcemodel.cpp:551:
  TODO: This might be smarter possibly, but might collide
        with the SQL model. Implement a custom model with internal
        cache instead of basing it on QSqlModel.
 
-
-Workspace plugins
-=================
-
-Other
-=====
-src/common/database/schema/ResourcesDatabaseSchema.cpp:109:
- TODO: This will require some refactoring after we introduce more databases
+src/imports/activitiesextensionplugin.cpp:30:
+ TODO: Clean up unused classes from the imports module
+src/imports/activitiesextensionplugin.cpp:32:
+ TODO: Since plasma is now dealing with activity model wallpapers,
+       replace ActivityModel with the KActivities::ActivitiesModel
+       (but keep the name)
 
