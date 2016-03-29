@@ -17,45 +17,15 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef KACTIVITIES_VERSION_H
-#define KACTIVITIES_VERSION_H
+#ifndef KACTIVITIES_VERSION_BIN_H
+#define KACTIVITIES_VERSION_BIN_H
 
 /** @file version.h <KActivities/Version> */
 
 #include "kactivities_export.h"
+#include <kactivities_version.h>
 
-/**
- * String version of libkactivities version, suitable for use in
- * file formats or network protocols
- */
-#define KACTIVITIES_VERSION_STRING \
-    "6.2.0"
-
-/// @brief Major version of libkactivities, at compile time
-#define KACTIVITIES_VERSION_MAJOR \
-    6
-/// @brief Minor version of libkactivities, at compile time
-#define KACTIVITIES_VERSION_MINOR \
-    2
-/// @brief Release version of libkactivities, at compile time
-#define KACTIVITIES_VERSION_RELEASE \
-    0
-
-#define KACTIVITIES_MAKE_VERSION(a, b, c) \
-    (((a) << 16) | ((b) << 8) | (c))
-
-/**
- * Compile time macro for the version number of libkactivities
- */
-#define KACTIVITIES_VERSION \
-    KACTIVITIES_MAKE_VERSION(KACTIVITIES_VERSION_MAJOR, KACTIVITIES_VERSION_MINOR, KACTIVITIES_VERSION_RELEASE)
-
-/**
- * Compile-time macro for checking the kactivities version. Not useful for
- * detecting the version of libkactivities at runtime.
- */
-#define KACTIVITIES_IS_VERSION(a, b, c) \
-    (KACTIVITIES_VERSION >= KACTIVITIES_MAKE_VERSION(a, b, c))
+#define KACTIVITIES_VERSION_RELEASE KACTIVITIES_VERSION_PATCH
 
 /**
  * Namespace for everything in libkactivities

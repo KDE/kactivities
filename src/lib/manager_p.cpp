@@ -127,11 +127,9 @@ void Manager::serviceOwnerChanged(const QString &serviceName, const QString &old
                     auto split = serviceVersion->split('.');
                     QList<int> version;
 
-                    const int requiredVersion[] = {
-                            KACTIVITIES_VERSION_MAJOR,
-                            KACTIVITIES_VERSION_MINOR,
-                            KACTIVITIES_VERSION_RELEASE
-                        };
+                    // We require kactivitymanagerd version to be at least the
+                    // one before the repository split
+                    const int requiredVersion[] = { 6, 2, 0 };
 
                     std::transform(
                             split.cbegin(), split.cend(),
