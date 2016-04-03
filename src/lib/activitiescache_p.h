@@ -103,6 +103,15 @@ public:
         return find<Policy>(ActivityInfo(id));
     }
 
+    template <typename TargetSlot>
+    void onCallFinished(QDBusPendingCall &call, TargetSlot slot) {
+        auto watcher = new QDBusPendingCallWatcher(call, this);
+
+        connect(watcher, SIGNAL(finished(QDBusPendingCallWatcher *)),
+                this, slot);
+    }
+
+
     ActivitiesCache();
 
     QList<ActivityInfo> m_activities;

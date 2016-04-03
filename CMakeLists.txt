@@ -70,9 +70,13 @@ set (
    ${CMAKE_MODULE_PATH}
    )
 
-if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+message ("We are using the ${CMAKE_CXX_COMPILER_ID} compiler")
+if ((CMAKE_CXX_COMPILER_ID STREQUAL "Clang") OR (KACTIVITIES_OVERRIDE_VISIBILITY STREQUAL "default"))
+   message ("Setting visibility preset to default")
    set(CMAKE_CXX_VISIBILITY_PRESET default)
    set(CMAKE_VISIBILITY_INLINES_HIDDEN 0)
+   string (REPLACE "-fvisibility-inlines-hidden" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+   string (REPLACE "-fvisibility=hidden" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 endif ()
 
 # libKActivities
