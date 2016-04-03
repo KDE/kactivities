@@ -62,14 +62,6 @@ include (CPack)
 include (ECMPackageConfigHelpers)
 include (ECMSetupVersion)
 
-
-# Adding local CMake modules
-set (
-   CMAKE_MODULE_PATH
-   ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules
-   ${CMAKE_MODULE_PATH}
-   )
-
 message ("We are using the ${CMAKE_CXX_COMPILER_ID} compiler")
 if ((CMAKE_CXX_COMPILER_ID STREQUAL "Clang") OR (KACTIVITIES_OVERRIDE_VISIBILITY STREQUAL "default"))
    message ("Setting visibility preset to default")
