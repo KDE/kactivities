@@ -36,7 +36,7 @@ public:
         const QString title = index.data().toString();
 
         QRect titleRect = painter->fontMetrics().boundingRect(title);
-        int lineHeight = titleRect.height();
+        //unused int lineHeight = titleRect.height();
 
         // Header background
         auto rect = option.rect;
@@ -111,6 +111,7 @@ Window::Window()
 
 void Window::showEvent(QShowEvent * event)
 {
+    Q_UNUSED(event);
     KWindowSystem::self()->setOnActivities(effectiveWinId(), QStringList());
     KWindowSystem::self()->setOnAllDesktops(effectiveWinId(), true);
 }
@@ -119,5 +120,3 @@ Window::~Window()
 {
     delete ui;
 }
-
-
