@@ -12,3 +12,7 @@ libraries:
  - qmake: KActivities
    cmake: "KF5::Activities"
 cmakename: KF5Activities
+
+public_lib: true
+group: Frameworks
+subgroup: Tier 3
