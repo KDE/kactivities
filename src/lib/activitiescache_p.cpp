@@ -168,8 +168,27 @@ void ActivitiesCache::updateActivityState(const QString &id, int state)
 {
     auto where = find<Mutable>(id);
 
-    if (where) {
+    if (where && where->state != state) {
+        auto isInvalid = [](int state) {
+            return state == Info::Invalid || state == Info::Unknown;
+        };
+        auto isStopped = [](int state) {
+            return state == Info::Stopped || state == Info::Starting;
+        };
+        auto isRunning = [](int state) {
+            return state == Info::Running || state == Info::Stopping;
+        };
+
+        const bool runningStateChanged
+            = (isInvalid(state) || isInvalid(where->state)
+               || (isStopped(state) && isRunning(where->state))
+               || (isRunning(state) && isStopped(where->state)));
+
         where->state = state;
+
+        if (runningStateChanged) {
+            emit runningActivityListChanged();
+        }
 
         emit activityStateChanged(id, state);
 

@@ -52,6 +52,8 @@ Consumer::Consumer(QObject *parent)
 
     connect(d->cache.get(), &ActivitiesCache::activityListChanged,
             this, [=]() { emit activitiesChanged(activities()); });
+    connect(d->cache.get(), &ActivitiesCache::runningActivityListChanged,
+            this, [=]() { emit runningActivitiesChanged(runningActivities()); });
 
     // connect(d->cache.get(), SIGNAL(activityStateChanged(QString,int)),
     //         this, SIGNAL(activityStateChanged(QString,int)));
@@ -74,8 +76,9 @@ QStringList Consumer::activities(Info::State state) const
     result.reserve(d->cache->m_activities.size());
 
     foreach (const auto & info, d->cache->m_activities) {
-        if (info.state == state)
+        if (info.state == state) {
             result << info.id;
+        }
     }
 
     return result;
@@ -93,6 +96,23 @@ QStringList Consumer::activities() const
 
     return result;
 }
+
+QStringList Consumer::runningActivities() const
+{
+    QStringList result;
+
+    result.reserve(d->cache->m_activities.size());
+
+    foreach (const auto & info, d->cache->m_activities) {
+        if (info.state == Info::Running || info.state == Info::Stopping) {
+            result << info.id;
+        }
+    }
+
+    return result;
+    return activities(Info::Running);
+}
+
 
 Consumer::ServiceStatus Consumer::serviceStatus()
 {

@@ -95,6 +95,7 @@ public:
 
 Window::Window()
     : ui(new Ui::MainWindow())
+    , activities(new KActivities::Consumer(this))
     , modelRunningActivities(new KActivities::ActivitiesModel({ KActivities::Info::Running, KActivities::Info::Stopping }, this))
     , modelStoppedActivities(new KActivities::ActivitiesModel({ KActivities::Info::Stopped, KActivities::Info::Starting }, this))
 {
@@ -107,6 +108,10 @@ Window::Window()
     modelStoppedActivities->setObjectName("STOPPED");
     ui->listStoppedActivities->setModel(modelStoppedActivities);
     ui->listStoppedActivities->setItemDelegate(new Delegate());
+
+    qDebug() <<
+    connect(activities, &KActivities::Consumer::runningActivitiesChanged,
+            this, [] (const QStringList &running) { qDebug() << running; });
 }
 
 void Window::showEvent(QShowEvent * event)

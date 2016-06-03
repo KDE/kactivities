@@ -55,6 +55,7 @@ Q_SIGNALS:
     void currentActivityChanged(const QString &id);
     void serviceStatusChanged(Consumer::ServiceStatus status);
     void activityListChanged();
+    void runningActivityListChanged();
 
 private Q_SLOTS:
     void updateAllActivities();

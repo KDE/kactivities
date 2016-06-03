@@ -22,6 +22,7 @@
 #include <QMainWindow>
 
 #include <activitiesmodel.h>
+#include <consumer.h>
 
 namespace Ui {
     class MainWindow;
@@ -39,6 +40,7 @@ protected:
 
 private:
     Ui::MainWindow *ui;
+    KActivities::Consumer *activities;
     KActivities::ActivitiesModel *modelRunningActivities;
     KActivities::ActivitiesModel *modelStoppedActivities;
 };
