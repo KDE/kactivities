@@ -3,7 +3,9 @@ description: Runtime and library to organize the user work in separate activitie
 tier: 3
 type: solution
 platforms:
-    - name: All
+    - name: Linux
+    - name: Windows
+    - name: MacOSX
       note: Needs QtDBus
 portingAid: false
 deprecated: false
