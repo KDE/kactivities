@@ -297,15 +297,19 @@ void ActivitiesModelPrivate::showActivity(InfoPtr activityInfo, bool notifyClien
         return;
     }
 
-    auto activityInfoPtr = *(registeredPosition.iterator);
+    const auto activityInfoPtr = *(registeredPosition.iterator);
 
-    auto position = shownActivities.insert(activityInfoPtr);
+    // In C++17, this would be:
+    // const auto [position, found = shownActivities.insert(...);
+    const auto _result  = shownActivities.insert(activityInfoPtr);
+    const auto position = _result.first;
+    const bool found    = _result.second;
+
 
     if (notifyClients) {
-        unsigned int index =
-            (position.second ? position.first : shownActivities.end())
-            - shownActivities.begin();
-
+        int index =
+            (found ? position : shownActivities.cend())
+            - shownActivities.cbegin();
 
         q->beginInsertRows(QModelIndex(), index, index);
         q->endInsertRows();

@@ -30,6 +30,10 @@ namespace KActivities {
 template <typename T, typename Comparator>
 class QFlatSet: public QVector<T> {
 public:
+    QFlatSet()
+    {
+    }
+
     inline
     QPair<typename QVector<T>::iterator, bool> insert(const T &value)
     {
@@ -62,6 +66,10 @@ public:
             return { iterator, true };
         }
     }
+
+private:
+    QFlatSet(const QFlatSet &original); // = delete
+
 };
 
 
