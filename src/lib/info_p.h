@@ -45,9 +45,11 @@ public:
     void descriptionChanged(const QString &, const QString &) const;
     void iconChanged(const QString &, const QString &) const;
     void setServiceStatus(Consumer::ServiceStatus status) const;
+    void setCurrentActivity(const QString &currentActivity);
 
     Info *const q;
     std::shared_ptr<ActivitiesCache> cache;
+    bool isCurrent;
 
     const QString id;
 };

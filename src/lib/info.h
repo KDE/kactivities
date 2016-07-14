@@ -76,6 +76,7 @@ class KACTIVITIES_EXPORT Info : public QObject {
     Q_PROPERTY(QString name READ name NOTIFY nameChanged)
     Q_PROPERTY(QString description READ description NOTIFY descriptionChanged)
     Q_PROPERTY(QString icon READ icon NOTIFY iconChanged)
+    Q_PROPERTY(bool isCurrent READ isCurrent NOTIFY isCurrentChanged)
     Q_PROPERTY(Info::State state READ state NOTIFY stateChanged)
 
 public:
@@ -123,6 +124,11 @@ public:
      * @returns the id of the activity
      */
     QString id() const;
+
+    /**
+     * @returns whether this activity is the current one
+     */
+    bool isCurrent() const;
 
     /**
      * @returns the name of the activity
@@ -181,6 +187,12 @@ Q_SIGNALS:
     void nameChanged(const QString &name);
 
     /**
+     * Emitted when the activity becomes the current one, or when it stops
+     * being the current one
+     */
+    void isCurrentChanged(bool current);
+
+    /**
      * Emitted when the description is changed
      */
     void descriptionChanged(const QString &description);
@@ -229,6 +241,7 @@ private:
     Q_PRIVATE_SLOT(d, void descriptionChanged(const QString &, const QString &))
     Q_PRIVATE_SLOT(d, void iconChanged(const QString &, const QString &))
     Q_PRIVATE_SLOT(d, void setServiceStatus(Consumer::ServiceStatus))
+    Q_PRIVATE_SLOT(d, void setCurrentActivity(const QString &))
 
     friend class InfoPrivate;
 };

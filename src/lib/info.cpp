@@ -81,6 +81,23 @@ void InfoPrivate::activityStateChanged(const QString &idChanged,
     }
 }
 
+void InfoPrivate::setCurrentActivity(const QString &currentActivity)
+{
+    if (isCurrent) {
+        if (currentActivity != id) {
+            // We are no longer the current activity
+            isCurrent = false;
+            emit q->isCurrentChanged(false);
+        }
+    } else {
+        if (currentActivity == id) {
+            // We are the current activity
+            isCurrent = true;
+            emit q->isCurrentChanged(true);
+        }
+    }
+}
+
 // Info
 Info::Info(const QString &activity, QObject *parent)
     : QObject(parent)
@@ -108,6 +125,10 @@ Info::Info(const QString &activity, QObject *parent)
     PASS_SIGNAL_HANDLER(activityIconChanged, iconChanged, QString);
 #undef PASS_SIGNAL_HANDLER
 
+    connect(d->cache.get(),  SIGNAL(currentActivityChanged(QString)),
+            this,            SLOT(setCurrentActivity(QString)));
+
+    d->isCurrent = (d->cache.get()->m_currentActivity == activity);
 }
 
 Info::~Info()
@@ -129,6 +150,11 @@ QString Info::uri() const
 QString Info::id() const
 {
     return d->id;
+}
+
+bool Info::isCurrent() const
+{
+    return d->isCurrent;
 }
 
 Info::State Info::state() const
