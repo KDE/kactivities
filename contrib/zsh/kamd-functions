@@ -113,3 +113,29 @@ function kamd_get_currentactivity_name_normalized() {
     echo $CURRENT_ACTIVITY_NAME | tr '[:upper:] ' '[:lower:]-'
 }
 
+# Returns the current activity ID
+function kamd_STOP_ALL_BUT_CURRENT() {
+    CURRENT_ACTIVITY_ID=$(kamd_get_currentactivity_id)
+
+    for activity in `qdbus org.kde.ActivityManager /ActivityManager/Activities ListActivities`; do
+        if [ "$activity" != "$CURRENT_ACTIVITY_ID" ]; then
+            echo "Stop: $activity"
+            qdbus org.kde.ActivityManager /ActivityManager/Activities StopActivity $activity
+            sleep 1
+        fi
+    done
+}
+
+# Returns the current activity ID
+function kamd_REMOVE_ALL_BUT_CURRENT() {
+    CURRENT_ACTIVITY_ID=$(kamd_get_currentactivity_id)
+
+    for activity in `qdbus org.kde.ActivityManager /ActivityManager/Activities ListActivities`; do
+        if [ "$activity" != "$CURRENT_ACTIVITY_ID" ]; then
+            echo "Remove: $activity"
+            qdbus org.kde.ActivityManager /ActivityManager/Activities RemoveActivity $activity
+            sleep 1
+        fi
+    done
+}
+
