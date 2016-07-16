@@ -300,17 +300,14 @@ void ActivitiesModelPrivate::showActivity(InfoPtr activityInfo, bool notifyClien
     const auto activityInfoPtr = *(registeredPosition.iterator);
 
     // In C++17, this would be:
-    // const auto [position, found = shownActivities.insert(...);
+    // const auto [iterator, index, found] = shownActivities.insert(...);
     const auto _result  = shownActivities.insert(activityInfoPtr);
-    const auto position = _result.first;
-    const bool found    = _result.second;
+    // const auto iterator = std::get<0>(_result);
+    const auto index    = std::get<1>(_result);
+    const auto found    = std::get<2>(_result);
 
 
     if (notifyClients) {
-        int index =
-            (found ? position : shownActivities.cend())
-            - shownActivities.cbegin();
-
         q->beginInsertRows(QModelIndex(), index, index);
         q->endInsertRows();
     }

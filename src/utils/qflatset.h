@@ -24,10 +24,11 @@
 
 #include <QVector>
 #include <QPair>
+#include <QDebug>
 
 namespace KActivities {
 
-template <typename T, typename Comparator>
+template <typename T, typename LessThan>
 class QFlatSet: public QVector<T> {
 public:
     QFlatSet()
@@ -35,35 +36,31 @@ public:
     }
 
     inline
-    QPair<typename QVector<T>::iterator, bool> insert(const T &value)
+    // QPair<typename QVector<T>::iterator, bool> insert(const T &value)
+    std::tuple<typename QVector<T>::iterator, int, bool> insert(const T &value)
     {
-        auto comparator = Comparator();
-        auto begin      = this->begin();
-        auto end        = this->end();
+        auto lessThan = LessThan();
+        auto begin    = this->begin();
+        auto end      = this->end();
 
         if (begin == end) {
             QVector<T>::insert(0, value);
 
-            return { QVector<T>::begin(), true };
+            return std::make_tuple(QVector<T>::begin(), 0, true);
 
         } else {
-            // We want small sets, so a binary search
-            // will be slower than a serial search
-            auto iterator = std::find_if(begin, end,
-                [&] (const T &current) {
-                    return comparator(value, current);
-                });
+            auto iterator = std::lower_bound(begin, end, value, lessThan);
 
             if (iterator != end) {
-                if (comparator(*iterator, value)) {
+                if (!lessThan(value, *iterator)) {
                     // Already present
-                    return { iterator, false };
+                    return std::make_tuple(iterator, iterator - begin, false);
                 }
             }
 
             QVector<T>::insert(iterator, value);
 
-            return { iterator, true };
+            return std::make_tuple(iterator, iterator - begin, true);
         }
     }
 
