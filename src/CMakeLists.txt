@@ -36,3 +36,4 @@ if (NOT KACTIVITIES_LIBRARY_ONLY)
    add_subdirectory (imports)
 endif ()
 
+add_subdirectory (cli)
