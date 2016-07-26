@@ -86,6 +86,39 @@ DEFINE_COMMAND(currentActivity, 0)
     return 0;
 }
 
+DEFINE_COMMAND(setActivityProperty, 3)
+{
+    const auto what  = args(1);
+    const auto id    = args(2);
+    const auto value = args(3);
+
+    awaitFuture(
+        what == "name"        ? controller->setActivityName(id, value) :
+        what == "description" ? controller->setActivityDescription(id, value) :
+        what == "icon"        ? controller->setActivityIcon(id, value) :
+                                QFuture<void>()
+        );
+
+    return 3;
+}
+
+DEFINE_COMMAND(activityProperty, 2)
+{
+    const auto what  = args(1);
+    const auto id    = args(2);
+
+    KActivities::Info info(id);
+
+    out << (
+        what == "name"        ? info.name() :
+        what == "description" ? info.description() :
+        what == "icon"        ? info.icon() :
+                                QString()
+        ) << "\n";
+
+    return 2;
+}
+
 // Activity switching
 
 DEFINE_COMMAND(setCurrentActivity, 1)
@@ -155,6 +188,11 @@ void printHelp()
                  << "\n    --set-current-activity   - sets the current activity"
                  << "\n    --next-activity          - switches to the next activity (in list-activities order)"
                  << "\n    --previous-activity      - switches to the previous activity (in list-activities order)"
+
+                 << "\n    --activity-property What ID"
+                 << "\n                             - gets activity name, icon or description"
+                 << "\n    --set-activity-property What ID Value"
+                 << "\n                             - changes activity name, icon or description"
                  ;
 
     } else {
@@ -215,6 +253,8 @@ int main(int argc, char *argv[])
 
             MATCH_COMMAND(currentActivity)
             MATCH_COMMAND(setCurrentActivity)
+            MATCH_COMMAND(activityProperty)
+            MATCH_COMMAND(setActivityProperty)
             MATCH_COMMAND(nextActivity)
             MATCH_COMMAND(previousActivity)
 
