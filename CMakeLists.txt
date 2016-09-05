@@ -53,7 +53,7 @@ set (CMAKE_AUTOMOC ON)
 find_package (Qt5 ${REQUIRED_QT_VERSION} CONFIG REQUIRED COMPONENTS Core DBus)
 
 # KDE Frameworks
-set(KF5_VERSION "5.25.0") # handled by release scripts
+set(KF5_VERSION "5.26.0") # handled by release scripts
 set(KF5_DEP_VERSION "5.25.0") # handled by release scripts
 
 # Basic includes
