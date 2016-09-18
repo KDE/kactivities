@@ -161,7 +161,7 @@ Info::State Info::state() const
 {
     if (d->cache->m_status == Consumer::Unknown) return Info::Unknown;
 
-    auto info = d->cache->find(d->id);
+    auto info = d->cache->getInfo(d->id);
 
     if (!info) return Info::Invalid;
 
@@ -205,7 +205,7 @@ Info::Availability Info::availability() const
 #define CREATE_GETTER(What)                                                    \
     QString Info::What() const                                                 \
     {                                                                          \
-        auto info = d->cache->find(d->id);                                     \
+        auto info = d->cache->getInfo(d->id);                                  \
         return info ? info->What : QString();                                  \
     }
 

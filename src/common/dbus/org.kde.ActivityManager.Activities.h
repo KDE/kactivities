@@ -46,16 +46,6 @@ struct ActivityInfo {
         , state(state)
     {
     }
-
-    bool operator<(const ActivityInfo &other) const
-    {
-        return id < other.id;
-    }
-
-    bool operator==(const ActivityInfo &other) const
-    {
-        return id == other.id;
-    }
 };
 
 typedef QList<ActivityInfo> ActivityInfoList;

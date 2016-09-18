@@ -83,25 +83,41 @@ public:
     template <typename _Result, typename _Functor>
     void passInfoFromReply(QDBusPendingCallWatcher *watcher, _Functor f);
 
-    template <int Policy = kamd::utils::Const>
-    inline typename kamd::utils::ptr_to<ActivityInfo, Policy>::type
-    find(const ActivityInfo &info)
+    static
+    bool infoLessThan(const ActivityInfo &info, const ActivityInfo &other)
     {
-        auto where
-            = std::lower_bound(m_activities.begin(), m_activities.end(), info);
+        const auto comp =
+            QString::compare(info.name, other.name, Qt::CaseInsensitive);
+        return comp < 0 || (comp == 0 && info.id < other.id);
+    }
 
-        if (where != m_activities.end() && where->id == info.id) {
-            return &(*where);
-        }
+    ActivityInfoList::iterator
+    find(const QString &id)
+    {
+        return std::find_if(m_activities.begin(), m_activities.end(),
+                            [&id] (const ActivityInfo &info) {
+                                return info.id == id;
+                            });
+    }
 
-        return Q_NULLPTR;
+    ActivityInfoList::iterator
+    lower_bound(const ActivityInfo &info)
+    {
+        return std::lower_bound(m_activities.begin(), m_activities.end(),
+                                info, &infoLessThan);
     }
 
     template <int Policy = kamd::utils::Const>
     inline typename kamd::utils::ptr_to<ActivityInfo, Policy>::type
-    find(const QString &id)
+    getInfo(const QString &id)
     {
-        return find<Policy>(ActivityInfo(id));
+        const auto where = find(id);
+
+        if (where != m_activities.end()) {
+            return &(*where);
+        }
+
+        return Q_NULLPTR;
     }
 
     template <typename TargetSlot>

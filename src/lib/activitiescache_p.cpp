@@ -122,8 +122,10 @@ void ActivitiesCache::removeActivity(const QString &id)
 {
     // qDebug() << "Removing the activity";
 
-    auto where = std::lower_bound(m_activities.begin(), m_activities.end(),
-                                  ActivityInfo(id));
+    // Since we are sorting the activities by name now,
+    // we can not use lower_bound to search for an activity
+    // with a specified id
+    const auto where = find(id);
 
     if (where != m_activities.end() && where->id == id) {
         m_activities.erase(where);
@@ -166,7 +168,7 @@ void ActivitiesCache::updateActivity(const QString &id)
 
 void ActivitiesCache::updateActivityState(const QString &id, int state)
 {
-    auto where = find<Mutable>(id);
+    auto where = getInfo<Mutable>(id);
 
     if (where && where->state != state) {
         auto isInvalid = [](int state) {
@@ -234,20 +236,27 @@ void ActivitiesCache::setActivityInfo(const ActivityInfo &info)
 {
     // qDebug() << "Setting activity info" << info.id;
 
-    auto where
-        = std::lower_bound(m_activities.begin(), m_activities.end(), info);
+    // Are we updating an existing activity, or adding a new one?
+    const auto iter = find(info.id);
+    const auto present = iter != m_activities.end();
 
-    if (where == m_activities.end() || where->id != info.id) {
-        // We haven't found the activity with the specified id.
-        // This means it is a new activity.
-        m_activities.insert(where, info);
+    // If there is an activity with the specified id,
+    // we are going to remove it, temporarily.
+    if (present) {
+        m_activities.erase(iter);
+    }
+
+    // Now, we need to find where to insert the activity
+    // and keep the cache sorted by name
+    const auto where = lower_bound(info);
+
+    m_activities.insert(where, info);
+
+    if (present) {
+        emit activityChanged(info.id);
+    } else {
         emit activityAdded(info.id);
         emit activityListChanged();
-
-    } else {
-        // An existing activity changed
-        *where = info;
-        emit activityChanged(info.id);
     }
 }
 
@@ -255,7 +264,7 @@ void ActivitiesCache::setActivityInfo(const ActivityInfo &info)
     void ActivitiesCache::setActivity##WHAT(const QString &id,                 \
                                             const QString &value)              \
     {                                                                          \
-        auto where = find<Mutable>(id);                                        \
+        auto where = getInfo<Mutable>(id);                                     \
                                                                                \
         if (where) {                                                           \
             where->What = value;                                               \
@@ -277,11 +286,11 @@ void ActivitiesCache::setAllActivities(const ActivityInfoList &_activities)
 
     ActivityInfoList activities = _activities;
 
-    qSort(activities.begin(), activities.end());
-
     foreach (const ActivityInfo &info, activities) {
         m_activities << info;
     }
+
+    std::sort(m_activities.begin(), m_activities.end(), &infoLessThan);
 
     m_status = Consumer::Running;
     emit serviceStatusChanged(m_status);
