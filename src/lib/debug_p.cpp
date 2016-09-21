@@ -21,9 +21,5 @@
 
 #include "debug_p.h"
 
-#if QT_VERSION >= QT_VERSION_CHECK(5, 4, 0)
 // logging category for this framework, default: log stuff >= warning
 Q_LOGGING_CATEGORY(KAMD_CORELIB, "org.kde.kactivities.lib.core", QtWarningMsg)
-#else
-Q_LOGGING_CATEGORY(KAMD_CORELIB, "org.kde.kactivities.lib.core")
-#endif
