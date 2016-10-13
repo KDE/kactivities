@@ -62,27 +62,23 @@ Manager *Manager::self()
 {
     static std::mutex singleton;
     std::lock_guard<std::mutex> singleton_lock(singleton);
+    #if defined(QT_DEBUG)
+    QLoggingCategory::setFilterRules(QStringLiteral("org.kde.kactivities.lib.core.debug=true"));
+    #endif
 
     if (!s_instance) {
 
         runInMainThread([] () {
+
             // check if the activity manager is already running
             if (!Manager::isServiceRunning()) {
-
-                #if defined(QT_DEBUG)
-                QLoggingCategory::setFilterRules(QStringLiteral("org.kde.kactivities.lib.core.debug=true"));
+                bool disableAutolaunch = QCoreApplication::instance()->property("org.kde.KActivities.core.disableAutostart").toBool();
 
                 qCDebug(KAMD_CORELIB) << "Should we start the daemon?";
-                if (!QCoreApplication::instance()
-                         ->property("org.kde.KActivities.core.disableAutostart")
-                         .toBool()) {
+                if (!disableAutolaunch) {
                     qCDebug(KAMD_CORELIB) << "Starting the activity manager daemon";
                     QProcess::startDetached(QStringLiteral("kactivitymanagerd"));
                 }
-
-                #else
-                QProcess::startDetached(QStringLiteral("kactivitymanagerd"));
-                #endif
             }
 
             // creating a new instance of the class
