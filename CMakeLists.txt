@@ -2,7 +2,10 @@
 
 cmake_minimum_required(VERSION 3.0)
 
-project (KActivities)
+# KDE Frameworks
+set(KF5_VERSION "5.30.0") # handled by release scripts
+set(KF5_DEP_VERSION "5.29.0") # handled by release scripts
+project (KActivities VERSION ${KF5_VERSION})
 
 option (KACTIVITIES_LIBRARY_ONLY "If true, compiles only the KActivities library, without the QML imports." OFF)
 option (KACTIVITIES_ENABLE_EXCEPTIONS "If you have Boost 1.53, you need to build KActivities with exceptions enabled. This is UNTESTED and EXPERIMENTAL!" OFF)
@@ -52,10 +55,6 @@ include (ECMGenerateHeaders)
 set (CMAKE_AUTOMOC ON)
 find_package (Qt5 ${REQUIRED_QT_VERSION} CONFIG REQUIRED COMPONENTS Core DBus)
 
-# KDE Frameworks
-set(KF5_VERSION "5.30.0") # handled by release scripts
-set(KF5_DEP_VERSION "5.29.0") # handled by release scripts
-
 # Basic includes
 include (CPack)
 
@@ -74,7 +73,7 @@ endif ()
 # libKActivities
 
 ecm_setup_version (
-   ${KF5_VERSION}
+   PROJECT
    VARIABLE_PREFIX KACTIVITIES
    VERSION_HEADER "${CMAKE_CURRENT_BINARY_DIR}/kactivities_version.h"
    PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/KF5ActivitiesConfigVersion.cmake"
