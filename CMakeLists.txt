@@ -58,7 +58,7 @@ find_package (Qt5 ${REQUIRED_QT_VERSION} CONFIG REQUIRED COMPONENTS Core DBus)
 # Basic includes
 include (CPack)
 
-include (ECMPackageConfigHelpers)
+include (CMakePackageConfigHelpers)
 include (ECMSetupVersion)
 
 message ("We are using the ${CMAKE_CXX_COMPILER_ID} compiler")
@@ -89,7 +89,7 @@ install (
    NAMESPACE KF5::
    )
 
-ecm_configure_package_config_file (
+configure_package_config_file (
    "${CMAKE_CURRENT_SOURCE_DIR}/KF5ActivitiesConfig.cmake.in"
    "${CMAKE_CURRENT_BINARY_DIR}/KF5ActivitiesConfig.cmake"
    INSTALL_DESTINATION  ${CMAKECONFIG_INSTALL_DIR}
