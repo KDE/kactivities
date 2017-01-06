@@ -140,7 +140,7 @@ Q_SIGNALS:
 // Pretty print
 #include <iostream>
 
-#if defined(Q_NO_DEBUG) or (not defined(Q_OS_LINUX))
+#if defined(Q_NO_DEBUG) || !defined(Q_OS_LINUX)
     #define TEST_CHUNK(Name)
 #else
     inline
