@@ -47,7 +47,6 @@ namespace Imports {
 class ActivityModel : public QAbstractListModel {
     Q_OBJECT
 
-    Q_ENUMS(State)
     Q_PROPERTY(QString shownStates READ shownStates WRITE setShownStates NOTIFY shownStatesChanged)
 
 public:
@@ -82,6 +81,7 @@ public:
         Stopped = 4,
         Stopping = 5
     };
+    Q_ENUM(State)
 
 public Q_SLOTS:
     // Activity control methods
