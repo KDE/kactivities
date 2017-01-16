@@ -80,7 +80,7 @@ class KACTIVITIES_EXPORT Info : public QObject {
     Q_PROPERTY(Info::State state READ state NOTIFY stateChanged)
 
 public:
-    explicit Info(const QString &activity, QObject *parent = Q_NULLPTR);
+    explicit Info(const QString &activity, QObject *parent = nullptr);
     ~Info();
 
     /**

@@ -92,7 +92,7 @@ public:
         Running     ///< Service is running properly
     };
 
-    explicit Consumer(QObject *parent = Q_NULLPTR);
+    explicit Consumer(QObject *parent = nullptr);
 
     ~Consumer();
 

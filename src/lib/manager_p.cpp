@@ -38,7 +38,7 @@
 
 namespace KActivities {
 
-Manager *Manager::s_instance = Q_NULLPTR;
+Manager *Manager::s_instance = nullptr;
 
 Manager::Manager()
     : QObject()

@@ -67,7 +67,7 @@ namespace Imports {
 class ResourceModel::LinkerService: public QDBusInterface {
 private:
     LinkerService()
-        : KAMD_DBUS_INTERFACE(Resources/Linking, ResourcesLinking, Q_NULLPTR)
+        : KAMD_DBUS_INTERFACE(Resources/Linking, ResourcesLinking, nullptr)
     {
     }
 

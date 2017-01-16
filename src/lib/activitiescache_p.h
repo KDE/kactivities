@@ -117,7 +117,7 @@ public:
             return &(*where);
         }
 
-        return Q_NULLPTR;
+        return nullptr;
     }
 
     template <typename TargetSlot>
