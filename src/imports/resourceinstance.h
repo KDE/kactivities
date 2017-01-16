@@ -45,7 +45,7 @@ class ResourceInstance : public QQuickItem
     Q_PROPERTY(QString title READ title WRITE setTitle NOTIFY titleChanged)
 
 public:
-    ResourceInstance(QQuickItem *parent = 0);
+    ResourceInstance(QQuickItem *parent = nullptr);
     ~ResourceInstance();
 
     QUrl uri() const;
