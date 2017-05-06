@@ -10,21 +10,6 @@ project (KActivities VERSION ${KF5_VERSION})
 option (KACTIVITIES_LIBRARY_ONLY "If true, compiles only the KActivities library, without the QML imports." OFF)
 option (KACTIVITIES_ENABLE_EXCEPTIONS "If you have Boost 1.53, you need to build KActivities with exceptions enabled. This is UNTESTED and EXPERIMENTAL!" OFF)
 
-message (
-   WARNING "
-        +----------------------------------------------------------------+
-   !!!  |  Only the library (libKF5Activities) and the QML imports       |
-   !!!  |  are build from this repository.                               |
-   !!!  |                                                                |
-   !!!  |  The activities service (kactivitymanagerd) has been moved to  |
-   !!!  |  the kde:kactivitymanagerd repository along with its plugins.  |
-   !!!  |                                                                |
-   !!!  |  The Dolphin plugins (fileitem plugin), the KIO slave and KCM  |
-   !!!  |  now live in the kde:kactivities-workspace repository.         |
-        +----------------------------------------------------------------+
-   "
-   )
-
 set (REQUIRED_QT_VERSION 5.6.0)
 
 # We don't build in-source
