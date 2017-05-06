@@ -1,6 +1,6 @@
 maintainer: ivan
 description: Runtime and library to organize the user work in separate activities
-tier: 3
+tier: 2
 type: solution
 platforms:
     - name: Linux
@@ -18,4 +18,4 @@ cmakename: KF5Activities
 
 public_lib: true
 group: Frameworks
-subgroup: Tier 3
+subgroup: Tier 2
