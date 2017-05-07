@@ -32,6 +32,7 @@ if (NOT KACTIVITIES_LIBRARY_ONLY)
    include_directories (
       ${CMAKE_CURRENT_BINARY_DIR}
       ${CMAKE_CURRENT_SOURCE_DIR}
+      ${Boost_INCLUDE_DIR}
       )
    add_subdirectory (imports)
 endif ()
