@@ -131,6 +131,28 @@ install (
    ${KF5_INSTALL_TARGETS_DEFAULT_ARGS}
    )
 
+if(BUILD_QCH)
+    ecm_add_qch(
+        KF5Activities_QCH
+        NAME KActivities
+        BASE_NAME KF5Activities
+        VERSION ${KF5_VERSION}
+        ORG_DOMAIN org.kde
+        SOURCES # using only public headers, to cover only public API
+            ${KActivities_HEADERS}
+        MD_MAINPAGE "${CMAKE_SOURCE_DIR}/README.md"
+        LINK_QCHS
+            Qt5Core_QCH
+        BLANK_MACROS
+            KACTIVITIES_EXPORT
+            KACTIVITIES_DEPRECATED
+            KACTIVITIES_DEPRECATED_EXPORT
+        TAGFILE_INSTALL_DESTINATION ${KDE_INSTALL_QTQCHDIR}
+        QCH_INSTALL_DESTINATION ${KDE_INSTALL_QTQCHDIR}
+        COMPONENT Devel
+    )
+endif()
+
 
 if (NOT WIN32)
    configure_file (
