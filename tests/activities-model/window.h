@@ -36,7 +36,7 @@ public:
     ~Window();
 
 protected:
-    void showEvent(QShowEvent * event);
+    void showEvent(QShowEvent * event) Q_DECL_OVERRIDE;
 
 private:
     Ui::MainWindow *ui;
