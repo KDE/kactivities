@@ -239,10 +239,11 @@ void ActivitiesCache::setActivityInfo(const ActivityInfo &info)
     // Are we updating an existing activity, or adding a new one?
     const auto iter = find(info.id);
     const auto present = iter != m_activities.end();
-
+    bool runningChanged = true;
     // If there is an activity with the specified id,
     // we are going to remove it, temporarily.
     if (present) {
+        runningChanged = (*iter).state != info.state;
         m_activities.erase(iter);
     }
 
@@ -257,6 +258,9 @@ void ActivitiesCache::setActivityInfo(const ActivityInfo &info)
     } else {
         emit activityAdded(info.id);
         emit activityListChanged();
+        if (runningChanged) {
+            emit runningActivityListChanged();
+        }
     }
 }
 
