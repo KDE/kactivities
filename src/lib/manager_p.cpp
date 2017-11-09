@@ -77,7 +77,11 @@ Manager *Manager::self()
                 qCDebug(KAMD_CORELIB) << "Should we start the daemon?";
                 if (!disableAutolaunch) {
                     qCDebug(KAMD_CORELIB) << "Starting the activity manager daemon";
-                    QProcess::startDetached(QStringLiteral("kactivitymanagerd"));
+                    auto reply = QDBusConnection::sessionBus().interface()->startService(KAMD_DBUS_SERVICE);
+                    if (!reply.isValid()) {
+                        //pre Plasma 5.12 the daemon did not support DBus activation.  Fall back to manually forking
+                        QProcess::startDetached(QStringLiteral("kactivitymanagerd"));
+                    }
                 }
             }
 
