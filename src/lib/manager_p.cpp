@@ -75,7 +75,8 @@ Manager *Manager::self()
                 bool disableAutolaunch = QCoreApplication::instance()->property("org.kde.KActivities.core.disableAutostart").toBool();
 
                 qCDebug(KAMD_CORELIB) << "Should we start the daemon?";
-                if (!disableAutolaunch) {
+                // start only if not disabled and we have a dbus connection at all
+                if (!disableAutolaunch && QDBusConnection::sessionBus().interface()) {
                     qCDebug(KAMD_CORELIB) << "Starting the activity manager daemon";
                     auto reply = QDBusConnection::sessionBus().interface()->startService(KAMD_DBUS_SERVICE);
                     if (!reply.isValid()) {
@@ -98,7 +99,7 @@ bool Manager::isServiceRunning()
 {
     return
         (s_instance ? s_instance->m_serviceRunning : true)
-        && QDBusConnection::sessionBus().interface()->isServiceRegistered(KAMD_DBUS_SERVICE);
+        && QDBusConnection::sessionBus().interface() && QDBusConnection::sessionBus().interface()->isServiceRegistered(KAMD_DBUS_SERVICE);
 }
 
 void Manager::serviceOwnerChanged(const QString &serviceName, const QString &oldOwner, const QString &newOwner)
