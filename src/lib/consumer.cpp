@@ -110,7 +110,6 @@ QStringList Consumer::runningActivities() const
     }
 
     return result;
-    return activities(Info::Running);
 }
 
 
