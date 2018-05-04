@@ -50,8 +50,8 @@ class ActivityModel : public QAbstractListModel {
     Q_PROPERTY(QString shownStates READ shownStates WRITE setShownStates NOTIFY shownStatesChanged)
 
 public:
-    ActivityModel(QObject *parent = nullptr);
-    virtual ~ActivityModel();
+    explicit ActivityModel(QObject *parent = nullptr);
+    ~ActivityModel() Q_DECL_OVERRIDE;
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const
         Q_DECL_OVERRIDE;

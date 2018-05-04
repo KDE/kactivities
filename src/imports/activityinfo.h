@@ -66,7 +66,7 @@ class ActivityInfo : public QObject {
     Q_PROPERTY(bool valid READ valid NOTIFY validChanged)
 
 public:
-    ActivityInfo(QObject *parent = nullptr);
+    explicit ActivityInfo(QObject *parent = nullptr);
     virtual ~ActivityInfo();
 
 public Q_SLOTS:

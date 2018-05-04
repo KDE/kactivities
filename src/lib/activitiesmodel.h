@@ -46,13 +46,13 @@ class KACTIVITIES_EXPORT ActivitiesModel : public QAbstractListModel {
     Q_PROPERTY(QVector<Info::State> shownStates READ shownStates WRITE setShownStates NOTIFY shownStatesChanged)
 
 public:
-    ActivitiesModel(QObject *parent = nullptr);
+    explicit ActivitiesModel(QObject *parent = nullptr);
 
     /**
      * Constructs the model and sets the shownStates
      */
     ActivitiesModel(QVector<Info::State> shownStates, QObject *parent = nullptr);
-    virtual ~ActivitiesModel();
+    ~ActivitiesModel() Q_DECL_OVERRIDE;
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const
         Q_DECL_OVERRIDE;
