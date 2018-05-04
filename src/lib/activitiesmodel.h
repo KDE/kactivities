@@ -52,18 +52,18 @@ public:
      * Constructs the model and sets the shownStates
      */
     ActivitiesModel(QVector<Info::State> shownStates, QObject *parent = nullptr);
-    ~ActivitiesModel() Q_DECL_OVERRIDE;
+    ~ActivitiesModel() override;
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const
-        Q_DECL_OVERRIDE;
+        override;
 
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const
-        Q_DECL_OVERRIDE;
+        override;
 
     QVariant headerData(int section, Qt::Orientation orientation,
-                        int role = Qt::DisplayRole) const Q_DECL_OVERRIDE;
+                        int role = Qt::DisplayRole) const override;
 
-    QHash<int, QByteArray> roleNames() const Q_DECL_OVERRIDE;
+    QHash<int, QByteArray> roleNames() const override;
 
     enum Roles {
         ActivityId          = Qt::UserRole,       ///< UUID of the activity

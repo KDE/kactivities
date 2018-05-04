@@ -28,7 +28,7 @@ class ActivitiesExtensionPlugin : public QQmlExtensionPlugin {
 
 public:
     explicit ActivitiesExtensionPlugin(QObject *parent = nullptr);
-    void registerTypes(const char *uri) Q_DECL_OVERRIDE;
+    void registerTypes(const char *uri) override;
 };
 
 #endif // KACTIVITIES_IMPORTS_PLUGIN_H

@@ -91,10 +91,10 @@ public:
         DescriptionRole = Qt::UserRole + 3
     };
 
-    QHash<int, QByteArray> roleNames() const Q_DECL_OVERRIDE;
+    QHash<int, QByteArray> roleNames() const override;
 
     virtual QVariant data(const QModelIndex &proxyIndex,
-                          int role = Qt::DisplayRole) const Q_DECL_OVERRIDE;
+                          int role = Qt::DisplayRole) const override;
 
 public Q_SLOTS:
     // Resource linking control methods
@@ -153,7 +153,7 @@ public Q_SLOTS:
     QString resourceAt(int row) const;
 
 protected:
-    bool lessThan(const QModelIndex &left, const QModelIndex &right) const Q_DECL_OVERRIDE;
+    bool lessThan(const QModelIndex &left, const QModelIndex &right) const override;
 
 
 Q_SIGNALS:
