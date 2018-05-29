@@ -157,7 +157,7 @@ ActivitiesModel::ActivitiesModel(QObject *parent)
     d->setServiceStatus(d->activities.serviceStatus());
 }
 
-ActivitiesModel::ActivitiesModel(QVector<Info::State> shownStates, QObject *parent)
+ActivitiesModel::ActivitiesModel(const QVector<Info::State> &shownStates, QObject *parent)
     : QAbstractListModel(parent)
     , d(new ActivitiesModelPrivate(this))
 {
