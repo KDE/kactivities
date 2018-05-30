@@ -33,7 +33,7 @@ namespace KActivities {
 class ActivitiesModelPrivate : public QObject {
     Q_OBJECT
 public:
-    explicit ActivitiesModelPrivate(ActivitiesModel *parent);
+    ActivitiesModelPrivate(ActivitiesModel *parent);
 
 public Q_SLOTS:
     void onActivityNameChanged(const QString &name);

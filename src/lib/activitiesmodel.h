@@ -51,7 +51,7 @@ public:
     /**
      * Constructs the model and sets the shownStates
      */
-    ActivitiesModel(const QVector<Info::State> &shownStates, QObject *parent = nullptr);
+    ActivitiesModel(QVector<Info::State> shownStates, QObject *parent = nullptr);
     ~ActivitiesModel() override;
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const
