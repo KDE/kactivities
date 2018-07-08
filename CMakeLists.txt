@@ -70,8 +70,10 @@ ecm_setup_version (
    )
 
 add_subdirectory (src)
-add_subdirectory (autotests)
-add_subdirectory (tests)
+if (BUILD_TESTING)
+    add_subdirectory (autotests)
+    add_subdirectory (tests)
+endif()
 
 set (CMAKECONFIG_INSTALL_DIR "${KDE_INSTALL_CMAKEPACKAGEDIR}/KF5Activities")
 
