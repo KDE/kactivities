@@ -17,8 +17,8 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef KACTIVITIES_IMPORTS_UTILS_P_H
-#define KACTIVITIES_IMPORTS_UTILS_P_H
+#ifndef KACTIVITIES_MODEL_UPDATERS_H
+#define KACTIVITIES_MODEL_UPDATERS_H
 
 // -----------------------------------------
 // RAII classes for model updates ----------
@@ -72,5 +72,5 @@
 
 // -----------------------------------------
 
-#endif // KACTIVITIES_IMPORTS_UTILS_P_H
+#endif // KACTIVITIES_MODEL_UPDATERS_H
 

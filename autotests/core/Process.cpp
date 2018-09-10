@@ -28,8 +28,6 @@
 #include <QProcess>
 #include <QRegularExpression>
 
-#include <QDBusConnection>
-
 #include <sys/types.h>
 #include <signal.h>
 

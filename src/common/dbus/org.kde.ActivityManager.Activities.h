@@ -19,8 +19,8 @@
  *   If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef KAMD_ACTIVITIES_DBUS_H
-#define KAMD_ACTIVITIES_DBUS_H
+#ifndef KAMD_ORG_KDE_ACTIVITYMANAGER_ACTIVITIES_H
+#define KAMD_ORG_KDE_ACTIVITYMANAGER_ACTIVITIES_H
 
 #include <QString>
 #include <QList>
@@ -58,4 +58,4 @@ const QDBusArgument &operator>>(const QDBusArgument &arg, ActivityInfo &rec);
 
 QDebug operator<<(QDebug dbg, const ActivityInfo &r);
 
-#endif // KAMD_ACTIVITIES_DBUS_H
+#endif // KAMD_ORG_KDE_ACTIVITYMANAGER_ACTIVITIES_H

@@ -17,8 +17,8 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef KACTIVITIES_IMPORTS_PLUGIN_H
-#define KACTIVITIES_IMPORTS_PLUGIN_H
+#ifndef KACTIVITIES_ACTIVITIES_EXTENSION_PLUGIN_H
+#define KACTIVITIES_ACTIVITIES_EXTENSION_PLUGIN_H
 
 #include <QQmlExtensionPlugin>
 
@@ -31,5 +31,5 @@ public:
     void registerTypes(const char *uri) override;
 };
 
-#endif // KACTIVITIES_IMPORTS_PLUGIN_H
+#endif // KACTIVITIES_ACTIVITIES_EXTENSION_PLUGIN_H
 

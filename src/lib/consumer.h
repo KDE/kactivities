@@ -140,7 +140,7 @@ Q_SIGNALS:
 
     /**
      * This signal is emitted when the activity service goes online or offline,
-     * or when the class manages to synchronise the data with the service.
+     * or when the class manages to synchronize the data with the service.
      * @param status new status of the service
      */
     void serviceStatusChanged(Consumer::ServiceStatus status);

@@ -104,25 +104,25 @@ Info::Info(const QString &activity, QObject *parent)
     , d(new InfoPrivate(this, activity))
 {
     // qDebug() << "Created an instance of Info: " << (void*)this;
-#define PASS_SIGNAL_HANDLER(SIGNAL_NAME, SLOT_NAME)                            \
+#define PASS_SIGNAL_HANDLER(SIGNAL_NAME,SLOT_NAME)                            \
     connect(d->cache.get(),  SIGNAL(SIGNAL_NAME(QString)),                     \
             this,            SLOT(SLOT_NAME(QString)));
 
-    PASS_SIGNAL_HANDLER(activityAdded, added)
-    PASS_SIGNAL_HANDLER(activityRemoved, removed)
+    PASS_SIGNAL_HANDLER(activityAdded,added)
+    PASS_SIGNAL_HANDLER(activityRemoved,removed)
     // PASS_SIGNAL_HANDLER(started)
     // PASS_SIGNAL_HANDLER(stopped)
-    PASS_SIGNAL_HANDLER(activityChanged, infoChanged)
+    PASS_SIGNAL_HANDLER(activityChanged,infoChanged)
 #undef PASS_SIGNAL_HANDLER
 
-#define PASS_SIGNAL_HANDLER(SIGNAL_NAME, SLOT_NAME, TYPE)                      \
-    connect(d->cache.get(),  SIGNAL(SIGNAL_NAME(QString, TYPE)),               \
-            this,            SLOT(SLOT_NAME(QString, TYPE)));                  \
+#define PASS_SIGNAL_HANDLER(SIGNAL_NAME,SLOT_NAME,TYPE)                      \
+    connect(d->cache.get(),  SIGNAL(SIGNAL_NAME(QString,TYPE)),               \
+            this,            SLOT(SLOT_NAME(QString,TYPE)));                  \
 
-    PASS_SIGNAL_HANDLER(activityStateChanged, activityStateChanged, int);
-    PASS_SIGNAL_HANDLER(activityNameChanged, nameChanged, QString);
-    PASS_SIGNAL_HANDLER(activityDescriptionChanged, descriptionChanged, QString);
-    PASS_SIGNAL_HANDLER(activityIconChanged, iconChanged, QString);
+    PASS_SIGNAL_HANDLER(activityStateChanged,activityStateChanged,int);
+    PASS_SIGNAL_HANDLER(activityNameChanged,nameChanged,QString);
+    PASS_SIGNAL_HANDLER(activityDescriptionChanged,descriptionChanged,QString);
+    PASS_SIGNAL_HANDLER(activityIconChanged,iconChanged,QString);
 #undef PASS_SIGNAL_HANDLER
 
     connect(d->cache.get(),  SIGNAL(currentActivityChanged(QString)),

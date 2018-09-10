@@ -59,7 +59,7 @@ public:
     DECLARE_RAII_MODEL_UPDATERS(ActivityModel)
 
     /**
-     * Returns whether the the activity has a desired state.
+     * Returns whether the activity has a desired state.
      * If the state is 0, returns true
      */
     template <typename T>
@@ -460,15 +460,15 @@ void ActivityModel::hideActivity(const QString &id)
     }
 }
 
-#define CREATE_SIGNAL_EMITTER(What, Role)                                      \
+#define CREATE_SIGNAL_EMITTER(What,Role)                                      \
     void ActivityModel::onActivity##What##Changed(const QString &)             \
     {                                                                          \
         Private::emitActivityUpdated(this, m_shownActivities, sender(), Role); \
     }
 
-CREATE_SIGNAL_EMITTER(Name, Qt::DisplayRole)
-CREATE_SIGNAL_EMITTER(Description, ActivityDescription)
-CREATE_SIGNAL_EMITTER(Icon, Qt::DecorationRole)
+CREATE_SIGNAL_EMITTER(Name,Qt::DisplayRole)
+CREATE_SIGNAL_EMITTER(Description,ActivityDescription)
+CREATE_SIGNAL_EMITTER(Icon,Qt::DecorationRole)
 
 #undef CREATE_SIGNAL_EMITTER
 

@@ -147,13 +147,13 @@ void ActivitiesCache::updateAllActivities()
     auto call = Manager::self()->activities()->asyncCall(
         QStringLiteral("CurrentActivity"));
 
-    onCallFinished(call, SLOT(setCurrentActivityFromReply(QDBusPendingCallWatcher *)));
+    onCallFinished(call, SLOT(setCurrentActivityFromReply(QDBusPendingCallWatcher*)));
 
     // Loading all the activities
     call = Manager::self()->activities()->asyncCall(
         QStringLiteral("ListActivitiesWithInformation"));
 
-    onCallFinished(call, SLOT(setAllActivitiesFromReply(QDBusPendingCallWatcher *)));
+    onCallFinished(call, SLOT(setAllActivitiesFromReply(QDBusPendingCallWatcher*)));
 }
 
 void ActivitiesCache::updateActivity(const QString &id)
@@ -163,7 +163,7 @@ void ActivitiesCache::updateActivity(const QString &id)
     auto call = Manager::self()->activities()->asyncCall(
         QStringLiteral("ActivityInformation"), id);
 
-    onCallFinished(call, SLOT(setActivityInfoFromReply(QDBusPendingCallWatcher *)));
+    onCallFinished(call, SLOT(setActivityInfoFromReply(QDBusPendingCallWatcher*)));
 }
 
 void ActivitiesCache::updateActivityState(const QString &id, int state)

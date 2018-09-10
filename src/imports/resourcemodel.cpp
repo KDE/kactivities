@@ -116,10 +116,10 @@ ResourceModel::ResourceModel(QObject *parent)
     connect(&m_service, &KActivities::Consumer::currentActivityChanged,
             this, &ResourceModel::onCurrentActivityChanged);
 
-    connect(m_linker.get(), SIGNAL(ResourceLinkedToActivity(QString, QString, QString)),
-            this, SLOT(onResourceLinkedToActivity(QString, QString, QString)));
-    connect(m_linker.get(), SIGNAL(ResourceUnlinkedFromActivity(QString, QString, QString)),
-            this, SLOT(onResourceUnlinkedFromActivity(QString, QString, QString)));
+    connect(m_linker.get(), SIGNAL(ResourceLinkedToActivity(QString,QString,QString)),
+            this, SLOT(onResourceLinkedToActivity(QString,QString,QString)));
+    connect(m_linker.get(), SIGNAL(ResourceUnlinkedFromActivity(QString,QString,QString)),
+            this, SLOT(onResourceUnlinkedFromActivity(QString,QString,QString)));
 
     setDynamicSortFilter(true);
     sort(0);

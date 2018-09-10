@@ -19,8 +19,8 @@
  *   If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ACTIVITIES_ACTIVITYMODEL_P_H
-#define ACTIVITIES_ACTIVITYMODEL_P_H
+#ifndef ACTIVITIES_ACTIVITIESMODEL_P_H
+#define ACTIVITIES_ACTIVITIESMODEL_P_H
 
 #include "activitiesmodel.h"
 
@@ -83,5 +83,5 @@ public:
 
 } // namespace KActivities
 
-#endif // ACTIVITIES_ACTIVITYMODEL_P_H
+#endif // ACTIVITIES_ACTIVITIESMODEL_P_H
 

@@ -19,6 +19,9 @@
  *   If not, see <http://www.gnu.org/licenses/>.
  */
 
+#ifndef KACTIVITIES_UTILS_H
+#define KACTIVITIES_UTILS_H
+
 QTextStream out(stdout);
 
 class StringListView {
@@ -166,3 +169,4 @@ void switchToActivity(const QString &id)
                                                                                \
     int Command##_command::operator()()
 
+#endif
