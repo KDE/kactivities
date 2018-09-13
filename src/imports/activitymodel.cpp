@@ -143,7 +143,7 @@ public:
     public:
         BackgroundCache()
             : initialized(false)
-            , plasmaConfig("plasma-org.kde.plasma.desktop-appletsrc")
+            , plasmaConfig(QStringLiteral("plasma-org.kde.plasma.desktop-appletsrc"))
         {
             using namespace std::placeholders;
 
@@ -229,7 +229,7 @@ public:
 
                 // Ignore if we have already found the background
                 if (newBackgrounds.contains(activityId) &&
-                    newBackgrounds[activityId][0] != '#') continue;
+                    newBackgrounds[activityId][0] != QLatin1Char('#')) continue;
 
                 auto newBackground = backgroundFromConfig(config);
 
@@ -506,7 +506,7 @@ void ActivityModel::setShownStates(const QString &states)
     m_shownStates.clear();
     m_shownStatesString = states;
 
-    for (const auto &state: states.split(',')) {
+    for (const auto &state: states.split(QLatin1Char(','))) {
         if (state == QStringLiteral("Running")) {
             m_shownStates.insert(Running);
 
@@ -562,7 +562,7 @@ QVariant ActivityModel::data(const QModelIndex &index, int role) const
             const QString &icon = item->icon();
 
             // We need a default icon for activities
-            return icon.isEmpty() ? "preferences-activities" : icon;
+            return icon.isEmpty() ? QStringLiteral("preferences-activities") : icon;
         }
 
     case ActivityDescription:

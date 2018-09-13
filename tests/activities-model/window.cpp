@@ -101,11 +101,11 @@ Window::Window()
 {
     ui->setupUi(this);
 
-    modelRunningActivities->setObjectName("RUNNING");
+    modelRunningActivities->setObjectName(QStringLiteral("RUNNING"));
     ui->listRunningActivities->setModel(modelRunningActivities);
     ui->listRunningActivities->setItemDelegate(new Delegate());
 
-    modelStoppedActivities->setObjectName("STOPPED");
+    modelStoppedActivities->setObjectName(QStringLiteral("STOPPED"));
     ui->listStoppedActivities->setModel(modelStoppedActivities);
     ui->listStoppedActivities->setItemDelegate(new Delegate());
 

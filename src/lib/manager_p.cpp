@@ -125,7 +125,7 @@ void Manager::serviceOwnerChanged(const QString &serviceName, const QString &old
                         return;
                     }
 
-                    auto split = serviceVersion->split('.');
+                    auto split = serviceVersion->split(QLatin1Char('.'));
                     QList<int> version;
 
                     // We require kactivitymanagerd version to be at least the
@@ -143,8 +143,8 @@ void Manager::serviceOwnerChanged(const QString &serviceName, const QString &old
                             version.cbegin(), version.cend(),
                             std::begin(requiredVersion), std::end(requiredVersion)
                         )) {
-                        QString libraryVersion = QString::number(requiredVersion[0]) + '.'
-                                               + QString::number(requiredVersion[1]) + '.'
+                        QString libraryVersion = QString::number(requiredVersion[0]) + QLatin1Char('.')
+                                               + QString::number(requiredVersion[1]) + QLatin1Char('.')
                                                + QString::number(requiredVersion[2]);
 
                         qDebug() << "KActivities service version: " << serviceVersion.get();

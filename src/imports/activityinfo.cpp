@@ -48,7 +48,7 @@ void ActivityInfo::setCurrentActivity(const QString &id)
 
 void ActivityInfo::setActivityId(const QString &id)
 {
-    m_showCurrentActivity = (id == ":current");
+    m_showCurrentActivity = (id == QStringLiteral(":current"));
 
     setIdInternal(m_showCurrentActivity ?
             m_service.currentActivity() : id);
@@ -74,7 +74,7 @@ void ActivityInfo::setIdInternal(const QString &id)
 #define CREATE_GETTER_AND_SETTER(WHAT, What)                                   \
     QString ActivityInfo::What() const                                         \
     {                                                                          \
-        return m_info ? m_info->What() : "";                                   \
+        return m_info ? m_info->What() : QString();                            \
     }                                                                          \
                                                                                \
     void ActivityInfo::set##WHAT(const QString &value)                         \
@@ -93,7 +93,7 @@ CREATE_GETTER_AND_SETTER(Icon, icon)
 
 QString ActivityInfo::activityId() const
 {
-    return m_info ? m_info->id() : "";
+    return m_info ? m_info->id() : QString();
 }
 
 bool ActivityInfo::valid() const

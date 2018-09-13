@@ -74,7 +74,7 @@ QString toDashes(const QString &command)
         if (result[i].isLower() &&
             result[i+1].isUpper()) {
             result[i+1] = result[i+1].toLower();
-            result.insert(i+1, "-");
+            result.insert(i+1, QStringLiteral("-"));
         }
     }
 

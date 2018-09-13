@@ -107,9 +107,9 @@ DEFINE_COMMAND(setActivityProperty, 3)
     const auto value = args(3);
 
     awaitFuture(
-        what == "name"        ? controller->setActivityName(id, value) :
-        what == "description" ? controller->setActivityDescription(id, value) :
-        what == "icon"        ? controller->setActivityIcon(id, value) :
+        what == QLatin1String("name")        ? controller->setActivityName(id, value) :
+        what == QLatin1String("description") ? controller->setActivityDescription(id, value) :
+        what == QLatin1String("icon")        ? controller->setActivityIcon(id, value) :
                                 QFuture<void>()
         );
 
@@ -124,9 +124,9 @@ DEFINE_COMMAND(activityProperty, 2)
     KActivities::Info info(id);
 
     out << (
-        what == "name"        ? info.name() :
-        what == "description" ? info.description() :
-        what == "icon"        ? info.icon() :
+        what == QLatin1String("name")        ? info.name() :
+        what == QLatin1String("description") ? info.description() :
+        what == QLatin1String("icon")        ? info.icon() :
                                 QString()
         ) << "\n";
 
@@ -246,7 +246,7 @@ int main(int argc, char *argv[])
         }
 
         #define MATCH_COMMAND(Command)                                         \
-            else if (args[argId] == QStringLiteral("--") + toDashes(#Command)) \
+            else if (args[argId] == QStringLiteral("--") + toDashes(QStringLiteral(#Command))) \
             {                                                                  \
                 argId += 1 + Command##_command({ args, argId })();             \
             }
@@ -255,7 +255,7 @@ int main(int argc, char *argv[])
             printHelp();
 
         } else for (int argId = 1; argId < args.count(); ) {
-            if (args[argId] == "--help") {
+            if (args[argId] == QLatin1String("--help")) {
                 printHelp();
                 argId++;
             }
