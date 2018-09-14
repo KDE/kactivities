@@ -147,9 +147,9 @@ public:
         {
             using namespace std::placeholders;
 
-            const auto configFile = QStandardPaths::writableLocation(
-                                        QStandardPaths::GenericConfigLocation) +
-                                    QLatin1Char('/') + plasmaConfig.name();
+            const QString configFile = QStandardPaths::writableLocation(
+                                           QStandardPaths::GenericConfigLocation) +
+                                       QLatin1Char('/') + plasmaConfig.name();
 
             KDirWatch::self()->addFile(configFile);
 
