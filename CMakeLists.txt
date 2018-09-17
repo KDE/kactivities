@@ -32,7 +32,7 @@ set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH} ${ECM_KDE_MODULE_
 
 include (KDEInstallDirs)
 include (KDECMakeSettings)
-include (KDECompilerSettings NO_POLICY_SCOPE)
+include (KDEFrameworkCompilerSettings NO_POLICY_SCOPE)
 include (GenerateExportHeader)
 include (ECMGenerateHeaders)
 include (ECMAddQch)
@@ -69,11 +69,7 @@ ecm_setup_version (
    SOVERSION 5
    )
 
-add_definitions(-DQT_NO_CAST_FROM_ASCII)
-add_definitions(-DQT_NO_CAST_TO_ASCII)
 add_definitions(-DQT_NO_NARROWING_CONVERSIONS_IN_CONNECT)
-add_definitions(-DQT_NO_URL_CAST_FROM_STRING)
-add_definitions(-DQT_USE_QSTRINGBUILDER)
 
 add_subdirectory (src)
 if (BUILD_TESTING)
