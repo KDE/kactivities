@@ -18,7 +18,6 @@ set (
    mainthreadexecutor_p.cpp
    manager_p.cpp
    activitiescache_p.cpp
-   debug_p.cpp
 
    ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/src/utils/dbusfuture_p.cpp
 
@@ -65,6 +64,9 @@ qt5_add_dbus_interface (
    ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.Application.xml
    application_interface
    )
+
+ecm_qt_declare_logging_category(KActivities_LIB_SRCS HEADER debug_p.h IDENTIFIER KAMD_CORELIB CATEGORY_NAME org.kde.kactivities.lib.core DEFAULT_SEVERITY Warning)
+
 
 add_library (
    KF5Activities SHARED
