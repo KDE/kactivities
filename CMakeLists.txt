@@ -70,7 +70,7 @@ ecm_setup_version (
    SOVERSION 5
    )
 
-add_definitions(-DQT_NO_NARROWING_CONVERSIONS_IN_CONNECT)
+
 
 add_subdirectory (src)
 if (BUILD_TESTING)
