@@ -81,8 +81,8 @@ class ResourceModel : public QSortFilterProxyModel {
     Q_PROPERTY(QString defaultItemsConfig READ defaultItemsConfig WRITE setDefaultItemsConfig)
 
 public:
-    ResourceModel(QObject *parent = 0);
-    virtual ~ResourceModel();
+    explicit ResourceModel(QObject *parent = nullptr);
+    ~ResourceModel() override;
 
     enum Roles {
         ResourceRole    = Qt::UserRole,
