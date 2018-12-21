@@ -155,14 +155,16 @@ if(BUILD_QCH)
     )
 endif()
 
+
 if (NOT WIN32)
-    include(ECMGeneratePkgConfigFile)
-    ecm_generate_pkgconfig_file (
-        BASE_NAME libKActivities
-        DEPS Qt5Core
-        DESCRIPTION "libKActivities is a C++ library for using KDE activities"
-        INSTALL
-        )
+   configure_file (
+      ${CMAKE_CURRENT_SOURCE_DIR}/libKActivities.pc.cmake
+      ${CMAKE_CURRENT_BINARY_DIR}/libKActivities.pc
+      )
+   install (
+      FILES ${CMAKE_CURRENT_BINARY_DIR}/libKActivities.pc
+      DESTINATION ${KDE_INSTALL_LIBDIR}/pkgconfig
+      )
 endif ()
 
 include (ECMGeneratePriFile)
