@@ -30,6 +30,10 @@ target_link_libraries (
    KF5::Activities
    )
 
+ecm_mark_nongui_executable(
+   kactivities-cli
+   )
+
 install (TARGETS
    kactivities-cli
    ${KF5_INSTALL_TARGETS_DEFAULT_ARGS}
