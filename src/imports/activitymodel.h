@@ -24,6 +24,7 @@
 #include <QObject>
 #include <QAbstractListModel>
 #include <QJSValue>
+#include <QCollator>
 
 // STL and Boost
 #include <boost/container/flat_set.hpp>
@@ -130,12 +131,14 @@ private:
     struct InfoPtrComparator {
         bool operator() (const InfoPtr& left, const InfoPtr& right) const
         {
-            const QString &leftName = left->name().toLower();
-            const QString &rightName = right->name().toLower();
-
-            return
-                (leftName < rightName) ||
-                (leftName == rightName && left->id() < right->id());
+            QCollator c;
+            c.setCaseSensitivity(Qt::CaseInsensitive);
+            c.setNumericMode(true);
+            int rc = c.compare(left->name(), right->name());
+            if (rc == 0) {
+                return left->id() < right->id();
+            }
+            return rc < 0;
         }
     };
 

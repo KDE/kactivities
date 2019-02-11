@@ -28,6 +28,8 @@
 
 #include "utils/qflatset.h"
 
+#include <QCollator>
+
 namespace KActivities {
 
 class ActivitiesModelPrivate : public QObject {
@@ -57,12 +59,14 @@ public:
     struct InfoPtrComparator {
         bool operator() (const InfoPtr& left, const InfoPtr& right) const
         {
-            const QString &leftName = left->name().toLower();
-            const QString &rightName = right->name().toLower();
-
-            return
-                (leftName < rightName) ||
-                (leftName == rightName && left->id() < right->id());
+            QCollator c;
+            c.setCaseSensitivity(Qt::CaseInsensitive);
+            c.setNumericMode(true);
+            int rc = c.compare(left->name(), right->name());
+            if (rc == 0) {
+                return left->id() < right->id();
+            }
+            return rc < 0;
         }
     };
 
