@@ -617,7 +617,7 @@ void ResourceModel::sortItems(Qt::SortOrder sortOrder)
 
     QStringList result;
 
-    foreach (const auto &resource, resources) {
+    for (const auto &resource : qAsConst(resources)) {
         result << resource.first;
     }
 

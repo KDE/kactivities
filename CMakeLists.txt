@@ -72,6 +72,7 @@ ecm_setup_version (
    )
 
 add_definitions(-DQT_DISABLE_DEPRECATED_BEFORE=0x060000)
+add_definitions(-DQT_NO_FOREACH)
 
 add_subdirectory (src)
 if (BUILD_TESTING)

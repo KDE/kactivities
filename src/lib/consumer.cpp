@@ -75,7 +75,7 @@ QStringList Consumer::activities(Info::State state) const
 
     result.reserve(d->cache->m_activities.size());
 
-    foreach (const auto & info, d->cache->m_activities) {
+    for (const auto & info : qAsConst(d->cache->m_activities)) {
         if (info.state == state) {
             result << info.id;
         }
@@ -90,7 +90,7 @@ QStringList Consumer::activities() const
 
     result.reserve(d->cache->m_activities.size());
 
-    foreach (const auto & info, d->cache->m_activities) {
+    for (const auto & info : qAsConst(d->cache->m_activities)) {
         result << info.id;
     }
 
@@ -103,7 +103,7 @@ QStringList Consumer::runningActivities() const
 
     result.reserve(d->cache->m_activities.size());
 
-    foreach (const auto & info, d->cache->m_activities) {
+    for (const auto & info : qAsConst(d->cache->m_activities)) {
         if (info.state == Info::Running || info.state == Info::Stopping) {
             result << info.id;
         }

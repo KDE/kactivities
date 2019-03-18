@@ -288,9 +288,9 @@ void ActivitiesCache::setAllActivities(const ActivityInfoList &_activities)
 
     m_activities.clear();
 
-    ActivityInfoList activities = _activities;
+    const ActivityInfoList activities = _activities;
 
-    foreach (const ActivityInfo &info, activities) {
+    for (const ActivityInfo &info : activities) {
         m_activities << info;
     }
 

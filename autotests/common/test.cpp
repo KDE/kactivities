@@ -32,10 +32,10 @@ Test::Test(QObject *parent)
 
 bool Test::inEmptySession()
 {
-    QStringList services =
+    const QStringList services =
         QDBusConnection::sessionBus().interface()->registeredServiceNames();
 
-    foreach (const QString & service, services) {
+    for (const QString & service : services) {
         bool kdeServiceAndNotKAMD =
             service.startsWith(QStringLiteral("org.kde")) &&
             service != KAMD_DBUS_SERVICE;
