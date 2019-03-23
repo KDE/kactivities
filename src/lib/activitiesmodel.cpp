@@ -304,7 +304,6 @@ void ActivitiesModelPrivate::showActivity(InfoPtr activityInfo, bool notifyClien
     const auto _result  = shownActivities.insert(activityInfoPtr);
     // const auto iterator = std::get<0>(_result);
     const auto index    = std::get<1>(_result);
-    const auto found    = std::get<2>(_result);
 
 
     if (notifyClients) {
