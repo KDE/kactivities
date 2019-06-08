@@ -16,7 +16,7 @@ set (REQUIRED_QT_VERSION 5.10.0)
 if ("${CMAKE_SOURCE_DIR}" STREQUAL "${CMAKE_BINARY_DIR}")
    message (
       FATAL_ERROR
-      "kactivities require an out of source build. Please create a separate build directory and run 'cmake path_to_plasma [options]' there."
+      "kactivities require an out of source build. Please create a separate build directory and run 'cmake path_to_sources [options]' there."
    )
 endif ()
 
