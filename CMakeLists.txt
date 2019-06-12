@@ -118,7 +118,7 @@ install (
    DESTINATION ${KDE_INSTALL_INCLUDEDIR_KF5} COMPONENT Devel
    )
 
-install( FILES kactivities.categories DESTINATION ${KDE_INSTALL_CONFDIR} )
+install(FILES kactivities.categories  DESTINATION  ${KDE_INSTALL_LOGGINGCATEGORIESDIR})
 
 # Write out the features
 feature_summary (WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)
