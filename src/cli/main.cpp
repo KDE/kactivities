@@ -146,19 +146,15 @@ DEFINE_COMMAND(nextActivity, 0)
 {
     const auto activities = controller->activities();
     const auto currentActivity = controller->currentActivity();
-    bool found = false;
 
     for (int i = 0; i < activities.count() - 1; ++i) {
         if (activities[i] == currentActivity) {
-            found = true;
             switchToActivity(activities[i + 1]);
-            break;
+            return 0;
         }
     }
 
-    if (!found) {
-        switchToActivity(activities[0]);
-    }
+    switchToActivity(activities[0]);
 
     return 0;
 }
@@ -167,20 +163,15 @@ DEFINE_COMMAND(previousActivity, 0)
 {
     const auto activities = controller->activities();
     const auto currentActivity = controller->currentActivity();
-    bool found = false;
 
     for (int i = 1; i < activities.count(); ++i) {
         if (activities[i] == currentActivity) {
-            found = true;
             switchToActivity(activities[i - 1]);
-            break;
+            return 0;
         }
     }
 
-    if (!found) {
-        found = true;
-        switchToActivity(activities.last());
-    }
+    switchToActivity(activities.last());
 
     return 0;
 }
