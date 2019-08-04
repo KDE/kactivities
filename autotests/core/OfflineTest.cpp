@@ -22,7 +22,6 @@
 #include <QDBusConnection>
 #include <QDBusConnectionInterface>
 #include <QString>
-#include <QDebug>
 #include <QTest>
 
 QString nulluuid = QStringLiteral("00000000-0000-0000-0000-000000000000");

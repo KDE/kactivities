@@ -24,7 +24,6 @@
 
 #include <QObject>
 #include <QString>
-#include <QStringList>
 #include <QFuture>
 
 #include "consumer.h"

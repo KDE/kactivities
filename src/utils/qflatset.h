@@ -24,7 +24,6 @@
 
 #include <QVector>
 #include <QPair>
-#include <QDebug>
 
 namespace KActivities {
 

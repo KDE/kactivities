@@ -23,7 +23,6 @@
 #include <QObject>
 #include <QFuture>
 #include <QFutureWatcher>
-#include <QDate>
 #include <QCoreApplication>
 #include <QTest>
 

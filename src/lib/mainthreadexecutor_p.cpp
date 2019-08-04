@@ -24,7 +24,6 @@
 #include <mutex>
 
 #include <QCoreApplication>
-#include <QDBusConnection>
 #include <QMetaObject>
 #include <QThread>
 

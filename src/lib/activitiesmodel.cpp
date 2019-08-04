@@ -27,7 +27,6 @@
 #include <QDBusPendingCallWatcher>
 #include <QDebug>
 #include <QHash>
-#include <QList>
 #include <QFutureWatcher>
 #include <QModelIndex>
 

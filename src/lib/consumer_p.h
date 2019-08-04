@@ -26,7 +26,6 @@
 
 #include <memory>
 
-#include <QSet>
 
 #include "activitiescache_p.h"
 

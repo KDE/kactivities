@@ -23,7 +23,6 @@
 #define KACTIVITIESINFO_P_H
 
 #include "info.h"
-#include <QObject>
 #include <memory>
 
 #include "activitiescache_p.h"

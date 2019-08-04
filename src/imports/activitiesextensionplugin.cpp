@@ -19,7 +19,6 @@
 
 #include "activitiesextensionplugin.h"
 
-#include <QtQml>
 
 #include "activitymodel.h"
 #include "activityinfo.h"
@@ -33,7 +32,6 @@
 //       replace ActivityModel with the KActivities::ActivitiesModel
 //       (but keep the name)
 
-#include <QDebug>
 
 ActivitiesExtensionPlugin::ActivitiesExtensionPlugin(QObject *parent)
     : QQmlExtensionPlugin(parent)

@@ -23,11 +23,9 @@
 // Qt
 #include <QByteArray>
 #include <QDebug>
-#include <QIcon>
 #include <QModelIndex>
 #include <QCoreApplication>
 #include <QSqlQuery>
-#include <QSqlError>
 #include <QUuid>
 
 // KDE
