@@ -48,7 +48,7 @@ void ActivityInfo::setCurrentActivity(const QString &id)
 
 void ActivityInfo::setActivityId(const QString &id)
 {
-    m_showCurrentActivity = (id == QStringLiteral(":current"));
+    m_showCurrentActivity = (id == QLatin1String(":current"));
 
     setIdInternal(m_showCurrentActivity ?
             m_service.currentActivity() : id);

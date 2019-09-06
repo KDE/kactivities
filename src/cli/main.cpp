@@ -237,7 +237,7 @@ int main(int argc, char *argv[])
         }
 
         #define MATCH_COMMAND(Command)                                         \
-            else if (args[argId] == QStringLiteral("--") + toDashes(QStringLiteral(#Command))) \
+            else if (args[argId] == QLatin1String("--") + toDashes(QStringLiteral(#Command))) \
             {                                                                  \
                 argId += 1 + Command##_command({ args, argId })();             \
             }

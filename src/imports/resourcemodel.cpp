@@ -334,7 +334,7 @@ QVariant ResourceModel::data(const QModelIndex &proxyIndex, int role) const
         //       for application:/ and a few more
 
         if (uri.startsWith('/')) {
-            uri = QStringLiteral("file://") + uri;
+            uri = QLatin1String("file://") + uri;
         }
 
         KFileItem file(uri);
@@ -685,7 +685,7 @@ void ResourceModel::loadDefaultsIfNeeded() const
 
 QString ResourceModel::validateResource(const QString &resource) const
 {
-    return resource.startsWith(QStringLiteral("file://")) ?
+    return resource.startsWith(QLatin1String("file://")) ?
             QUrl(resource).toLocalFile() : resource;
 }
 

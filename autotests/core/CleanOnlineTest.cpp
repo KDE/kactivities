@@ -89,7 +89,7 @@ void CleanOnlineSetup::testCleanOnlineActivityControl()
     TEST_WAIT_UNTIL(f3.isFinished());
 
     KActivities::Info ac(id1);
-    TEST_WAIT_UNTIL(ac.name() == QStringLiteral("Renamed activity"));
+    TEST_WAIT_UNTIL(ac.name() == QLatin1String("Renamed activity"));
 
     TEST_WAIT_UNTIL(activities->activities().size() == 2);
 }
@@ -103,8 +103,8 @@ void OnlineTest::testOnlineActivityListing()
     KActivities::Info i1(CleanOnlineSetup::id1);
     KActivities::Info i2(CleanOnlineSetup::id2);
 
-    TEST_WAIT_UNTIL(i1.name() == QStringLiteral("Renamed activity"));
-    TEST_WAIT_UNTIL(i2.name() == QStringLiteral("The second one"));
+    TEST_WAIT_UNTIL(i1.name() == QLatin1String("Renamed activity"));
+    TEST_WAIT_UNTIL(i2.name() == QLatin1String("The second one"));
 
     qDebug() << CleanOnlineSetup::id1 << i1.name();
     qDebug() << CleanOnlineSetup::id2 << i2.name();

@@ -37,7 +37,7 @@ bool Test::inEmptySession()
 
     for (const QString & service : services) {
         bool kdeServiceAndNotKAMD =
-            service.startsWith(QStringLiteral("org.kde")) &&
+            service.startsWith(QLatin1String("org.kde")) &&
             service != KAMD_DBUS_SERVICE;
 
         if (kdeServiceAndNotKAMD) {
