@@ -398,7 +398,7 @@ QVariant ActivitiesModel::data(const QModelIndex &index, int role) const
                 const QString &icon = item->icon();
 
                 // We need a default icon for activities
-                return icon.isEmpty() ? QStringLiteral("preferences-activities") : icon;
+                return icon.isEmpty() ? QStringLiteral("activities") : icon;
             }
 
         case ActivityDescription:
