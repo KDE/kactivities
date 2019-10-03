@@ -144,35 +144,13 @@ DEFINE_COMMAND(setCurrentActivity, 1)
 
 DEFINE_COMMAND(nextActivity, 0)
 {
-    const auto activities = controller->activities();
-    const auto currentActivity = controller->currentActivity();
-
-    for (int i = 0; i < activities.count() - 1; ++i) {
-        if (activities[i] == currentActivity) {
-            switchToActivity(activities[i + 1]);
-            return 0;
-        }
-    }
-
-    switchToActivity(activities[0]);
-
+    controller->nextActivity();
     return 0;
 }
 
 DEFINE_COMMAND(previousActivity, 0)
 {
-    const auto activities = controller->activities();
-    const auto currentActivity = controller->currentActivity();
-
-    for (int i = 1; i < activities.count(); ++i) {
-        if (activities[i] == currentActivity) {
-            switchToActivity(activities[i - 1]);
-            return 0;
-        }
-    }
-
-    switchToActivity(activities.last());
-
+    controller->previousActivity();
     return 0;
 }
 

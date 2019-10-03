@@ -120,6 +120,24 @@ QFuture<void> Controller::startActivity(const QString &id)
         DBusFuture::fromVoid();
 }
 
+QFuture<void> Controller::previousActivity()
+{
+    return Manager::isServiceRunning() ?
+        DBusFuture::asyncCall<void>(
+            Manager::activities(), QStringLiteral("PreviousActivity"))
+        :
+        DBusFuture::fromVoid();
+}
+
+QFuture<void> Controller::nextActivity()
+{
+    return Manager::isServiceRunning() ?
+        DBusFuture::asyncCall<void>(
+            Manager::activities(), QStringLiteral("NextActivity"))
+        :
+        DBusFuture::fromVoid();
+}
+
 } // namespace KActivities
 
 // #include "controller.moc"

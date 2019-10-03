@@ -111,6 +111,16 @@ public:
      */
     QFuture<void> startActivity(const QString &id);
 
+    /**
+     * Switches to the previous activity
+     */
+    QFuture<void> previousActivity();
+
+    /**
+     * Switches to the next activity
+     */
+    QFuture<void> nextActivity();
+
 private:
     // const QScopedPointer<ControllerPrivate> d;
 };
