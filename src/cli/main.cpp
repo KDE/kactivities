@@ -209,7 +209,7 @@ void printHelp()
                  << "\n--color"
                  << "\n--no-color"
                  << "\n--list-activities"
-                 << "\n--create-activitya NAME"
+                 << "\n--create-activity NAME"
                  << "\n--remove-activity ID"
 
                  << "\n--current-activity"

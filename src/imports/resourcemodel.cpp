@@ -526,7 +526,7 @@ void ResourceModel::onResourceLinkedToActivity(const QString &initiatingAgent,
             (shownActivity == ":current"
                  && usedActivity == m_service.currentActivity()) ||
             // or we want the globally linked resources
-            (shownActivity == ":global" && usedActivity == "") ||
+            (shownActivity == ":global" && usedActivity.isEmpty()) ||
             // or we have a specific activity in mind
             shownActivity == usedActivity;
     });
@@ -539,7 +539,7 @@ void ResourceModel::onResourceLinkedToActivity(const QString &initiatingAgent,
             (shownAgent == ":current"
                 && initiatingAgent == QCoreApplication::applicationName()) ||
             // or for links that are global, and not related to a specific agent
-            (shownAgent == ":global" && initiatingAgent == "") ||
+            (shownAgent == ":global" && initiatingAgent.isEmpty()) ||
             // or we have a specific agent to listen for
             shownAgent == initiatingAgent;
     });
