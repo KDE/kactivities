@@ -95,7 +95,7 @@ ResourceInstance::ResourceInstance(quintptr wid, QUrl resourceUri, const QString
 {
     qCDebug(KAMD_CORELIB) << "Creating ResourceInstance: " << resourceUri;
     d->wid = wid;
-    d->uri = resourceUri;
+    d->uri = resourceUri.adjusted(QUrl::StripTrailingSlash);
     d->application = application.isEmpty() ? QCoreApplication::instance()->applicationName() : application;
 
     d->openResource();
@@ -134,7 +134,7 @@ void ResourceInstance::setUri(const QUrl &newUri)
         d->closeResource();
     }
 
-    d->uri = newUri;
+    d->uri = newUri.adjusted(QUrl::StripTrailingSlash);
 
     d->openResource();
 }
