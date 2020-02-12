@@ -16,3 +16,4 @@ GPATH
 GRTAGS
 GSYMS
 GTAGS
+.cmake/
