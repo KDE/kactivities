@@ -38,3 +38,9 @@ if (NOT KACTIVITIES_LIBRARY_ONLY)
 endif ()
 
 add_subdirectory (cli)
+
+ecm_qt_install_logging_categories(
+    EXPORT KACTIVITIES
+    FILE kactivities.categories
+    DESTINATION ${KDE_INSTALL_LOGGINGCATEGORIESDIR}
+)
