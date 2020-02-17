@@ -81,7 +81,7 @@ void Modifier::initTestCase()
             // qDebug() << env;
 
             s_process->setEnvironment(env);
-            s_process->start(QStringLiteral("kactivitymanagerd"));
+            s_process->start(QStringLiteral("kactivitymanagerd"), QStringList());
             s_process->waitForStarted();
 
 

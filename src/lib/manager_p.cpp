@@ -81,7 +81,7 @@ Manager *Manager::self()
                     auto reply = QDBusConnection::sessionBus().interface()->startService(KAMD_DBUS_SERVICE);
                     if (!reply.isValid()) {
                         //pre Plasma 5.12 the daemon did not support DBus activation.  Fall back to manually forking
-                        QProcess::startDetached(QStringLiteral("kactivitymanagerd"));
+                        QProcess::startDetached(QStringLiteral("kactivitymanagerd"), QStringList());
                     }
                 }
             }
