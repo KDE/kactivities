@@ -68,7 +68,8 @@ qt5_add_dbus_interface (
 ecm_qt_declare_logging_category(KActivities_LIB_SRCS
     HEADER debug_p.h
     IDENTIFIER KAMD_CORELIB
-    CATEGORY_NAME org.kde.kactivities.lib.core
+    CATEGORY_NAME kf.activities
+    OLD_CATEGORY_NAMES org.kde.kactivities.lib.core
     DEFAULT_SEVERITY Warning
     DESCRIPTION "kactivities core lib"
     EXPORT KACTIVITIES
