@@ -1,9 +1,9 @@
 #! /bin/bash
 #
 # next-activity.sh
-# Copyright (C) 2016 Ivan Čukić <ivan.cukic(at)kde.org>
+# SPDX-FileCopyrightText: 2016 Ivan Čukić <ivan.cukic(at)kde.org>
 #
-# Distributed under terms of the MIT license.
+# SPDX-License-Identifier: MIT
 #
 
 current_activity=($(qdbus org.kde.ActivityManager /ActivityManager/Activities CurrentActivity))
