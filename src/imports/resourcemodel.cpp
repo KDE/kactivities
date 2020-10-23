@@ -17,7 +17,6 @@
 
 // KDE
 #include <kconfig.h>
-#include <kconfiggroup.h>
 #include <ksharedconfig.h>
 #include <kfileitem.h>
 #include <kdesktopfile.h>

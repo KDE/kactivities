@@ -8,7 +8,6 @@
 #include "manager_p.h"
 
 #include <mutex>
-#include <memory>
 
 #include <QString>
 

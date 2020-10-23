@@ -10,7 +10,6 @@
 
 #include "utils/dbusfuture_p.h"
 
-#include <QObject>
 
 namespace KActivities {
 
