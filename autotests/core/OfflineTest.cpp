@@ -72,5 +72,5 @@ void OfflineTest::initTestCase()
 
 void OfflineTest::cleanupTestCase()
 {
-    emit testFinished();
+    Q_EMIT testFinished();
 }

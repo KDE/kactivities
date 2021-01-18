@@ -28,9 +28,9 @@ void ActivityInfo::setCurrentActivity(const QString &id)
 
     setIdInternal(id);
 
-    emit nameChanged(m_info->name());
-    emit descriptionChanged(m_info->description());
-    emit iconChanged(m_info->icon());
+    Q_EMIT nameChanged(m_info->name());
+    Q_EMIT descriptionChanged(m_info->description());
+    Q_EMIT iconChanged(m_info->icon());
 }
 
 void ActivityInfo::setActivityId(const QString &id)

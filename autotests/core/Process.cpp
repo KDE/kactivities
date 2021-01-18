@@ -133,7 +133,7 @@ void Modifier::testProcess()
 
 void Modifier::cleanupTestCase()
 {
-    emit testFinished();
+    Q_EMIT testFinished();
 }
 
 Modifier *exec(Action action) {

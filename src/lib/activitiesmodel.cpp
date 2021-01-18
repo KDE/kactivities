@@ -95,7 +95,7 @@ namespace Private {
         auto position = Private::activityPosition(container, activity);
 
         if (position) {
-            emit model->q->dataChanged(
+            Q_EMIT model->q->dataChanged(
                 model->q->index(position.index),
                 model->q->index(position.index),
                 role == Qt::DecorationRole ?
@@ -348,7 +348,7 @@ void ActivitiesModel::setShownStates(const QVector<Info::State> &states)
 
     d->replaceActivities(d->activities.activities());
 
-    emit shownStatesChanged(states);
+    Q_EMIT shownStatesChanged(states);
 }
 
 QVector<Info::State> ActivitiesModel::shownStates() const

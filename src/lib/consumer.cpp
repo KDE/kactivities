@@ -19,7 +19,7 @@ ConsumerPrivate::ConsumerPrivate()
 
 void ConsumerPrivate::setServiceStatus(Consumer::ServiceStatus status)
 {
-    emit serviceStatusChanged(status);
+    Q_EMIT serviceStatusChanged(status);
 }
 
 Consumer::Consumer(QObject *parent)
@@ -36,9 +36,9 @@ Consumer::Consumer(QObject *parent)
             this, SIGNAL(serviceStatusChanged(Consumer::ServiceStatus)));
 
     connect(d->cache.get(), &ActivitiesCache::activityListChanged,
-            this, [=]() { emit activitiesChanged(activities()); });
+            this, [=]() { Q_EMIT activitiesChanged(activities()); });
     connect(d->cache.get(), &ActivitiesCache::runningActivityListChanged,
-            this, [=]() { emit runningActivitiesChanged(runningActivities()); });
+            this, [=]() { Q_EMIT runningActivitiesChanged(runningActivities()); });
 
     // connect(d->cache.get(), SIGNAL(activityStateChanged(QString,int)),
     //         this, SIGNAL(activityStateChanged(QString,int)));

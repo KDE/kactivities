@@ -99,15 +99,15 @@ void OnlineTest::testOnlineActivityListing()
 
 void CleanOnlineTest::cleanupTestCase()
 {
-    emit testFinished();
+    Q_EMIT testFinished();
 }
 
 void CleanOnlineSetup::cleanupTestCase()
 {
-    emit testFinished();
+    Q_EMIT testFinished();
 }
 
 void OnlineTest::cleanupTestCase()
 {
-    emit testFinished();
+    Q_EMIT testFinished();
 }

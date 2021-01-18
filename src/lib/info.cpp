@@ -26,7 +26,7 @@ InfoPrivate::InfoPrivate(Info *info, const QString &activity)
 // Filters out signals for only this activity
 #define IMPLEMENT_SIGNAL_HANDLER(INTERNAL)                                     \
     void InfoPrivate::INTERNAL(const QString &_id) const                       \
-    {   if (id == _id) emit q->INTERNAL(); }
+    {   if (id == _id) Q_EMIT q->INTERNAL(); }
 
 IMPLEMENT_SIGNAL_HANDLER(added)
 IMPLEMENT_SIGNAL_HANDLER(removed)
@@ -41,7 +41,7 @@ IMPLEMENT_SIGNAL_HANDLER(infoChanged)
                                         const QString &val) const              \
     {                                                                          \
         if (id == _id) {                                                       \
-            emit q->INTERNAL##Changed(val);                                    \
+            Q_EMIT q->INTERNAL##Changed(val);                                    \
         }                                                                      \
     }
 
@@ -56,12 +56,12 @@ void InfoPrivate::activityStateChanged(const QString &idChanged,
 {
     if (idChanged == id) {
         auto state = static_cast<Info::State>(newState);
-        emit q->stateChanged(state);
+        Q_EMIT q->stateChanged(state);
 
         if (state == KActivities::Info::Stopped) {
-            emit q->stopped();
+            Q_EMIT q->stopped();
         } else if (state == KActivities::Info::Running) {
-            emit q->started();
+            Q_EMIT q->started();
         }
     }
 }
@@ -72,13 +72,13 @@ void InfoPrivate::setCurrentActivity(const QString &currentActivity)
         if (currentActivity != id) {
             // We are no longer the current activity
             isCurrent = false;
-            emit q->isCurrentChanged(false);
+            Q_EMIT q->isCurrentChanged(false);
         }
     } else {
         if (currentActivity == id) {
             // We are the current activity
             isCurrent = true;
-            emit q->isCurrentChanged(true);
+            Q_EMIT q->isCurrentChanged(true);
         }
     }
 }

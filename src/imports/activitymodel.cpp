@@ -116,7 +116,7 @@ public:
         auto position = Private::activityPosition(container, activity);
 
         if (position) {
-            emit model->dataChanged(
+            Q_EMIT model->dataChanged(
                 model->index(position->first),
                 model->index(position->first),
                 role == Qt::DecorationRole ?
@@ -511,7 +511,7 @@ void ActivityModel::setShownStates(const QString &states)
 
     replaceActivities(m_service.activities());
 
-    emit shownStatesChanged(states);
+    Q_EMIT shownStatesChanged(states);
 }
 
 QString ActivityModel::shownStates() const

@@ -93,7 +93,7 @@ void Manager::serviceOwnerChanged(const QString &serviceName, const QString &old
 
     if (serviceName == KAMD_DBUS_SERVICE) {
         m_serviceRunning = !newOwner.isEmpty();
-        emit serviceStatusChanged(m_serviceRunning);
+        Q_EMIT serviceStatusChanged(m_serviceRunning);
 
         if (m_serviceRunning) {
             using namespace kamd::utils;

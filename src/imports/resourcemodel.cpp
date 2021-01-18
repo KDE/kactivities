@@ -203,7 +203,7 @@ void ResourceModel::setShownActivities(const QString &activities)
     });
 
     reloadData();
-    emit shownActivitiesChanged();
+    Q_EMIT shownActivitiesChanged();
 }
 
 void ResourceModel::setShownAgents(const QString &agents)
@@ -218,7 +218,7 @@ void ResourceModel::setShownAgents(const QString &agents)
 
     loadDefaultsIfNeeded();
     reloadData();
-    emit shownAgentsChanged();
+    Q_EMIT shownAgentsChanged();
 }
 
 QString ResourceModel::shownActivities() const

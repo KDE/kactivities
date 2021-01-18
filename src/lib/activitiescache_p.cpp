@@ -93,8 +93,8 @@ void ActivitiesCache::loadOfflineDefaults()
                                  Info::Running);
     m_currentActivity = nulluuid;
 
-    emit serviceStatusChanged(m_status);
-    emit activityListChanged();
+    Q_EMIT serviceStatusChanged(m_status);
+    Q_EMIT activityListChanged();
 }
 
 ActivitiesCache::~ActivitiesCache()
@@ -113,8 +113,8 @@ void ActivitiesCache::removeActivity(const QString &id)
 
     if (where != m_activities.end() && where->id == id) {
         m_activities.erase(where);
-        emit activityRemoved(id);
-        emit activityListChanged();
+        Q_EMIT activityRemoved(id);
+        Q_EMIT activityListChanged();
 
     } else {
         // qFatal("Requested to delete an non-existent activity");
@@ -125,7 +125,7 @@ void ActivitiesCache::updateAllActivities()
 {
     // qDebug() << "Updating all";
     m_status = Consumer::Unknown;
-    emit serviceStatusChanged(m_status);
+    Q_EMIT serviceStatusChanged(m_status);
 
     // Loading the current activity
     auto call = Manager::self()->activities()->asyncCall(
@@ -173,10 +173,10 @@ void ActivitiesCache::updateActivityState(const QString &id, int state)
         where->state = state;
 
         if (runningStateChanged) {
-            emit runningActivityListChanged();
+            Q_EMIT runningActivityListChanged();
         }
 
-        emit activityStateChanged(id, state);
+        Q_EMIT activityStateChanged(id, state);
 
     } else {
         // qFatal("Requested to update the state of an non-existent activity");
@@ -238,12 +238,12 @@ void ActivitiesCache::setActivityInfo(const ActivityInfo &info)
     m_activities.insert(where, info);
 
     if (present) {
-        emit activityChanged(info.id);
+        Q_EMIT activityChanged(info.id);
     } else {
-        emit activityAdded(info.id);
-        emit activityListChanged();
+        Q_EMIT activityAdded(info.id);
+        Q_EMIT activityListChanged();
         if (runningChanged) {
-            emit runningActivityListChanged();
+            Q_EMIT runningActivityListChanged();
         }
     }
 }
@@ -256,7 +256,7 @@ void ActivitiesCache::setActivityInfo(const ActivityInfo &info)
                                                                                \
         if (where) {                                                           \
             where->What = value;                                               \
-            emit activity##WHAT##Changed(id, value);                           \
+            Q_EMIT activity##WHAT##Changed(id, value);                           \
         }                                                                      \
     }
 
@@ -281,8 +281,8 @@ void ActivitiesCache::setAllActivities(const ActivityInfoList &_activities)
     std::sort(m_activities.begin(), m_activities.end(), &infoLessThan);
 
     m_status = Consumer::Running;
-    emit serviceStatusChanged(m_status);
-    emit activityListChanged();
+    Q_EMIT serviceStatusChanged(m_status);
+    Q_EMIT activityListChanged();
 }
 
 void ActivitiesCache::setCurrentActivity(const QString &activity)
@@ -295,7 +295,7 @@ void ActivitiesCache::setCurrentActivity(const QString &activity)
 
     m_currentActivity = activity;
 
-    emit currentActivityChanged(activity);
+    Q_EMIT currentActivityChanged(activity);
 }
 
 } // namespace KActivities
