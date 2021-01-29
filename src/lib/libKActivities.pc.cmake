@@ -1,12 +1,12 @@
 prefix=${CMAKE_INSTALL_PREFIX}
-exec_prefix=${BIN_INSTALL_DIR}
-libdir=${LIB_INSTALL_DIR}
-includedir=${INCLUDE_INSTALL_DIR}
+exec_prefix=${KDE_INSTALL_BINDIR}
+libdir=${KDE_INSTALL_LIBDIR}
+includedir=${KDE_INSTALL_INCLUDEDIR}
 
 Name: libKActivities
 Description: libKActivities is a C++ library for using KDE activities
 URL: https://www.kde.org
 Requires: Qt5Core
 Version: ${KACTIVITIES_VERSION_STRING}
-Libs: -L${LIB_INSTALL_DIR} -lKF5Activities
-Cflags: -I${INCLUDE_INSTALL_DIR}
+Libs: -L${KDE_INSTALL_LIBDIR} -lKF5Activities
+Cflags: -I${KDE_INSTALL_INCLUDEDIR}
