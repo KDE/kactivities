@@ -52,7 +52,7 @@ class ResourceModel::LinkerService : public QDBusInterface
 {
 private:
     LinkerService()
-        : KAMD_DBUS_INTERFACE(Resources / Linking, ResourcesLinking, nullptr)
+        : KAMD_DBUS_INTERFACE("Resources/Linking", ResourcesLinking, nullptr)
     {
     }
 

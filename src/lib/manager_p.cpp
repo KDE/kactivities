@@ -28,11 +28,11 @@ Manager *Manager::s_instance = nullptr;
 Manager::Manager()
     : QObject()
     , m_watcher(KAMD_DBUS_SERVICE, QDBusConnection::sessionBus())
-    , m_service(new KAMD_DBUS_CLASS_INTERFACE(/, Application, this))
-    , m_activities(new KAMD_DBUS_CLASS_INTERFACE(Activities, Activities, this))
-    , m_resources(new KAMD_DBUS_CLASS_INTERFACE(Resources, Resources, this))
-    , m_resourcesLinking(new KAMD_DBUS_CLASS_INTERFACE(Resources / Linking, ResourcesLinking, this))
-    , m_features(new KAMD_DBUS_CLASS_INTERFACE(Features, Features, this))
+    , m_service(new KAMD_DBUS_CLASS_INTERFACE("/", Application, this))
+    , m_activities(new KAMD_DBUS_CLASS_INTERFACE("Activities", Activities, this))
+    , m_resources(new KAMD_DBUS_CLASS_INTERFACE("Resources", Resources, this))
+    , m_resourcesLinking(new KAMD_DBUS_CLASS_INTERFACE("Resources/Linking", ResourcesLinking, this))
+    , m_features(new KAMD_DBUS_CLASS_INTERFACE("Features", Features, this))
     , m_serviceRunning(false)
 {
     connect(&m_watcher, &QDBusServiceWatcher::serviceOwnerChanged, this, &Manager::serviceOwnerChanged);
