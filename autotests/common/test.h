@@ -22,7 +22,7 @@ protected:
     enum WhenToFail {
         DontFail = 0,
         FailIfTrue = 1,
-        FailIfFalse = 2
+        FailIfFalse = 2,
     };
 
     template <typename _ReturnType, typename _Continuation>

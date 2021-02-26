@@ -19,7 +19,7 @@ namespace Process {
         Start,
         Stop,
         Kill,
-        Crash
+        Crash,
     };
 
     class Modifier : public Test {

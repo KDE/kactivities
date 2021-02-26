@@ -12,7 +12,7 @@ namespace utils {
 
 enum {
     Const = 0,
-    Mutable = 1
+    Mutable = 1,
 };
 
 template <typename T, int Policy = Const>

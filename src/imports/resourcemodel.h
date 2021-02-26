@@ -75,7 +75,7 @@ public:
         ResourceRole    = Qt::UserRole,
         ActivityRole    = Qt::UserRole + 1,
         AgentRole       = Qt::UserRole + 2,
-        DescriptionRole = Qt::UserRole + 3
+        DescriptionRole = Qt::UserRole + 3,
     };
 
     QHash<int, QByteArray> roleNames() const override;

@@ -78,7 +78,7 @@ public:
     enum Availability {
         Nothing = 0,   ///< No activity info provided (isValid is false)
         BasicInfo = 1, ///< Basic info is provided
-        Everything = 2 ///< Everything is available
+        Everything = 2,///< Everything is available
     };
 
     /**
@@ -90,7 +90,7 @@ public:
         Running = 2,  ///< Activity is running
         Starting = 3, ///< Activity is begin started
         Stopped = 4,  ///< Activity is stopped
-        Stopping = 5  ///< Activity is begin started
+        Stopping = 5, ///< Activity is begin started
     };
 
     /**

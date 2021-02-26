@@ -29,7 +29,7 @@ public:
         Modified = 2,
         Closed = 3,
         FocusedIn = 4,
-        FocusedOut = 5
+        FocusedOut = 5,
     };
 
     static void registerResourceEvent(const QString &application, quintptr wid, const QUrl &uri, Type event)

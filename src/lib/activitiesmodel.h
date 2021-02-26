@@ -61,7 +61,7 @@ public:
         ActivityBackground  = Qt::UserRole + 5,   ///< Activity wallpaper (currently unsupported)
         ActivityIsCurrent   = Qt::UserRole + 6,   ///< Is this activity the current one current
 
-        UserRole            = Qt::UserRole + 32   ///< To be used by models that inherit this one
+        UserRole            = Qt::UserRole + 32,  ///< To be used by models that inherit this one
     };
 
 public Q_SLOTS:

@@ -74,7 +74,7 @@ public:
     enum ServiceStatus {
         NotRunning, ///< Service is not running
         Unknown,    ///< Unable to determine the status of the service
-        Running     ///< Service is running properly
+        Running,    ///< Service is running properly
     };
 
     explicit Consumer(QObject *parent = nullptr);
