@@ -17,8 +17,8 @@
 /**
  * Namespace for everything in libkactivities
  */
-namespace KActivities {
-
+namespace KActivities
+{
 /**
  * The runtime version of libkactivities
  */

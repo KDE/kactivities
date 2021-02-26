@@ -7,27 +7,28 @@
 #ifndef ACTIVITIES_DBUSFUTURE_P_H
 #define ACTIVITIES_DBUSFUTURE_P_H
 
-#include <QDBusPendingReply>
-#include <QDBusServiceWatcher>
 #include <QDBusAbstractInterface>
 #include <QDBusPendingCallWatcher>
-#include <QFutureInterface>
+#include <QDBusPendingReply>
+#include <QDBusServiceWatcher>
 #include <QFuture>
+#include <QFutureInterface>
 #include <QFutureWatcherBase>
 
 #include "debug_p.h"
 
-namespace DBusFuture {
+namespace DBusFuture
+{
+namespace detail
+{ //_
 
-namespace detail { //_
-
-template <typename _Result>
-class DBusCallFutureInterface : public QObject,
-                                public QFutureInterface<_Result> {
+template<typename _Result>
+class DBusCallFutureInterface : public QObject, public QFutureInterface<_Result>
+{
 public:
     DBusCallFutureInterface(QDBusPendingReply<_Result> reply)
-        : reply(reply),
-          replyWatcher(nullptr)
+        : reply(reply)
+        , replyWatcher(nullptr)
     {
     }
 
@@ -42,9 +43,9 @@ public:
     {
         replyWatcher = new QDBusPendingCallWatcher(reply);
 
-        QObject::connect(replyWatcher,
-                         &QDBusPendingCallWatcher::finished,
-                         [this] () { callFinished(); });
+        QObject::connect(replyWatcher, &QDBusPendingCallWatcher::finished, [this]() {
+            callFinished();
+        });
 
         this->reportStarted();
 
@@ -57,10 +58,10 @@ public:
 
 private:
     QDBusPendingReply<_Result> reply;
-    QDBusPendingCallWatcher * replyWatcher;
+    QDBusPendingCallWatcher *replyWatcher;
 };
 
-template <typename _Result>
+template<typename _Result>
 void DBusCallFutureInterface<_Result>::callFinished()
 {
     deleteLater();
@@ -72,13 +73,14 @@ void DBusCallFutureInterface<_Result>::callFinished()
     this->reportFinished();
 }
 
-template <>
+template<>
 void DBusCallFutureInterface<void>::callFinished();
 
-template <typename _Result>
-class ValueFutureInterface : public QObject, QFutureInterface<_Result> {
+template<typename _Result>
+class ValueFutureInterface : public QObject, QFutureInterface<_Result>
+{
 public:
-    ValueFutureInterface(const _Result & value)
+    ValueFutureInterface(const _Result &value)
         : value(value)
     {
     }
@@ -97,11 +99,11 @@ public:
 
 private:
     _Result value;
-
 };
 
-template <>
-class ValueFutureInterface<void> : public QObject, QFutureInterface<void> {
+template<>
+class ValueFutureInterface<void> : public QObject, QFutureInterface<void>
+{
 public:
     ValueFutureInterface();
 
@@ -116,26 +118,27 @@ public:
 
 } //^ namespace detail
 
-template <typename _Result>
-QFuture<_Result>
-asyncCall(QDBusAbstractInterface *interface, const QString &method,
-          const QVariant &arg1 = QVariant(), const QVariant &arg2 = QVariant(),
-          const QVariant &arg3 = QVariant(), const QVariant &arg4 = QVariant(),
-          const QVariant &arg5 = QVariant(), const QVariant &arg6 = QVariant(),
-          const QVariant &arg7 = QVariant(), const QVariant &arg8 = QVariant())
+template<typename _Result>
+QFuture<_Result> asyncCall(QDBusAbstractInterface *interface,
+                           const QString &method,
+                           const QVariant &arg1 = QVariant(),
+                           const QVariant &arg2 = QVariant(),
+                           const QVariant &arg3 = QVariant(),
+                           const QVariant &arg4 = QVariant(),
+                           const QVariant &arg5 = QVariant(),
+                           const QVariant &arg6 = QVariant(),
+                           const QVariant &arg7 = QVariant(),
+                           const QVariant &arg8 = QVariant())
 {
     using namespace detail;
 
-    auto callFutureInterface = new DBusCallFutureInterface
-        <_Result>(interface->asyncCall(method, arg1, arg2, arg3, arg4, arg5,
-                                       arg6, arg7, arg8));
+    auto callFutureInterface = new DBusCallFutureInterface<_Result>(interface->asyncCall(method, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8));
 
     return callFutureInterface->start();
 }
 
-template <typename _Result>
-QFuture<_Result>
-fromValue(const _Result & value)
+template<typename _Result>
+QFuture<_Result> fromValue(const _Result &value)
 {
     using namespace detail;
 
@@ -144,9 +147,8 @@ fromValue(const _Result & value)
     return valueFutureInterface->start();
 }
 
-template <typename _Result>
-QFuture<_Result>
-fromReply(const QDBusPendingReply<_Result> &reply)
+template<typename _Result>
+QFuture<_Result> fromReply(const QDBusPendingReply<_Result> &reply)
 {
     using namespace detail;
 
@@ -160,4 +162,3 @@ QFuture<void> fromVoid();
 } // namespace DBusFuture
 
 #endif /* DBUSFUTURE_P_H */
-

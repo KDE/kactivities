@@ -1,16 +1,16 @@
 /*
     SPDX-FileCopyrightText: 2010-2016 Ivan Cukic <ivan.cukic(at)kde.org>
- 
+
     SPDX-License-Identifier: LGPL-2.1-only OR LGPL-3.0-only OR LicenseRef-KDE-Accepted-LGPL
 */
 
 #ifndef KAMD_ORG_KDE_ACTIVITYMANAGER_ACTIVITIES_H
 #define KAMD_ORG_KDE_ACTIVITYMANAGER_ACTIVITIES_H
 
-#include <QString>
-#include <QList>
 #include <QDBusArgument>
 #include <QDebug>
+#include <QList>
+#include <QString>
 
 struct ActivityInfo {
     QString id;

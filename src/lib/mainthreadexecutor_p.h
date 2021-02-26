@@ -11,20 +11,22 @@
 
 #include <QObject>
 
-namespace KActivities {
+namespace KActivities
+{
+namespace detail
+{
+class MainThreadExecutor : public QObject
+{
+    Q_OBJECT
 
-namespace detail {
-    class MainThreadExecutor: public QObject {
-        Q_OBJECT
+public:
+    MainThreadExecutor(std::function<void()> &&f);
 
-    public:
-        MainThreadExecutor(std::function<void()> &&f);
+    Q_INVOKABLE void start();
 
-        Q_INVOKABLE void start();
-
-    private:
-        std::function<void()> m_function;
-    };
+private:
+    std::function<void()> m_function;
+};
 } // namespace detail
 
 void runInMainThread(std::function<void()> &&f);

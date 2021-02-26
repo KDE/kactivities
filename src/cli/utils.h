@@ -1,6 +1,6 @@
 /*
     SPDX-FileCopyrightText: 2016 Ivan Čukić <ivan.cukic(at)kde.org>
- 
+
     SPDX-License-Identifier: LGPL-2.1-only OR LGPL-3.0-only OR LicenseRef-KDE-Accepted-LGPL
 */
 
@@ -9,17 +9,17 @@
 
 QTextStream out(stdout);
 
-class StringListView {
+class StringListView
+{
 public:
     StringListView(const QStringList &list, int start, int end = -1)
         : m_list(list)
         , m_start(start)
         , m_size((end == -1 ? list.count() : end) - start)
     {
-
     }
 
-    const QString &operator() (int index) const
+    const QString &operator()(int index) const
     {
         return m_list[m_start + index];
     }
@@ -33,16 +33,16 @@ private:
     const QStringList &m_list;
     int m_start;
     int m_size;
-
 };
 
 KActivities::Controller *controller = nullptr;
 
-class Flags {
+class Flags
+{
 public:
     Flags()
-      : bare(false)
-      , color(true)
+        : bare(false)
+        , color(true)
     {
     }
 
@@ -56,10 +56,9 @@ QString toDashes(const QString &command)
     QString result(command);
 
     for (int i = 0; i < result.size() - 1; ++i) {
-        if (result[i].isLower() &&
-            result[i+1].isUpper()) {
-            result[i+1] = result[i+1].toLower();
-            result.insert(i+1, QStringLiteral("-"));
+        if (result[i].isLower() && result[i + 1].isUpper()) {
+            result[i + 1] = result[i + 1].toLower();
+            result.insert(i + 1, QStringLiteral("-"));
         }
     }
 
@@ -109,7 +108,7 @@ void printActivity(const QString &id)
     // clang-format on
 }
 
-template <typename T>
+template<typename T>
 T awaitFuture(const QFuture<T> &future)
 {
     while (!future.isFinished()) {

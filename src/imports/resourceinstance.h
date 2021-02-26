@@ -7,23 +7,24 @@
 #ifndef RESOURCEINSTANCE_H
 #define RESOURCEINSTANCE_H
 
-//Qt
+// Qt
 #include <QQuickItem>
 #include <QUrl>
 
 // STL
 #include <memory>
 
-namespace KActivities {
+namespace KActivities
+{
 class ResourceInstance;
 }
 
 class QTimer;
 
-
-namespace KActivities {
-namespace Imports {
-
+namespace KActivities
+{
+namespace Imports
+{
 class ResourceInstance : public QQuickItem
 {
     Q_OBJECT

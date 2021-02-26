@@ -1,6 +1,6 @@
 /*
     SPDX-FileCopyrightText: 2012, 2013, 2014 Ivan Cukic <ivan.cukic(at)kde.org>
- 
+
     SPDX-License-Identifier: GPL-2.0-or-later
 */
 
@@ -8,31 +8,33 @@
 #define KACTIVITIES_IMPORTS_ACTIVITY_MODEL_H
 
 // Qt
-#include <QObject>
 #include <QAbstractListModel>
-#include <QJSValue>
 #include <QCollator>
+#include <QJSValue>
+#include <QObject>
 
 // STL and Boost
 #include <boost/container/flat_set.hpp>
 #include <memory>
 
 // Local
-#include <lib/controller.h>
 #include <lib/consumer.h>
+#include <lib/controller.h>
 #include <lib/info.h>
 
 class QModelIndex;
 class QDBusPendingCallWatcher;
 
-namespace KActivities {
-namespace Imports {
-
+namespace KActivities
+{
+namespace Imports
+{
 /**
  * ActivityModel
  */
 
-class ActivityModel : public QAbstractListModel {
+class ActivityModel : public QAbstractListModel
+{
     Q_OBJECT
 
     Q_PROPERTY(QString shownStates READ shownStates WRITE setShownStates NOTIFY shownStatesChanged)
@@ -41,24 +43,21 @@ public:
     explicit ActivityModel(QObject *parent = nullptr);
     ~ActivityModel() override;
 
-    int rowCount(const QModelIndex &parent = QModelIndex()) const
-        override;
+    int rowCount(const QModelIndex &parent = QModelIndex()) const override;
 
-    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const
-        override;
+    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
 
-    QVariant headerData(int section, Qt::Orientation orientation,
-                        int role = Qt::DisplayRole) const override;
+    QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;
 
     QHash<int, QByteArray> roleNames() const override;
 
     enum Roles {
-        ActivityId          = Qt::UserRole,
+        ActivityId = Qt::UserRole,
         ActivityDescription = Qt::UserRole + 1,
-        ActivityIcon        = Qt::UserRole + 2,
-        ActivityState       = Qt::UserRole + 3,
-        ActivityBackground  = Qt::UserRole + 4,
-        ActivityCurrent     = Qt::UserRole + 5,
+        ActivityIcon = Qt::UserRole + 2,
+        ActivityState = Qt::UserRole + 3,
+        ActivityBackground = Qt::UserRole + 4,
+        ActivityCurrent = Qt::UserRole + 5,
     };
 
     enum State {
@@ -73,12 +72,9 @@ public:
 
 public Q_SLOTS:
     // Activity control methods
-    void setActivityName(const QString &id, const QString &name,
-                         const QJSValue &callback);
-    void setActivityDescription(const QString &id, const QString &description,
-                                const QJSValue &callback);
-    void setActivityIcon(const QString &id, const QString &icon,
-                         const QJSValue &callback);
+    void setActivityName(const QString &id, const QString &name, const QJSValue &callback);
+    void setActivityDescription(const QString &id, const QString &description, const QJSValue &callback);
+    void setActivityIcon(const QString &id, const QString &icon, const QJSValue &callback);
 
     void setCurrentActivity(const QString &id, const QJSValue &callback);
 
@@ -116,7 +112,7 @@ private:
     typedef std::shared_ptr<Info> InfoPtr;
 
     struct InfoPtrComparator {
-        bool operator() (const InfoPtr& left, const InfoPtr& right) const
+        bool operator()(const InfoPtr &left, const InfoPtr &right) const
         {
             QCollator c;
             c.setCaseSensitivity(Qt::CaseInsensitive);
@@ -148,4 +144,3 @@ private:
 } // namespace KActivities
 
 #endif // KACTIVITIES_IMPORTS_ACTIVITY_MODEL_H
-

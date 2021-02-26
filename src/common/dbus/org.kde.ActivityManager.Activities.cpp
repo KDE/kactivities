@@ -1,17 +1,18 @@
 /*
     SPDX-FileCopyrightText: 2010-2016 Ivan Cukic <ivan.cukic(at)kde.org>
- 
+
     SPDX-License-Identifier: LGPL-2.1-only OR LGPL-3.0-only OR LicenseRef-KDE-Accepted-LGPL
 */
 
 #include "org.kde.ActivityManager.Activities.h"
 
-#include <QMetaType>
 #include <QDBusMetaType>
+#include <QMetaType>
 
-namespace details {
-
-class ActivityInfoStaticInit {
+namespace details
+{
+class ActivityInfoStaticInit
+{
 public:
     ActivityInfoStaticInit()
     {

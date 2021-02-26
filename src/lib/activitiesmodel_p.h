@@ -15,9 +15,10 @@
 
 #include <QCollator>
 
-namespace KActivities {
-
-class ActivitiesModelPrivate : public QObject {
+namespace KActivities
+{
+class ActivitiesModelPrivate : public QObject
+{
     Q_OBJECT
 public:
     ActivitiesModelPrivate(ActivitiesModel *parent);
@@ -42,7 +43,7 @@ public:
     typedef std::shared_ptr<Info> InfoPtr;
 
     struct InfoPtrComparator {
-        bool operator() (const InfoPtr& left, const InfoPtr& right) const
+        bool operator()(const InfoPtr &left, const InfoPtr &right) const
         {
             QCollator c;
             c.setCaseSensitivity(Qt::CaseInsensitive);
@@ -69,8 +70,6 @@ public:
     ActivitiesModel *const q;
 };
 
-
 } // namespace KActivities
 
 #endif // ACTIVITIES_ACTIVITIESMODEL_P_H
-

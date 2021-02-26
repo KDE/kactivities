@@ -8,16 +8,16 @@
 #define ACTIVITIES_CONSUMER_H
 
 #include <QObject>
+#include <QScopedPointer>
 #include <QString>
 #include <QStringList>
-#include <QScopedPointer>
 
 #include "info.h"
 
 #include "kactivities_export.h"
 
-namespace KActivities {
-
+namespace KActivities
+{
 class ConsumerPrivate;
 
 /**
@@ -59,7 +59,8 @@ class ConsumerPrivate;
  *
  * @since 4.5
  */
-class KACTIVITIES_EXPORT Consumer : public QObject {
+class KACTIVITIES_EXPORT Consumer : public QObject
+{
     Q_OBJECT
 
     Q_PROPERTY(QString currentActivity READ currentActivity NOTIFY currentActivityChanged)
@@ -73,8 +74,8 @@ public:
      */
     enum ServiceStatus {
         NotRunning, ///< Service is not running
-        Unknown,    ///< Unable to determine the status of the service
-        Running,    ///< Service is running properly
+        Unknown, ///< Unable to determine the status of the service
+        Running, ///< Service is running properly
     };
 
     explicit Consumer(QObject *parent = nullptr);
@@ -96,7 +97,6 @@ public:
      *       returned.
      */
     QStringList activities(Info::State state) const;
-
 
     /**
      * @returns a list of running activities
@@ -153,8 +153,6 @@ Q_SIGNALS:
      * @param runningActivities list of running activities
      */
     void runningActivitiesChanged(const QStringList &runningActivities);
-
-
 
 private:
     const QScopedPointer<ConsumerPrivate> d;

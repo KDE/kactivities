@@ -11,11 +11,13 @@
 #include <activitiesmodel.h>
 #include <consumer.h>
 
-namespace Ui {
-    class MainWindow;
+namespace Ui
+{
+class MainWindow;
 }
 
-class Window: public QMainWindow {
+class Window : public QMainWindow
+{
     Q_OBJECT
 
 public:
@@ -23,7 +25,7 @@ public:
     ~Window();
 
 protected:
-    void showEvent(QShowEvent * event) override;
+    void showEvent(QShowEvent *event) override;
 
 private:
     Ui::MainWindow *ui;
@@ -31,4 +33,3 @@ private:
     KActivities::ActivitiesModel *modelRunningActivities;
     KActivities::ActivitiesModel *modelStoppedActivities;
 };
-

@@ -7,14 +7,14 @@
 #ifndef ACTIVITIES_INFO_H
 #define ACTIVITIES_INFO_H
 
+#include <QFuture>
 #include <QObject>
 #include <QString>
-#include <QFuture>
 
 #include "kactivities_export.h"
 
-namespace KActivities {
-
+namespace KActivities
+{
 class InfoPrivate;
 
 /**
@@ -53,7 +53,8 @@ class InfoPrivate;
  *
  * @since 4.5
  */
-class KACTIVITIES_EXPORT Info : public QObject {
+class KACTIVITIES_EXPORT Info : public QObject
+{
     Q_OBJECT
 
     Q_PROPERTY(QString id READ id)
@@ -76,20 +77,20 @@ public:
      * Specifies which parts of this class are functional
      */
     enum Availability {
-        Nothing = 0,   ///< No activity info provided (isValid is false)
+        Nothing = 0, ///< No activity info provided (isValid is false)
         BasicInfo = 1, ///< Basic info is provided
-        Everything = 2,///< Everything is available
+        Everything = 2, ///< Everything is available
     };
 
     /**
      * State of the activity
      */
     enum State {
-        Invalid = 0,  ///< This activity does not exist
-        Unknown = 1,  ///< Information is not yet retrieved from the service
-        Running = 2,  ///< Activity is running
+        Invalid = 0, ///< This activity does not exist
+        Unknown = 1, ///< Information is not yet retrieved from the service
+        Running = 2, ///< Activity is running
         Starting = 3, ///< Activity is begin started
-        Stopped = 4,  ///< Activity is stopped
+        Stopped = 4, ///< Activity is stopped
         Stopping = 5, ///< Activity is begin started
     };
 

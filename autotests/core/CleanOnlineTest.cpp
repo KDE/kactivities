@@ -1,6 +1,6 @@
 /*
     SPDX-FileCopyrightText: 2013 Ivan Cukic <ivan.cukic(at)kde.org>
- 
+
     SPDX-License-Identifier: GPL-2.0-or-later
 */
 
@@ -8,8 +8,8 @@
 
 #include <QDBusConnection>
 #include <QDBusConnectionInterface>
-#include <QString>
 #include <QDebug>
+#include <QString>
 #include <QTest>
 
 QString CleanOnlineSetup::id1;
@@ -36,8 +36,7 @@ OnlineTest::OnlineTest(QObject *parent)
 void CleanOnlineTest::testCleanOnlineActivityListing()
 {
     // Waiting for the service to start, and for us to sync
-    TEST_WAIT_UNTIL(activities->serviceStatus()
-                    == KActivities::Consumer::Running);
+    TEST_WAIT_UNTIL(activities->serviceStatus() == KActivities::Consumer::Running);
 
     QCOMPARE(activities->activities(), QStringList());
     QCOMPARE(activities->serviceStatus(), KActivities::Consumer::Running);
@@ -51,8 +50,7 @@ void CleanOnlineTest::testCleanOnlineActivityListing()
 void CleanOnlineSetup::testCleanOnlineActivityControl()
 {
     // Waiting for the service to start, and for us to sync
-    TEST_WAIT_UNTIL(activities->serviceStatus()
-                    == KActivities::Consumer::Running);
+    TEST_WAIT_UNTIL(activities->serviceStatus() == KActivities::Consumer::Running);
 
     auto activity1 = activities->addActivity(QStringLiteral("The first one"));
     TEST_WAIT_UNTIL(activity1.isFinished());
@@ -84,8 +82,7 @@ void CleanOnlineSetup::testCleanOnlineActivityControl()
 void OnlineTest::testOnlineActivityListing()
 {
     // Waiting for the service to start, and for us to sync
-    TEST_WAIT_UNTIL(activities->serviceStatus()
-                    == KActivities::Consumer::Running);
+    TEST_WAIT_UNTIL(activities->serviceStatus() == KActivities::Consumer::Running);
 
     KActivities::Info i1(CleanOnlineSetup::id1);
     KActivities::Info i2(CleanOnlineSetup::id2);

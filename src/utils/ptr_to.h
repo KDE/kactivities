@@ -7,25 +7,24 @@
 #ifndef PTR_TO_H
 #define PTR_TO_H
 
-namespace kamd {
-namespace utils {
-
+namespace kamd
+{
+namespace utils
+{
 enum {
     Const = 0,
     Mutable = 1,
 };
 
-template <typename T, int Policy = Const>
+template<typename T, int Policy = Const>
 struct ptr_to {
-    typedef const T * const type;
+    typedef const T *const type;
 };
 
-template <typename T>
+template<typename T>
 struct ptr_to<T, Mutable> {
-    typedef T * const type;
+    typedef T *const type;
 };
-
-
 
 } // namespace utils
 } // namespace kamd

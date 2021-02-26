@@ -13,8 +13,8 @@
 
 #include "mainthreadexecutor_p.h"
 
-namespace KActivities {
-
+namespace KActivities
+{
 static QString nulluuid = QStringLiteral("00000000-0000-0000-0000-000000000000");
 
 using kamd::utils::Mutable;
@@ -31,7 +31,7 @@ std::shared_ptr<ActivitiesCache> ActivitiesCache::self()
         runInMainThread([&result] {
             result.reset(new ActivitiesCache());
             s_instance = result;
-            });
+        });
     }
 
     return result;
@@ -45,27 +45,18 @@ ActivitiesCache::ActivitiesCache()
 
     auto activities = Manager::self()->activities();
 
-    connect(activities, &Activities::ActivityAdded,
-            this, &ActivitiesCache::updateActivity);
-    connect(activities, &Activities::ActivityChanged,
-            this, &ActivitiesCache::updateActivity);
-    connect(activities, &Activities::ActivityRemoved,
-            this, &ActivitiesCache::removeActivity);
+    connect(activities, &Activities::ActivityAdded, this, &ActivitiesCache::updateActivity);
+    connect(activities, &Activities::ActivityChanged, this, &ActivitiesCache::updateActivity);
+    connect(activities, &Activities::ActivityRemoved, this, &ActivitiesCache::removeActivity);
 
-    connect(activities, &Activities::ActivityStateChanged,
-            this, &ActivitiesCache::updateActivityState);
-    connect(activities, &Activities::ActivityNameChanged,
-            this, &ActivitiesCache::setActivityName);
-    connect(activities, &Activities::ActivityDescriptionChanged,
-            this, &ActivitiesCache::setActivityDescription);
-    connect(activities, &Activities::ActivityIconChanged,
-            this, &ActivitiesCache::setActivityIcon);
+    connect(activities, &Activities::ActivityStateChanged, this, &ActivitiesCache::updateActivityState);
+    connect(activities, &Activities::ActivityNameChanged, this, &ActivitiesCache::setActivityName);
+    connect(activities, &Activities::ActivityDescriptionChanged, this, &ActivitiesCache::setActivityDescription);
+    connect(activities, &Activities::ActivityIconChanged, this, &ActivitiesCache::setActivityIcon);
 
-    connect(activities, &Activities::CurrentActivityChanged,
-            this, &ActivitiesCache::setCurrentActivity);
+    connect(activities, &Activities::CurrentActivityChanged, this, &ActivitiesCache::setCurrentActivity);
 
-    connect(Manager::self(), &Manager::serviceStatusChanged,
-            this, &ActivitiesCache::setServiceStatus);
+    connect(Manager::self(), &Manager::serviceStatusChanged, this, &ActivitiesCache::setServiceStatus);
 
     // These are covered by ActivityStateChanged
     // signal void org.kde.ActivityManager.Activities.ActivityStarted(QString activity)
@@ -89,8 +80,7 @@ void ActivitiesCache::loadOfflineDefaults()
     m_status = Consumer::NotRunning;
 
     m_activities.clear();
-    m_activities << ActivityInfo(nulluuid, QString(), QString(), QString(),
-                                 Info::Running);
+    m_activities << ActivityInfo(nulluuid, QString(), QString(), QString(), Info::Running);
     m_currentActivity = nulluuid;
 
     Q_EMIT serviceStatusChanged(m_status);
@@ -128,26 +118,23 @@ void ActivitiesCache::updateAllActivities()
     Q_EMIT serviceStatusChanged(m_status);
 
     // Loading the current activity
-    auto call = Manager::self()->activities()->asyncCall(
-        QStringLiteral("CurrentActivity"));
+    auto call = Manager::self()->activities()->asyncCall(QStringLiteral("CurrentActivity"));
 
-    onCallFinished(call, SLOT(setCurrentActivityFromReply(QDBusPendingCallWatcher*)));
+    onCallFinished(call, SLOT(setCurrentActivityFromReply(QDBusPendingCallWatcher *)));
 
     // Loading all the activities
-    call = Manager::self()->activities()->asyncCall(
-        QStringLiteral("ListActivitiesWithInformation"));
+    call = Manager::self()->activities()->asyncCall(QStringLiteral("ListActivitiesWithInformation"));
 
-    onCallFinished(call, SLOT(setAllActivitiesFromReply(QDBusPendingCallWatcher*)));
+    onCallFinished(call, SLOT(setAllActivitiesFromReply(QDBusPendingCallWatcher *)));
 }
 
 void ActivitiesCache::updateActivity(const QString &id)
 {
     // qDebug() << "Updating activity" << id;
 
-    auto call = Manager::self()->activities()->asyncCall(
-        QStringLiteral("ActivityInformation"), id);
+    auto call = Manager::self()->activities()->asyncCall(QStringLiteral("ActivityInformation"), id);
 
-    onCallFinished(call, SLOT(setActivityInfoFromReply(QDBusPendingCallWatcher*)));
+    onCallFinished(call, SLOT(setActivityInfoFromReply(QDBusPendingCallWatcher *)));
 }
 
 void ActivitiesCache::updateActivityState(const QString &id, int state)
@@ -165,10 +152,8 @@ void ActivitiesCache::updateActivityState(const QString &id, int state)
             return state == Info::Running || state == Info::Stopping;
         };
 
-        const bool runningStateChanged
-            = (isInvalid(state) || isInvalid(where->state)
-               || (isStopped(state) && isRunning(where->state))
-               || (isRunning(state) && isStopped(where->state)));
+        const bool runningStateChanged =
+            (isInvalid(state) || isInvalid(where->state) || (isStopped(state) && isRunning(where->state)) || (isRunning(state) && isStopped(where->state)));
 
         where->state = state;
 
@@ -183,13 +168,13 @@ void ActivitiesCache::updateActivityState(const QString &id, int state)
     }
 }
 
-template <typename _Result, typename _Functor>
+template<typename _Result, typename _Functor>
 void ActivitiesCache::passInfoFromReply(QDBusPendingCallWatcher *watcher, _Functor f)
 {
     QDBusPendingReply<_Result> reply = *watcher;
 
     if (!reply.isError()) {
-        auto replyValue = reply.template argumentAt <0>();
+        auto replyValue = reply.template argumentAt<0>();
         // qDebug() << "Got some reply" << replyValue;
 
         ((*this).*f)(replyValue);
@@ -300,4 +285,3 @@ void ActivitiesCache::setCurrentActivity(const QString &activity)
 }
 
 } // namespace KActivities
-

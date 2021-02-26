@@ -12,9 +12,10 @@
 #include <KActivities/ResourceInstance>
 #include <QDebug>
 
-namespace KActivities {
-namespace Imports {
-
+namespace KActivities
+{
+namespace Imports
+{
 ResourceInstance::ResourceInstance(QQuickItem *parent)
     : QQuickItem(parent)
 {
@@ -90,26 +91,24 @@ void ResourceInstance::setTitle(const QString &title)
 
 void ResourceInstance::notifyModified()
 {
-    //ensure the resource instance exists
+    // ensure the resource instance exists
     syncWid();
     m_resourceInstance->notifyModified();
 }
 
 void ResourceInstance::notifyFocusedIn()
 {
-    //ensure the resource instance exists
+    // ensure the resource instance exists
     syncWid();
     m_resourceInstance->notifyFocusedIn();
 }
 
 void ResourceInstance::notifyFocusedOut()
 {
-    //ensure the resource instance exists
+    // ensure the resource instance exists
     syncWid();
     m_resourceInstance->notifyFocusedOut();
 }
 
 }
 }
-
-

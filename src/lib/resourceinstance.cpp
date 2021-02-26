@@ -7,12 +7,13 @@
 #include "resourceinstance.h"
 #include "manager_p.h"
 
-#include <QCoreApplication>
 #include "debug_p.h"
+#include <QCoreApplication>
 
-namespace KActivities {
-
-class ResourceInstancePrivate {
+namespace KActivities
+{
+class ResourceInstancePrivate
+{
 public:
     quintptr wid;
     QUrl uri;
@@ -34,8 +35,7 @@ public:
 
     static void registerResourceEvent(const QString &application, quintptr wid, const QUrl &uri, Type event)
     {
-        Q_ASSERT_X(!application.isEmpty(), "ResourceInstance::event",
-                   "The application id must not be empty");
+        Q_ASSERT_X(!application.isEmpty(), "ResourceInstance::event", "The application id must not be empty");
 
         if (uri.isEmpty()) {
             return;
@@ -73,8 +73,7 @@ ResourceInstance::ResourceInstance(quintptr wid, const QString &application, QOb
     d->application = application.isEmpty() ? QCoreApplication::instance()->applicationName() : application;
 }
 
-ResourceInstance::ResourceInstance(quintptr wid, QUrl resourceUri, const QString &mimetype,
-                                   const QString &title, const QString &application, QObject *parent)
+ResourceInstance::ResourceInstance(quintptr wid, QUrl resourceUri, const QString &mimetype, const QString &title, const QString &application, QObject *parent)
     : QObject(parent)
     , d(new ResourceInstancePrivate())
 {
@@ -169,9 +168,10 @@ quintptr ResourceInstance::winId() const
 
 void ResourceInstance::notifyAccessed(const QUrl &uri, const QString &application)
 {
-    ResourceInstancePrivate::registerResourceEvent(
-        application.isEmpty() ? QCoreApplication::instance()->applicationName() : application,
-        0, uri, ResourceInstancePrivate::Accessed);
+    ResourceInstancePrivate::registerResourceEvent(application.isEmpty() ? QCoreApplication::instance()->applicationName() : application,
+                                                   0,
+                                                   uri,
+                                                   ResourceInstancePrivate::Accessed);
 }
 
 } // namespace KActivities

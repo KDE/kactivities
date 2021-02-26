@@ -11,12 +11,12 @@
 
 #include <memory>
 
-
 #include "activitiescache_p.h"
 
-namespace KActivities {
-
-class ConsumerPrivate : public QObject {
+namespace KActivities
+{
+class ConsumerPrivate : public QObject
+{
     Q_OBJECT
 
 public:
@@ -29,7 +29,6 @@ public Q_SLOTS:
 
 Q_SIGNALS:
     void serviceStatusChanged(Consumer::ServiceStatus status);
-
 };
 
 } // namespace KActivities

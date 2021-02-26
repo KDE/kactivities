@@ -7,16 +7,16 @@
 #ifndef ACTIVITIES_CONTROLLER_H
 #define ACTIVITIES_CONTROLLER_H
 
+#include <QFuture>
 #include <QObject>
 #include <QString>
-#include <QFuture>
 
 #include "consumer.h"
 
 #include "kactivities_export.h"
 
-namespace KActivities {
-
+namespace KActivities
+{
 class ControllerPrivate;
 
 /**
@@ -32,7 +32,8 @@ class ControllerPrivate;
  *
  * @since 5.0
  */
-class KACTIVITIES_EXPORT Controller : public Consumer {
+class KACTIVITIES_EXPORT Controller : public Consumer
+{
     Q_OBJECT
 
     Q_PROPERTY(QString currentActivity READ currentActivity WRITE setCurrentActivity)
@@ -54,8 +55,7 @@ public:
      * @param id id of the activity
      * @param description description to be set
      */
-    QFuture<void> setActivityDescription(const QString &id,
-                                         const QString &description);
+    QFuture<void> setActivityDescription(const QString &id, const QString &description);
 
     /**
      * Sets the icon of the specified activity

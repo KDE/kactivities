@@ -1,6 +1,6 @@
 /*
     SPDX-FileCopyrightText: 2011, 2012, 2013, 2014, 2015 Ivan Cukic <ivan.cukic(at)kde.org>
- 
+
     SPDX-License-Identifier: LGPL-2.0-or-later
 */
 
@@ -9,7 +9,8 @@
 
 #include <QQmlExtensionPlugin>
 
-class ActivitiesExtensionPlugin : public QQmlExtensionPlugin {
+class ActivitiesExtensionPlugin : public QQmlExtensionPlugin
+{
     Q_OBJECT
     Q_PLUGIN_METADATA(IID "org.kde.activities")
 
@@ -19,4 +20,3 @@ public:
 };
 
 #endif // KACTIVITIES_ACTIVITIES_EXTENSION_PLUGIN_H
-

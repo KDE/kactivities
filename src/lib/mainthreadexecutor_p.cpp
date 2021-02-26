@@ -12,10 +12,10 @@
 #include <QMetaObject>
 #include <QThread>
 
-namespace KActivities {
-
-namespace detail {
-
+namespace KActivities
+{
+namespace detail
+{
 MainThreadExecutor::MainThreadExecutor(std::function<void()> &&f)
     : m_function(std::forward<std::function<void()>>(f))
 {

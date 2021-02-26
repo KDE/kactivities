@@ -12,8 +12,8 @@
 
 #include "kactivities_export.h"
 
-namespace KActivities {
-
+namespace KActivities
+{
 class ResourceInstancePrivate;
 
 /**
@@ -36,7 +36,8 @@ class ResourceInstancePrivate;
  * systems - everything is done under-the-hood automatically.
  *
  */
-class KACTIVITIES_EXPORT ResourceInstance : public QObject {
+class KACTIVITIES_EXPORT ResourceInstance : public QObject
+{
     Q_OBJECT
 
     Q_PROPERTY(QUrl uri READ uri WRITE setUri)
@@ -84,8 +85,11 @@ public:
      *        If not specified, QCoreApplication::applicationName is used
      * @param parent pointer to the parent object
      */
-    ResourceInstance(quintptr wid, QUrl resourceUri, const QString &mimetype = QString(),
-                     const QString &title = QString(), const QString &application = QString(),
+    ResourceInstance(quintptr wid,
+                     QUrl resourceUri,
+                     const QString &mimetype = QString(),
+                     const QString &title = QString(),
+                     const QString &application = QString(),
                      QObject *parent = nullptr);
 
     /**

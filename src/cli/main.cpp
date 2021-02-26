@@ -1,6 +1,6 @@
 /*
     SPDX-FileCopyrightText: 2016 Ivan Cukic <ivan.cukic(at)kde.org>
- 
+
     SPDX-License-Identifier: GPL-2.0-or-later
 */
 
@@ -11,7 +11,6 @@
 #include <KActivities/Controller>
 
 #include "utils.h"
-
 
 // Output modifiers
 
@@ -73,7 +72,7 @@ DEFINE_COMMAND(stopActivity, 1)
 
 DEFINE_COMMAND(listActivities, 0)
 {
-    for (const auto& activity: controller->activities()) {
+    for (const auto &activity : controller->activities()) {
         printActivity(activity);
     }
 
@@ -89,8 +88,8 @@ DEFINE_COMMAND(currentActivity, 0)
 
 DEFINE_COMMAND(setActivityProperty, 3)
 {
-    const auto what  = args(1);
-    const auto id    = args(2);
+    const auto what = args(1);
+    const auto id = args(2);
     const auto value = args(3);
 
     // clang-format off
@@ -107,8 +106,8 @@ DEFINE_COMMAND(setActivityProperty, 3)
 
 DEFINE_COMMAND(activityProperty, 2)
 {
-    const auto what  = args(1);
-    const auto id    = args(2);
+    const auto what = args(1);
+    const auto id = args(2);
 
     KActivities::Info info(id);
     // clang-format off
@@ -146,12 +145,11 @@ DEFINE_COMMAND(previousActivity, 0)
 void printHelp()
 {
     if (!flags.bare) {
-        qDebug()
-            << "\nModifiers (applied only to trailing commands):"
+        qDebug() << "\nModifiers (applied only to trailing commands):"
                  << "\n    --bare, --no-bare        - show minimal info vs show everything"
                  << "\n    --color, --no-color      - make the output pretty"
 
-            << "\n\nCommands:"
+                 << "\n\nCommands:"
                  << "\n    --list-activities        - lists all activities"
                  << "\n    --create-activity Name   - creates a new activity with the specified name"
                  << "\n    --remove-activity ID     - removes the activity with the specified id"
@@ -166,12 +164,10 @@ void printHelp()
                  << "\n    --activity-property What ID"
                  << "\n                             - gets activity name, icon or description"
                  << "\n    --set-activity-property What ID Value"
-                 << "\n                             - changes activity name, icon or description"
-                 ;
+                 << "\n                             - changes activity name, icon or description";
 
     } else {
-        qDebug()
-                 << "\n--bare"
+        qDebug() << "\n--bare"
                  << "\n--no-bare"
                  << "\n--color"
                  << "\n--no-color"
@@ -182,11 +178,8 @@ void printHelp()
                  << "\n--current-activity"
                  << "\n--set-current-activity"
                  << "\n--next-activity"
-                 << "\n--previous-activity"
-                 ;
-
+                 << "\n--previous-activity";
     }
-
 }
 
 int main(int argc, char *argv[])
@@ -194,7 +187,6 @@ int main(int argc, char *argv[])
     QCoreApplication app(argc, argv);
 
     QTimer::singleShot(0, &app, [] {
-
         const auto args = QCoreApplication::arguments();
 
         controller = new KActivities::Controller();
@@ -213,44 +205,43 @@ int main(int argc, char *argv[])
         if (args.count() <= 1) {
             printHelp();
 
-        } else for (int argId = 1; argId < args.count(); ) {
-            if (args[argId] == QLatin1String("--help")) {
-                printHelp();
-                argId++;
+        } else
+            for (int argId = 1; argId < args.count();) {
+                if (args[argId] == QLatin1String("--help")) {
+                    printHelp();
+                    argId++;
+                }
+
+                MATCH_COMMAND(bare)
+                MATCH_COMMAND(noBare)
+                MATCH_COMMAND(color)
+                MATCH_COMMAND(noColor)
+
+                MATCH_COMMAND(listActivities)
+
+                MATCH_COMMAND(currentActivity)
+                MATCH_COMMAND(setCurrentActivity)
+                MATCH_COMMAND(activityProperty)
+                MATCH_COMMAND(setActivityProperty)
+                MATCH_COMMAND(nextActivity)
+                MATCH_COMMAND(previousActivity)
+
+                MATCH_COMMAND(createActivity)
+                MATCH_COMMAND(removeActivity)
+                MATCH_COMMAND(startActivity)
+                MATCH_COMMAND(stopActivity)
+
+                else
+                {
+                    qDebug() << "Skipping unknown argument" << args[argId];
+                    argId++;
+                }
             }
-
-            MATCH_COMMAND(bare)
-            MATCH_COMMAND(noBare)
-            MATCH_COMMAND(color)
-            MATCH_COMMAND(noColor)
-
-            MATCH_COMMAND(listActivities)
-
-            MATCH_COMMAND(currentActivity)
-            MATCH_COMMAND(setCurrentActivity)
-            MATCH_COMMAND(activityProperty)
-            MATCH_COMMAND(setActivityProperty)
-            MATCH_COMMAND(nextActivity)
-            MATCH_COMMAND(previousActivity)
-
-            MATCH_COMMAND(createActivity)
-            MATCH_COMMAND(removeActivity)
-            MATCH_COMMAND(startActivity)
-            MATCH_COMMAND(stopActivity)
-
-            else {
-                qDebug() << "Skipping unknown argument" << args[argId];
-                argId++;
-            }
-
-        }
 
         delete controller;
 
         QCoreApplication::quit();
-
     });
 
     return app.exec();
 }
-

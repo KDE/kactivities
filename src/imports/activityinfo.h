@@ -1,6 +1,6 @@
 /*
     SPDX-FileCopyrightText: 2012, 2013, 2014, 2015 Ivan Cukic <ivan.cukic(at)kde.org>
- 
+
     SPDX-License-Identifier: GPL-2.0-or-later
 */
 
@@ -17,14 +17,16 @@
 #include <lib/controller.h>
 #include <lib/info.h>
 
-namespace KActivities {
-namespace Imports {
-
+namespace KActivities
+{
+namespace Imports
+{
 /**
  * ActivityInfo
  */
 
-class ActivityInfo : public QObject {
+class ActivityInfo : public QObject
+{
     Q_OBJECT
 
     /**
@@ -93,4 +95,3 @@ private:
 } // namespace KActivities
 
 #endif // KACTIVITIES_IMPORTS_ACTIVITY_INFO_H
-

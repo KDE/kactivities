@@ -6,8 +6,8 @@
 
 #include "version.h"
 
-namespace KActivities {
-
+namespace KActivities
+{
 unsigned int version()
 {
     return KACTIVITIES_VERSION;

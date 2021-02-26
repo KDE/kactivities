@@ -10,9 +10,8 @@
 
 #include "utils/dbusfuture_p.h"
 
-
-namespace KActivities {
-
+namespace KActivities
+{
 Controller::Controller(QObject *parent)
     : Consumer(parent)
 {
@@ -47,24 +46,17 @@ QFuture<bool> Controller::setCurrentActivity(const QString &id)
     //            "You can not set an non-existent activity to be the current");
 
     // return Manager::activities()->SetCurrentActivity(id);
-    return Manager::isServiceRunning() ?
-        DBusFuture::asyncCall<bool>(
-            Manager::activities(), QStringLiteral("SetCurrentActivity"), id)
-        :
-        DBusFuture::fromValue(false);
+    return Manager::isServiceRunning() ? DBusFuture::asyncCall<bool>(Manager::activities(), QStringLiteral("SetCurrentActivity"), id)
+                                       : DBusFuture::fromValue(false);
 }
 
 QFuture<QString> Controller::addActivity(const QString &name)
 {
-    Q_ASSERT_X(!name.isEmpty(), "Controller::addActivity",
-               "The activity name can not be an empty string");
+    Q_ASSERT_X(!name.isEmpty(), "Controller::addActivity", "The activity name can not be an empty string");
 
     // return Manager::activities()->AddActivity(name);
-    return Manager::isServiceRunning() ?
-        DBusFuture::asyncCall<QString>(
-            Manager::activities(), QStringLiteral("AddActivity"), name)
-        :
-        DBusFuture::fromValue(QString());
+    return Manager::isServiceRunning() ? DBusFuture::asyncCall<QString>(Manager::activities(), QStringLiteral("AddActivity"), name)
+                                       : DBusFuture::fromValue(QString());
 }
 
 QFuture<void> Controller::removeActivity(const QString &id)
@@ -73,11 +65,7 @@ QFuture<void> Controller::removeActivity(const QString &id)
     //            "You can not remove an non-existent activity");
 
     // Manager::activities()->RemoveActivity(id);
-    return Manager::isServiceRunning() ?
-        DBusFuture::asyncCall<void>(
-            Manager::activities(), QStringLiteral("RemoveActivity"), id)
-        :
-        DBusFuture::fromVoid();
+    return Manager::isServiceRunning() ? DBusFuture::asyncCall<void>(Manager::activities(), QStringLiteral("RemoveActivity"), id) : DBusFuture::fromVoid();
 }
 
 QFuture<void> Controller::stopActivity(const QString &id)
@@ -86,11 +74,7 @@ QFuture<void> Controller::stopActivity(const QString &id)
     //            "You can not stop an non-existent activity");
 
     // Manager::activities()->StopActivity(id);
-    return Manager::isServiceRunning() ?
-        DBusFuture::asyncCall<void>(
-            Manager::activities(), QStringLiteral("StopActivity"), id)
-        :
-        DBusFuture::fromVoid();
+    return Manager::isServiceRunning() ? DBusFuture::asyncCall<void>(Manager::activities(), QStringLiteral("StopActivity"), id) : DBusFuture::fromVoid();
 }
 
 QFuture<void> Controller::startActivity(const QString &id)
@@ -99,29 +83,17 @@ QFuture<void> Controller::startActivity(const QString &id)
     //            "You can not start an non-existent activity");
 
     // Manager::activities()->StartActivity(id);
-    return Manager::isServiceRunning() ?
-        DBusFuture::asyncCall<void>(
-            Manager::activities(), QStringLiteral("StartActivity"), id)
-        :
-        DBusFuture::fromVoid();
+    return Manager::isServiceRunning() ? DBusFuture::asyncCall<void>(Manager::activities(), QStringLiteral("StartActivity"), id) : DBusFuture::fromVoid();
 }
 
 QFuture<void> Controller::previousActivity()
 {
-    return Manager::isServiceRunning() ?
-        DBusFuture::asyncCall<void>(
-            Manager::activities(), QStringLiteral("PreviousActivity"))
-        :
-        DBusFuture::fromVoid();
+    return Manager::isServiceRunning() ? DBusFuture::asyncCall<void>(Manager::activities(), QStringLiteral("PreviousActivity")) : DBusFuture::fromVoid();
 }
 
 QFuture<void> Controller::nextActivity()
 {
-    return Manager::isServiceRunning() ?
-        DBusFuture::asyncCall<void>(
-            Manager::activities(), QStringLiteral("NextActivity"))
-        :
-        DBusFuture::fromVoid();
+    return Manager::isServiceRunning() ? DBusFuture::asyncCall<void>(Manager::activities(), QStringLiteral("NextActivity")) : DBusFuture::fromVoid();
 }
 
 } // namespace KActivities

@@ -12,9 +12,10 @@
 
 #include "activitiescache_p.h"
 
-namespace KActivities {
-
-class InfoPrivate {
+namespace KActivities
+{
+class InfoPrivate
+{
 public:
     InfoPrivate(Info *info, const QString &activity);
 

@@ -12,8 +12,8 @@
 
 #include <QFileSystemWatcher>
 
-namespace KActivities {
-
+namespace KActivities
+{
 // InfoPrivate
 
 InfoPrivate::InfoPrivate(Info *info, const QString &activity)
@@ -111,8 +111,7 @@ Info::Info(const QString &activity, QObject *parent)
     PASS_SIGNAL_HANDLER(activityIconChanged,iconChanged,QString);
 // clang-format on
 #undef PASS_SIGNAL_HANDLER
-    connect(d->cache.get(),  SIGNAL(currentActivityChanged(QString)),
-            this,            SLOT(setCurrentActivity(QString)));
+    connect(d->cache.get(), SIGNAL(currentActivityChanged(QString)), this, SLOT(setCurrentActivity(QString)));
 
     d->isCurrent = (d->cache.get()->m_currentActivity == activity);
 }
@@ -145,27 +144,28 @@ bool Info::isCurrent() const
 
 Info::State Info::state() const
 {
-    if (d->cache->m_status == Consumer::Unknown) return Info::Unknown;
+    if (d->cache->m_status == Consumer::Unknown)
+        return Info::Unknown;
 
     auto info = d->cache->getInfo(d->id);
 
-    if (!info) return Info::Invalid;
+    if (!info)
+        return Info::Invalid;
 
-    return static_cast<Info::State> (info->state);
+    return static_cast<Info::State>(info->state);
 }
 
 void InfoPrivate::setServiceStatus(Consumer::ServiceStatus status) const
 {
     switch (status) {
-        case Consumer::NotRunning:
-        case Consumer::Unknown:
-            activityStateChanged(id, Info::Unknown);
-            break;
+    case Consumer::NotRunning:
+    case Consumer::Unknown:
+        activityStateChanged(id, Info::Unknown);
+        break;
 
-        default:
-            activityStateChanged(id, q->state());
-            break;
-
+    default:
+        activityStateChanged(id, q->state());
+        break;
     }
 }
 

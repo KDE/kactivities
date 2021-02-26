@@ -1,6 +1,6 @@
 /*
     SPDX-FileCopyrightText: 2012, 2013, 2014 Ivan Cukic <ivan.cukic(at)kde.org>
- 
+
     SPDX-License-Identifier: GPL-2.0-or-later
 */
 
@@ -8,11 +8,11 @@
 #define KACTIVITIES_IMPORTS_RESOURCE_MODEL_H
 
 // Qt
+#include <QJSValue>
 #include <QObject>
 #include <QSortFilterProxyModel>
-#include <QJSValue>
-#include <QSqlTableModel>
 #include <QSqlDatabase>
+#include <QSqlTableModel>
 
 // KDE
 #include <kconfiggroup.h>
@@ -22,21 +22,23 @@
 #include <memory>
 
 // Local
-#include <lib/controller.h>
 #include <lib/consumer.h>
+#include <lib/controller.h>
 #include <lib/info.h>
 
 class QModelIndex;
 class QDBusPendingCallWatcher;
 
-namespace KActivities {
-namespace Imports {
-
+namespace KActivities
+{
+namespace Imports
+{
 /**
  * ResourceModel
  */
 
-class ResourceModel : public QSortFilterProxyModel {
+class ResourceModel : public QSortFilterProxyModel
+{
     Q_OBJECT
 
     /**
@@ -72,52 +74,31 @@ public:
     ~ResourceModel() override;
 
     enum Roles {
-        ResourceRole    = Qt::UserRole,
-        ActivityRole    = Qt::UserRole + 1,
-        AgentRole       = Qt::UserRole + 2,
+        ResourceRole = Qt::UserRole,
+        ActivityRole = Qt::UserRole + 1,
+        AgentRole = Qt::UserRole + 2,
         DescriptionRole = Qt::UserRole + 3,
     };
 
     QHash<int, QByteArray> roleNames() const override;
 
-    virtual QVariant data(const QModelIndex &proxyIndex,
-                          int role = Qt::DisplayRole) const override;
+    virtual QVariant data(const QModelIndex &proxyIndex, int role = Qt::DisplayRole) const override;
 
 public Q_SLOTS:
     // Resource linking control methods
-    void linkResourceToActivity(const QString &resource,
-                                const QJSValue &callback) const;
-    void linkResourceToActivity(const QString &resource,
-                                const QString &activity,
-                                const QJSValue &callback) const;
-    void linkResourceToActivity(const QString &agent,
-                                const QString &resource,
-                                const QString &activity,
-                                const QJSValue &callback) const;
+    void linkResourceToActivity(const QString &resource, const QJSValue &callback) const;
+    void linkResourceToActivity(const QString &resource, const QString &activity, const QJSValue &callback) const;
+    void linkResourceToActivity(const QString &agent, const QString &resource, const QString &activity, const QJSValue &callback) const;
 
-    void unlinkResourceFromActivity(const QString &resource,
-                                    const QJSValue &callback);
-    void unlinkResourceFromActivity(const QString &resource,
-                                    const QString &activity,
-                                    const QJSValue &callback);
-    void unlinkResourceFromActivity(const QString &agent,
-                                    const QString &resource,
-                                    const QString &activity,
-                                    const QJSValue &callback);
-    void unlinkResourceFromActivity(const QStringList &agents,
-                                    const QString &resource,
-                                    const QStringList &activities,
-                                    const QJSValue &callback);
+    void unlinkResourceFromActivity(const QString &resource, const QJSValue &callback);
+    void unlinkResourceFromActivity(const QString &resource, const QString &activity, const QJSValue &callback);
+    void unlinkResourceFromActivity(const QString &agent, const QString &resource, const QString &activity, const QJSValue &callback);
+    void unlinkResourceFromActivity(const QStringList &agents, const QString &resource, const QStringList &activities, const QJSValue &callback);
 
     bool isResourceLinkedToActivity(const QString &resource);
-    bool isResourceLinkedToActivity(const QString &resource,
-                                    const QString &activity);
-    bool isResourceLinkedToActivity(const QString &agent,
-                                    const QString &resource,
-                                    const QString &activity);
-    bool isResourceLinkedToActivity(const QStringList &agents,
-                                    const QString &resource,
-                                    const QStringList &activities);
+    bool isResourceLinkedToActivity(const QString &resource, const QString &activity);
+    bool isResourceLinkedToActivity(const QString &agent, const QString &resource, const QString &activity);
+    bool isResourceLinkedToActivity(const QStringList &agents, const QString &resource, const QStringList &activities);
 
     // Model property getters and setters
     void setShownActivities(const QString &activities);
@@ -142,7 +123,6 @@ public Q_SLOTS:
 protected:
     bool lessThan(const QModelIndex &left, const QModelIndex &right) const override;
 
-
 Q_SIGNALS:
     void shownActivitiesChanged();
     void shownAgentsChanged();
@@ -150,18 +130,13 @@ Q_SIGNALS:
 private Q_SLOTS:
     void onCurrentActivityChanged(const QString &activity);
 
-    void onResourceLinkedToActivity(const QString &initiatingAgent,
-                                    const QString &targettedResource,
-                                    const QString &usedActivity);
-    void onResourceUnlinkedFromActivity(const QString &initiatingAgent,
-                                        const QString &targettedResource,
-                                        const QString &usedActivity);
+    void onResourceLinkedToActivity(const QString &initiatingAgent, const QString &targettedResource, const QString &usedActivity);
+    void onResourceUnlinkedFromActivity(const QString &initiatingAgent, const QString &targettedResource, const QString &usedActivity);
 
 private:
     KActivities::Consumer m_service;
 
-    inline
-    QVariant dataForColumn(const QModelIndex &index, int column) const;
+    inline QVariant dataForColumn(const QModelIndex &index, int column) const;
 
     QString activityToWhereClause(const QString &activity) const;
     QString agentToWhereClause(const QString &agent) const;
@@ -194,4 +169,3 @@ private:
 } // namespace KActivities
 
 #endif // KACTIVITIES_IMPORTS_RESOURCE_MODEL_H
-

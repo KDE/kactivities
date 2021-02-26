@@ -17,9 +17,10 @@
 #include "activities_interface.h"
 #include "consumer.h"
 
-namespace KActivities {
-
-class ActivitiesCache : public QObject {
+namespace KActivities
+{
+class ActivitiesCache : public QObject
+{
     Q_OBJECT
 
 public:
@@ -65,36 +66,29 @@ private Q_SLOTS:
     void setServiceStatus(bool status);
 
 public:
-    template <typename _Result, typename _Functor>
+    template<typename _Result, typename _Functor>
     void passInfoFromReply(QDBusPendingCallWatcher *watcher, _Functor f);
 
-    static
-    bool infoLessThan(const ActivityInfo &info, const ActivityInfo &other)
+    static bool infoLessThan(const ActivityInfo &info, const ActivityInfo &other)
     {
-        const auto comp =
-            QString::compare(info.name, other.name, Qt::CaseInsensitive);
+        const auto comp = QString::compare(info.name, other.name, Qt::CaseInsensitive);
         return comp < 0 || (comp == 0 && info.id < other.id);
     }
 
-    ActivityInfoList::iterator
-    find(const QString &id)
+    ActivityInfoList::iterator find(const QString &id)
     {
-        return std::find_if(m_activities.begin(), m_activities.end(),
-                            [&id] (const ActivityInfo &info) {
-                                return info.id == id;
-                            });
+        return std::find_if(m_activities.begin(), m_activities.end(), [&id](const ActivityInfo &info) {
+            return info.id == id;
+        });
     }
 
-    ActivityInfoList::iterator
-    lower_bound(const ActivityInfo &info)
+    ActivityInfoList::iterator lower_bound(const ActivityInfo &info)
     {
-        return std::lower_bound(m_activities.begin(), m_activities.end(),
-                                info, &infoLessThan);
+        return std::lower_bound(m_activities.begin(), m_activities.end(), info, &infoLessThan);
     }
 
-    template <int Policy = kamd::utils::Const>
-    inline typename kamd::utils::ptr_to<ActivityInfo, Policy>::type
-    getInfo(const QString &id)
+    template<int Policy = kamd::utils::Const>
+    inline typename kamd::utils::ptr_to<ActivityInfo, Policy>::type getInfo(const QString &id)
     {
         const auto where = find(id);
 
@@ -105,14 +99,13 @@ public:
         return nullptr;
     }
 
-    template <typename TargetSlot>
-    void onCallFinished(QDBusPendingCall &call, TargetSlot slot) {
+    template<typename TargetSlot>
+    void onCallFinished(QDBusPendingCall &call, TargetSlot slot)
+    {
         auto watcher = new QDBusPendingCallWatcher(call, this);
 
-        connect(watcher, SIGNAL(finished(QDBusPendingCallWatcher *)),
-                this, slot);
+        connect(watcher, SIGNAL(finished(QDBusPendingCallWatcher *)), this, slot);
     }
-
 
     ActivitiesCache();
 
@@ -123,6 +116,4 @@ public:
 
 } // namespace KActivities
 
-
 #endif /* ACTIVITIES_CACHE_P_H */
-

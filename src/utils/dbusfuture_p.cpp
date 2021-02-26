@@ -6,11 +6,12 @@
 
 #include "dbusfuture_p.h"
 
-namespace DBusFuture {
+namespace DBusFuture
+{
+namespace detail
+{ //_
 
-namespace detail { //_
-
-template <>
+template<>
 void DBusCallFutureInterface<void>::callFinished()
 {
     deleteLater();
@@ -47,4 +48,3 @@ QFuture<void> fromVoid()
 }
 
 } // namespace DBusFuture
-

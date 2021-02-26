@@ -13,16 +13,14 @@
  *  Syntactic sugar for the erase-remove idiom                      *
  ********************************************************************/
 
-namespace kamd {
-namespace utils {
-
-template <typename Collection, typename Filter>
+namespace kamd
+{
+namespace utils
+{
+template<typename Collection, typename Filter>
 __inline void remove_if(Collection &collection, Filter filter)
 {
-    collection.erase(
-        std::remove_if(
-            collection.begin(), collection.end(), filter),
-        collection.end());
+    collection.erase(std::remove_if(collection.begin(), collection.end(), filter), collection.end());
 }
 
 } // namespace utils

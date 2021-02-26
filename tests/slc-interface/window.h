@@ -6,14 +6,16 @@
 
 #pragma once
 
-#include <QMainWindow>
 #include "slc_interface.h"
+#include <QMainWindow>
 
-namespace Ui {
-    class MainWindow;
+namespace Ui
+{
+class MainWindow;
 }
 
-class Window: public QMainWindow {
+class Window : public QMainWindow
+{
     Q_OBJECT
 
 public:
@@ -27,4 +29,3 @@ private:
     Ui::MainWindow *ui;
     org::kde::ActivityManager::SLC *slc;
 };
-

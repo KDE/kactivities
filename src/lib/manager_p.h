@@ -9,19 +9,20 @@
 
 #include <common/dbus/org.kde.ActivityManager.Activities.h>
 
-#include "application_interface.h"
 #include "activities_interface.h"
+#include "application_interface.h"
+#include "features_interface.h"
 #include "resources_interface.h"
 #include "resources_linking_interface.h"
-#include "features_interface.h"
 
 #include <QDBusServiceWatcher>
 
 namespace Service = org::kde::ActivityManager;
 
-namespace KActivities {
-
-class Manager : public QObject {
+namespace KActivities
+{
+class Manager : public QObject
+{
     Q_OBJECT
 
 public:
@@ -35,8 +36,7 @@ public:
     static Service::Features *features();
 
 public Q_SLOTS:
-    void serviceOwnerChanged(const QString &serviceName,
-                             const QString &oldOwner, const QString &newOwner);
+    void serviceOwnerChanged(const QString &serviceName, const QString &oldOwner, const QString &newOwner);
 
 Q_SIGNALS:
     void serviceStatusChanged(bool status);

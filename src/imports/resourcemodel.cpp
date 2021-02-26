@@ -1,6 +1,6 @@
 /*
     SPDX-FileCopyrightText: 2012, 2013, 2014 Ivan Cukic <ivan.cukic(at)kde.org>
- 
+
     SPDX-License-Identifier: GPL-2.0-or-later
 */
 
@@ -9,49 +9,50 @@
 
 // Qt
 #include <QByteArray>
+#include <QCoreApplication>
 #include <QDebug>
 #include <QModelIndex>
-#include <QCoreApplication>
 #include <QSqlQuery>
 #include <QUuid>
 
 // KDE
 #include <kconfig.h>
-#include <ksharedconfig.h>
-#include <kfileitem.h>
 #include <kdesktopfile.h>
+#include <kfileitem.h>
+#include <ksharedconfig.h>
 
 // STL and Boost
-#include <mutex>
 #include <boost/algorithm/string/join.hpp>
-#include <boost/range/numeric.hpp>
-#include <boost/range/algorithm/find_if.hpp>
-#include <boost/range/adaptor/transformed.hpp>
 #include <boost/range/adaptor/filtered.hpp>
+#include <boost/range/adaptor/transformed.hpp>
+#include <boost/range/algorithm/find_if.hpp>
+#include <boost/range/numeric.hpp>
+#include <mutex>
 
 // Local
-#include "utils/range.h"
-#include "utils/dbusfuture_p.h"
 #include "common/dbus/common.h"
+#include "utils/dbusfuture_p.h"
+#include "utils/range.h"
 
 #define ENABLE_QJSVALUE_CONTINUATION
 #include "utils/continue_with.h"
 
 #define ACTIVITY_COLUMN 0
-#define AGENT_COLUMN    1
+#define AGENT_COLUMN 1
 #define RESOURCE_COLUMN 2
-#define UNKNOWN_COLUMN  3
-
+#define UNKNOWN_COLUMN 3
 
 using kamd::utils::continue_with;
 
-namespace KActivities {
-namespace Imports {
-
-class ResourceModel::LinkerService: public QDBusInterface {
+namespace KActivities
+{
+namespace Imports
+{
+class ResourceModel::LinkerService : public QDBusInterface
+{
 private:
     LinkerService()
-        : KAMD_DBUS_INTERFACE(Resources/Linking, ResourcesLinking, nullptr)
+        : KAMD_DBUS_INTERFACE(Resources / Linking, ResourcesLinking, nullptr)
     {
     }
 
@@ -72,7 +73,6 @@ public:
 
         return result;
     }
-
 };
 
 ResourceModel::ResourceModel(QObject *parent)
@@ -81,29 +81,26 @@ ResourceModel::ResourceModel(QObject *parent)
     , m_shownAgents(QStringLiteral(":current"))
     , m_defaultItemsLoaded(false)
     , m_linker(LinkerService::self())
-    , m_config(KSharedConfig::openConfig("kactivitymanagerd-resourcelinkingrc")
-        ->group("Order"))
+    , m_config(KSharedConfig::openConfig("kactivitymanagerd-resourcelinkingrc")->group("Order"))
 {
     // NOTE: What to do if the file does not exist?
     //       Ignoring that case since the daemon creates it on startup.
     //       Is it plausible that somebody will instantiate the ResourceModel
     //       before the daemon is started?
 
-    const QString databaseDir
-        = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation)
-          + QStringLiteral("/kactivitymanagerd/resources/");
+    const QString databaseDir = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QStringLiteral("/kactivitymanagerd/resources/");
 
     m_databaseFile = databaseDir + QStringLiteral("database");
 
     loadDatabase();
 
-    connect(&m_service, &KActivities::Consumer::currentActivityChanged,
-            this, &ResourceModel::onCurrentActivityChanged);
+    connect(&m_service, &KActivities::Consumer::currentActivityChanged, this, &ResourceModel::onCurrentActivityChanged);
 
-    connect(m_linker.get(), SIGNAL(ResourceLinkedToActivity(QString,QString,QString)),
-            this, SLOT(onResourceLinkedToActivity(QString,QString,QString)));
-    connect(m_linker.get(), SIGNAL(ResourceUnlinkedFromActivity(QString,QString,QString)),
-            this, SLOT(onResourceUnlinkedFromActivity(QString,QString,QString)));
+    connect(m_linker.get(), SIGNAL(ResourceLinkedToActivity(QString, QString, QString)), this, SLOT(onResourceLinkedToActivity(QString, QString, QString)));
+    connect(m_linker.get(),
+            SIGNAL(ResourceUnlinkedFromActivity(QString, QString, QString)),
+            this,
+            SLOT(onResourceUnlinkedFromActivity(QString, QString, QString)));
 
     setDynamicSortFilter(true);
     sort(0);
@@ -111,14 +108,14 @@ ResourceModel::ResourceModel(QObject *parent)
 
 bool ResourceModel::loadDatabase()
 {
-    if (m_database.isValid()) return true;
-    if (!QFile(m_databaseFile).exists()) return false;
+    if (m_database.isValid())
+        return true;
+    if (!QFile(m_databaseFile).exists())
+        return false;
 
     // TODO: Database connection naming could be smarter (thread-id-based,
     //       reusing connections...?)
-    m_database = QSqlDatabase::addDatabase(
-        QStringLiteral("QSQLITE"),
-        QStringLiteral("kactivities_db_resources_") + QString::number((quintptr)this));
+    m_database = QSqlDatabase::addDatabase(QStringLiteral("QSQLITE"), QStringLiteral("kactivities_db_resources_") + QString::number((quintptr)this));
 
     // qDebug() << "Database file is: " << m_databaseFile;
     m_database.setDatabaseName(m_databaseFile);
@@ -142,10 +139,10 @@ ResourceModel::~ResourceModel()
 
 QVariant ResourceModel::dataForColumn(const QModelIndex &index, int column) const
 {
-    if (!m_database.isValid()) return QVariant();
+    if (!m_database.isValid())
+        return QVariant();
 
-    return m_databaseModel->data(index.sibling(index.row(), column),
-                                 Qt::DisplayRole);
+    return m_databaseModel->data(index.sibling(index.row(), column), Qt::DisplayRole);
 }
 
 bool ResourceModel::lessThan(const QModelIndex &left, const QModelIndex &right) const
@@ -156,34 +153,29 @@ bool ResourceModel::lessThan(const QModelIndex &left, const QModelIndex &right) 
     const bool hasLeft = m_sorting.contains(leftResource);
     const bool hasRight = m_sorting.contains(rightResource);
 
-    return
-        ( hasLeft && !hasRight) ? true :
-        (!hasLeft &&  hasRight) ? false :
-        ( hasLeft &&  hasRight) ? m_sorting.indexOf(leftResource) < m_sorting.indexOf(rightResource) :
-        QString::compare(leftResource, rightResource, Qt::CaseInsensitive) < 0;
+    return (hasLeft && !hasRight) ? true
+        : (!hasLeft && hasRight)  ? false
+        : (hasLeft && hasRight)   ? m_sorting.indexOf(leftResource) < m_sorting.indexOf(rightResource)
+                                  : QString::compare(leftResource, rightResource, Qt::CaseInsensitive) < 0;
 }
 
 QHash<int, QByteArray> ResourceModel::roleNames() const
 {
-    return {
-        { Qt::DisplayRole,    "display" },
-        { Qt::DecorationRole, "decoration" },
-        { ResourceRole,       "uri" },
-        { AgentRole,          "agent" },
-        { ActivityRole,       "activity" },
-        { DescriptionRole,    "subtitle" }
-    };
+    return {{Qt::DisplayRole, "display"},
+            {Qt::DecorationRole, "decoration"},
+            {ResourceRole, "uri"},
+            {AgentRole, "agent"},
+            {ActivityRole, "activity"},
+            {DescriptionRole, "subtitle"}};
 }
 
-template <typename Validator>
-inline QStringList validateList(
-        const QString &values, Validator validator)
+template<typename Validator>
+inline QStringList validateList(const QString &values, Validator validator)
 {
     using boost::adaptors::filtered;
     using kamd::utils::as_collection;
 
-    auto result
-        = as_collection<QStringList>(values.split(',') | filtered(validator));
+    auto result = as_collection<QStringList>(values.split(',') | filtered(validator));
 
     if (result.isEmpty()) {
         result.append(QStringLiteral(":current"));
@@ -194,12 +186,8 @@ inline QStringList validateList(
 
 void ResourceModel::setShownActivities(const QString &activities)
 {
-    m_shownActivities = validateList(activities, [&] (const QString &activity) {
-        return
-            activity == ":current" ||
-            activity == ":any" ||
-            activity == ":global" ||
-            !QUuid(activity).isNull();
+    m_shownActivities = validateList(activities, [&](const QString &activity) {
+        return activity == ":current" || activity == ":any" || activity == ":global" || !QUuid(activity).isNull();
     });
 
     reloadData();
@@ -208,12 +196,8 @@ void ResourceModel::setShownActivities(const QString &activities)
 
 void ResourceModel::setShownAgents(const QString &agents)
 {
-    m_shownAgents = validateList(agents, [&] (const QString &agent) {
-        return
-            agent == ":current" ||
-            agent == ":any" ||
-            agent == ":global" ||
-            (!agent.isEmpty() && !agent.contains('\'') && !agent.contains('"'));
+    m_shownAgents = validateList(agents, [&](const QString &agent) {
+        return agent == ":current" || agent == ":any" || agent == ":global" || (!agent.isEmpty() && !agent.contains('\'') && !agent.contains('"'));
     });
 
     loadDefaultsIfNeeded();
@@ -244,26 +228,23 @@ void ResourceModel::setDefaultItemsConfig(const QString &defaultItemsConfig)
 
 QString ResourceModel::activityToWhereClause(const QString &shownActivity) const
 {
-    return QStringLiteral(" OR usedActivity=") + (
-        shownActivity == ":current" ? "'" + m_service.currentActivity() + "'" :
-        shownActivity == ":any"     ? "usedActivity" :
-        shownActivity == ":global"  ? "''" :
-                                      "'" + shownActivity + "'"
-    );
+    return QStringLiteral(" OR usedActivity=")
+        + (shownActivity == ":current"      ? "'" + m_service.currentActivity() + "'"
+               : shownActivity == ":any"    ? "usedActivity"
+               : shownActivity == ":global" ? "''"
+                                            : "'" + shownActivity + "'");
 }
 
 QString ResourceModel::agentToWhereClause(const QString &shownAgent) const
 {
-    return QStringLiteral(" OR initiatingAgent=") + (
-        shownAgent == ":current" ? "'" + QCoreApplication::applicationName() + "'" :
-        shownAgent == ":any"     ? "initiatingAgent" :
-        shownAgent == ":global"  ? "''" :
-                                   "'" + shownAgent + "'"
-    );
+    return QStringLiteral(" OR initiatingAgent=")
+        + (shownAgent == ":current"      ? "'" + QCoreApplication::applicationName() + "'"
+               : shownAgent == ":any"    ? "initiatingAgent"
+               : shownAgent == ":global" ? "''"
+                                         : "'" + shownAgent + "'");
 }
 
-QString ResourceModel::whereClause(const QStringList &activities,
-                                   const QStringList &agents) const
+QString ResourceModel::whereClause(const QStringList &activities, const QStringList &agents) const
 {
     using boost::accumulate;
     using namespace kamd::utils;
@@ -280,11 +261,9 @@ QString ResourceModel::whereClause(const QStringList &activities,
     // Generating the SQL WHERE part by concatenating the generated clauses.
     // The generated query will be in the form of '0 OR clause1 OR clause2 ...'
 
-    const QString whereActivity =
-        accumulate(activities | activityToWhereClause, QStringLiteral("0"));
+    const QString whereActivity = accumulate(activities | activityToWhereClause, QStringLiteral("0"));
 
-    const QString whereAgent =
-        accumulate(agents | agentToWhereClause, QStringLiteral("0"));
+    const QString whereAgent = accumulate(agents | agentToWhereClause, QStringLiteral("0"));
 
     // qDebug() << "This is the filter: " << '(' + whereActivity + ") AND (" + whereAgent + ')';
 
@@ -295,7 +274,8 @@ void ResourceModel::reloadData()
 {
     m_sorting = m_config.readEntry(m_shownAgents.first(), QStringList());
 
-    if (!m_database.isValid()) return;
+    if (!m_database.isValid())
+        return;
     m_databaseModel->setFilter(whereClause(m_shownActivities, m_shownAgents));
 }
 
@@ -312,8 +292,7 @@ QVariant ResourceModel::data(const QModelIndex &proxyIndex, int role) const
 {
     auto index = mapToSource(proxyIndex);
 
-    if (role == Qt::DisplayRole || role == DescriptionRole
-            || role == Qt::DecorationRole) {
+    if (role == Qt::DisplayRole || role == DescriptionRole || role == Qt::DecorationRole) {
         auto uri = dataForColumn(index, RESOURCE_COLUMN).toString();
 
         // TODO: Will probably need some more special handling -
@@ -346,23 +325,17 @@ QVariant ResourceModel::data(const QModelIndex &proxyIndex, int role) const
     // clang-format on
 }
 
-void ResourceModel::linkResourceToActivity(const QString &resource,
-                                           const QJSValue &callback) const
+void ResourceModel::linkResourceToActivity(const QString &resource, const QJSValue &callback) const
 {
     linkResourceToActivity(resource, m_shownActivities.first(), callback);
 }
 
-void ResourceModel::linkResourceToActivity(const QString &resource,
-                                           const QString &activity,
-                                           const QJSValue &callback) const
+void ResourceModel::linkResourceToActivity(const QString &resource, const QString &activity, const QJSValue &callback) const
 {
     linkResourceToActivity(m_shownAgents.first(), resource, activity, callback);
 }
 
-void ResourceModel::linkResourceToActivity(const QString &agent,
-                                           const QString &_resource,
-                                           const QString &activity,
-                                           const QJSValue &callback) const
+void ResourceModel::linkResourceToActivity(const QString &agent, const QString &_resource, const QString &activity, const QJSValue &callback) const
 {
     if (activity == ":any") {
         qWarning() << ":any is not a valid activity specification for linking";
@@ -376,44 +349,32 @@ void ResourceModel::linkResourceToActivity(const QString &agent,
     //          << "ResourceModel:         Agents: " << agent << "\n"
     //          << "ResourceModel:         Activities: " << activity << "\n";
 
-
-    kamd::utils::continue_with(
-        DBusFuture::asyncCall<void>(m_linker.get(),
-            QStringLiteral("LinkResourceToActivity"),
-            agent, resource,
-            activity == ":current" ? m_service.currentActivity() :
-            activity == ":global"  ? "" : activity),
-        callback);
-}
-
-void ResourceModel::unlinkResourceFromActivity(const QString &resource,
-                                               const QJSValue &callback)
-{
-    unlinkResourceFromActivity(m_shownAgents, resource, m_shownActivities,
+    kamd::utils::continue_with(DBusFuture::asyncCall<void>(m_linker.get(),
+                                                           QStringLiteral("LinkResourceToActivity"),
+                                                           agent,
+                                                           resource,
+                                                           activity == ":current"      ? m_service.currentActivity()
+                                                               : activity == ":global" ? ""
+                                                                                       : activity),
                                callback);
 }
 
-void ResourceModel::unlinkResourceFromActivity(const QString &resource,
-                                               const QString &activity,
-                                               const QJSValue &callback)
+void ResourceModel::unlinkResourceFromActivity(const QString &resource, const QJSValue &callback)
 {
-    unlinkResourceFromActivity(m_shownAgents, resource,
-                               QStringList() << activity, callback);
+    unlinkResourceFromActivity(m_shownAgents, resource, m_shownActivities, callback);
 }
 
-void ResourceModel::unlinkResourceFromActivity(const QString &agent,
-                                               const QString &resource,
-                                               const QString &activity,
-                                               const QJSValue &callback)
+void ResourceModel::unlinkResourceFromActivity(const QString &resource, const QString &activity, const QJSValue &callback)
 {
-    unlinkResourceFromActivity(QStringList() << agent, resource,
-                               QStringList() << activity, callback);
+    unlinkResourceFromActivity(m_shownAgents, resource, QStringList() << activity, callback);
 }
 
-void ResourceModel::unlinkResourceFromActivity(const QStringList &agents,
-                                               const QString &_resource,
-                                               const QStringList &activities,
-                                               const QJSValue &callback)
+void ResourceModel::unlinkResourceFromActivity(const QString &agent, const QString &resource, const QString &activity, const QJSValue &callback)
+{
+    unlinkResourceFromActivity(QStringList() << agent, resource, QStringList() << activity, callback);
+}
+
+void ResourceModel::unlinkResourceFromActivity(const QStringList &agents, const QString &_resource, const QStringList &activities, const QJSValue &callback)
 {
     auto resource = validateResource(_resource);
 
@@ -422,8 +383,8 @@ void ResourceModel::unlinkResourceFromActivity(const QStringList &agents,
     //          << "ResourceModel:         Agents: " << agents << "\n"
     //          << "ResourceModel:         Activities: " << activities << "\n";
 
-    for (const auto& agent: agents) {
-        for (const auto& activity: activities) {
+    for (const auto &agent : agents) {
+        for (const auto &activity : activities) {
             if (activity == ":any") {
                 qWarning() << ":any is not a valid activity specification for linking";
                 return;
@@ -432,13 +393,14 @@ void ResourceModel::unlinkResourceFromActivity(const QStringList &agents,
             // We might want to compose the continuations into one
             // so that the callback gets called only once,
             // but we don't care about that at the moment
-            kamd::utils::continue_with(
-                    DBusFuture::asyncCall<void>(m_linker.get(),
-                        QStringLiteral("UnlinkResourceFromActivity"),
-                        agent, resource,
-                        activity == ":current" ? m_service.currentActivity() :
-                        activity == ":global"  ? "" : activity),
-                    callback);
+            kamd::utils::continue_with(DBusFuture::asyncCall<void>(m_linker.get(),
+                                                                   QStringLiteral("UnlinkResourceFromActivity"),
+                                                                   agent,
+                                                                   resource,
+                                                                   activity == ":current"      ? m_service.currentActivity()
+                                                                       : activity == ":global" ? ""
+                                                                                               : activity),
+                                       callback);
         }
     }
 }
@@ -448,26 +410,20 @@ bool ResourceModel::isResourceLinkedToActivity(const QString &resource)
     return isResourceLinkedToActivity(m_shownAgents, resource, m_shownActivities);
 }
 
-bool ResourceModel::isResourceLinkedToActivity(const QString &resource,
-                                               const QString &activity)
+bool ResourceModel::isResourceLinkedToActivity(const QString &resource, const QString &activity)
 {
-    return isResourceLinkedToActivity(m_shownAgents, resource,
-                                      QStringList() << activity);
+    return isResourceLinkedToActivity(m_shownAgents, resource, QStringList() << activity);
 }
 
-bool ResourceModel::isResourceLinkedToActivity(const QString &agent,
-                                               const QString &resource,
-                                               const QString &activity)
+bool ResourceModel::isResourceLinkedToActivity(const QString &agent, const QString &resource, const QString &activity)
 {
-    return isResourceLinkedToActivity(QStringList() << agent, resource,
-                                      QStringList() << activity);
+    return isResourceLinkedToActivity(QStringList() << agent, resource, QStringList() << activity);
 }
 
-bool ResourceModel::isResourceLinkedToActivity(const QStringList &agents,
-                                               const QString &_resource,
-                                               const QStringList &activities)
+bool ResourceModel::isResourceLinkedToActivity(const QStringList &agents, const QString &_resource, const QStringList &activities)
 {
-    if (!m_database.isValid()) return false;
+    if (!m_database.isValid())
+        return false;
 
     auto resource = validateResource(_resource);
 
@@ -477,10 +433,11 @@ bool ResourceModel::isResourceLinkedToActivity(const QStringList &agents,
     //          << "ResourceModel:         Activities: " << activities << "\n";
 
     QSqlQuery query(m_database);
-    query.prepare("SELECT targettedResource "
-                  "FROM ResourceLink "
-                  "WHERE targettedResource=:resource AND " +
-                  whereClause(activities, agents));
+    query.prepare(
+        "SELECT targettedResource "
+        "FROM ResourceLink "
+        "WHERE targettedResource=:resource AND "
+        + whereClause(activities, agents));
     query.bindValue(":resource", resource);
     query.exec();
 
@@ -497,21 +454,19 @@ bool ResourceModel::isResourceLinkedToActivity(const QStringList &agents,
     return result;
 }
 
-void ResourceModel::onResourceLinkedToActivity(const QString &initiatingAgent,
-                                               const QString &targettedResource,
-                                               const QString &usedActivity)
+void ResourceModel::onResourceLinkedToActivity(const QString &initiatingAgent, const QString &targettedResource, const QString &usedActivity)
 {
     Q_UNUSED(targettedResource);
 
-    if (!loadDatabase()) return;
+    if (!loadDatabase())
+        return;
 
-    auto matchingActivity = boost::find_if(m_shownActivities, [&] (const QString &shownActivity) {
+    auto matchingActivity = boost::find_if(m_shownActivities, [&](const QString &shownActivity) {
         return
             // If the activity is not important
             shownActivity == ":any" ||
             // or we are listening for the changes for the current activity
-            (shownActivity == ":current"
-                 && usedActivity == m_service.currentActivity()) ||
+            (shownActivity == ":current" && usedActivity == m_service.currentActivity()) ||
             // or we want the globally linked resources
             (shownActivity == ":global" && usedActivity.isEmpty()) ||
             // or we have a specific activity in mind
@@ -523,16 +478,14 @@ void ResourceModel::onResourceLinkedToActivity(const QString &initiatingAgent,
             // If the agent is not important
             shownAgent == ":any" ||
             // or we are listening for the changes for the current agent
-            (shownAgent == ":current"
-                && initiatingAgent == QCoreApplication::applicationName()) ||
+            (shownAgent == ":current" && initiatingAgent == QCoreApplication::applicationName()) ||
             // or for links that are global, and not related to a specific agent
             (shownAgent == ":global" && initiatingAgent.isEmpty()) ||
             // or we have a specific agent to listen for
             shownAgent == initiatingAgent;
     });
 
-    if (matchingActivity != m_shownActivities.end()
-        && matchingAgent != m_shownAgents.end()) {
+    if (matchingActivity != m_shownActivities.end() && matchingAgent != m_shownAgents.end()) {
         // TODO: This might be smarter possibly, but might collide
         //       with the SQL model. Implement a custom model with internal
         //       cache instead of basing it on QSqlModel.
@@ -540,9 +493,7 @@ void ResourceModel::onResourceLinkedToActivity(const QString &initiatingAgent,
     }
 }
 
-void ResourceModel::onResourceUnlinkedFromActivity(const QString &initiatingAgent,
-                                                   const QString &targettedResource,
-                                                   const QString &usedActivity)
+void ResourceModel::onResourceUnlinkedFromActivity(const QString &initiatingAgent, const QString &targettedResource, const QString &usedActivity)
 {
     // These are the same at the moment
     onResourceLinkedToActivity(initiatingAgent, targettedResource, usedActivity);
@@ -565,18 +516,13 @@ void ResourceModel::move(int sourceItem, int destinationItem)
         resources << resourceAt(row);
     }
 
-    if (sourceItem < 0 || sourceItem >= rows ||
-        destinationItem < 0 || destinationItem >= rows) {
+    if (sourceItem < 0 || sourceItem >= rows || destinationItem < 0 || destinationItem >= rows) {
         return;
     }
 
     // Moving one item from the source item's location to the location
     // after the destination item
-    std::rotate(
-            resources.begin() + sourceItem,
-            resources.begin() + sourceItem + 1,
-            resources.begin() + destinationItem + 1
-        );
+    std::rotate(resources.begin() + sourceItem, resources.begin() + sourceItem + 1, resources.begin() + destinationItem + 1);
 
     setOrder(resources);
 }
@@ -591,14 +537,9 @@ void ResourceModel::sortItems(Qt::SortOrder sortOrder)
         resources << qMakePair(resourceAt(row), displayAt(row));
     }
 
-    std::sort(resources.begin(), resources.end(),
-        [sortOrder] (const Resource &left, const Resource &right) {
-            return sortOrder == Qt::AscendingOrder ?
-                    left.second < right.second
-                :
-                    right.second < left.second;
-        }
-    );
+    std::sort(resources.begin(), resources.end(), [sortOrder](const Resource &left, const Resource &right) {
+        return sortOrder == Qt::AscendingOrder ? left.second < right.second : right.second < left.second;
+    });
 
     QStringList result;
 
@@ -611,8 +552,7 @@ void ResourceModel::sortItems(Qt::SortOrder sortOrder)
 
 KConfigGroup ResourceModel::config() const
 {
-    return KSharedConfig::openConfig("kactivitymanagerd-resourcelinkingrc")
-        ->group("Order");
+    return KSharedConfig::openConfig("kactivitymanagerd-resourcelinkingrc")->group("Order");
 }
 
 int ResourceModel::count() const
@@ -633,19 +573,24 @@ QString ResourceModel::resourceAt(int row) const
 void ResourceModel::loadDefaultsIfNeeded() const
 {
     // Did we get a request to actually do anything?
-    if (m_defaultItemsConfig.isEmpty()) return;
-    if (m_shownAgents.size() == 0) return;
+    if (m_defaultItemsConfig.isEmpty())
+        return;
+    if (m_shownAgents.size() == 0)
+        return;
 
     // If we have already loaded the items, just exit
-    if (m_defaultItemsLoaded) return;
+    if (m_defaultItemsLoaded)
+        return;
     m_defaultItemsLoaded = true;
 
     // If there are items in the model, no need to load the defaults
-    if (count() != 0) return;
+    if (count() != 0)
+        return;
 
     // Did we already load the defaults for this agent?
     QStringList alreadyInitialized = m_config.readEntry("defaultItemsProcessedFor", QStringList());
-    if (alreadyInitialized.contains(m_shownAgents.first())) return;
+    if (alreadyInitialized.contains(m_shownAgents.first()))
+        return;
     alreadyInitialized << m_shownAgents.first();
     m_config.writeEntry("defaultItemsProcessedFor", alreadyInitialized);
     m_config.sync();
@@ -660,11 +605,9 @@ void ResourceModel::loadDefaultsIfNeeded() const
     //          << configGroup << " "
     //          << configField << " ";
 
-    QStringList items = KSharedConfig::openConfig(configFile)
-        ->group(configGroup)
-        .readEntry(configField, QStringList());
+    QStringList items = KSharedConfig::openConfig(configFile)->group(configGroup).readEntry(configField, QStringList());
 
-    for (const auto& item: items) {
+    for (const auto &item : items) {
         // qDebug() << "Adding: " << item;
         linkResourceToActivity(item, ":global", QJSValue());
     }
@@ -672,12 +615,10 @@ void ResourceModel::loadDefaultsIfNeeded() const
 
 QString ResourceModel::validateResource(const QString &resource) const
 {
-    return resource.startsWith(QLatin1String("file://")) ?
-            QUrl(resource).toLocalFile() : resource;
+    return resource.startsWith(QLatin1String("file://")) ? QUrl(resource).toLocalFile() : resource;
 }
 
 } // namespace Imports
 } // namespace KActivities
 
 // #include "resourcemodel.moc"
-

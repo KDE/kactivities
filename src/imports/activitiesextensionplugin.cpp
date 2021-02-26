@@ -1,14 +1,13 @@
 /*
     SPDX-FileCopyrightText: 2012, 2013, 2014, 2015 Ivan Cukic <ivan.cukic(at)kde.org>
- 
+
     SPDX-License-Identifier: LGPL-2.0-or-later
 */
 
 #include "activitiesextensionplugin.h"
 
-
-#include "activitymodel.h"
 #include "activityinfo.h"
+#include "activitymodel.h"
 #include "resourceinstance.h"
 
 // #include "resourcemodel.h"
@@ -18,7 +17,6 @@
 // TODO: Since plasma is now dealing with activity model wallpapers,
 //       replace ActivityModel with the KActivities::ActivitiesModel
 //       (but keep the name)
-
 
 ActivitiesExtensionPlugin::ActivitiesExtensionPlugin(QObject *parent)
     : QQmlExtensionPlugin(parent)
@@ -39,4 +37,3 @@ void ActivitiesExtensionPlugin::registerTypes(const char *uri)
     // Subclass it, and make it do what you want.
     // qmlRegisterType<KActivities::Imports::ResourceModel>(uri, 0, 1, "ResourceModel");
 }
-

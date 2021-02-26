@@ -4,8 +4,8 @@
     SPDX-License-Identifier: GPL-2.0-or-later
 */
 
-#include <QApplication>
 #include "window.h"
+#include <QApplication>
 
 int main(int argc, char *argv[])
 {
@@ -16,4 +16,3 @@ int main(int argc, char *argv[])
 
     return app.exec();
 }
-

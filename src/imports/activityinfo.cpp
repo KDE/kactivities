@@ -1,21 +1,21 @@
 /*
     SPDX-FileCopyrightText: 2012, 2013, 2014, 2015 Ivan Cukic <ivan.cukic(at)kde.org>
- 
+
     SPDX-License-Identifier: GPL-2.0-or-later
 */
 
 // Self
 #include "activityinfo.h"
 
-namespace KActivities {
-namespace Imports {
-
+namespace KActivities
+{
+namespace Imports
+{
 ActivityInfo::ActivityInfo(QObject *parent)
     : QObject(parent)
     , m_showCurrentActivity(false)
 {
-    connect(&m_service, &KActivities::Controller::currentActivityChanged,
-            this, &ActivityInfo::setCurrentActivity);
+    connect(&m_service, &KActivities::Controller::currentActivityChanged, this, &ActivityInfo::setCurrentActivity);
 }
 
 ActivityInfo::~ActivityInfo()
@@ -24,7 +24,8 @@ ActivityInfo::~ActivityInfo()
 
 void ActivityInfo::setCurrentActivity(const QString &id)
 {
-    if (!m_showCurrentActivity) return;
+    if (!m_showCurrentActivity)
+        return;
 
     setIdInternal(id);
 
@@ -37,8 +38,7 @@ void ActivityInfo::setActivityId(const QString &id)
 {
     m_showCurrentActivity = (id == QLatin1String(":current"));
 
-    setIdInternal(m_showCurrentActivity ?
-            m_service.currentActivity() : id);
+    setIdInternal(m_showCurrentActivity ? m_service.currentActivity() : id);
 }
 
 void ActivityInfo::setIdInternal(const QString &id)
@@ -50,12 +50,9 @@ void ActivityInfo::setIdInternal(const QString &id)
 
     auto ptr = m_info.get();
 
-    connect(ptr, &Info::nameChanged,
-            this, &ActivityInfo::nameChanged);
-    connect(ptr, &Info::descriptionChanged,
-            this, &ActivityInfo::descriptionChanged);
-    connect(ptr, &Info::iconChanged,
-            this, &ActivityInfo::iconChanged);
+    connect(ptr, &Info::nameChanged, this, &ActivityInfo::nameChanged);
+    connect(ptr, &Info::descriptionChanged, this, &ActivityInfo::descriptionChanged);
+    connect(ptr, &Info::iconChanged, this, &ActivityInfo::iconChanged);
 }
 // clang-format off
 #define CREATE_GETTER_AND_SETTER(WHAT, What)                                   \
@@ -89,9 +86,7 @@ bool ActivityInfo::valid() const
     return true;
 }
 
-
 } // namespace Imports
 } // namespace KActivities
 
 // #include "activityinfo.moc"
-
