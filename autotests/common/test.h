@@ -85,12 +85,12 @@ protected:
             if (start.msecsTo(now) >= msecs) break;
         }
     }
-
+// clang-format off
 #define TEST_WAIT_UNTIL(C)                                                     \
     wait_until([&] () -> bool { return C; }, "Timeout waiting for: " #C);
 #define TEST_WAIT_UNTIL_WITH_TIMEOUT(C, T)                                     \
     wait_until([&] () ->bool { return C; }, "Timeout waiting for: " #C, T);
-
+    // clang-format on
 
     template <typename T>
     static bool check(T what, WhenToFail wtf = DontFail,

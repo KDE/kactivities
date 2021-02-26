@@ -309,11 +309,13 @@ void ActivitiesModelPrivate::hideActivity(const QString &id)
     }
 }
 
+// clang-format off
 #define CREATE_SIGNAL_EMITTER(What,Role)                                      \
     void ActivitiesModelPrivate::onActivity##What##Changed(const QString &)    \
     {                                                                          \
         Private::emitActivityUpdated(this, shownActivities, sender(), Role);   \
     }
+// clang-format on
 
 CREATE_SIGNAL_EMITTER(Name,Qt::DisplayRole)
 CREATE_SIGNAL_EMITTER(Description,ActivitiesModel::ActivityDescription)

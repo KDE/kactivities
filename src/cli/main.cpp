@@ -93,12 +93,14 @@ DEFINE_COMMAND(setActivityProperty, 3)
     const auto id    = args(2);
     const auto value = args(3);
 
+    // clang-format off
     awaitFuture(
         what == QLatin1String("name")        ? controller->setActivityName(id, value) :
         what == QLatin1String("description") ? controller->setActivityDescription(id, value) :
         what == QLatin1String("icon")        ? controller->setActivityIcon(id, value) :
                                 QFuture<void>()
         );
+    // clang-format on
 
     return 3;
 }
@@ -109,14 +111,14 @@ DEFINE_COMMAND(activityProperty, 2)
     const auto id    = args(2);
 
     KActivities::Info info(id);
-
+    // clang-format off
     out << (
         what == QLatin1String("name")        ? info.name() :
         what == QLatin1String("description") ? info.description() :
         what == QLatin1String("icon")        ? info.icon() :
                                 QString()
         ) << "\n";
-
+    // clang-format on
     return 2;
 }
 
@@ -201,12 +203,13 @@ int main(int argc, char *argv[])
             QCoreApplication::processEvents();
         }
 
+// clang-format off
         #define MATCH_COMMAND(Command)                                         \
             else if (args[argId] == QLatin1String("--") + toDashes(QStringLiteral(#Command))) \
             {                                                                  \
                 argId += 1 + Command##_command({ args, argId })();             \
             }
-
+        // clang-format on
         if (args.count() <= 1) {
             printHelp();
 

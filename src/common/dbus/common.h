@@ -10,6 +10,8 @@
 #include <QDBusConnection>
 #include <QDBusInterface>
 
+// clang-format off
+
 #define KAMD_DBUS_SERVICE                                                      \
     QStringLiteral("org.kde.ActivityManager")
 

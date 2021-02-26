@@ -446,12 +446,13 @@ void ActivityModel::hideActivity(const QString &id)
         m_shownActivities.erase(position->second);
     }
 }
-
+// clang-format off
 #define CREATE_SIGNAL_EMITTER(What,Role)                                      \
     void ActivityModel::onActivity##What##Changed(const QString &)             \
     {                                                                          \
         Private::emitActivityUpdated(this, m_shownActivities, sender(), Role); \
     }
+// clang-format on
 
 CREATE_SIGNAL_EMITTER(Name,Qt::DisplayRole)
 CREATE_SIGNAL_EMITTER(Description,ActivityDescription)
@@ -589,6 +590,7 @@ ActivityModel::InfoPtr ActivityModel::findActivity(QObject *ptr) const
     }
 }
 
+// clang-format off
 // QFuture<void> Controller::setActivityWhat(id, value)
 #define CREATE_SETTER(What)                                                    \
     void ActivityModel::setActivity##What(                                     \
@@ -596,6 +598,7 @@ ActivityModel::InfoPtr ActivityModel::findActivity(QObject *ptr) const
     {                                                                          \
         continue_with(m_service.setActivity##What(id, value), callback);       \
     }
+// clang-format on
 
 CREATE_SETTER(Name)
 CREATE_SETTER(Description)

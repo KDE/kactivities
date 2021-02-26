@@ -68,6 +68,7 @@ QString toDashes(const QString &command)
 
 void printActivity(const QString &id)
 {
+    // clang-format off
     if (flags.bare) {
         out << id << "\n";
 
@@ -105,6 +106,7 @@ void printActivity(const QString &id)
                  );
         }
     }
+    // clang-format on
 }
 
 template <typename T>
@@ -137,7 +139,7 @@ void switchToActivity(const QString &id)
     }
 }
 
-
+// clang-format off
 #define DEFINE_COMMAND(Command, MinArgCount)                                   \
     struct Command##_command {                                                 \
         const StringListView &args;                                            \
@@ -155,3 +157,4 @@ void switchToActivity(const QString &id)
     int Command##_command::operator()()
 
 #endif
+// clang-format on

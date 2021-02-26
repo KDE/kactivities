@@ -324,7 +324,7 @@ QVariant ResourceModel::data(const QModelIndex &proxyIndex, int role) const
         }
 
         KFileItem file(uri);
-
+        // clang-format off
         if (file.mimetype() == "application/x-desktop") {
             KDesktopFile desktop(file.localPath());
 
@@ -343,6 +343,7 @@ QVariant ResourceModel::data(const QModelIndex &proxyIndex, int role) const
             role == ActivityRole ? ACTIVITY_COLUMN :
                                    UNKNOWN_COLUMN
         );
+    // clang-format on
 }
 
 void ResourceModel::linkResourceToActivity(const QString &resource,

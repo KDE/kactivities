@@ -22,6 +22,7 @@ Controller::~Controller()
 {
 }
 
+// clang-format off
 #define CREATE_SETTER(What)                                                    \
     QFuture<void> Controller::setActivity##What(const QString &id,             \
                                                 const QString &value)          \
@@ -32,6 +33,7 @@ Controller::~Controller()
                          QString::fromLatin1("SetActivity" #What), id, value)  \
                    : DBusFuture::fromVoid();                                   \
     }
+// clang-format on
 
 CREATE_SETTER(Name)
 CREATE_SETTER(Description)

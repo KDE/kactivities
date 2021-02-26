@@ -23,6 +23,7 @@ InfoPrivate::InfoPrivate(Info *info, const QString &activity)
 {
 }
 
+// clang-format off
 // Filters out signals for only this activity
 #define IMPLEMENT_SIGNAL_HANDLER(INTERNAL)                                     \
     void InfoPrivate::INTERNAL(const QString &_id) const                       \
@@ -108,8 +109,8 @@ Info::Info(const QString &activity, QObject *parent)
     PASS_SIGNAL_HANDLER(activityNameChanged,nameChanged,QString);
     PASS_SIGNAL_HANDLER(activityDescriptionChanged,descriptionChanged,QString);
     PASS_SIGNAL_HANDLER(activityIconChanged,iconChanged,QString);
+// clang-format on
 #undef PASS_SIGNAL_HANDLER
-
     connect(d->cache.get(),  SIGNAL(currentActivityChanged(QString)),
             this,            SLOT(setCurrentActivity(QString)));
 
@@ -187,12 +188,14 @@ Info::Availability Info::availability() const
     return result;
 }
 
+// clang-format off
 #define CREATE_GETTER(What)                                                    \
     QString Info::What() const                                                 \
     {                                                                          \
         auto info = d->cache->getInfo(d->id);                                  \
         return info ? info->What : QString();                                  \
     }
+// clang-format on
 
 CREATE_GETTER(name)
 CREATE_GETTER(description)

@@ -247,7 +247,7 @@ void ActivitiesCache::setActivityInfo(const ActivityInfo &info)
         }
     }
 }
-
+// clang-format off
 #define CREATE_SETTER(WHAT, What)                                              \
     void ActivitiesCache::setActivity##WHAT(const QString &id,                 \
                                             const QString &value)              \
@@ -259,6 +259,7 @@ void ActivitiesCache::setActivityInfo(const ActivityInfo &info)
             Q_EMIT activity##WHAT##Changed(id, value);                           \
         }                                                                      \
     }
+// clang-format on
 
 CREATE_SETTER(Name, name)
 CREATE_SETTER(Description, description)

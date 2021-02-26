@@ -57,7 +57,7 @@ void ActivityInfo::setIdInternal(const QString &id)
     connect(ptr, &Info::iconChanged,
             this, &ActivityInfo::iconChanged);
 }
-
+// clang-format off
 #define CREATE_GETTER_AND_SETTER(WHAT, What)                                   \
     QString ActivityInfo::What() const                                         \
     {                                                                          \
@@ -71,6 +71,7 @@ void ActivityInfo::setIdInternal(const QString &id)
                                                                                \
         m_service.setActivity##WHAT(m_info->id(), value);                      \
     }
+// clang-format on
 
 CREATE_GETTER_AND_SETTER(Name, name)
 CREATE_GETTER_AND_SETTER(Description, description)

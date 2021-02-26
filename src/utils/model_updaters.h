@@ -11,6 +11,7 @@
 // RAII classes for model updates ----------
 // -----------------------------------------
 
+// clang-format off
 #define DECLARE_RAII_MODEL_UPDATERS(Class)                                     \
     template <typename T> class _model_reset {                                 \
         T *model;                                                              \

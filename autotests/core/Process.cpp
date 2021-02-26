@@ -87,12 +87,13 @@ void Modifier::initTestCase()
             if (!dbus->isServiceRegistered(kamd)) break;
 
             uint pid = dbus->servicePid(kamd);
-
+            // clang-format off
             ::kill(pid,
                     m_action == Stop ? SIGQUIT :
                     m_action == Kill ? SIGKILL :
                     /* else */         SIGSEGV
                     );
+            // clang-format on
 
             while (Test::isActivityManagerRunning()) {
                 QCoreApplication::processEvents();
