@@ -17,3 +17,6 @@ GRTAGS
 GSYMS
 GTAGS
 .cmake/
+/.clang-format
+/build*
+.idea
