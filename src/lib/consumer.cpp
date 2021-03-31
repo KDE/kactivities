@@ -26,10 +26,10 @@ Consumer::Consumer(QObject *parent)
     : QObject(parent)
     , d(new ConsumerPrivate())
 {
-    connect(d->cache.get(), SIGNAL(currentActivityChanged(QString)), this, SIGNAL(currentActivityChanged(QString)));
-    connect(d->cache.get(), SIGNAL(activityAdded(QString)), this, SIGNAL(activityAdded(QString)));
-    connect(d->cache.get(), SIGNAL(activityRemoved(QString)), this, SIGNAL(activityRemoved(QString)));
-    connect(d->cache.get(), SIGNAL(serviceStatusChanged(Consumer::ServiceStatus)), this, SIGNAL(serviceStatusChanged(Consumer::ServiceStatus)));
+    connect(d->cache.get(), &ActivitiesCache::currentActivityChanged, this, &Consumer::currentActivityChanged);
+    connect(d->cache.get(), &ActivitiesCache::activityAdded, this, &Consumer::activityAdded);
+    connect(d->cache.get(), &ActivitiesCache::activityRemoved, this, &Consumer::activityRemoved);
+    connect(d->cache.get(), &ActivitiesCache::serviceStatusChanged, this, &Consumer::serviceStatusChanged);
 
     connect(d->cache.get(), &ActivitiesCache::activityListChanged, this, [=]() {
         Q_EMIT activitiesChanged(activities());
