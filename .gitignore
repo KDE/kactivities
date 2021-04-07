@@ -20,3 +20,5 @@ GTAGS
 /.clang-format
 /build*
 .idea
+.clangd
+/cmake-build*
