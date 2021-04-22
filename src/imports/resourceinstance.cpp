@@ -21,7 +21,7 @@ ResourceInstance::ResourceInstance(QQuickItem *parent)
 {
     m_syncTimer = new QTimer(this);
     m_syncTimer->setSingleShot(true);
-    connect(m_syncTimer, SIGNAL(timeout()), this, SLOT(syncWid()));
+    connect(m_syncTimer, &QTimer::timeout, this, &ResourceInstance::syncWid);
 }
 
 ResourceInstance::~ResourceInstance()

@@ -242,9 +242,11 @@ ActivityModel::ActivityModel(QObject *parent)
     // Initializing role names for qml
     connect(&m_service, &Consumer::serviceStatusChanged, this, &ActivityModel::setServiceStatus);
 
-    connect(&m_service, SIGNAL(activityAdded(QString)), this, SLOT(onActivityAdded(QString)));
-    connect(&m_service, SIGNAL(activityRemoved(QString)), this, SLOT(onActivityRemoved(QString)));
-    connect(&m_service, SIGNAL(currentActivityChanged(QString)), this, SLOT(onCurrentActivityChanged(QString)));
+    connect(&m_service, &KActivities::Consumer::activityAdded, this, [this](const QString &id) {
+        onActivityAdded(id);
+    });
+    connect(&m_service, &KActivities::Consumer::activityRemoved, this, &ActivityModel::onActivityRemoved);
+    connect(&m_service, &KActivities::Consumer::currentActivityChanged, this, &ActivityModel::onCurrentActivityChanged);
 
     setServiceStatus(m_service.serviceStatus());
 
