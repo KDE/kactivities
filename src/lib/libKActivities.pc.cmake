@@ -7,6 +7,6 @@ Name: libKActivities
 Description: libKActivities is a C++ library for using KDE activities
 URL: https://www.kde.org
 Requires: Qt5Core
-Version: ${KACTIVITIES_VERSION_STRING}
+Version: ${KACTIVITIES_VERSION}
 Libs: -L${KDE_INSTALL_LIBDIR} -lKF5Activities
 Cflags: -I${KDE_INSTALL_INCLUDEDIR}
