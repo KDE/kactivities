@@ -16,7 +16,7 @@ set (
    main.cpp
    )
 
-qt5_wrap_ui(
+qt_wrap_ui(
    KActivitiesModelTestApp_SRCS
    window.ui
    )

@@ -15,7 +15,7 @@ set (
    main.cpp
    )
 
-qt5_wrap_ui(
+qt_wrap_ui(
    KActivitiesCLI_SRCS
    )
 

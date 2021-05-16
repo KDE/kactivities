@@ -30,35 +30,35 @@ set_source_files_properties (
    INCLUDE ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.Activities.h
    )
 
-qt5_add_dbus_interface (
+qt_add_dbus_interface (
    KActivities_LIB_SRCS
 
    ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.Activities.xml
    activities_interface
    )
 
-qt5_add_dbus_interface (
+qt_add_dbus_interface (
    KActivities_LIB_SRCS
 
    ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.Resources.xml
    resources_interface
    )
 
-qt5_add_dbus_interface (
+qt_add_dbus_interface (
    KActivities_LIB_SRCS
 
    ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.Features.xml
    features_interface
    )
 
-qt5_add_dbus_interface (
+qt_add_dbus_interface (
    KActivities_LIB_SRCS
 
    ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.ResourcesLinking.xml
    resources_linking_interface
    )
 
-qt5_add_dbus_interface (
+qt_add_dbus_interface (
    KActivities_LIB_SRCS
 
    ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.Application.xml
