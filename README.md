@@ -10,12 +10,12 @@ is, where they are, and what they are doing.
 
 *Activities* deal with the last one. An activity might be "developing a KDE
 application", "studying 19th century art", "composing music" or "watching funny
-videos". Each of these activites may involve multiple applications, and a single
+videos". Each of these activities may involve multiple applications, and a single
 application may be used in multiple activities (for example, most activities are
 likely to involve using a web browser, but different activities will probably
 involve different websites).
 
-KActivities provides the infrastructure needed to manage a user's activites,
+KActivities provides the infrastructure needed to manage a user's activities,
 allowing them to switch between tasks, and for applications to update their
 state to match the user's current activity. This includes a daemon, a library
 for interacting with that daemon, and plugins for integration with other
