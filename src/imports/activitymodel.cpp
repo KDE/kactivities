@@ -123,8 +123,9 @@ public:
 
         void settingsFileChanged(const QString &file)
         {
-            if (!file.endsWith(plasmaConfig.name()))
+            if (!file.endsWith(plasmaConfig.name())) {
                 return;
+            }
 
             plasmaConfig.reparseConfiguration();
 
@@ -187,12 +188,14 @@ public:
                 auto activityId = config.readEntry("activityId", QString());
 
                 // Ignore if it has no assigned activity
-                if (activityId.isEmpty())
+                if (activityId.isEmpty()) {
                     continue;
+                }
 
                 // Ignore if we have already found the background
-                if (newBackgrounds.contains(activityId) && newBackgrounds[activityId][0] != QLatin1Char('#'))
+                if (newBackgrounds.contains(activityId) && newBackgrounds[activityId][0] != QLatin1Char('#')) {
                     continue;
+                }
 
                 auto newBackground = backgroundFromConfig(config);
 
@@ -364,12 +367,14 @@ void ActivityModel::unregisterActivity(const QString &id)
 void ActivityModel::showActivity(InfoPtr activityInfo, bool notifyClients)
 {
     // Should it really be shown?
-    if (!Private::matchingState(activityInfo, m_shownStates))
+    if (!Private::matchingState(activityInfo, m_shownStates)) {
         return;
+    }
 
     // Is it already shown?
-    if (boost::binary_search(m_shownActivities, activityInfo, InfoPtrComparator()))
+    if (boost::binary_search(m_shownActivities, activityInfo, InfoPtrComparator())) {
         return;
+    }
 
     auto registeredPosition = Private::activityPosition(m_knownActivities, activityInfo->id());
 

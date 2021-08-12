@@ -24,8 +24,9 @@ ActivityInfo::~ActivityInfo()
 
 void ActivityInfo::setCurrentActivity(const QString &id)
 {
-    if (!m_showCurrentActivity)
+    if (!m_showCurrentActivity) {
         return;
+    }
 
     setIdInternal(id);
 

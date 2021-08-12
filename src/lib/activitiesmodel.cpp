@@ -252,12 +252,14 @@ void ActivitiesModelPrivate::unregisterActivity(const QString &id)
 void ActivitiesModelPrivate::showActivity(InfoPtr activityInfo, bool notifyClients)
 {
     // Should it really be shown?
-    if (!Private::matchingState(activityInfo, shownStates))
+    if (!Private::matchingState(activityInfo, shownStates)) {
         return;
+    }
 
     // Is it already shown?
-    if (std::binary_search(shownActivities.cbegin(), shownActivities.cend(), activityInfo, InfoPtrComparator()))
+    if (std::binary_search(shownActivities.cbegin(), shownActivities.cend(), activityInfo, InfoPtrComparator())) {
         return;
+    }
 
     auto registeredPosition = Private::activityPosition(knownActivities, activityInfo->id());
 
@@ -341,8 +343,9 @@ QVector<Info::State> ActivitiesModel::shownStates() const
 
 int ActivitiesModel::rowCount(const QModelIndex &parent) const
 {
-    if (parent.isValid())
+    if (parent.isValid()) {
         return 0;
+    }
 
     return d->shownActivities.size();
 }

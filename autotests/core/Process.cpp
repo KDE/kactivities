@@ -79,8 +79,9 @@ void Modifier::initTestCase()
         const auto dbus = QDBusConnection::sessionBus().interface();
         const auto kamd = KAMD_DBUS_SERVICE;
 
-        if (!dbus->isServiceRegistered(kamd))
+        if (!dbus->isServiceRegistered(kamd)) {
             break;
+        }
 
         uint pid = dbus->servicePid(kamd);
         // clang-format off

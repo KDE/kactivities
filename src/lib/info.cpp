@@ -144,13 +144,15 @@ bool Info::isCurrent() const
 
 Info::State Info::state() const
 {
-    if (d->cache->m_status == Consumer::Unknown)
+    if (d->cache->m_status == Consumer::Unknown) {
         return Info::Unknown;
+    }
 
     auto info = d->cache->getInfo(d->id);
 
-    if (!info)
+    if (!info) {
         return Info::Invalid;
+    }
 
     return static_cast<Info::State>(info->state);
 }

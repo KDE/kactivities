@@ -205,7 +205,7 @@ int main(int argc, char *argv[])
         if (args.count() <= 1) {
             printHelp();
 
-        } else
+        } else {
             for (int argId = 1; argId < args.count();) {
                 if (args[argId] == QLatin1String("--help")) {
                     printHelp();
@@ -237,6 +237,7 @@ int main(int argc, char *argv[])
                     argId++;
                 }
             }
+        }
 
         delete controller;
 
