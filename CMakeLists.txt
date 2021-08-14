@@ -10,7 +10,7 @@ project (KActivities VERSION ${KF_VERSION})
 option (KACTIVITIES_LIBRARY_ONLY "If true, compiles only the KActivities library, without the QML imports." OFF)
 option (KACTIVITIES_ENABLE_EXCEPTIONS "If you have Boost 1.53, you need to build KActivities with exceptions enabled. This is UNTESTED and EXPERIMENTAL!" OFF)
 
-set (REQUIRED_QT_VERSION 5.15.2)
+set (REQUIRED_QT_VERSION 5.15.0)
 
 # We don't build in-source
 if ("${CMAKE_SOURCE_DIR}" STREQUAL "${CMAKE_BINARY_DIR}")
@@ -72,7 +72,7 @@ ecm_setup_version (
    SOVERSION 5
    )
 
-add_definitions(-DQT_DISABLE_DEPRECATED_BEFORE=0x050f02)
+add_definitions(-DQT_DISABLE_DEPRECATED_BEFORE=0x050f00)
 add_definitions(-DKF_DISABLE_DEPRECATED_BEFORE_AND_AT=0x055100)
 
 add_subdirectory (src)
