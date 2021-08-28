@@ -543,7 +543,7 @@ void ResourceModel::sortItems(Qt::SortOrder sortOrder)
 
     QStringList result;
 
-    for (const auto &resource : qAsConst(resources)) {
+    for (const auto &resource : std::as_const(resources)) {
         result << resource.first;
     }
 
