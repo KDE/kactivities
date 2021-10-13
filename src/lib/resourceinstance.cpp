@@ -77,7 +77,7 @@ ResourceInstance::ResourceInstance(quintptr wid, QUrl resourceUri, const QString
     : QObject(parent)
     , d(new ResourceInstancePrivate())
 {
-    qCDebug(KAMD_CORELIB) << "Creating ResourceInstance: " << resourceUri;
+    qCDebug(KAMD_CORELIB) << "Creating ResourceInstance:" << resourceUri;
     d->wid = wid;
     d->uri = resourceUri.adjusted(QUrl::StripTrailingSlash);
     d->application = application.isEmpty() ? QCoreApplication::instance()->applicationName() : application;
@@ -136,7 +136,7 @@ void ResourceInstance::setMimetype(const QString &mimetype)
 
 void ResourceInstance::setTitle(const QString &title)
 {
-    qCDebug(KAMD_CORELIB) << "Setting the title: " << title;
+    qCDebug(KAMD_CORELIB) << "Setting the title:" << title;
     if (title.isEmpty()) {
         return;
     }
