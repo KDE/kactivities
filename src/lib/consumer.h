@@ -80,7 +80,7 @@ public:
 
     explicit Consumer(QObject *parent = nullptr);
 
-    ~Consumer();
+    ~Consumer() override;
 
     /**
      * @returns the id of the current activity

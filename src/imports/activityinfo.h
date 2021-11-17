@@ -56,7 +56,7 @@ class ActivityInfo : public QObject
 
 public:
     explicit ActivityInfo(QObject *parent = nullptr);
-    virtual ~ActivityInfo();
+    ~ActivityInfo() override;
 
 public Q_SLOTS:
     void setActivityId(const QString &id);

@@ -35,7 +35,7 @@ class ResourceInstance : public QQuickItem
 
 public:
     explicit ResourceInstance(QQuickItem *parent = nullptr);
-    ~ResourceInstance();
+    ~ResourceInstance() override;
 
     QUrl uri() const;
     void setUri(const QUrl &uri);

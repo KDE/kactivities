@@ -26,7 +26,7 @@ class ActivitiesCache : public QObject
 public:
     static std::shared_ptr<ActivitiesCache> self();
 
-    ~ActivitiesCache();
+    ~ActivitiesCache() override;
 
 Q_SIGNALS:
     void activityAdded(const QString &id);

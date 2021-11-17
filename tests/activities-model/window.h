@@ -22,7 +22,7 @@ class Window : public QMainWindow
 
 public:
     Window();
-    ~Window();
+    ~Window() override;
 
 protected:
     void showEvent(QShowEvent *event) override;

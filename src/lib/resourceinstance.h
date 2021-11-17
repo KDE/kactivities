@@ -96,7 +96,7 @@ public:
      * Destroys the ResourceInstance and notifies the system
      * that the resource has been closed
      */
-    ~ResourceInstance();
+    ~ResourceInstance() override;
 
 public Q_SLOTS:
     /**

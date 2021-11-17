@@ -41,7 +41,7 @@ class KACTIVITIES_EXPORT Controller : public Consumer
 public:
     explicit Controller(QObject *parent = nullptr);
 
-    ~Controller();
+    ~Controller() override;
 
     /**
      * Sets the name of the specified activity

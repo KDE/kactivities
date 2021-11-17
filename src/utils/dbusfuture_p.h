@@ -32,7 +32,7 @@ public:
     {
     }
 
-    ~DBusCallFutureInterface()
+    ~DBusCallFutureInterface() override
     {
         delete replyWatcher;
     }

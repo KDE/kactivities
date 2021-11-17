@@ -66,7 +66,7 @@ class KACTIVITIES_EXPORT Info : public QObject
 
 public:
     explicit Info(const QString &activity, QObject *parent = nullptr);
-    ~Info();
+    ~Info() override;
 
     /**
      * @return true if the activity represented by this object exists and is valid
