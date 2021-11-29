@@ -168,14 +168,13 @@ endif()
 
 
 if (NOT WIN32)
-   configure_file (
-      ${CMAKE_CURRENT_SOURCE_DIR}/libKActivities.pc.cmake
-      ${CMAKE_CURRENT_BINARY_DIR}/libKActivities.pc
-      )
-   install (
-      FILES ${CMAKE_CURRENT_BINARY_DIR}/libKActivities.pc
-      DESTINATION ${KDE_INSTALL_LIBDIR}/pkgconfig
-      )
+    ecm_generate_pkgconfig_file(BASE_NAME libKActivities
+      LIB_NAME KF5Activities
+      INCLUDE_INSTALL_DIR ${KDE_INSTALL_INCLUDEDIR_KF5}/KActivities
+      DEPS Qt5Core
+      DESCRIPTION "libKActivities is a C++ library for using KDE activities"
+      INSTALL
+    )
 endif ()
 
 include (ECMGeneratePriFile)
