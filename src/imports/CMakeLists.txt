@@ -1,10 +1,8 @@
 # vim:set softtabstop=3 shiftwidth=3 tabstop=3 expandtab:
 
 project (kactivities-imports)
-find_package (ECM 0.0.8 REQUIRED NO_MODULE)
-set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH})
 
-find_package (Qt5 REQUIRED NO_MODULE COMPONENTS Sql Gui Qml Quick Sql)
+find_package (Qt${QT_MAJOR_VERSION} REQUIRED NO_MODULE COMPONENTS Gui Qml Quick Sql)
 find_package (KF5Config     ${KF_DEP_VERSION} CONFIG REQUIRED)
 find_package (KF5CoreAddons ${KF_DEP_VERSION} CONFIG REQUIRED)
 
@@ -23,12 +21,12 @@ add_library (kactivitiesextensionplugin SHARED ${kactivities_imports_LIB_SRCS})
 
 target_link_libraries (
    kactivitiesextensionplugin
-   Qt5::Core
-   Qt5::DBus
-   Qt5::Gui
-   Qt5::Qml
-   Qt5::Quick
-   Qt5::Sql
+   Qt${QT_MAJOR_VERSION}::Core
+   Qt${QT_MAJOR_VERSION}::DBus
+   Qt${QT_MAJOR_VERSION}::Gui
+   Qt${QT_MAJOR_VERSION}::Qml
+   Qt${QT_MAJOR_VERSION}::Quick
+   Qt${QT_MAJOR_VERSION}::Sql
    KF5::Activities
    KF5::ConfigCore
    KF5::CoreAddons

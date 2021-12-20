@@ -1,7 +1,7 @@
 # vim:set softtabstop=3 shiftwidth=3 tabstop=3 expandtab:
 project (KActivitiesTest)
 
-find_package (Qt5 REQUIRED NO_MODULE COMPONENTS Test Core DBus)
+find_package (Qt${QT_MAJOR_VERSION} REQUIRED NO_MODULE COMPONENTS Test Core DBus)
 
 include_directories (
    ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/src/
@@ -28,9 +28,9 @@ if (NOT WIN32)
 
    target_link_libraries (
       KActivitiesTest
-      Qt5::Core
-      Qt5::Test
-      Qt5::DBus
+      Qt${QT_MAJOR_VERSION}::Core
+      Qt${QT_MAJOR_VERSION}::Test
+      Qt${QT_MAJOR_VERSION}::DBus
       KF5::Activities
       )
 
