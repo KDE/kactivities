@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 3.16)
 
 # KDE Frameworks
 set(KF_VERSION "5.90.0") # handled by release scripts
-set(KF_DEP_VERSION "5.89.0") # handled by release scripts
+set(KF_DEP_VERSION "5.90.0") # handled by release scripts
 project (KActivities VERSION ${KF_VERSION})
 
 option (KACTIVITIES_LIBRARY_ONLY "If true, compiles only the KActivities library, without the QML imports." OFF)
@@ -24,7 +24,7 @@ set (KACTIVITIES_CURRENT_ROOT_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
 # Extra CMake stuff
 include(FeatureSummary)
-find_package(ECM 5.89.0  NO_MODULE)
+find_package(ECM 5.90.0  NO_MODULE)
 set_package_properties(ECM PROPERTIES TYPE REQUIRED DESCRIPTION "Extra CMake Modules." URL "https://commits.kde.org/extra-cmake-modules")
 feature_summary(WHAT REQUIRED_PACKAGES_NOT_FOUND FATAL_ON_MISSING_REQUIRED_PACKAGES)
 
