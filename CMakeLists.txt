@@ -119,7 +119,7 @@ install (
 
 install (
    FILES ${CMAKE_CURRENT_BINARY_DIR}/kactivities_version.h
-   DESTINATION ${KDE_INSTALL_INCLUDEDIR_KF} COMPONENT Devel
+   DESTINATION ${KDE_INSTALL_INCLUDEDIR_KF}/KActivities COMPONENT Devel
    )
 
 # Write out the features
