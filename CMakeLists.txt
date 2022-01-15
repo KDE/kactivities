@@ -40,6 +40,7 @@ include (ECMGeneratePkgConfigFile)
 include (ECMQtDeclareLoggingCategory)
 include (ECMAddQch)
 include (ECMMarkNonGuiExecutable)
+include(ECMDeprecationSettings)
 
 option(BUILD_QCH "Build API documentation in QCH format (for e.g. Qt Assistant, Qt Creator & KDevelop)" OFF)
 add_feature_info(QCH ${BUILD_QCH} "API documentation in QCH format (for e.g. Qt Assistant, Qt Creator & KDevelop)")
@@ -73,8 +74,10 @@ ecm_setup_version (
    SOVERSION 5
    )
 
-add_definitions(-DQT_DISABLE_DEPRECATED_BEFORE=0x050f02)
-add_definitions(-DKF_DISABLE_DEPRECATED_BEFORE_AND_AT=0x055900)
+ecm_set_disabled_deprecation_versions(
+    QT 5.15.2
+    KF 5.90.0
+)
 
 add_subdirectory (src)
 if (BUILD_TESTING)
