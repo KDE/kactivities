@@ -6,8 +6,9 @@ find_package (Qt${QT_MAJOR_VERSION} REQUIRED NO_MODULE COMPONENTS Gui Qml Quick 
 find_package (KF5Config     ${KF_DEP_VERSION} CONFIG REQUIRED)
 find_package (KF5CoreAddons ${KF_DEP_VERSION} CONFIG REQUIRED)
 
-set (
-   kactivities_imports_LIB_SRCS
+ecm_add_qml_module(kactivitiesextensionplugin URI "org.kde.activities" VERSION 0.1)
+
+target_sources(kactivitiesextensionplugin PRIVATE
    activitiesextensionplugin.cpp
    activitymodel.cpp
    activityinfo.cpp
@@ -15,11 +16,9 @@ set (
    resourceinstance.cpp
 
    ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/src/utils/dbusfuture_p.cpp
-   )
+)
 
-add_library (kactivitiesextensionplugin SHARED ${kactivities_imports_LIB_SRCS})
-
-target_link_libraries (
+target_link_libraries(
    kactivitiesextensionplugin
    Qt${QT_MAJOR_VERSION}::Core
    Qt${QT_MAJOR_VERSION}::DBus
@@ -30,10 +29,6 @@ target_link_libraries (
    KF5::Activities
    KF5::ConfigCore
    KF5::CoreAddons
-   )
+)
 
-## install
-
-install (TARGETS kactivitiesextensionplugin DESTINATION ${KDE_INSTALL_QMLDIR}/org/kde/activities)
-install (FILES qmldir DESTINATION ${KDE_INSTALL_QMLDIR}/org/kde/activities)
-
+ecm_finalize_qml_module(kactivitiesextensionplugin DESTINATION ${KDE_INSTALL_QMLDIR})

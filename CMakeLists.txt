@@ -41,6 +41,7 @@ include (ECMQtDeclareLoggingCategory)
 include (ECMAddQch)
 include (ECMMarkNonGuiExecutable)
 include(ECMDeprecationSettings)
+include (ECMQmlModule)
 
 option(BUILD_QCH "Build API documentation in QCH format (for e.g. Qt Assistant, Qt Creator & KDevelop)" OFF)
 add_feature_info(QCH ${BUILD_QCH} "API documentation in QCH format (for e.g. Qt Assistant, Qt Creator & KDevelop)")
