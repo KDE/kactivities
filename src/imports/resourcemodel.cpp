@@ -16,9 +16,9 @@
 #include <QUuid>
 
 // KDE
-#include <kconfig.h>
-#include <kdesktopfile.h>
-#include <kfileitem.h>
+#include <KConfig>
+#include <KDesktopFile>
+#include <KFileItem>
 #include <ksharedconfig.h>
 
 // STL and Boost

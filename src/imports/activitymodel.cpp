@@ -19,9 +19,9 @@
 #include <QModelIndex>
 
 // KDE
-#include <kconfig.h>
-#include <kconfiggroup.h>
-#include <kdirwatch.h>
+#include <KConfig>
+#include <KConfigGroup>
+#include <KDirWatch>
 
 // Boost
 #include <boost/optional.hpp>
