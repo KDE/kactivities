@@ -11,6 +11,7 @@
 #include <QDebug>
 #include <QProcess>
 #include <QRegularExpression>
+#include <QStandardPaths>
 #include <QString>
 #include <QTemporaryDir>
 #include <QTest>
@@ -65,7 +66,9 @@ void Modifier::initTestCase()
         // qDebug() << env;
 
         s_process->setEnvironment(env);
-        s_process->start(QStringLiteral("kactivitymanagerd"), QStringList());
+        const QString exec = QStandardPaths::findExecutable(QStringLiteral("kactivitymanagerd"));
+        QVERIFY(!exec.isEmpty());
+        s_process->start(exec, QStringList());
         s_process->waitForStarted();
 
         break;
