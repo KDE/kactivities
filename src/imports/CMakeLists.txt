@@ -29,6 +29,7 @@ target_link_libraries(
    KF5::Activities
    KF5::ConfigCore
    KF5::CoreAddons
+   Boost::headers
 )
 
 ecm_finalize_qml_module(kactivitiesextensionplugin DESTINATION ${KDE_INSTALL_QMLDIR})
