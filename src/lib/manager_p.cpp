@@ -7,6 +7,7 @@
 #include "manager_p.h"
 
 #include <mutex>
+#include <optional>
 
 #include <QCoreApplication>
 #include <QDBusConnection>
@@ -87,11 +88,11 @@ void Manager::serviceOwnerChanged(const QString &serviceName, const QString &old
         if (m_serviceRunning) {
             using namespace kamd::utils;
 
-            continue_with(DBusFuture::fromReply(m_service->serviceVersion()), [this](const optional_view<QString> &serviceVersion) {
+            continue_with(DBusFuture::fromReply(m_service->serviceVersion()), [this](const std::optional<QString> &serviceVersion) {
                 // Test whether the service is older than the library.
                 // If it is, we need to end this
 
-                if (!serviceVersion.is_initialized()) {
+                if (!serviceVersion.has_value()) {
                     qWarning() << "KActivities: FATAL ERROR: Failed to contact the activity manager daemon";
                     m_serviceRunning = false;
                     return;
@@ -113,7 +114,7 @@ void Manager::serviceOwnerChanged(const QString &serviceName, const QString &old
                     QString libraryVersion = QString::number(requiredVersion[0]) + QLatin1Char('.') + QString::number(requiredVersion[1]) + QLatin1Char('.')
                         + QString::number(requiredVersion[2]);
 
-                    qDebug() << "KActivities service version: " << serviceVersion.get();
+                    qDebug() << "KActivities service version: " << serviceVersion.value();
                     qDebug() << "KActivities library version: " << libraryVersion;
                     qFatal("KActivities: FATAL ERROR: The service is older than the library");
                 }
