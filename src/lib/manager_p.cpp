@@ -46,9 +46,6 @@ Manager *Manager::self()
 {
     static std::mutex singleton;
     std::lock_guard<std::mutex> singleton_lock(singleton);
-#if defined(QT_DEBUG)
-    QLoggingCategory::setFilterRules(QStringLiteral("kf.activities.debug=true"));
-#endif
 
     if (!s_instance) {
         runInMainThread([]() {
