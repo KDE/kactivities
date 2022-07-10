@@ -8,8 +8,6 @@
 #include "consumer_p.h"
 #include "manager_p.h"
 
-#include "debug_p.h"
-
 namespace KActivities
 {
 ConsumerPrivate::ConsumerPrivate()
@@ -42,10 +40,7 @@ Consumer::Consumer(QObject *parent)
     //         this, SIGNAL(activityStateChanged(QString,int)));
 }
 
-Consumer::~Consumer()
-{
-    qCDebug(KAMD_CORELIB) << "Killing the consumer";
-}
+Consumer::~Consumer() = default;
 
 QString Consumer::currentActivity() const
 {
