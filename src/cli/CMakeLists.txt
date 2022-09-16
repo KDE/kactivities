@@ -36,5 +36,5 @@ ecm_mark_nongui_executable(
 
 install (TARGETS
    kactivities-cli
-   ${KF5_INSTALL_TARGETS_DEFAULT_ARGS}
+   ${KF_INSTALL_TARGETS_DEFAULT_ARGS}
    )
