@@ -101,7 +101,7 @@ public:
 
     /**
      * @returns the URI of this activity. The same URI is used by activities
-     * KIO slave.
+     * KIO worker.
      */
     QString uri() const;
 
