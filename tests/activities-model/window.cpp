@@ -11,7 +11,7 @@
 #include <QItemDelegate>
 #include <QPainter>
 
-#include <KWindowSystem>
+#include <KX11Extras>
 
 class Delegate : public QItemDelegate
 {
@@ -97,8 +97,8 @@ Window::Window()
 void Window::showEvent(QShowEvent *event)
 {
     Q_UNUSED(event);
-    KWindowSystem::self()->setOnActivities(effectiveWinId(), QStringList());
-    KWindowSystem::self()->setOnAllDesktops(effectiveWinId(), true);
+    KX11Extras::self()->setOnActivities(effectiveWinId(), QStringList());
+    KX11Extras::self()->setOnAllDesktops(effectiveWinId(), true);
 }
 
 Window::~Window()
