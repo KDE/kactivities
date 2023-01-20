@@ -31,7 +31,7 @@ if (NOT WIN32)
       Qt${QT_MAJOR_VERSION}::Core
       Qt${QT_MAJOR_VERSION}::Test
       Qt${QT_MAJOR_VERSION}::DBus
-      KF5::Activities
+      KF6::Activities
       )
 
 endif ()

@@ -39,7 +39,7 @@ if (NOT WIN32)
       Qt${QT_MAJOR_VERSION}::Gui
       Qt${QT_MAJOR_VERSION}::Widgets
       Qt${QT_MAJOR_VERSION}::DBus
-      KF5::Activities
+      KF6::Activities
       )
 
 endif ()

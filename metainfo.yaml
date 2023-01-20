@@ -13,8 +13,8 @@ deprecated: false
 release: true
 libraries:
  - qmake: KActivities
-   cmake: "KF5::Activities"
-cmakename: KF5Activities
+   cmake: "KF6::Activities"
+cmakename: KF6Activities
 
 public_lib: true
 group: Frameworks

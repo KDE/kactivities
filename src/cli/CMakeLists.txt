@@ -3,7 +3,7 @@ project (KActivitiesCLI)
 
 find_package (Qt${QT_MAJOR_VERSION} REQUIRED NO_MODULE COMPONENTS Core Gui Widgets)
 find_package (Qt${QT_MAJOR_VERSION} REQUIRED NO_MODULE COMPONENTS Core Gui Widgets)
-find_package (KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS WindowSystem)
+find_package (KF6 ${KF6_MIN_VERSION} REQUIRED COMPONENTS WindowSystem)
 
 include_directories (
    ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/src/
@@ -27,7 +27,7 @@ add_executable (
 target_link_libraries (
    kactivities-cli
    Qt${QT_MAJOR_VERSION}::Core
-   KF5::Activities
+   KF6::Activities
    )
 
 ecm_mark_nongui_executable(

@@ -3,8 +3,8 @@
 project (kactivities-imports)
 
 find_package (Qt${QT_MAJOR_VERSION} REQUIRED NO_MODULE COMPONENTS Gui Qml Quick Sql)
-find_package (KF5Config     ${KF_DEP_VERSION} CONFIG REQUIRED)
-find_package (KF5CoreAddons ${KF_DEP_VERSION} CONFIG REQUIRED)
+find_package (KF6Config     ${KF_DEP_VERSION} CONFIG REQUIRED)
+find_package (KF6CoreAddons ${KF_DEP_VERSION} CONFIG REQUIRED)
 
 ecm_add_qml_module(kactivitiesextensionplugin URI "org.kde.activities" VERSION 0.1)
 
@@ -26,9 +26,9 @@ target_link_libraries(
    Qt${QT_MAJOR_VERSION}::Qml
    Qt${QT_MAJOR_VERSION}::Quick
    Qt${QT_MAJOR_VERSION}::Sql
-   KF5::Activities
-   KF5::ConfigCore
-   KF5::CoreAddons
+   KF6::Activities
+   KF6::ConfigCore
+   KF6::CoreAddons
    Boost::headers
 )
 

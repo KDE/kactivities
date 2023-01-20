@@ -77,10 +77,10 @@ ecm_qt_declare_logging_category(KActivities_LIB_SRCS
 
 
 add_library (
-   KF5Activities SHARED
+   KF6Activities SHARED
    ${KActivities_LIB_SRCS}
    )
-add_library (KF5::Activities ALIAS KF5Activities)
+add_library (KF6::Activities ALIAS KF6Activities)
 
 set(KACTIVITIES_BUILD_INCLUDE_DIRS
    ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/src
@@ -89,7 +89,7 @@ set(KACTIVITIES_BUILD_INCLUDE_DIRS
 include_directories (${KACTIVITIES_BUILD_INCLUDE_DIRS})
 
 set_target_properties (
-   KF5Activities
+   KF6Activities
    PROPERTIES
    VERSION ${KACTIVITIES_VERSION}
    SOVERSION ${KACTIVITIES_SOVERSION}
@@ -97,7 +97,7 @@ set_target_properties (
    )
 
 target_link_libraries (
-   KF5Activities
+   KF6Activities
    PUBLIC
       Qt${QT_MAJOR_VERSION}::Core
    PRIVATE
@@ -105,12 +105,12 @@ target_link_libraries (
    )
 
 target_include_directories (
-   KF5Activities
+   KF6Activities
    INTERFACE "$<INSTALL_INTERFACE:${KDE_INSTALL_INCLUDEDIR_KF}/KActivities>"
    )
 
 # install
-generate_export_header (KF5Activities BASE_NAME KActivities)
+generate_export_header (KF6Activities BASE_NAME KActivities)
 
 ecm_generate_headers (
    KActivities_CamelCase_HEADERS
@@ -137,16 +137,16 @@ install (
    )
 
 install (
-   TARGETS KF5Activities
-   EXPORT KF5ActivitiesLibraryTargets
+   TARGETS KF6Activities
+   EXPORT KF6ActivitiesLibraryTargets
    ${KF_INSTALL_TARGETS_DEFAULT_ARGS}
    )
 
 if(BUILD_QCH)
     ecm_add_qch(
-        KF5Activities_QCH
+        KF6Activities_QCH
         NAME KActivities
-        BASE_NAME KF5Activities
+        BASE_NAME KF6Activities
         VERSION ${KF_VERSION}
         ORG_DOMAIN org.kde
         SOURCES # using only public headers, to cover only public API
@@ -169,7 +169,7 @@ endif()
 
 if (NOT WIN32)
     ecm_generate_pkgconfig_file(BASE_NAME libKActivities
-      LIB_NAME KF5Activities
+      LIB_NAME KF6Activities
       INCLUDE_INSTALL_DIR ${KDE_INSTALL_INCLUDEDIR_KF}/KActivities
       DEPS Qt${QT_MAJOR_VERSION}Core
       DESCRIPTION "libKActivities is a C++ library for using KDE activities"
@@ -180,7 +180,7 @@ endif ()
 include (ECMGeneratePriFile)
 ecm_generate_pri_file (
    BASE_NAME KActivities
-   LIB_NAME KF5Activities
+   LIB_NAME KF6Activities
    FILENAME_VAR PRI_FILENAME INCLUDE_INSTALL_DIR ${KDE_INSTALL_INCLUDEDIR_KF}/KActivities
    )
 install (
