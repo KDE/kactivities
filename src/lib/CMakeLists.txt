@@ -99,9 +99,9 @@ set_target_properties (
 target_link_libraries (
    KF6Activities
    PUBLIC
-      Qt${QT_MAJOR_VERSION}::Core
+      Qt6::Core
    PRIVATE
-      Qt${QT_MAJOR_VERSION}::DBus
+      Qt6::DBus
    )
 
 target_include_directories (
@@ -171,7 +171,7 @@ if (NOT WIN32)
     ecm_generate_pkgconfig_file(BASE_NAME libKActivities
       LIB_NAME KF6Activities
       INCLUDE_INSTALL_DIR ${KDE_INSTALL_INCLUDEDIR_KF}/KActivities
-      DEPS Qt${QT_MAJOR_VERSION}Core
+      DEPS Qt6Core
       DESCRIPTION "libKActivities is a C++ library for using KDE activities"
       INSTALL
     )

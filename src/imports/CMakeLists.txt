@@ -2,7 +2,7 @@
 
 project (kactivities-imports)
 
-find_package (Qt${QT_MAJOR_VERSION} REQUIRED NO_MODULE COMPONENTS Gui Qml Quick Sql)
+find_package (Qt6 REQUIRED NO_MODULE COMPONENTS Gui Qml Quick Sql)
 find_package (KF6Config     ${KF_DEP_VERSION} CONFIG REQUIRED)
 find_package (KF6CoreAddons ${KF_DEP_VERSION} CONFIG REQUIRED)
 
@@ -20,12 +20,12 @@ target_sources(kactivitiesextensionplugin PRIVATE
 
 target_link_libraries(
    kactivitiesextensionplugin
-   Qt${QT_MAJOR_VERSION}::Core
-   Qt${QT_MAJOR_VERSION}::DBus
-   Qt${QT_MAJOR_VERSION}::Gui
-   Qt${QT_MAJOR_VERSION}::Qml
-   Qt${QT_MAJOR_VERSION}::Quick
-   Qt${QT_MAJOR_VERSION}::Sql
+   Qt6::Core
+   Qt6::DBus
+   Qt6::Gui
+   Qt6::Qml
+   Qt6::Quick
+   Qt6::Sql
    KF6::Activities
    KF6::ConfigCore
    KF6::CoreAddons

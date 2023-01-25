@@ -48,7 +48,7 @@ add_feature_info(QCH ${BUILD_QCH} "API documentation in QCH format (for e.g. Qt 
 
 # Qt
 set (CMAKE_AUTOMOC ON)
-find_package (Qt${QT_MAJOR_VERSION} ${REQUIRED_QT_VERSION} CONFIG REQUIRED COMPONENTS Core DBus)
+find_package (Qt6 ${REQUIRED_QT_VERSION} CONFIG REQUIRED COMPONENTS Core DBus)
 
 # Basic includes
 include (CPack)
@@ -76,8 +76,8 @@ ecm_setup_version (
    )
 
 ecm_set_disabled_deprecation_versions(
-    QT 5.15.2
-    KF 5.97.0
+    QT 6.4
+    KF 5.102.0
 )
 
 add_subdirectory (src)

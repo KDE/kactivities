@@ -1,7 +1,7 @@
 # vim:set softtabstop=3 shiftwidth=3 tabstop=3 expandtab:
 project (KActivitiesModelTestApp)
 
-find_package (Qt${QT_MAJOR_VERSION} REQUIRED NO_MODULE COMPONENTS Core Gui Widgets)
+find_package (Qt6 REQUIRED NO_MODULE COMPONENTS Core Gui Widgets)
 find_package (KF6 ${KF6_MIN_VERSION} REQUIRED COMPONENTS WindowSystem)
 
 include_directories (
@@ -29,10 +29,10 @@ if (NOT WIN32)
 
    target_link_libraries (
       KActivitiesModelTestApp
-      Qt${QT_MAJOR_VERSION}::Core
-      Qt${QT_MAJOR_VERSION}::Gui
-      Qt${QT_MAJOR_VERSION}::Widgets
-      Qt${QT_MAJOR_VERSION}::DBus
+      Qt6::Core
+      Qt6::Gui
+      Qt6::Widgets
+      Qt6::DBus
       KF6::Activities
       KF6::WindowSystem
       )
