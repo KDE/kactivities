@@ -168,7 +168,7 @@ endif()
 
 
 if (NOT WIN32)
-    ecm_generate_pkgconfig_file(BASE_NAME libKActivities
+    ecm_generate_pkgconfig_file(BASE_NAME KF6Activities
       LIB_NAME KF6Activities
       INCLUDE_INSTALL_DIR ${KDE_INSTALL_INCLUDEDIR_KF}/KActivities
       DEPS Qt6Core
