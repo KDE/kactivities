@@ -4,37 +4,33 @@ project (KActivitiesModelTestApp)
 find_package (Qt6 REQUIRED NO_MODULE COMPONENTS Core Gui Widgets)
 find_package (KF6 ${KF6_MIN_VERSION} REQUIRED COMPONENTS WindowSystem)
 
-include_directories (
-   ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/src/
-   ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/autotests/
-   )
-
-set (
-   KActivitiesModelTestApp_SRCS
-   window.cpp
-   main.cpp
-   )
-
-qt_wrap_ui(
-   KActivitiesModelTestApp_SRCS
-   window.ui
-   )
-
 if (NOT WIN32)
 
-   add_executable (
-      KActivitiesModelTestApp
-      ${KActivitiesModelTestApp_SRCS}
-      )
+add_executable(KActivitiesModelTestApp)
 
-   target_link_libraries (
-      KActivitiesModelTestApp
+target_include_directories(KActivitiesModelTestApp PRIVATE
+   ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/src/
+   ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/autotests/
+)
+
+qt_wrap_ui(KActivitiesModelTestApp_ui_SRCS
+   window.ui
+)
+
+target_sources(KActivitiesModelTestApp PRIVATE
+   ${KActivitiesModelTestApp_ui_SRCS}
+   window.cpp
+   main.cpp
+)
+
+target_link_libraries(KActivitiesModelTestApp
+   PRIVATE
       Qt6::Core
       Qt6::Gui
       Qt6::Widgets
       Qt6::DBus
       KF6::Activities
       KF6::WindowSystem
-      )
+)
 
 endif ()

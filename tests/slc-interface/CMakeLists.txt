@@ -3,43 +3,38 @@ project (KActivitiesSLCTestApp)
 
 find_package (Qt6 REQUIRED NO_MODULE COMPONENTS Core Gui Widgets)
 
-include_directories (
-   ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/src/
-   ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/autotests/
-   )
-
-set (
-   KActivitiesSLCTestApp_SRCS
-   window.cpp
-   main.cpp
-   )
-
-qt_add_dbus_interface (
-   KActivitiesSLCTestApp_SRCS
-
-   ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/src/service/plugins/slc/org.kde.ActivityManager.SLC.xml
-   slc_interface
-   )
-
-qt_wrap_ui(
-   KActivitiesSLCTestApp_SRCS
-   window.ui
-   )
-
 if (NOT WIN32)
 
-   add_executable (
-      KActivitiesSLCTestApp
-      ${KActivitiesSLCTestApp_SRCS}
-      )
+add_executable(KActivitiesSLCTestApp)
 
-   target_link_libraries (
-      KActivitiesSLCTestApp
+target_include_directories(KActivitiesSLCTestApp PRIVATE
+   ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/src/
+   ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/autotests/
+)
+
+qt_add_dbus_interface(KActivitiesSLCTestApp_DBus_SRCS
+   ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/src/service/plugins/slc/org.kde.ActivityManager.SLC.xml
+   slc_interface
+)
+
+qt_wrap_ui(KActivitiesSLCTestApp_ui_SRCS
+   window.ui
+)
+
+target_sources(KActivitiesSLCTestApp PRIVATE
+   ${KActivitiesSLCTestApp_DBus_SRCS}
+   ${KActivitiesSLCTestApp_ui_SRCS}
+   window.cpp
+   main.cpp
+)
+
+target_link_libraries(KActivitiesSLCTestApp
+  PRIVATE
       Qt6::Core
       Qt6::Gui
       Qt6::Widgets
       Qt6::DBus
       KF6::Activities
-      )
+)
 
 endif ()

@@ -4,9 +4,16 @@
 # Now that we finished with the boilerplate, start
 # with the library definition
 
-set (
-   KActivities_LIB_SRCS
+add_library(KF6Activities)
+add_library(KF6::Activities ALIAS KF6Activities)
 
+set_target_properties(KF6Activities PROPERTIES
+   VERSION     ${KACTIVITIES_VERSION}
+   SOVERSION   ${KACTIVITIES_SOVERSION}
+   EXPORT_NAME Activities
+)
+
+target_sources(KF6Activities PRIVATE
    ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.Activities.cpp
 
    consumer.cpp
@@ -22,7 +29,7 @@ set (
    ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/src/utils/dbusfuture_p.cpp
 
    version.cpp
-   )
+)
 
 set_source_files_properties (
    ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.Activities.xml
@@ -30,42 +37,32 @@ set_source_files_properties (
    INCLUDE ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.Activities.h
    )
 
-qt_add_dbus_interface (
-   KActivities_LIB_SRCS
-
+set(KActivities_DBus_SRCS)
+qt_add_dbus_interface(KActivities_DBus_SRCS
    ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.Activities.xml
    activities_interface
-   )
-
-qt_add_dbus_interface (
-   KActivities_LIB_SRCS
-
+)
+qt_add_dbus_interface(KActivities_DBus_SRCS
    ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.Resources.xml
    resources_interface
-   )
-
-qt_add_dbus_interface (
-   KActivities_LIB_SRCS
-
+)
+qt_add_dbus_interface(KActivities_DBus_SRCS
    ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.Features.xml
    features_interface
-   )
-
-qt_add_dbus_interface (
-   KActivities_LIB_SRCS
-
+)
+qt_add_dbus_interface(KActivities_DBus_SRCS
    ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.ResourcesLinking.xml
    resources_linking_interface
-   )
-
-qt_add_dbus_interface (
-   KActivities_LIB_SRCS
-
+)
+qt_add_dbus_interface(KActivities_DBus_SRCS
    ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.Application.xml
    application_interface
-   )
+)
+target_sources(KF6Activities PRIVATE
+   ${KActivities_DBus_SRCS}
+)
 
-ecm_qt_declare_logging_category(KActivities_LIB_SRCS
+ecm_qt_declare_logging_category(KF6Activities
     HEADER debug_p.h
     IDENTIFIER KAMD_CORELIB
     CATEGORY_NAME kf.activities
@@ -75,39 +72,22 @@ ecm_qt_declare_logging_category(KActivities_LIB_SRCS
     EXPORT KACTIVITIES
 )
 
-
-add_library (
-   KF6Activities SHARED
-   ${KActivities_LIB_SRCS}
-   )
-add_library (KF6::Activities ALIAS KF6Activities)
-
-set(KACTIVITIES_BUILD_INCLUDE_DIRS
-   ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/src
-   ${CMAKE_BINARY_DIR}/
-   )
-include_directories (${KACTIVITIES_BUILD_INCLUDE_DIRS})
-
-set_target_properties (
-   KF6Activities
-   PROPERTIES
-   VERSION ${KACTIVITIES_VERSION}
-   SOVERSION ${KACTIVITIES_SOVERSION}
-   EXPORT_NAME Activities
-   )
-
-target_link_libraries (
-   KF6Activities
+target_link_libraries(KF6Activities
    PUBLIC
       Qt6::Core
    PRIVATE
       Qt6::DBus
-   )
+)
 
-target_include_directories (
-   KF6Activities
+set(KACTIVITIES_BUILD_INCLUDE_DIRS
+   ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/src
+   ${CMAKE_BINARY_DIR}/
+)
+
+target_include_directories(KF6Activities
    INTERFACE "$<INSTALL_INTERFACE:${KDE_INSTALL_INCLUDEDIR_KF}/KActivities>"
-   )
+   PRIVATE  ${KACTIVITIES_BUILD_INCLUDE_DIRS}
+)
 
 # install
 generate_export_header (KF6Activities BASE_NAME KActivities)
