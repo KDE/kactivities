@@ -100,7 +100,7 @@ public:
         if (position) {
             Q_EMIT model->dataChanged(model->index(position->first),
                                       model->index(position->first),
-                                      role == Qt::DecorationRole ? QVector<int>{role, ActivityModel::ActivityIcon} : QVector<int>{role});
+                                      role == Qt::DecorationRole ? QList<int>{role, ActivityModel::ActivityIcon} : QList<int>{role});
         }
     }
 

@@ -7,13 +7,13 @@
 #ifndef KACTIVITIES_STATS_QFLATSET_H
 #define KACTIVITIES_STATS_QFLATSET_H
 
+#include <QList>
 #include <QPair>
-#include <QVector>
 
 namespace KActivities
 {
 template<typename T, typename LessThan>
-class QFlatSet : public QVector<T>
+class QFlatSet : public QList<T>
 {
 public:
     QFlatSet()
@@ -21,8 +21,8 @@ public:
     }
 
     inline
-        // QPair<typename QVector<T>::iterator, bool> insert(const T &value)
-        std::tuple<typename QVector<T>::iterator, int, bool>
+        // QPair<typename QList<T>::iterator, bool> insert(const T &value)
+        std::tuple<typename QList<T>::iterator, int, bool>
         insert(const T &value)
     {
         auto lessThan = LessThan();
@@ -30,9 +30,9 @@ public:
         auto end = this->end();
 
         if (begin == end) {
-            QVector<T>::insert(0, value);
+            QList<T>::insert(0, value);
 
-            return std::make_tuple(QVector<T>::begin(), 0, true);
+            return std::make_tuple(QList<T>::begin(), 0, true);
 
         } else {
             auto iterator = std::lower_bound(begin, end, value, lessThan);
@@ -44,7 +44,7 @@ public:
                 }
             }
 
-            QVector<T>::insert(iterator, value);
+            QList<T>::insert(iterator, value);
 
             return std::make_tuple(iterator, iterator - begin, true);
         }

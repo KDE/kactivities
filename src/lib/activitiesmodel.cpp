@@ -87,7 +87,7 @@ inline void emitActivityUpdated(_Model *model, const _Container &container, cons
     if (position) {
         Q_EMIT model->q->dataChanged(model->q->index(position.index),
                                      model->q->index(position.index),
-                                     role == Qt::DecorationRole ? QVector<int>{role, ActivitiesModel::ActivityIconSource} : QVector<int>{role});
+                                     role == Qt::DecorationRole ? QList<int>{role, ActivitiesModel::ActivityIconSource} : QList<int>{role});
     }
 }
 
@@ -130,7 +130,7 @@ ActivitiesModel::ActivitiesModel(QObject *parent)
     d->setServiceStatus(d->activities.serviceStatus());
 }
 
-ActivitiesModel::ActivitiesModel(QVector<Info::State> shownStates, QObject *parent)
+ActivitiesModel::ActivitiesModel(QList<Info::State> shownStates, QObject *parent)
     : QAbstractListModel(parent)
     , d(new ActivitiesModelPrivate(this))
 {
@@ -327,7 +327,7 @@ void ActivitiesModelPrivate::onActivityStateChanged(Info::State state)
     }
 }
 
-void ActivitiesModel::setShownStates(const QVector<Info::State> &states)
+void ActivitiesModel::setShownStates(const QList<Info::State> &states)
 {
     d->shownStates = states;
 
@@ -336,7 +336,7 @@ void ActivitiesModel::setShownStates(const QVector<Info::State> &states)
     Q_EMIT shownStatesChanged(states);
 }
 
-QVector<Info::State> ActivitiesModel::shownStates() const
+QList<Info::State> ActivitiesModel::shownStates() const
 {
     return d->shownStates;
 }

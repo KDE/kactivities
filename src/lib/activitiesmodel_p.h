@@ -38,7 +38,7 @@ public Q_SLOTS:
 
 public:
     KActivities::Consumer activities;
-    QVector<Info::State> shownStates;
+    QList<Info::State> shownStates;
 
     typedef std::shared_ptr<Info> InfoPtr;
 

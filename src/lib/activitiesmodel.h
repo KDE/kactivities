@@ -31,7 +31,7 @@ class KACTIVITIES_EXPORT ActivitiesModel : public QAbstractListModel
 {
     Q_OBJECT
 
-    Q_PROPERTY(QVector<Info::State> shownStates READ shownStates WRITE setShownStates NOTIFY shownStatesChanged)
+    Q_PROPERTY(QList<Info::State> shownStates READ shownStates WRITE setShownStates NOTIFY shownStatesChanged)
 
 public:
     explicit ActivitiesModel(QObject *parent = nullptr);
@@ -39,7 +39,7 @@ public:
     /**
      * Constructs the model and sets the shownStates
      */
-    ActivitiesModel(QVector<Info::State> shownStates, QObject *parent = nullptr);
+    ActivitiesModel(QList<Info::State> shownStates, QObject *parent = nullptr);
     ~ActivitiesModel() override;
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
@@ -67,16 +67,16 @@ public Q_SLOTS:
      * The model can filter the list of activities based on their state.
      * This method sets which states should be shown.
      */
-    void setShownStates(const QVector<Info::State> &shownStates);
+    void setShownStates(const QList<Info::State> &shownStates);
 
     /**
      * The model can filter the list of activities based on their state.
      * This method returns which states are currently shown.
      */
-    QVector<Info::State> shownStates() const;
+    QList<Info::State> shownStates() const;
 
 Q_SIGNALS:
-    void shownStatesChanged(const QVector<Info::State> &state);
+    void shownStatesChanged(const QList<Info::State> &state);
 
 private:
     friend class ActivitiesModelPrivate;
