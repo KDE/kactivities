@@ -118,21 +118,12 @@ public:
 
 } //^ namespace detail
 
-template<typename _Result>
-QFuture<_Result> asyncCall(QDBusAbstractInterface *interface,
-                           const QString &method,
-                           const QVariant &arg1 = QVariant(),
-                           const QVariant &arg2 = QVariant(),
-                           const QVariant &arg3 = QVariant(),
-                           const QVariant &arg4 = QVariant(),
-                           const QVariant &arg5 = QVariant(),
-                           const QVariant &arg6 = QVariant(),
-                           const QVariant &arg7 = QVariant(),
-                           const QVariant &arg8 = QVariant())
+template<typename _Result, typename... Args>
+QFuture<_Result> asyncCall(QDBusAbstractInterface *interface, const QString &method, Args &&...args)
 {
     using namespace detail;
 
-    auto callFutureInterface = new DBusCallFutureInterface<_Result>(interface->asyncCall(method, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8));
+    auto callFutureInterface = new DBusCallFutureInterface<_Result>(interface->asyncCall(method, std::forward<Args>(args)...));
 
     return callFutureInterface->start();
 }
