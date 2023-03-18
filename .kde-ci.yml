@@ -5,7 +5,6 @@ Dependencies:
     'frameworks/kconfig' : '@same'
     'frameworks/kwindowsystem' : '@same'
     'frameworks/kcoreaddons' : '@same'
-    'frameworks/kio' : '@same'
 
 Options:
   test-before-installing: True
