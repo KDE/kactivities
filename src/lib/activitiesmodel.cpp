@@ -154,10 +154,7 @@ ActivitiesModel::ActivitiesModel(QList<Info::State> shownStates, QObject *parent
     d->setServiceStatus(d->activities.serviceStatus());
 }
 
-ActivitiesModel::~ActivitiesModel()
-{
-    delete d;
-}
+ActivitiesModel::~ActivitiesModel() = default;
 
 QHash<int, QByteArray> ActivitiesModel::roleNames() const
 {

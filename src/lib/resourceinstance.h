@@ -12,6 +12,8 @@
 
 #include "kactivities_export.h"
 
+#include <memory>
+
 namespace KActivities
 {
 class ResourceInstancePrivate;
@@ -185,7 +187,7 @@ public:
     static void notifyAccessed(const QUrl &uri, const QString &application = QString());
 
 private:
-    const QScopedPointer<ResourceInstancePrivate> d;
+    const std::unique_ptr<ResourceInstancePrivate> d;
 };
 }
 

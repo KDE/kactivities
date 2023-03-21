@@ -13,6 +13,8 @@
 
 #include "kactivities_export.h"
 
+#include <memory>
+
 namespace KActivities
 {
 class InfoPrivate;
@@ -214,7 +216,7 @@ Q_SIGNALS:
     void stateChanged(KActivities::Info::State state);
 
 private:
-    const QScopedPointer<InfoPrivate> d;
+    const std::unique_ptr<InfoPrivate> d;
 
     Q_PRIVATE_SLOT(d, void activityStateChanged(const QString &, int))
     Q_PRIVATE_SLOT(d, void added(const QString &))

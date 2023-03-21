@@ -8,13 +8,14 @@
 #define ACTIVITIES_CONSUMER_H
 
 #include <QObject>
-#include <QScopedPointer>
 #include <QString>
 #include <QStringList>
 
 #include "info.h"
 
 #include "kactivities_export.h"
+
+#include <memory>
 
 namespace KActivities
 {
@@ -155,7 +156,7 @@ Q_SIGNALS:
     void runningActivitiesChanged(const QStringList &runningActivities);
 
 private:
-    const QScopedPointer<ConsumerPrivate> d;
+    const std::unique_ptr<ConsumerPrivate> d;
 };
 
 } // namespace KActivities

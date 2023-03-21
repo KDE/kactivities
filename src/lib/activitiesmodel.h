@@ -80,7 +80,7 @@ Q_SIGNALS:
 
 private:
     friend class ActivitiesModelPrivate;
-    ActivitiesModelPrivate *const d;
+    const std::unique_ptr<ActivitiesModelPrivate> d;
 };
 
 } // namespace KActivities
