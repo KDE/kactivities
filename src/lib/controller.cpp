@@ -12,14 +12,16 @@
 
 namespace KActivities
 {
+class ControllerPrivate
+{
+};
+
 Controller::Controller(QObject *parent)
     : Consumer(parent)
 {
 }
 
-Controller::~Controller()
-{
-}
+Controller::~Controller() = default;
 
 // clang-format off
 #define CREATE_SETTER(What)                                                    \

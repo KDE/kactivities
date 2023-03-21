@@ -15,6 +15,8 @@
 
 #include "kactivities_export.h"
 
+#include <memory>
+
 namespace KActivities
 {
 class ControllerPrivate;
@@ -107,7 +109,7 @@ public:
     QFuture<void> nextActivity();
 
 private:
-    // const QScopedPointer<ControllerPrivate> d;
+    const std::unique_ptr<ControllerPrivate> d;
 };
 
 } // namespace KActivities
