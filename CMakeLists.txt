@@ -67,10 +67,11 @@ endif ()
 
 # libKActivities
 
+set(kactivities_version_header "${CMAKE_CURRENT_BINARY_DIR}/src/lib/kactivities_version.h")
 ecm_setup_version (
    PROJECT
    VARIABLE_PREFIX KACTIVITIES
-   VERSION_HEADER "${CMAKE_CURRENT_BINARY_DIR}/kactivities_version.h"
+   VERSION_HEADER "${kactivities_version_header}"
    PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/KF6ActivitiesConfigVersion.cmake"
    SOVERSION 6
    )
@@ -119,7 +120,7 @@ install (
    )
 
 install (
-   FILES ${CMAKE_CURRENT_BINARY_DIR}/kactivities_version.h
+   FILES ${kactivities_version_header}
    DESTINATION ${KDE_INSTALL_INCLUDEDIR_KF}/KActivities COMPONENT Devel
    )
 
