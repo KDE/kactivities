@@ -3,7 +3,7 @@
 cmake_minimum_required(VERSION 3.16)
 
 # KDE Frameworks
-set(KF_VERSION "5.106.0") # handled by release scripts
+set(KF_VERSION "5.107.0") # handled by release scripts
 set(KF_DEP_VERSION "5.106.0") # handled by release scripts
 project (KActivities VERSION ${KF_VERSION})
 
