@@ -285,3 +285,5 @@ void ActivitiesCache::setCurrentActivity(const QString &activity)
 }
 
 } // namespace KActivities
+
+#include "moc_activitiescache_p.cpp"

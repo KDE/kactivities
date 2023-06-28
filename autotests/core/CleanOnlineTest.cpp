@@ -108,3 +108,5 @@ void OnlineTest::cleanupTestCase()
 {
     Q_EMIT testFinished();
 }
+
+#include "moc_CleanOnlineTest.cpp"

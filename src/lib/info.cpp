@@ -208,4 +208,3 @@ CREATE_GETTER(icon)
 } // namespace KActivities
 
 #include "moc_info.cpp"
-// #include "moc_info_p.cpp"

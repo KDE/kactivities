@@ -96,3 +96,6 @@ Consumer::ServiceStatus Consumer::serviceStatus()
 }
 
 } // namespace KActivities
+
+#include "moc_consumer.cpp"
+#include "moc_consumer_p.cpp"

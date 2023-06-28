@@ -621,4 +621,4 @@ QString ResourceModel::validateResource(const QString &resource) const
 } // namespace Imports
 } // namespace KActivities
 
-// #include "resourcemodel.moc"
+#include "moc_resourcemodel.cpp"

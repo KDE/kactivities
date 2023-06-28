@@ -35,3 +35,5 @@ bool Test::isActivityManagerRunning()
 {
     return QDBusConnection::sessionBus().interface()->isServiceRegistered(KAMD_DBUS_SERVICE);
 }
+
+#include "moc_test.cpp"

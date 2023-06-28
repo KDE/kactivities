@@ -144,3 +144,5 @@ Service::Features *Manager::features()
 }
 
 } // namespace KActivities
+
+#include "moc_manager_p.cpp"

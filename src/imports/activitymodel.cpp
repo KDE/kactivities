@@ -600,4 +600,4 @@ void ActivityModel::startActivity(const QString &id, const QJSValue &callback)
 } // namespace Imports
 } // namespace KActivities
 
-// #include "activitymodel.moc"
+#include "moc_activitymodel.cpp"

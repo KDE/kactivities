@@ -100,4 +100,4 @@ QFuture<void> Controller::nextActivity()
 
 } // namespace KActivities
 
-// #include "controller.moc"
+#include "moc_controller.cpp"

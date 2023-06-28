@@ -37,3 +37,5 @@ void ActivitiesExtensionPlugin::registerTypes(const char *uri)
     // Subclass it, and make it do what you want.
     // qmlRegisterType<KActivities::Imports::ResourceModel>(uri, 0, 1, "ResourceModel");
 }
+
+#include "moc_activitiesextensionplugin.cpp"
