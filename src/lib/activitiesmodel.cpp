@@ -409,4 +409,5 @@ ActivitiesModelPrivate::InfoPtr ActivitiesModelPrivate::findActivity(QObject *pt
 
 } // namespace KActivities
 
-// #include "activitiesmodel.moc"
+#include "moc_activitiesmodel.cpp"
+#include "moc_activitiesmodel_p.cpp"

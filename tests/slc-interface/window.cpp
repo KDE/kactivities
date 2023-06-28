@@ -30,3 +30,5 @@ void Window::focusChanged(const QString &uri, const QString &mimetype, const QSt
     Q_UNUSED(title);
     ui->textCurrentResource->setText(uri);
 }
+
+#include "moc_window.cpp"

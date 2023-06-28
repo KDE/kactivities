@@ -46,3 +46,5 @@ void runInMainThread(std::function<void()> &&f)
 }
 
 } // namespace KActivities
+
+#include "moc_mainthreadexecutor_p.cpp"

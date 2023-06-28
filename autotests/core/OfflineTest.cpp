@@ -77,3 +77,5 @@ void OfflineTest::cleanupTestCase()
 {
     Q_EMIT testFinished();
 }
+
+#include "moc_OfflineTest.cpp"

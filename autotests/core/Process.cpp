@@ -142,3 +142,5 @@ Modifier *exec(Action action)
 }
 
 } // namespace Process
+
+#include "moc_Process.cpp"

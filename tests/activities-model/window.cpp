@@ -105,3 +105,5 @@ Window::~Window()
 {
     delete ui;
 }
+
+#include "moc_window.cpp"

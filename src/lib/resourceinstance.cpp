@@ -175,3 +175,5 @@ void ResourceInstance::notifyAccessed(const QUrl &uri, const QString &applicatio
 }
 
 } // namespace KActivities
+
+#include "moc_resourceinstance.cpp"

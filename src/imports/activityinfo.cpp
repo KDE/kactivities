@@ -90,4 +90,4 @@ bool ActivityInfo::valid() const
 } // namespace Imports
 } // namespace KActivities
 
-// #include "activityinfo.moc"
+#include "moc_activityinfo.cpp"
