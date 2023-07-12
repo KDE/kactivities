@@ -36,9 +36,9 @@ void ResourceInstance::syncWid()
     }
 
     WId wid = w->winId();
-    if (!m_resourceInstance || m_resourceInstance->winId() != wid) {
+    if (!m_resourceInstance || m_resourceInstance->window()->winId() != wid) {
         // qDebug() << "Creating a new instance of the resource" << m_uri << "window id" << wid;
-        m_resourceInstance.reset(new KActivities::ResourceInstance(wid, m_uri, m_mimetype, m_title));
+        m_resourceInstance.reset(new KActivities::ResourceInstance(window(), m_uri, m_mimetype, m_title));
     } else {
         m_resourceInstance->setUri(m_uri);
         m_resourceInstance->setMimetype(m_mimetype);

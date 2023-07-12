@@ -14,6 +14,8 @@
 
 #include <memory>
 
+class QWindow;
+
 namespace KActivities
 {
 class ResourceInstancePrivate;
@@ -45,25 +47,25 @@ class KACTIVITIES_EXPORT ResourceInstance : public QObject
     Q_PROPERTY(QUrl uri READ uri WRITE setUri)
     Q_PROPERTY(QString mimetype READ mimetype WRITE setMimetype)
     Q_PROPERTY(QString title READ title WRITE setTitle)
-    Q_PROPERTY(quintptr winId READ winId)
+    Q_PROPERTY(QWindow *window READ window)
 
 public:
     /**
      * Creates a new resource instance
-     * @param wid id of the window that will show the resource
+     * @param window the window that will show the resource
      * @param parent pointer to the parent object
      * @since 4.10
      */
-    explicit ResourceInstance(quintptr wid, QObject *parent = nullptr);
+    explicit ResourceInstance(QWindow *window, QObject *parent = nullptr);
 
     /**
      * Creates a new resource instance
-     * @param wid id of the window that will show the resource
+     * @param window the window that will show the resource
      * @param application application's name (the name used for the .desktop file).
      *        If not specified, QCoreApplication::applicationName is used
      * @param parent pointer to the parent object
      */
-    explicit ResourceInstance(quintptr wid, const QString &application, QObject *parent = nullptr);
+    explicit ResourceInstance(QWindow *window, const QString &application, QObject *parent = nullptr);
 
     /**
      * Creates a new resource instance and automatically
@@ -79,7 +81,7 @@ public:
      * and in both cases reimplementing the currentUri() method
      * which will return the exact URI shown at that specific moment.
      *
-     * @param wid window id in which the resource is shown
+     * @param window window in which the resource is shown
      * @param resourceUri URI of the resource that is shown
      * @param mimetype the mime type of the resource
      * @param title the title of the resource
@@ -87,7 +89,7 @@ public:
      *        If not specified, QCoreApplication::applicationName is used
      * @param parent pointer to the parent object
      */
-    ResourceInstance(quintptr wid,
+    ResourceInstance(QWindow *window,
                      QUrl resourceUri,
                      const QString &mimetype = QString(),
                      const QString &title = QString(),
@@ -170,9 +172,9 @@ public:
     QString title() const;
 
     /**
-     * @returns the window id
+     * @returns the window
      */
-    quintptr winId() const;
+    QWindow *window() const;
 
     /**
      * If there's no way to tell for how long an application is keeping

@@ -9,13 +9,14 @@
 
 #include "debug_p.h"
 #include <QCoreApplication>
+#include <QWindow>
 
 namespace KActivities
 {
 class ResourceInstancePrivate
 {
 public:
-    quintptr wid;
+    QWindow *window = nullptr;
     QUrl uri;
     QString mimetype;
     QString title;
@@ -33,7 +34,7 @@ public:
         FocusedOut = 5,
     };
 
-    static void registerResourceEvent(const QString &application, quintptr wid, const QUrl &uri, Type event)
+    static void registerResourceEvent(const QString &application, QWindow *window, const QUrl &uri, Type event)
     {
         Q_ASSERT_X(!application.isEmpty(), "ResourceInstance::event", "The application id must not be empty");
 
@@ -41,44 +42,49 @@ public:
             return;
         }
 
-        Manager::resources()->RegisterResourceEvent(application, wid, uri.toString(), uint(event));
+        Manager::resources()->RegisterResourceEvent(application, window ? window->winId() : 0, uri.toString(), uint(event));
     }
 };
 
 void ResourceInstancePrivate::closeResource()
 {
-    registerResourceEvent(application, wid, uri, Closed);
+    registerResourceEvent(application, window, uri, Closed);
 }
 
 void ResourceInstancePrivate::openResource()
 {
-    registerResourceEvent(application, wid, uri, Opened);
+    registerResourceEvent(application, window, uri, Opened);
 }
 
-ResourceInstance::ResourceInstance(quintptr wid, QObject *parent)
+ResourceInstance::ResourceInstance(QWindow *window, QObject *parent)
     : QObject(parent)
     , d(new ResourceInstancePrivate())
 {
     qCDebug(KAMD_CORELIB) << "Creating ResourceInstance: empty for now";
-    d->wid = wid;
+    d->window = window;
     d->application = QCoreApplication::instance()->applicationName();
 }
 
-ResourceInstance::ResourceInstance(quintptr wid, const QString &application, QObject *parent)
+ResourceInstance::ResourceInstance(QWindow *window, const QString &application, QObject *parent)
     : QObject(parent)
     , d(new ResourceInstancePrivate())
 {
     qCDebug(KAMD_CORELIB) << "Creating ResourceInstance: empty for now";
-    d->wid = wid;
+    d->window = window;
     d->application = application.isEmpty() ? QCoreApplication::instance()->applicationName() : application;
 }
 
-ResourceInstance::ResourceInstance(quintptr wid, QUrl resourceUri, const QString &mimetype, const QString &title, const QString &application, QObject *parent)
+ResourceInstance::ResourceInstance(QWindow *window,
+                                   QUrl resourceUri,
+                                   const QString &mimetype,
+                                   const QString &title,
+                                   const QString &application,
+                                   QObject *parent)
     : QObject(parent)
     , d(new ResourceInstancePrivate())
 {
     qCDebug(KAMD_CORELIB) << "Creating ResourceInstance:" << resourceUri;
-    d->wid = wid;
+    d->window = window;
     d->uri = resourceUri.adjusted(QUrl::StripTrailingSlash);
     d->application = application.isEmpty() ? QCoreApplication::instance()->applicationName() : application;
 
@@ -95,17 +101,17 @@ ResourceInstance::~ResourceInstance()
 
 void ResourceInstance::notifyModified()
 {
-    d->registerResourceEvent(d->application, d->wid, d->uri, ResourceInstancePrivate::Modified);
+    d->registerResourceEvent(d->application, d->window, d->uri, ResourceInstancePrivate::Modified);
 }
 
 void ResourceInstance::notifyFocusedIn()
 {
-    d->registerResourceEvent(d->application, d->wid, d->uri, ResourceInstancePrivate::FocusedIn);
+    d->registerResourceEvent(d->application, d->window, d->uri, ResourceInstancePrivate::FocusedIn);
 }
 
 void ResourceInstance::notifyFocusedOut()
 {
-    d->registerResourceEvent(d->application, d->wid, d->uri, ResourceInstancePrivate::FocusedOut);
+    d->registerResourceEvent(d->application, d->window, d->uri, ResourceInstancePrivate::FocusedOut);
 }
 
 void ResourceInstance::setUri(const QUrl &newUri)
@@ -161,15 +167,15 @@ QString ResourceInstance::title() const
     return d->title;
 }
 
-quintptr ResourceInstance::winId() const
+QWindow *ResourceInstance::window() const
 {
-    return d->wid;
+    return d->window;
 }
 
 void ResourceInstance::notifyAccessed(const QUrl &uri, const QString &application)
 {
     ResourceInstancePrivate::registerResourceEvent(application.isEmpty() ? QCoreApplication::instance()->applicationName() : application,
-                                                   0,
+                                                   nullptr,
                                                    uri,
                                                    ResourceInstancePrivate::Accessed);
 }

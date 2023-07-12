@@ -48,7 +48,7 @@ add_feature_info(QCH ${BUILD_QCH} "API documentation in QCH format (for e.g. Qt 
 
 # Qt
 set (CMAKE_AUTOMOC ON)
-find_package (Qt6 ${REQUIRED_QT_VERSION} CONFIG REQUIRED COMPONENTS Core DBus)
+find_package (Qt6 ${REQUIRED_QT_VERSION} CONFIG REQUIRED COMPONENTS Core Gui DBus)
 
 # Basic includes
 include (CPack)

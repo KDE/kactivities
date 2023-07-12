@@ -77,6 +77,7 @@ target_link_libraries(KF6Activities
       Qt6::Core
    PRIVATE
       Qt6::DBus
+      Qt6::Gui
 )
 
 set(KACTIVITIES_BUILD_INCLUDE_DIRS
