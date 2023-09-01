@@ -19,7 +19,7 @@ target_sources(kactivitiesextensionplugin PRIVATE
 )
 
 target_link_libraries(
-   kactivitiesextensionplugin
+   kactivitiesextensionplugin PRIVATE
    Qt6::Core
    Qt6::DBus
    Qt6::Gui
