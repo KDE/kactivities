@@ -43,6 +43,20 @@ public:
 
         Manager::resources()->RegisterResourceEvent(application, wid, uri.toString(), uint(event));
     }
+
+    void setApplication(const QString &applicationName = QString())
+    {
+        if (!applicationName.isEmpty()) {
+            application = applicationName;
+        }
+        auto desktopFileName = qApp->property("desktopFileName");
+        if (desktopFileName.isValid()) {
+            application = desktopFileName.toString();
+        } else {
+            // fallback
+            application = QCoreApplication::instance()->applicationName();
+        }
+    }
 };
 
 void ResourceInstancePrivate::closeResource()
@@ -61,7 +75,7 @@ ResourceInstance::ResourceInstance(quintptr wid, QObject *parent)
 {
     qCDebug(KAMD_CORELIB) << "Creating ResourceInstance: empty for now";
     d->wid = wid;
-    d->application = QCoreApplication::instance()->applicationName();
+    d->setApplication();
 }
 
 ResourceInstance::ResourceInstance(quintptr wid, const QString &application, QObject *parent)
@@ -70,7 +84,7 @@ ResourceInstance::ResourceInstance(quintptr wid, const QString &application, QOb
 {
     qCDebug(KAMD_CORELIB) << "Creating ResourceInstance: empty for now";
     d->wid = wid;
-    d->application = application.isEmpty() ? QCoreApplication::instance()->applicationName() : application;
+    d->setApplication(application);
 }
 
 ResourceInstance::ResourceInstance(quintptr wid, QUrl resourceUri, const QString &mimetype, const QString &title, const QString &application, QObject *parent)
@@ -80,7 +94,7 @@ ResourceInstance::ResourceInstance(quintptr wid, QUrl resourceUri, const QString
     qCDebug(KAMD_CORELIB) << "Creating ResourceInstance:" << resourceUri;
     d->wid = wid;
     d->uri = resourceUri.adjusted(QUrl::StripTrailingSlash);
-    d->application = application.isEmpty() ? QCoreApplication::instance()->applicationName() : application;
+    d->setApplication(application);
 
     d->openResource();
 
