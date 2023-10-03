@@ -12,8 +12,7 @@ portingAid: false
 deprecated: false
 release: true
 libraries:
- - qmake: KActivities
-   cmake: "KF6::Activities"
+ - cmake: "KF6::Activities"
 cmakename: KF6Activities
 
 public_lib: true
