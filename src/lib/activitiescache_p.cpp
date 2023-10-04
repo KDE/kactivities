@@ -164,7 +164,7 @@ void ActivitiesCache::updateActivityState(const QString &id, int state)
         Q_EMIT activityStateChanged(id, state);
 
     } else {
-        // qFatal("Requested to update the state of an non-existent activity");
+        // qFatal("Requested to update the state of a non-existent activity");
     }
 }
 

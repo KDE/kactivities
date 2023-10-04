@@ -41,4 +41,4 @@ public:
 
 } // namespace KActivities
 
-#endif // ACTIVITIES_INFO_P_H
+#endif // KACTIVITIESINFO_P_H

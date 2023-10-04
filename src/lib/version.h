@@ -46,4 +46,4 @@ KACTIVITIES_EXPORT const char *versionString();
 
 } // KActivities namespace
 
-#endif // multiple inclusion guard
+#endif // KACTIVITIES_VERSION_BIN_H

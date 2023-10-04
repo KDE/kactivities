@@ -152,4 +152,4 @@ QFuture<void> fromVoid();
 
 } // namespace DBusFuture
 
-#endif /* DBUSFUTURE_P_H */
+#endif /* ACTIVITIES_DBUSFUTURE_P_H */
