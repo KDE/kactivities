@@ -3,7 +3,6 @@ project (KActivitiesCLI)
 
 find_package (Qt6 REQUIRED NO_MODULE COMPONENTS Core Gui Widgets)
 find_package (Qt6 REQUIRED NO_MODULE COMPONENTS Core Gui Widgets)
-find_package (KF6 ${KF6_MIN_VERSION} REQUIRED COMPONENTS WindowSystem)
 
 add_executable(kactivities-cli6)
 ecm_mark_nongui_executable(kactivities-cli6)
