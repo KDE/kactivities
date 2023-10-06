@@ -4,6 +4,7 @@
 
     SPDX-License-Identifier: GPL-2.0-or-later
 */
+import org.kde.plasma.plasmoid 2.0
 import QtQuick 2.0
 import org.kde.plasma.core as PlasmaCore
 import org.kde.plasma.components 2.0 as PlasmaComponents
@@ -18,7 +19,7 @@ ListView {
     property int implicitWidth: minimumWidth * 1.5
     property int implicitHeight: minimumHeight * 1.5
 
-    property int formFactor: plasmoid.formFactor
+    property int formFactor: Plasmoid.formFactor
 
 
 
