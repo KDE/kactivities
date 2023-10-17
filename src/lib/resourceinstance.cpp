@@ -50,7 +50,7 @@ public:
             application = applicationName;
         }
         auto desktopFileName = qApp->property("desktopFileName");
-        if (desktopFileName.isValid()) {
+        if (desktopFileName.isValid() && !desktopFileName.toString().isEmpty()) {
             application = desktopFileName.toString();
         } else {
             // fallback
