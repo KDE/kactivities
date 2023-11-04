@@ -13,7 +13,6 @@ target_sources(kactivitiesextensionplugin PRIVATE
    activitymodel.cpp
    activityinfo.cpp
 #  resourcemodel.cpp
-   resourceinstance.cpp
 
    ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/src/utils/dbusfuture_p.cpp
 )

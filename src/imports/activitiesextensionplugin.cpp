@@ -10,6 +10,8 @@
 #include "activitymodel.h"
 #include "resourceinstance.h"
 
+#include <QQmlEngine>
+
 // #include "resourcemodel.h"
 
 // TODO: Clean up unused classes from the imports module
@@ -31,7 +33,6 @@ void ActivitiesExtensionPlugin::registerTypes(const char *uri)
     qmlRegisterType<KActivities::Imports::ActivityModel>(uri, 0, 1, "ActivityModel");
 
     qmlRegisterType<KActivities::Imports::ActivityInfo>(uri, 0, 1, "ActivityInfo");
-    qmlRegisterType<KActivities::Imports::ResourceInstance>(uri, 0, 1, "ResourceInstance");
 
     // This one is removed in favor of KActivities::Stats::ResultModel.
     // Subclass it, and make it do what you want.
