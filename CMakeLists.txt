@@ -13,58 +13,34 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(ECM ${KF6_MIN_VERSION} REQUIRED NO_MODULE)
-set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH} )
+set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH})
 
 option (KACTIVITIES_LIBRARY_ONLY "If true, compiles only the KActivities library, without the QML imports." OFF)
 option (KACTIVITIES_ENABLE_EXCEPTIONS "If you have Boost 1.53, you need to build KActivities with exceptions enabled. This is UNTESTED and EXPERIMENTAL!" OFF)
 
-# We don't build in-source
-if ("${CMAKE_SOURCE_DIR}" STREQUAL "${CMAKE_BINARY_DIR}")
-   message (
-      FATAL_ERROR
-      "kactivities require an out of source build. Please create a separate build directory and run 'cmake path_to_sources [options]' there."
-   )
-endif ()
-
 set (KACTIVITIES_CURRENT_ROOT_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
 include(FeatureSummary)
-include (KDEInstallDirs)
-include (KDECMakeSettings)
+include(KDEInstallDirs)
+include(KDECMakeSettings)
 include(KDEGitCommitHooks)
-include (KDEFrameworkCompilerSettings NO_POLICY_SCOPE)
-include (ECMGenerateExportHeader)
-include (ECMGenerateHeaders)
-include (ECMGeneratePkgConfigFile)
-include (ECMQtDeclareLoggingCategory)
-include (ECMAddQch)
-include (ECMMarkNonGuiExecutable)
+include(KDECompilerSettings NO_POLICY_SCOPE)
+include(ECMGenerateExportHeader)
+include(ECMGenerateHeaders)
+include(ECMGeneratePkgConfigFile)
+include(ECMQtDeclareLoggingCategory)
+include(ECMAddQch)
+include(ECMMarkNonGuiExecutable)
 include(ECMDeprecationSettings)
-include (ECMQmlModule)
+include(ECMQmlModule)
 
 option(BUILD_QCH "Build API documentation in QCH format (for e.g. Qt Assistant, Qt Creator & KDevelop)" OFF)
 add_feature_info(QCH ${BUILD_QCH} "API documentation in QCH format (for e.g. Qt Assistant, Qt Creator & KDevelop)")
 
-# Qt
-set (CMAKE_AUTOMOC ON)
 find_package (Qt6 ${QT_MIN_VERSION} CONFIG REQUIRED COMPONENTS Core DBus)
-
-# Basic includes
-include (CPack)
 
 include (CMakePackageConfigHelpers)
 include (ECMSetupVersion)
-
-message ("We are using the ${CMAKE_CXX_COMPILER_ID} compiler")
-if ((CMAKE_CXX_COMPILER_ID STREQUAL "Clang") OR (KACTIVITIES_OVERRIDE_VISIBILITY STREQUAL "default"))
-   message ("Setting visibility preset to default")
-   set(CMAKE_CXX_VISIBILITY_PRESET default)
-   set(CMAKE_VISIBILITY_INLINES_HIDDEN 0)
-   string (REPLACE "-fvisibility-inlines-hidden" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
-   string (REPLACE "-fvisibility=hidden" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
-endif ()
-
-# libKActivities
 
 set(kactivities_version_header "${CMAKE_CURRENT_BINARY_DIR}/src/lib/kactivities_version.h")
 ecm_setup_version (
@@ -125,6 +101,5 @@ install (
 
 # Write out the features
 feature_summary (WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)
-
 
 kde_configure_git_pre_commit_hook(CHECKS CLANG_FORMAT)
