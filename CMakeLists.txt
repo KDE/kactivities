@@ -1,9 +1,9 @@
 # vim:set softtabstop=3 shiftwidth=3 tabstop=3 expandtab:
-
-project(KActivitiesStats)
-set(PROJECT_VERSION "5.27.80")
-
 cmake_minimum_required(VERSION 3.16)
+
+set(PROJECT_VERSION "5.27.80")
+project(KActivities VERSION ${PROJECT_VERSION})
+set(PROJECT_VERSION_MAJOR "6")
 
 set(QT_MIN_VERSION "6.4.0")
 set(KF6_MIN_VERSION "5.240.0")
@@ -14,8 +14,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(ECM ${KF6_MIN_VERSION} REQUIRED NO_MODULE)
 set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH} )
-
-cmake_minimum_required(VERSION 3.16)
 
 option (KACTIVITIES_LIBRARY_ONLY "If true, compiles only the KActivities library, without the QML imports." OFF)
 option (KACTIVITIES_ENABLE_EXCEPTIONS "If you have Boost 1.53, you need to build KActivities with exceptions enabled. This is UNTESTED and EXPERIMENTAL!" OFF)
