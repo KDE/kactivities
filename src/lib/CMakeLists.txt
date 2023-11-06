@@ -133,7 +133,7 @@ if(BUILD_QCH)
         KF6Activities_QCH
         NAME KActivities
         BASE_NAME KF6Activities
-        VERSION ${KF_VERSION}
+        VERSION ${PROJECT_VERSION}
         ORG_DOMAIN org.kde
         SOURCES # using only public headers, to cover only public API
             ${KActivities_HEADERS}
