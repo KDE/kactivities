@@ -3,8 +3,8 @@
 project (kactivities-imports)
 
 find_package (Qt6 REQUIRED NO_MODULE COMPONENTS Gui Qml Quick Sql)
-find_package (KF6Config     ${KF_DEP_VERSION} CONFIG REQUIRED)
-find_package (KF6CoreAddons ${KF_DEP_VERSION} CONFIG REQUIRED)
+find_package (KF6Config     ${KF6_MIN_VERSION} CONFIG REQUIRED)
+find_package (KF6CoreAddons ${KF6_MIN_VERSION} CONFIG REQUIRED)
 
 ecm_add_qml_module(kactivitiesextensionplugin URI "org.kde.activities" VERSION 0.1)
 

@@ -1,16 +1,24 @@
 # vim:set softtabstop=3 shiftwidth=3 tabstop=3 expandtab:
 
+project(KActivitiesStats)
+set(PROJECT_VERSION "5.27.80")
+
 cmake_minimum_required(VERSION 3.16)
 
-# KDE Frameworks
-set(KF_VERSION "5.240.0") # handled by release scripts
-set(KF_DEP_VERSION "5.240.0") # handled by release scripts
-project (KActivities VERSION ${KF_VERSION})
+set(QT_MIN_VERSION "6.4.0")
+set(KF6_MIN_VERSION "5.240.0")
+set(KDE_COMPILERSETTINGS_LEVEL "5.82")
+
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+find_package(ECM ${KF6_MIN_VERSION} REQUIRED NO_MODULE)
+set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH} )
+
+cmake_minimum_required(VERSION 3.16)
 
 option (KACTIVITIES_LIBRARY_ONLY "If true, compiles only the KActivities library, without the QML imports." OFF)
 option (KACTIVITIES_ENABLE_EXCEPTIONS "If you have Boost 1.53, you need to build KActivities with exceptions enabled. This is UNTESTED and EXPERIMENTAL!" OFF)
-
-set (REQUIRED_QT_VERSION 6.5.0)
 
 # We don't build in-source
 if ("${CMAKE_SOURCE_DIR}" STREQUAL "${CMAKE_BINARY_DIR}")
@@ -22,14 +30,7 @@ endif ()
 
 set (KACTIVITIES_CURRENT_ROOT_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
-# Extra CMake stuff
 include(FeatureSummary)
-find_package(ECM 5.240.0  NO_MODULE)
-set_package_properties(ECM PROPERTIES TYPE REQUIRED DESCRIPTION "Extra CMake Modules." URL "https://commits.kde.org/extra-cmake-modules")
-feature_summary(WHAT REQUIRED_PACKAGES_NOT_FOUND FATAL_ON_MISSING_REQUIRED_PACKAGES)
-
-set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH})
-
 include (KDEInstallDirs)
 include (KDECMakeSettings)
 include(KDEGitCommitHooks)
@@ -48,7 +49,7 @@ add_feature_info(QCH ${BUILD_QCH} "API documentation in QCH format (for e.g. Qt 
 
 # Qt
 set (CMAKE_AUTOMOC ON)
-find_package (Qt6 ${REQUIRED_QT_VERSION} CONFIG REQUIRED COMPONENTS Core DBus)
+find_package (Qt6 ${QT_MIN_VERSION} CONFIG REQUIRED COMPONENTS Core DBus)
 
 # Basic includes
 include (CPack)
