@@ -156,7 +156,7 @@ public:
         QString backgroundFromConfig(const KConfigGroup &config) const
         {
             auto wallpaperPlugin = config.readEntry("wallpaperplugin");
-            auto wallpaperConfig = config.group("Wallpaper").group(wallpaperPlugin).group("General");
+            auto wallpaperConfig = config.group(QStringLiteral("Wallpaper")).group(wallpaperPlugin).group(QStringLiteral("General"));
 
             if (wallpaperConfig.hasKey("Image")) {
                 // Trying for the wallpaper
@@ -220,7 +220,7 @@ public:
 
         KConfigGroup plasmaConfigContainments()
         {
-            return plasmaConfig.group("Containments");
+            return plasmaConfig.group(QStringLiteral("Containments"));
         }
 
         QHash<QString, QString> forActivity;
