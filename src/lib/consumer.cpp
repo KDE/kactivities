@@ -29,10 +29,10 @@ Consumer::Consumer(QObject *parent)
     connect(d->cache.get(), &KActivities::ActivitiesCache::activityRemoved, this, &Consumer::activityRemoved);
     connect(d->cache.get(), &KActivities::ActivitiesCache::serviceStatusChanged, this, &Consumer::serviceStatusChanged);
 
-    connect(d->cache.get(), &ActivitiesCache::activityListChanged, this, [=]() {
+    connect(d->cache.get(), &ActivitiesCache::activityListChanged, this, [=, this]() {
         Q_EMIT activitiesChanged(activities());
     });
-    connect(d->cache.get(), &ActivitiesCache::runningActivityListChanged, this, [=]() {
+    connect(d->cache.get(), &ActivitiesCache::runningActivityListChanged, this, [=, this]() {
         Q_EMIT runningActivitiesChanged(runningActivities());
     });
 
