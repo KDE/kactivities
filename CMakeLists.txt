@@ -1,7 +1,7 @@
 # vim:set softtabstop=3 shiftwidth=3 tabstop=3 expandtab:
 cmake_minimum_required(VERSION 3.16)
 
-set(PROJECT_VERSION "5.81.0")
+set(PROJECT_VERSION "5.81.80")
 project(KActivities VERSION ${PROJECT_VERSION})
 set(PROJECT_VERSION_MAJOR "6")
 
