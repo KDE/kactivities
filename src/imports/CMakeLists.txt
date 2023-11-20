@@ -25,7 +25,7 @@ target_link_libraries(
    Qt6::Qml
    Qt6::Quick
    Qt6::Sql
-   KActivities
+   KF6::Activities
    KF6::ConfigCore
    KF6::CoreAddons
    Boost::headers

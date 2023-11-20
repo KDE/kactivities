@@ -18,10 +18,10 @@ target_sources(kactivities-cli6 PRIVATE
 
 target_link_libraries(kactivities-cli6
    Qt6::Core
-   KActivities
+   KF6::Activities
 )
 
 install (TARGETS
    kactivities-cli6
-   ${CMAKECONFIG_INSTALL_DIR}
+   ${KF_INSTALL_TARGETS_DEFAULT_ARGS}
 )

@@ -27,7 +27,7 @@ target_link_libraries(KActivitiesTest
       Qt6::Core
       Qt6::Test
       Qt6::DBus
-      KActivities
+      KF6::Activities
 )
 
 endif ()
