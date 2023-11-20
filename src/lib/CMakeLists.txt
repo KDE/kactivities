@@ -4,16 +4,15 @@
 # Now that we finished with the boilerplate, start
 # with the library definition
 
-add_library(KF6Activities)
-add_library(KF6::Activities ALIAS KF6Activities)
+add_library(KActivities)
 
-set_target_properties(KF6Activities PROPERTIES
+set_target_properties(KActivities PROPERTIES
    VERSION     ${KACTIVITIES_VERSION}
    SOVERSION   ${KACTIVITIES_SOVERSION}
    EXPORT_NAME Activities
 )
 
-target_sources(KF6Activities PRIVATE
+target_sources(KActivities PRIVATE
    ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.Activities.cpp
 
    consumer.cpp
@@ -58,11 +57,11 @@ qt_add_dbus_interface(KActivities_DBus_SRCS
    ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.Application.xml
    application_interface
 )
-target_sources(KF6Activities PRIVATE
+target_sources(KActivities PRIVATE
    ${KActivities_DBus_SRCS}
 )
 
-ecm_qt_declare_logging_category(KF6Activities
+ecm_qt_declare_logging_category(KActivities
     HEADER debug_p.h
     IDENTIFIER KAMD_CORELIB
     CATEGORY_NAME kf.activities
@@ -72,7 +71,7 @@ ecm_qt_declare_logging_category(KF6Activities
     EXPORT KACTIVITIES
 )
 
-target_link_libraries(KF6Activities
+target_link_libraries(KActivities
    PUBLIC
       Qt6::Core
    PRIVATE
@@ -84,16 +83,15 @@ set(KACTIVITIES_BUILD_INCLUDE_DIRS
    ${CMAKE_BINARY_DIR}/
 )
 
-target_include_directories(KF6Activities
-   INTERFACE "$<INSTALL_INTERFACE:${KDE_INSTALL_INCLUDEDIR_KF}/KActivities>"
+target_include_directories(KActivities
+   INTERFACE "$<INSTALL_INTERFACE:${KDE_INSTALL_INCLUDEDIR}/KActivities>"
    PRIVATE  ${KACTIVITIES_BUILD_INCLUDE_DIRS}
 )
 
 # install
-ecm_generate_export_header (KF6Activities
+ecm_generate_export_header (KActivities
    BASE_NAME KActivities
-   GROUP_BASE_NAME KF
-   VERSION ${KF6_MIN_VERSION}
+   VERSION ${PROJECT_VERSION}
    USE_VERSION_HEADER
    DEPRECATED_BASE_VERSION 0
 )
@@ -112,27 +110,27 @@ ecm_generate_headers (
    )
 install (
    FILES ${KActivities_CamelCase_HEADERS}
-   DESTINATION ${KDE_INSTALL_INCLUDEDIR_KF}/KActivities/KActivities
+   DESTINATION ${KDE_INSTALL_INCLUDEDIR}/KActivities/KActivities
    COMPONENT Devel
    )
 
 install (
    FILES ${KActivities_HEADERS} ${CMAKE_CURRENT_BINARY_DIR}/kactivities_export.h
-   DESTINATION ${KDE_INSTALL_INCLUDEDIR_KF}/KActivities/kactivities
+   DESTINATION ${KDE_INSTALL_INCLUDEDIR}/KActivities/kactivities
    COMPONENT Devel
    )
 
 install (
-   TARGETS KF6Activities
-   EXPORT KF6ActivitiesLibraryTargets
-   ${KF_INSTALL_TARGETS_DEFAULT_ARGS}
+   TARGETS KActivities
+   EXPORT KActivitiesLibraryTargets
+   ${CMAKECONFIG_INSTALL_DIR}
    )
 
 if(BUILD_QCH)
     ecm_add_qch(
-        KF6Activities_QCH
+        KActivities_QCH
         NAME KActivities
-        BASE_NAME KF6Activities
+        BASE_NAME KActivities
         VERSION ${PROJECT_VERSION}
         ORG_DOMAIN org.kde
         SOURCES # using only public headers, to cover only public API
@@ -154,11 +152,11 @@ endif()
 
 
 if (NOT WIN32)
-    ecm_generate_pkgconfig_file(BASE_NAME KF6Activities
-      LIB_NAME KF6Activities
+    ecm_generate_pkgconfig_file(BASE_NAME KActivities
+      LIB_NAME KActivities
       INCLUDE_INSTALL_DIR ${KDE_INSTALL_INCLUDEDIR_KF}/KActivities
       DEPS Qt6Core
-      DESCRIPTION "libKActivities is a C++ library for using KDE activities"
+      DESCRIPTION "libKActivities is a C++ library for using Plasma activities"
       INSTALL
     )
 endif ()

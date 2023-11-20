@@ -29,7 +29,7 @@ target_link_libraries(KActivitiesModelTestApp
       Qt6::Gui
       Qt6::Widgets
       Qt6::DBus
-      KF6::Activities
+      KActivities
       KF6::WindowSystem
 )
 

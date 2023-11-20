@@ -47,7 +47,7 @@ ecm_setup_version (
    PROJECT
    VARIABLE_PREFIX KACTIVITIES
    VERSION_HEADER "${kactivities_version_header}"
-   PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/KF6ActivitiesConfigVersion.cmake"
+   PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/KActivitiesConfigVersion.cmake"
    SOVERSION 6
    )
 
@@ -62,41 +62,40 @@ if (BUILD_TESTING)
     add_subdirectory (tests)
 endif()
 
-set (CMAKECONFIG_INSTALL_DIR "${KDE_INSTALL_CMAKEPACKAGEDIR}/KF6Activities")
+set (CMAKECONFIG_INSTALL_DIR "${KDE_INSTALL_CMAKEPACKAGEDIR}/KActivities")
 
 if (BUILD_QCH)
     ecm_install_qch_export(
-        TARGETS KF6Activities_QCH
-        FILE KF6ActivitiesLibraryQchTargets.cmake
+        TARGETS KActivities_QCH
+        FILE KActivitiesLibraryQchTargets.cmake
         DESTINATION "${CMAKECONFIG_INSTALL_DIR}"
         COMPONENT Devel
     )
-    set(PACKAGE_INCLUDE_QCHTARGETS "include(\"\${CMAKE_CURRENT_LIST_DIR}/KF6ActivitiesLibraryQchTargets.cmake\")")
+    set(PACKAGE_INCLUDE_QCHTARGETS "include(\"\${CMAKE_CURRENT_LIST_DIR}/KActivitiesLibraryQchTargets.cmake\")")
 endif()
 
 install (
-   EXPORT KF6ActivitiesLibraryTargets
+   EXPORT KActivitiesLibraryTargets
    DESTINATION "${CMAKECONFIG_INSTALL_DIR}"
-   FILE KF6ActivitiesLibraryTargets.cmake
-   NAMESPACE KF6::
+   FILE KActivitiesLibraryTargets.cmake
    )
 
 configure_package_config_file (
-   "${CMAKE_CURRENT_SOURCE_DIR}/KF6ActivitiesConfig.cmake.in"
-   "${CMAKE_CURRENT_BINARY_DIR}/KF6ActivitiesConfig.cmake"
+   "${CMAKE_CURRENT_SOURCE_DIR}/KActivitiesConfig.cmake.in"
+   "${CMAKE_CURRENT_BINARY_DIR}/KActivitiesConfig.cmake"
    INSTALL_DESTINATION  ${CMAKECONFIG_INSTALL_DIR}
    )
 
 install (
-   FILES "${CMAKE_CURRENT_BINARY_DIR}/KF6ActivitiesConfig.cmake"
-         "${CMAKE_CURRENT_BINARY_DIR}/KF6ActivitiesConfigVersion.cmake"
+   FILES "${CMAKE_CURRENT_BINARY_DIR}/KActivitiesConfig.cmake"
+         "${CMAKE_CURRENT_BINARY_DIR}/KActivitiesConfigVersion.cmake"
    DESTINATION "${CMAKECONFIG_INSTALL_DIR}"
    COMPONENT Devel
    )
 
 install (
    FILES ${kactivities_version_header}
-   DESTINATION ${KDE_INSTALL_INCLUDEDIR_KF}/KActivities COMPONENT Devel
+   DESTINATION ${KDE_INSTALL_INCLUDEDIR}/KActivities COMPONENT Devel
    )
 
 # Write out the features
