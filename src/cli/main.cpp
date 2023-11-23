@@ -8,7 +8,7 @@
 #include <QDebug>
 #include <QTimer>
 
-#include <KActivities/Controller>
+#include <PlasmaActivities/Controller>
 
 #include "utils.h"
 

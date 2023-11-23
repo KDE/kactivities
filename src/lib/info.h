@@ -11,7 +11,7 @@
 #include <QObject>
 #include <QString>
 
-#include "kactivities_export.h"
+#include "plasma_activities_export.h"
 
 #include <memory>
 
@@ -55,7 +55,7 @@ class InfoPrivate;
  *
  * @since 4.5
  */
-class KACTIVITIES_EXPORT Info : public QObject
+class PLASMA_ACTIVITIES_EXPORT Info : public QObject
 {
     Q_OBJECT
 

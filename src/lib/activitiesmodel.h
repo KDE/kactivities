@@ -27,7 +27,7 @@ class ActivitiesModelPrivate;
 /**
  * Data model that shows existing activities
  */
-class KACTIVITIES_EXPORT ActivitiesModel : public QAbstractListModel
+class PLASMA_ACTIVITIES_EXPORT ActivitiesModel : public QAbstractListModel
 {
     Q_OBJECT
 

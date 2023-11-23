@@ -13,7 +13,7 @@
 
 #include "consumer.h"
 
-#include "kactivities_export.h"
+#include "plasma_activities_export.h"
 
 #include <memory>
 
@@ -34,7 +34,7 @@ class ControllerPrivate;
  *
  * @since 5.0
  */
-class KACTIVITIES_EXPORT Controller : public Consumer
+class PLASMA_ACTIVITIES_EXPORT Controller : public Consumer
 {
     Q_OBJECT
 

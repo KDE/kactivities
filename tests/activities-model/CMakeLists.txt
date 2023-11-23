@@ -1,35 +1,35 @@
 # vim:set softtabstop=3 shiftwidth=3 tabstop=3 expandtab:
-project (KActivitiesModelTestApp)
+project (PlasmaActivitiesModelTestApp)
 
 find_package (Qt6 REQUIRED NO_MODULE COMPONENTS Core Gui Widgets)
 find_package (KF6 ${KF6_MIN_VERSION} REQUIRED COMPONENTS WindowSystem)
 
 if (NOT WIN32)
 
-add_executable(KActivitiesModelTestApp)
+add_executable(PlasmaActivitiesModelTestApp)
 
-target_include_directories(KActivitiesModelTestApp PRIVATE
-   ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/src/
-   ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/autotests/
+target_include_directories(PlasmaActivitiesModelTestApp PRIVATE
+   ${PLASMA_ACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/src/
+   ${PLASMA_ACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/autotests/
 )
 
-qt_wrap_ui(KActivitiesModelTestApp_ui_SRCS
+qt_wrap_ui(PlasmaActivitiesModelTestApp_ui_SRCS
    window.ui
 )
 
-target_sources(KActivitiesModelTestApp PRIVATE
-   ${KActivitiesModelTestApp_ui_SRCS}
+target_sources(PlasmaActivitiesModelTestApp PRIVATE
+   ${PlasmaActivitiesModelTestApp_ui_SRCS}
    window.cpp
    main.cpp
 )
 
-target_link_libraries(KActivitiesModelTestApp
+target_link_libraries(PlasmaActivitiesModelTestApp
    PRIVATE
       Qt6::Core
       Qt6::Gui
       Qt6::Widgets
       Qt6::DBus
-      KF6::Activities
+      Plasma::Activities
       KF6::WindowSystem
 )
 

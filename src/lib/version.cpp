@@ -10,27 +10,27 @@ namespace KActivities
 {
 unsigned int version()
 {
-    return KACTIVITIES_VERSION;
+    return PLASMA_ACTIVITIES_VERSION;
 }
 
 unsigned int versionMajor()
 {
-    return KACTIVITIES_VERSION_MAJOR;
+    return PLASMA_ACTIVITIES_VERSION_MAJOR;
 }
 
 unsigned int versionMinor()
 {
-    return KACTIVITIES_VERSION_MINOR;
+    return PLASMA_ACTIVITIES_VERSION_MINOR;
 }
 
 unsigned int versionRelease()
 {
-    return KACTIVITIES_VERSION_RELEASE;
+    return PLASMA_ACTIVITIES_VERSION_RELEASE;
 }
 
 const char *versionString()
 {
-    return KACTIVITIES_VERSION_STRING;
+    return PLASMA_ACTIVITIES_VERSION_STRING;
 }
 
 } // KActivities namespace

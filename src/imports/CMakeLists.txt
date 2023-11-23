@@ -1,34 +1,34 @@
 # vim:set softtabstop=3 shiftwidth=3 tabstop=3 expandtab:
 
-project (kactivities-imports)
+project (plasmaactivities-imports)
 
 find_package (Qt6 REQUIRED NO_MODULE COMPONENTS Gui Qml Quick Sql)
 find_package (KF6Config     ${KF6_MIN_VERSION} CONFIG REQUIRED)
 find_package (KF6CoreAddons ${KF6_MIN_VERSION} CONFIG REQUIRED)
 
-ecm_add_qml_module(kactivitiesextensionplugin URI "org.kde.activities" VERSION 0.1)
+ecm_add_qml_module(plasmaactivitiesextensionplugin URI "org.kde.activities" VERSION 0.1)
 
-target_sources(kactivitiesextensionplugin PRIVATE
+target_sources(plasmaactivitiesextensionplugin PRIVATE
    activitiesextensionplugin.cpp
    activitymodel.cpp
    activityinfo.cpp
 #  resourcemodel.cpp
 
-   ${KACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/src/utils/dbusfuture_p.cpp
+   ${PLASMA_ACTIVITIES_CURRENT_ROOT_SOURCE_DIR}/src/utils/dbusfuture_p.cpp
 )
 
 target_link_libraries(
-   kactivitiesextensionplugin PRIVATE
+   plasmaactivitiesextensionplugin PRIVATE
    Qt6::Core
    Qt6::DBus
    Qt6::Gui
    Qt6::Qml
    Qt6::Quick
    Qt6::Sql
-   KF6::Activities
+   Plasma::Activities
    KF6::ConfigCore
    KF6::CoreAddons
    Boost::headers
 )
 
-ecm_finalize_qml_module(kactivitiesextensionplugin DESTINATION ${KDE_INSTALL_QMLDIR})
+ecm_finalize_qml_module(plasmaactivitiesextensionplugin DESTINATION ${KDE_INSTALL_QMLDIR})

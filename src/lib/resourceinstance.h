@@ -10,7 +10,7 @@
 #include <QObject>
 #include <QUrl>
 
-#include "kactivities_export.h"
+#include "plasma_activities_export.h"
 
 namespace KActivities::ResourceInstance
 {
@@ -22,7 +22,7 @@ namespace KActivities::ResourceInstance
  * @param application application's name (the name used for the .desktop file).
  *        If not specified, QCoreApplication::applicationName is used
  */
-KACTIVITIES_EXPORT void notifyAccessed(const QUrl &uri, const QString &application = QString());
+PLASMA_ACTIVITIES_EXPORT void notifyAccessed(const QUrl &uri, const QString &application = QString());
 }
 
 #endif // ACTIVITIES_RESOURCEINSTANCE_H
